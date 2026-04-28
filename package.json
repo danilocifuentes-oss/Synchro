@@ -1,0 +1,14 @@
+{
+  "name": "synchro-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SYNCHRO MVP - shared thought matching prototype",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "pg": "^8.20.0"
+  }
+}

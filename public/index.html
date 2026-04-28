@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SYNCHRO</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <h1>SYNCHRO</h1>
+        <p>No eres el único que lo está pensando.</p>
+      </header>
+
+      <section class="panel">
+        <label for="thoughtInput">¿Qué estás pensando ahora?</label>
+        <textarea
+          id="thoughtInput"
+          maxlength="280"
+          placeholder="Escribe una idea, emoción o pregunta..."
+        ></textarea>
+        <button id="syncButton">Sincronizar</button>
+        <p id="status" class="status"></p>
+      </section>
+
+      <section id="resultPanel" class="panel hidden">
+        <h2>Resultado</h2>
+        <div id="perfectMatchBanner" class="perfect-match-banner hidden">
+          ⚡ MATCH PERFECTO
+          <span id="perfectMatchMeta" class="perfect-match-meta"></span>
+        </div>
+        <p id="submittedThoughtLine" class="submitted-thought-line"></p>
+        <p id="countLine" class="count-line"></p>
+        <p id="emotionLine" class="emotion-line"></p>
+        <div class="result-actions">
+          <button type="button" id="shareResultBtn" class="btn-share" disabled>
+            Compartir resultado
+          </button>
+          <span id="shareFeedback" class="share-feedback hidden" aria-live="polite"></span>
+        </div>
+        <div id="profilePanel" class="profile-panel hidden">
+          <div class="profile-panel-head">
+            <span class="profile-panel-badge">Insight</span>
+            <h3>Tu perfil SYNCHRO</h3>
+          </div>
+          <div id="profileText" class="profile-insight-stack"></div>
+        </div>
+
+        <h3>Pensamientos similares</h3>
+        <p id="similarCountLine" class="similar-count-line"></p>
+        <ul id="similarList" class="thought-list"></ul>
+      </section>
+
+      <section class="panel">
+        <h2>Tu Resonancia</h2>
+        <p id="resonanceLine" class="resonance-line"></p>
+        <div class="resonance-meter">
+          <div id="resonanceFill" class="resonance-fill"></div>
+        </div>
+        <p id="stateLine" class="state-line"></p>
+        <p id="rankingLine" class="ranking-line"></p>
+      </section>
+
+      <section class="panel">
+        <h2>Perfil Mental</h2>
+        <p id="profileLine" class="profile-line"></p>
+        <p id="insightLine" class="insight-line"></p>
+        <p id="predictionLine" class="prediction-line"></p>
+      </section>
+
+      <section class="panel panel-world" id="worldNowSection">
+        <h2>Mundo Ahora</h2>
+        <p class="world-live-hint" id="worldLiveHint">Señal colectiva en vivo</p>
+        <ul id="worldNowList" class="world-now-list"></ul>
+        <p id="worldEventLine" class="world-event-line"></p>
+      </section>
+
+      <section class="panel">
+        <h2>Pensamientos recientes</h2>
+        <ul id="feedList" class="thought-list"></ul>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
