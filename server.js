@@ -7,6 +7,23 @@ const pool = require("./db");
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, "public");
 
+const TOPICS = [
+  "¿Qué te está pesando hoy, aunque no lo digas?",
+  "¿Qué pensamiento vuelve una y otra vez esta semana?",
+  "¿Qué necesitas soltar para respirar mejor?",
+  "¿Qué te da miedo admitir ahora mismo?",
+  "¿Qué cambio estás postergando?",
+  "¿Qué parte de ti está pidiendo pausa?",
+  "¿Qué te gustaría que alguien entendiera sin explicarlo?",
+  "¿Qué te está dando esperanza últimamente?",
+];
+
+const INVITES_TTL_MS = 1000 * 60 * 60;
+const invites = new Map();
+
+const PRESENCE_TTL_MS = 1000 * 45;
+const presence = new Map();
+
 const EMOTIONS = [
   "ansiedad",
   "duda",
@@ -17,6 +34,64 @@ const EMOTIONS = [
   "positivo",
   "dolor_fisico",
 ];
+
+function clamp01(value) {
+  return Math.max(0, Math.min(1, value));
+}
+
+function computeTokenSimilarity(aTokens, bTokens) {
+  const a = Array.isArray(aTokens) ? aTokens : [];
+  const b = Array.isArray(bTokens) ? bTokens : [];
+  if (!a.length || !b.length) {
+    return 0;
+  }
+  const aSet = new Set(a);
+  const bSet = new Set(b);
+  let intersection = 0;
+  for (const t of aSet) {
+    if (bSet.has(t)) intersection += 1;
+  }
+  const union = new Set([...aSet, ...bSet]).size;
+  return union ? intersection / union : 0;
+}
+
+function computeMatchScore({ similarity, emotionMatch, intentMatch }) {
+  const base = 0.7 * similarity + 0.2 * (emotionMatch ? 1 : 0) + 0.1 * (intentMatch ? 1 : 0);
+  return Number(clamp01(base).toFixed(3));
+}
+
+function scoreMatch({ overlap, emotion, intent }, input) {
+  const similarity = Number(overlap) / Math.max(1, input.tokens.length);
+  const emotionMatch = Boolean(emotion && input.emotion && emotion === input.emotion);
+  const intentMatch = Boolean(intent && input.intent && intent === input.intent);
+  const score = computeMatchScore({ similarity, emotionMatch, intentMatch });
+  return { score, similarity, emotionMatch, intentMatch };
+}
+
+function generateInviteCode() {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for (let i = 0; i < 8; i += 1) {
+    code += alphabet[Math.floor(Math.random() * alphabet.length)];
+  }
+  return code;
+}
+
+function cleanupInvites(nowMs) {
+  for (const [code, invite] of invites.entries()) {
+    if (!invite || nowMs - invite.createdAt > INVITES_TTL_MS) {
+      invites.delete(code);
+    }
+  }
+}
+
+function cleanupPresence(nowMs) {
+  for (const [clientId, lastSeenAt] of presence.entries()) {
+    if (!lastSeenAt || nowMs - lastSeenAt > PRESENCE_TTL_MS) {
+      presence.delete(clientId);
+    }
+  }
+}
 
 const STOPWORDS = new Set([
   "a", "al", "algo", "algun", "alguna", "algunas", "algunos", "ante", "como", "con",
@@ -135,19 +210,44 @@ const allThoughtCandidates = seedThoughts.flatMap((seed) => {
 
 const userThoughts = [];
 
-async function saveThought(text, emotion, tokens) {
+function detectIntent(text) {
+  const t = normalizeText(text);
+
+  if (/jaja|xd|lol|jeje/.test(t)) return "humor";
+  if (/puta|weon|culiao|pico|mierda/.test(t)) return "provocacion";
+
+  if (
+    /quiero|voy a|necesito|tengo que|debo|har[eé]/.test(t) ||
+    /renunciar|dejar|terminar|cambiar|empezar/.test(t)
+  ) {
+    return "accion";
+  }
+
+  if (/amor|te quiero|te amo|hermoso|hermosa|beso|abrazo/.test(t)) return "afecto";
+
+  if (t.length < 12) return "absurdo";
+
+  if (/vida|muerte|sentido|existencia|existir|universo|dios|nada/.test(t)) return "existencial";
+
+  if (/estoy harto|no aguanto|me duele|me pesa|no puedo|ya no doy/.test(t)) return "desahogo";
+
+  return "reflexion";
+}
+
+async function saveThought(text, emotion, intent, tokens) {
   await pool.query(
-    "INSERT INTO thoughts (text, emotion, tokens) VALUES ($1, $2, $3)",
-    [text, emotion, tokens]
+    "INSERT INTO thoughts (text, emotion, intent, tokens) VALUES ($1, $2, $3, $4)",
+    [text, emotion, intent, tokens]
   );
 }
 
 async function insertThought(text) {
   const tokens = tokenize(text);
   const emotion = classifyEmotion(text);
+  const intent = detectIntent(text);
   const result = await pool.query(
-    "INSERT INTO thoughts (text, emotion, tokens) VALUES ($1, $2, $3) RETURNING *",
-    [text, emotion, tokens]
+    "INSERT INTO thoughts (text, emotion, intent, tokens) VALUES ($1, $2, $3, $4) RETURNING *",
+    [text, emotion, intent, tokens]
   );
   return result.rows[0];
 }
@@ -155,7 +255,7 @@ async function insertThought(text) {
 async function getRealMatches(tokens) {
   const result = await pool.query(
     `
-    SELECT text, emotion, tokens,
+    SELECT text, emotion, intent, tokens,
     (
       SELECT COUNT(*)
       FROM unnest(tokens) t
@@ -435,8 +535,9 @@ async function handleSync(req, res) {
 
   req.on("end", async () => {
     try {
-      const body = JSON.parse(rawBody);
-      const input = body.text;
+      const body = JSON.parse(rawBody || "{}");
+      const input = typeof body.text === "string" ? body.text : "";
+      const topic = typeof body.topic === "string" ? body.topic : "";
 
       if (!input || input.length < 4) {
         return sendJson(res, 400, { error: "Texto muy corto" });
@@ -444,29 +545,41 @@ async function handleSync(req, res) {
 
       const tokens = tokenize(input);
       const emotion = classifyEmotion(input);
+      const intent = detectIntent(input);
 
-      await saveThought(input, emotion, tokens);
+      await saveThought(input, emotion, intent, tokens);
 
       const matches = await getRealMatches(tokens);
-      const realCount = countMatches(matches);
+      const inputMeta = { tokens, emotion, intent };
+      const scoredMatches = matches.map((m) => ({
+        ...m,
+        ...scoreMatch(m, inputMeta),
+      }));
+      scoredMatches.sort((a, b) => b.score - a.score || b.overlap - a.overlap);
+      const realCount = scoredMatches.filter((m) => m.overlap > 0).length;
 
-      const similarThoughts = matches
+      const similarThoughts = scoredMatches
         .filter((m) => m.overlap > 0)
         .slice(0, 3)
         .map((m) => ({
           text: m.text,
           emotion: m.emotion,
-          score: m.overlap,
+          intent: m.intent,
+          score: m.score,
         }));
 
       return sendJson(res, 200, {
         emotion,
+        intent,
+        topic: topic || null,
         approxTodayCount: realCount,
         similarThoughts,
-        recentFeed: matches.slice(0, 10).map((m) => ({
+        recentFeed: scoredMatches.slice(0, 10).map((m) => ({
           text: m.text,
           emotion: m.emotion,
+          intent: m.intent,
           matches: m.overlap,
+          score: m.score,
         })),
       });
     } catch (err) {
@@ -485,6 +598,124 @@ const server = http.createServer((req, res) => {
 
   if (req.method === "POST" && parsed.pathname === "/api/sync") {
     handleSync(req, res);
+    return;
+  }
+
+  if (req.method === "GET" && parsed.pathname === "/api/topics") {
+    sendJson(res, 200, { topics: TOPICS });
+    return;
+  }
+
+  if (req.method === "GET" && parsed.pathname === "/api/presence") {
+    const clientId = (parsed.searchParams.get("clientId") || "").slice(0, 80);
+    const now = Date.now();
+    cleanupPresence(now);
+    if (clientId) {
+      presence.set(clientId, now);
+    }
+    sendJson(res, 200, { activeUsers: presence.size });
+    return;
+  }
+
+  if (req.method === "POST" && parsed.pathname === "/api/invite") {
+    let rawBody = "";
+    req.on("data", (chunk) => {
+      rawBody += chunk;
+    });
+    req.on("end", async () => {
+      try {
+        cleanupInvites(Date.now());
+        const body = JSON.parse(rawBody || "{}");
+        const text = typeof body.text === "string" ? body.text.trim() : "";
+        const topic = typeof body.topic === "string" ? body.topic.trim() : "";
+        if (!text || text.length < 3) {
+          sendJson(res, 400, { error: "Texto inválido." });
+          return;
+        }
+
+        const tokens = tokenize(text);
+        const emotion = classifyEmotion(text);
+        const intent = detectIntent(text);
+
+        let code = generateInviteCode();
+        while (invites.has(code)) {
+          code = generateInviteCode();
+        }
+
+        invites.set(code, {
+          code,
+          text,
+          topic: topic || null,
+          tokens,
+          emotion,
+          intent,
+          createdAt: Date.now(),
+        });
+
+        sendJson(res, 200, {
+          code,
+          emotion,
+          intent,
+          topic: topic || null,
+          expiresInSec: Math.floor(INVITES_TTL_MS / 1000),
+        });
+      } catch (error) {
+        console.error(error);
+        sendJson(res, 500, { error: "Error interno." });
+      }
+    });
+    return;
+  }
+
+  if (req.method === "POST" && parsed.pathname === "/api/compare") {
+    let rawBody = "";
+    req.on("data", (chunk) => {
+      rawBody += chunk;
+    });
+    req.on("end", async () => {
+      try {
+        cleanupInvites(Date.now());
+        const body = JSON.parse(rawBody || "{}");
+        const code = typeof body.code === "string" ? body.code.trim().toUpperCase() : "";
+        const text = typeof body.text === "string" ? body.text.trim() : "";
+
+        if (!code) {
+          sendJson(res, 400, { error: "Falta code." });
+          return;
+        }
+
+        const invite = invites.get(code);
+        if (!invite) {
+          sendJson(res, 404, { error: "Código inválido o expirado." });
+          return;
+        }
+
+        if (!text || text.length < 3) {
+          sendJson(res, 400, { error: "Texto inválido." });
+          return;
+        }
+
+        const tokens = tokenize(text);
+        const emotion = classifyEmotion(text);
+        const intent = detectIntent(text);
+        const similarity = computeTokenSimilarity(invite.tokens, tokens);
+        const emotionMatch = invite.emotion === emotion;
+        const intentMatch = invite.intent === intent;
+        const matchScore = computeMatchScore({ similarity, emotionMatch, intentMatch });
+
+        sendJson(res, 200, {
+          code,
+          matchScore,
+          emotion: { a: invite.emotion, b: emotion, match: emotionMatch },
+          intent: { a: invite.intent, b: intent, match: intentMatch },
+          similarity,
+          topic: invite.topic,
+        });
+      } catch (error) {
+        console.error(error);
+        sendJson(res, 500, { error: "Error interno." });
+      }
+    });
     return;
   }
 

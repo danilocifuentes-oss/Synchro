@@ -14,7 +14,13 @@
       </header>
 
       <section class="panel">
+        <p class="status-meta">
+          <span id="localClock"></span>
+          <span class="status-divider">·</span>
+          <span id="activeUsersLine"></span>
+        </p>
         <label for="thoughtInput">¿Qué estás pensando ahora?</label>
+        <p id="topicLine" class="topic-line"></p>
         <textarea
           id="thoughtInput"
           maxlength="280"
@@ -45,6 +51,7 @@
             <h3>Tu perfil SYNCHRO</h3>
           </div>
           <div id="profileText" class="profile-insight-stack"></div>
+          <p id="profileConfidenceLine" class="profile-confidence-line"></p>
         </div>
 
         <h3>Pensamientos similares</h3>
@@ -52,34 +59,34 @@
         <ul id="similarList" class="thought-list"></ul>
       </section>
 
-      <section class="panel">
-        <h2>Tu Resonancia</h2>
+      <details class="panel">
+        <summary>Tu resonancia</summary>
         <p id="resonanceLine" class="resonance-line"></p>
         <div class="resonance-meter">
           <div id="resonanceFill" class="resonance-fill"></div>
         </div>
         <p id="stateLine" class="state-line"></p>
         <p id="rankingLine" class="ranking-line"></p>
-      </section>
+      </details>
 
-      <section class="panel">
-        <h2>Perfil Mental</h2>
+      <details class="panel">
+        <summary>Perfil mental</summary>
         <p id="profileLine" class="profile-line"></p>
         <p id="insightLine" class="insight-line"></p>
         <p id="predictionLine" class="prediction-line"></p>
-      </section>
+      </details>
 
-      <section class="panel panel-world" id="worldNowSection">
-        <h2>Mundo Ahora</h2>
+      <details class="panel panel-world" id="worldNowSection">
+        <summary>Mundo ahora</summary>
         <p class="world-live-hint" id="worldLiveHint">Señal colectiva en vivo</p>
         <ul id="worldNowList" class="world-now-list"></ul>
         <p id="worldEventLine" class="world-event-line"></p>
-      </section>
+      </details>
 
-      <section class="panel">
-        <h2>Pensamientos recientes</h2>
+      <details class="panel">
+        <summary>Pensamientos recientes</summary>
         <ul id="feedList" class="thought-list"></ul>
-      </section>
+      </details>
     </main>
     <script src="/app.js"></script>
   </body>

@@ -4,6 +4,9 @@
 const thoughtInput = document.getElementById("thoughtInput");
 const syncButton = document.getElementById("syncButton");
 const statusEl = document.getElementById("status");
+const localClock = document.getElementById("localClock");
+const activeUsersLine = document.getElementById("activeUsersLine");
+const topicLine = document.getElementById("topicLine");
 const resultPanel = document.getElementById("resultPanel");
 const perfectMatchBanner = document.getElementById("perfectMatchBanner");
 const perfectMatchMeta = document.getElementById("perfectMatchMeta");
@@ -12,6 +15,7 @@ const countLine = document.getElementById("countLine");
 const emotionLine = document.getElementById("emotionLine");
 const profilePanel = document.getElementById("profilePanel");
 const profileTextEl = document.getElementById("profileText");
+const profileConfidenceLine = document.getElementById("profileConfidenceLine");
 const similarCountLine = document.getElementById("similarCountLine");
 const similarList = document.getElementById("similarList");
 const feedList = document.getElementById("feedList");
@@ -126,6 +130,8 @@ let worldNowTimer = null;
 let shareFeedbackTimer = null;
 let worldRefreshToken = 0;
 let worldRefreshTimeout = null;
+let lastSynchroMessage = "";
+let currentTopic = "";
 /** @type {null | { thought: string; countText: string; emotionText: string; similarText: string; profileText: string }} */
 let lastShareSnapshot = null;
 
@@ -156,6 +162,54 @@ function getEmotionEmoji(emotion) {
 
 function pickNextPrompt() {
   return NEXT_PROMPTS[Math.floor(Math.random() * NEXT_PROMPTS.length)];
+}
+
+function getOrCreateClientId() {
+  const key = "synchro_client_id";
+  const existing = localStorage.getItem(key);
+  if (existing) {
+    return existing;
+  }
+  const id = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  localStorage.setItem(key, id);
+  return id;
+}
+
+function formatLocalClock(d = new Date()) {
+  return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+
+async function refreshPresence() {
+  if (!activeUsersLine) return;
+  try {
+    const clientId = getOrCreateClientId();
+    const res = await fetch(`/api/presence?clientId=${encodeURIComponent(clientId)}`);
+    const payload = await res.json();
+    if (res.ok && typeof payload.activeUsers === "number") {
+      activeUsersLine.textContent = `${payload.activeUsers} activos ahora`;
+    }
+  } catch {
+    // ignore presence errors
+  }
+}
+
+async function loadTopic() {
+  if (!topicLine) return;
+  try {
+    const res = await fetch("/api/topics");
+    const payload = await res.json();
+    const topics = Array.isArray(payload.topics) ? payload.topics : [];
+    if (res.ok && topics.length) {
+      currentTopic = topics[Math.floor(Math.random() * topics.length)];
+      topicLine.textContent = `Tópico: ${currentTopic}`;
+    } else {
+      currentTopic = "";
+      topicLine.textContent = "";
+    }
+  } catch {
+    currentTopic = "";
+    topicLine.textContent = "";
+  }
 }
 
 function getCurrentState(resonance) {
@@ -308,13 +362,94 @@ function getCurrentPsychState(history) {
   return "estabilidad";
 }
 
+function getProfileConfidence(history) {
+  const n = history.length;
+  if (n < 3) {
+    return "baja";
+  }
+  if (n < 8) {
+    return "media";
+  }
+  return "alta";
+}
+
 function generateProfileText(history) {
+  const confidence = getProfileConfidence(history);
+
+  if (confidence === "baja") {
+    return "Aún estamos conociendo tu patrón mental. Escribe un poco más para detectar patrones reales.";
+  }
+
   const climate = getEmotionalClimate(history);
   const energy = getMentalEnergy(history);
   const style = getCognitiveStyle(history);
   const rhythm = getMentalRhythm(history);
   const state = getCurrentPsychState(history);
-  return `Tu mente se mueve en un clima de ${climate}. Tu energía mental es ${energy}. Tu estilo es ${style}. Tu ritmo mental es ${rhythm}. Actualmente estás en un estado de ${state}.`;
+
+  if (confidence === "media") {
+    return `Empieza a aparecer un patrón: tendencia a ${climate}, energía ${energy}, estilo ${style}. Aún puede cambiar.`;
+  }
+
+  return `Tu mente se mueve en un clima de ${climate}. Energía ${energy}. Estilo ${style}. Ritmo ${rhythm}. Estado actual: ${state}.`;
+}
+
+function detectIntent(text) {
+  const t = String(text || "").toLowerCase();
+
+  if (/jaja|xd|lol|jeje/.test(t)) {
+    return "humor";
+  }
+  if (/puta|weon|culiao|pico|mierda/.test(t)) {
+    return "vulgar";
+  }
+  if (/amor|te quiero|hermoso/.test(t)) {
+    return "afecto";
+  }
+  if (/quiero|voy a|necesito/.test(t)) {
+    return "accion";
+  }
+  if (t.length < 6) {
+    return "ambiguo";
+  }
+
+  return "reflexivo";
+}
+
+function generateSynchroResponse(text, emotion, history) {
+  const intent = detectIntent(text);
+  const confidence = getProfileConfidence(history);
+
+  if (intent === "ambiguo") {
+    return "Señal detectada, pero es difusa. Dale un poco más de forma.";
+  }
+
+  if (intent === "vulgar" || intent === "humor") {
+    if (/\bpico\b/.test(String(text || "").toLowerCase())) {
+      return "Frecuencia caótica detectada. Chile presente.";
+    }
+    return "Frecuencia caótica detectada. No eres el único pensando cosas raras.";
+  }
+
+  if (intent === "accion") {
+    if (/renunci|dejar|terminar|cortar/.test(String(text || "").toLowerCase())) {
+      return "Pensamiento de ruptura detectado. Alta recurrencia global.";
+    }
+    return "Hay intención de movimiento en tu mente. Algo se está gestando.";
+  }
+
+  if (intent === "afecto") {
+    return "Se detecta una frecuencia emocional alta. Este tipo de pensamientos suele resonar fuerte.";
+  }
+
+  if (confidence === "baja") {
+    return "Patrón mental registrado. Aún en observación.";
+  }
+
+  if (emotion === "cansancio" || /hambre|sueñ|dormir/.test(String(text || "").toLowerCase())) {
+    return "Señal básica detectada. El cuerpo también piensa.";
+  }
+
+  return "Patrón mental registrado. Aún en observación.";
 }
 
 // =============================================================================
@@ -518,7 +653,7 @@ function renderProfilePanel(profile, history) {
   const total = Object.values(profile).reduce((sum, value) => sum + value, 0);
   if (!total) {
     profileLine.textContent = "Tu patrón mental aparecerá después de tus primeras sincronizaciones.";
-    insightLine.textContent = "Sigue escribiendo para revelar tu frecuencia dominante.";
+    insightLine.textContent = lastSynchroMessage || "Sigue escribiendo para revelar tu frecuencia dominante.";
     predictionLine.textContent = "";
     return;
   }
@@ -531,7 +666,10 @@ function renderProfilePanel(profile, history) {
 
   const dominant = getTopEmotion(profile);
   profileLine.textContent = `Patrón mental actual: ${topThree.join(" · ")}`;
-  insightLine.textContent = EMOTION_INTERPRETATION[dominant] || "Tu mente está generando un patrón propio.";
+  insightLine.textContent =
+    lastSynchroMessage ||
+    EMOTION_INTERPRETATION[dominant] ||
+    "Tu mente está generando un patrón propio.";
 
   if (history.length >= 6) {
     const latest = history.slice(-4).map((item) => item.emotion);
@@ -768,7 +906,7 @@ async function handleSync() {
     const response = await fetch("/api/sync", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ text, topic: currentTopic }),
     });
     const payload = await response.json();
     await minDelay;
@@ -792,9 +930,14 @@ async function handleSync() {
     }
     emotionLine.textContent = `${getEmotionEmoji(payload.emotion)} Emoción detectada: ${payload.emotion}`;
     updateProfileHistory(payload.emotion);
+    lastSynchroMessage = generateSynchroResponse(text, payload.emotion, profileHistory);
+    insightLine.textContent = lastSynchroMessage;
     const profileText = generateProfileText(profileHistory);
     renderProfileInsights(profileText);
     profilePanel.classList.remove("hidden");
+    if (profileConfidenceLine) {
+      profileConfidenceLine.textContent = `Nivel de lectura: ${getProfileConfidence(profileHistory)}`;
+    }
     similarCountLine.textContent = hasNoMatches
       ? "0 coincidencias por ahora"
       : `${realSimilarCount} coincidencias detectadas`;
@@ -833,6 +976,7 @@ async function handleSync() {
 
     thoughtInput.value = "";
     thoughtInput.placeholder = pickNextPrompt();
+    await loadTopic();
     if (!perfectMatchEvent) {
       statusEl.textContent = `${hasNoMatches ? "Pensamiento único detectado." : "Sincronización completada."} Escribe otra idea.`;
     }
@@ -857,3 +1001,14 @@ renderResonancePanel(readNumberStorage(RESONANCE_KEY), 0);
 renderProfilePanel(readJsonStorage(PROFILE_KEY, {}), readJsonStorage(HISTORY_KEY, []));
 renderWorldNow({ fade: false });
 startWorldNowTicker();
+
+if (localClock) {
+  localClock.textContent = formatLocalClock();
+  setInterval(() => {
+    localClock.textContent = formatLocalClock();
+  }, 1000);
+}
+
+loadTopic();
+refreshPresence();
+setInterval(refreshPresence, 12000);
