@@ -930,7 +930,7 @@ async function handleSync() {
     if (syncLevelBadge) {
       const tier = payload.syncLevel?.tier || "BRONCE";
       syncLevelBadge.textContent = tier;
-      syncLevelBadge.className = `sync-level-badge tier-${String(tier).toLowerCase()}`;
+      syncLevelBadge.className = `sync-badge sync-level-badge tier-${String(tier).toLowerCase()}`;
     }
     if (connectionLine) {
       connectionLine.textContent = payload.connectionLine || "";

@@ -1,76 +1,89 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SYNCHRO</title>
-    <link rel="stylesheet" href="/styles.css" />
-  </head>
-  <body>
-    <main class="app">
-      <header class="hero">
-        <h1>SYNCHRO</h1>
-        <p>No eres el único que lo está pensando.</p>
-      </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SYNCHRO</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <h1>SYNCHRO</h1>
+      <p class="tagline">No eres el único que lo está pensando.</p>
+    </header>
 
-      <section class="panel">
-        <p class="status-meta">
-          <span id="localClock"></span>
-          <span class="status-divider">·</span>
-          <span id="activeUsersLine"></span>
-        </p>
-        <label for="thoughtInput">¿Qué estás pensando ahora?</label>
-        <p id="topicLine" class="topic-line"></p>
-        <textarea
-          id="thoughtInput"
-          maxlength="280"
-          placeholder="Escribe una idea, emoción o pregunta..."
-        ></textarea>
-        <button id="syncButton">Sincronizar</button>
-        <p id="status" class="status"></p>
-      </section>
+    <div class="main-grid">
+      <div class="left-column">
+        <section class="input-panel">
+          <div class="status-bar">
+            <span id="localClock"></span>
+            <span class="divider">·</span>
+            <span id="activeUsersLine"></span>
+          </div>
 
-      <section id="resultPanel" class="panel hidden">
-        <h2>Resultado</h2>
-        <div class="sync-badge-row">
-          <span id="syncLevelBadge" class="sync-level-badge"></span>
-          <span id="connectionLine" class="connection-line"></span>
-        </div>
-        <div id="perfectMatchBanner" class="perfect-match-banner hidden">
-          ⚡ MATCH PERFECTO
-          <span id="perfectMatchMeta" class="perfect-match-meta"></span>
-        </div>
-        <p id="submittedThoughtLine" class="submitted-thought-line"></p>
-        <p id="countLine" class="count-line"></p>
-        <p id="emotionLine" class="emotion-line"></p>
-        <div class="result-actions">
-          <button type="button" id="shareResultBtn" class="btn-share" disabled>
-            Compartir resultado
-          </button>
-          <span id="shareFeedback" class="share-feedback hidden" aria-live="polite"></span>
-        </div>
+          <label for="thoughtInput">¿Qué estás pensando ahora?</label>
+          <p id="topicLine" class="topic-line"></p>
+          <textarea id="thoughtInput" maxlength="280" placeholder="Escribe una idea, emoción o pregunta..."></textarea>
+
+          <button id="syncButton">Sincronizar mentes</button>
+          <p id="status" class="status"></p>
+        </section>
+
+        <section id="resultPanel" class="result-panel hidden">
+          <h2>Conexión establecida</h2>
+
+          <div class="match-header">
+            <span id="syncLevelBadge" class="sync-badge"></span>
+            <span id="connectionLine" class="connection-line"></span>
+          </div>
+
+          <div id="perfectMatchBanner" class="perfect-match-banner hidden">
+            ⚡ MATCH PERFECTO
+            <span id="perfectMatchMeta" class="perfect-match-meta"></span>
+          </div>
+
+          <p id="submittedThoughtLine" class="submitted-thought"></p>
+
+          <div class="stats-row">
+            <p id="countLine" class="count-line"></p>
+            <p id="emotionLine" class="emotion-line"></p>
+          </div>
+
+          <h3>Pensamientos similares</h3>
+          <p id="similarCountLine" class="similar-count-line"></p>
+          <ul id="similarList" class="thought-list"></ul>
+
+          <div class="result-actions hidden">
+            <button type="button" id="shareResultBtn" class="btn-share" disabled>Compartir resultado</button>
+            <span id="shareFeedback" class="share-feedback hidden" aria-live="polite"></span>
+          </div>
+        </section>
+      </div>
+
+      <aside id="profileSidebar" class="profile-sidebar hidden">
         <div id="profilePanel" class="profile-panel hidden">
-          <div class="profile-panel-head">
-            <span class="profile-panel-badge">Insight</span>
-            <h3>Tu perfil SYNCHRO</h3>
+          <div class="profile-header">
+            <span class="profile-badge">Tu perfil SYNCHRO</span>
           </div>
           <div id="profileText" class="profile-insight-stack"></div>
           <p id="profileConfidenceLine" class="profile-confidence-line"></p>
         </div>
+      </aside>
+    </div>
 
-        <h3>Pensamientos similares</h3>
-        <p id="similarCountLine" class="similar-count-line"></p>
-        <ul id="similarList" class="thought-list"></ul>
-      </section>
-
+    <div class="accordion-sections">
       <details class="panel">
         <summary>Tu resonancia</summary>
-        <p id="resonanceLine" class="resonance-line"></p>
-        <div class="resonance-meter">
-          <div id="resonanceFill" class="resonance-fill"></div>
+        <div class="resonance-content">
+          <p id="resonanceLine"></p>
+          <div class="resonance-meter">
+            <div id="resonanceFill" class="resonance-fill"></div>
+          </div>
+          <p id="stateLine"></p>
+          <p id="rankingLine"></p>
         </div>
-        <p id="stateLine" class="state-line"></p>
-        <p id="rankingLine" class="ranking-line"></p>
       </details>
 
       <details class="panel">
@@ -80,29 +93,31 @@
         <p id="predictionLine" class="prediction-line"></p>
       </details>
 
-      <details class="panel panel-world" id="worldNowSection">
-        <summary>Mundo ahora</summary>
-        <p class="world-live-hint" id="worldLiveHint">Señal colectiva en vivo</p>
+      <details class="panel" id="worldNowSection">
+        <summary>Mundo ahora <span class="live-dot"></span></summary>
+        <p id="worldLiveHint" class="world-live-hint">Señal colectiva en vivo</p>
         <ul id="worldNowList" class="world-now-list"></ul>
-        <p id="worldEventLine" class="world-event-line"></p>
+        <p id="worldEventLine"></p>
       </details>
 
       <details class="panel">
         <summary>Pensamientos recientes</summary>
         <ul id="feedList" class="thought-list"></ul>
       </details>
+    </div>
 
-      <details class="panel">
-        <summary>Tópico compartido (mock)</summary>
-        <div class="topic-share">
-          <label for="newTopicInput">Crear tópico</label>
-          <input id="newTopicInput" type="text" maxlength="120" placeholder="Ej: ‘renunciar’ / ‘miedo’ / ‘amor’" />
-          <button id="createTopicBtn" type="button">Generar código</button>
-          <p id="topicShareResult" class="topic-share-result"></p>
-          <button id="copyTopicCodeBtn" type="button" class="btn-share hidden">Copiar código</button>
-        </div>
-      </details>
-    </main>
-    <script src="/app.js"></script>
-  </body>
+    <section class="topic-share-panel">
+      <h3>Crear tópico compartido</h3>
+      <p class="subtitle">Invita a otros a sincronizarse en el mismo pensamiento</p>
+      <div class="topic-share">
+        <input id="newTopicInput" type="text" maxlength="120" placeholder="Ej: renunciar, insomnio, miedo al futuro..." />
+        <button id="createTopicBtn">Generar código de sincronía</button>
+        <p id="topicShareResult"></p>
+        <button id="copyTopicCodeBtn" class="btn-share hidden">Copiar código</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
 </html>
