@@ -8,6 +8,8 @@ const localClock = document.getElementById("localClock");
 const activeUsersLine = document.getElementById("activeUsersLine");
 const topicLine = document.getElementById("topicLine");
 const resultPanel = document.getElementById("resultPanel");
+const syncLevelBadge = document.getElementById("syncLevelBadge");
+const connectionLine = document.getElementById("connectionLine");
 const perfectMatchBanner = document.getElementById("perfectMatchBanner");
 const perfectMatchMeta = document.getElementById("perfectMatchMeta");
 const submittedThoughtLine = document.getElementById("submittedThoughtLine");
@@ -30,6 +32,10 @@ const worldNowList = document.getElementById("worldNowList");
 const worldEventLine = document.getElementById("worldEventLine");
 const shareResultBtn = document.getElementById("shareResultBtn");
 const shareFeedback = document.getElementById("shareFeedback");
+const newTopicInput = document.getElementById("newTopicInput");
+const createTopicBtn = document.getElementById("createTopicBtn");
+const topicShareResult = document.getElementById("topicShareResult");
+const copyTopicCodeBtn = document.getElementById("copyTopicCodeBtn");
 
 // =============================================================================
 // Constants
@@ -132,6 +138,7 @@ let worldRefreshToken = 0;
 let worldRefreshTimeout = null;
 let lastSynchroMessage = "";
 let currentTopic = "";
+let lastSyncTier = "";
 /** @type {null | { thought: string; countText: string; emotionText: string; similarText: string; profileText: string }} */
 let lastShareSnapshot = null;
 
@@ -572,7 +579,7 @@ function attachCountryToThoughts(thoughts) {
   const group = pickCountryGroup();
   return thoughts.map((thought, index) => ({
     ...thought,
-    country: group[index % group.length],
+    country: thought.country || group[index % group.length],
   }));
 }
 
@@ -777,11 +784,16 @@ function stopCascade() {
 function pushCascadeThought(thought) {
   const li = document.createElement("li");
   li.className = "cascade-tab";
-  const country = thought.country || INTERNATIONAL_SOURCES[0];
+  const shouldShowCountry = lastSyncTier === "ORO" || lastSyncTier === "EPICO" || (thought.score || 0) >= 0.78;
+  const country = thought.country || null;
   li.innerHTML = `
     <span class="cascade-emoji">${getEmotionEmoji(thought.emotion)}</span>
     <span class="cascade-text">${thought.text}</span>
-    <span class="country-pill" title="${country.label}">${country.flag} ${country.code}</span>
+    ${
+      shouldShowCountry && country
+        ? `<span class="country-pill" title="${country.label}">${country.flag} ${country.code}</span>`
+        : ""
+    }
   `;
   similarList.prepend(li);
   while (similarList.children.length > 8) {
@@ -807,7 +819,12 @@ function startCascade(similarThoughts, recentFeed) {
   similarList.replaceChildren();
   cascadeIndex = 0;
   const combined = [...similarThoughts, ...recentFeed]
-    .map((item) => ({ text: item.text, emotion: item.emotion || "duda" }))
+    .map((item) => ({
+      text: item.text,
+      emotion: item.emotion || "duda",
+      score: item.score || 0,
+      country: item.country ? INTERNATIONAL_SOURCES.find((c) => c.code === item.country) : null,
+    }))
     .filter((item) => item.text);
   const uniqueByText = new Map();
   for (const item of combined) {
@@ -909,6 +926,16 @@ async function handleSync() {
       body: JSON.stringify({ text, topic: currentTopic }),
     });
     const payload = await response.json();
+    lastSyncTier = payload.syncLevel?.tier || "";
+    if (syncLevelBadge) {
+      const tier = payload.syncLevel?.tier || "BRONCE";
+      syncLevelBadge.textContent = tier;
+      syncLevelBadge.className = `sync-level-badge tier-${String(tier).toLowerCase()}`;
+    }
+    if (connectionLine) {
+      connectionLine.textContent = payload.connectionLine || "";
+    }
+
     await minDelay;
     if (!response.ok) {
       statusEl.textContent = payload.error || "No se pudo sincronizar ahora.";
@@ -988,8 +1015,58 @@ async function handleSync() {
   }
 }
 
+async function handleCreateTopic() {
+  if (!topicShareResult || !copyTopicCodeBtn) return;
+  const topic = (newTopicInput?.value || "").trim();
+  if (topic.length < 3) {
+    topicShareResult.textContent = "Escribe un tópico (mínimo 3 caracteres).";
+    copyTopicCodeBtn.classList.add("hidden");
+    return;
+  }
+  try {
+    const res = await fetch("/api/topic", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ topic }),
+    });
+    const payload = await res.json();
+    if (!res.ok) {
+      topicShareResult.textContent = payload.error || "No se pudo crear el tópico.";
+      copyTopicCodeBtn.classList.add("hidden");
+      return;
+    }
+    topicShareResult.textContent = `Código: ${payload.shareCode} · topicId: ${payload.topicId}`;
+    copyTopicCodeBtn.dataset.code = payload.shareCode;
+    copyTopicCodeBtn.classList.remove("hidden");
+  } catch {
+    topicShareResult.textContent = "Error de red creando el tópico.";
+    copyTopicCodeBtn.classList.add("hidden");
+  }
+}
+
+async function handleCopyTopicCode() {
+  const code = copyTopicCodeBtn?.dataset?.code || "";
+  if (!code) return;
+  try {
+    await navigator.clipboard.writeText(code);
+    if (topicShareResult) {
+      topicShareResult.textContent = `Copiado: ${code}`;
+    }
+  } catch {
+    if (topicShareResult) {
+      topicShareResult.textContent = `No se pudo copiar. Código: ${code}`;
+    }
+  }
+}
+
 syncButton.addEventListener("click", handleSync);
 shareResultBtn.addEventListener("click", handleShareResult);
+if (createTopicBtn) {
+  createTopicBtn.addEventListener("click", handleCreateTopic);
+}
+if (copyTopicCodeBtn) {
+  copyTopicCodeBtn.addEventListener("click", handleCopyTopicCode);
+}
 thoughtInput.addEventListener("keydown", (event) => {
   if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
     handleSync();

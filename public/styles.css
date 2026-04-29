@@ -128,6 +128,103 @@ body::after {
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
+.status-meta {
+  margin: 0 0 0.75rem;
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.status-divider {
+  opacity: 0.55;
+}
+
+.topic-line {
+  margin: 0.35rem 0 0.75rem;
+  color: rgba(242, 245, 249, 0.82);
+  font-size: 0.92rem;
+}
+
+.sync-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.sync-level-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(18, 22, 32, 0.55);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+}
+
+.sync-level-badge.tier-bronce {
+  color: #f6d6b8;
+  border-color: rgba(246, 214, 184, 0.35);
+}
+
+.sync-level-badge.tier-plata {
+  color: #d8e6ff;
+  border-color: rgba(216, 230, 255, 0.35);
+}
+
+.sync-level-badge.tier-oro {
+  color: #ffe9a3;
+  border-color: rgba(255, 233, 163, 0.4);
+}
+
+.sync-level-badge.tier-epico {
+  color: #d6b7ff;
+  border-color: rgba(214, 183, 255, 0.45);
+  animation: epic-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes epic-pulse {
+  0%,
+  100% {
+    transform: translateY(0);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  }
+  50% {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 34px rgba(167, 139, 250, 0.25);
+  }
+}
+
+.connection-line {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.topic-share {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.topic-share input {
+  padding: 0.85rem 0.95rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(8, 10, 16, 0.55);
+  color: var(--text);
+  outline: none;
+}
+
+.topic-share-result {
+  margin: 0;
+  color: var(--text-muted);
+}
+
 .panel:hover {
   border-color: rgba(255, 255, 255, 0.12);
   box-shadow: var(--shadow-panel), 0 0 0 1px rgba(107, 124, 255, 0.06);

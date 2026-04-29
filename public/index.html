@@ -32,6 +32,10 @@
 
       <section id="resultPanel" class="panel hidden">
         <h2>Resultado</h2>
+        <div class="sync-badge-row">
+          <span id="syncLevelBadge" class="sync-level-badge"></span>
+          <span id="connectionLine" class="connection-line"></span>
+        </div>
         <div id="perfectMatchBanner" class="perfect-match-banner hidden">
           ⚡ MATCH PERFECTO
           <span id="perfectMatchMeta" class="perfect-match-meta"></span>
@@ -86,6 +90,17 @@
       <details class="panel">
         <summary>Pensamientos recientes</summary>
         <ul id="feedList" class="thought-list"></ul>
+      </details>
+
+      <details class="panel">
+        <summary>Tópico compartido (mock)</summary>
+        <div class="topic-share">
+          <label for="newTopicInput">Crear tópico</label>
+          <input id="newTopicInput" type="text" maxlength="120" placeholder="Ej: ‘renunciar’ / ‘miedo’ / ‘amor’" />
+          <button id="createTopicBtn" type="button">Generar código</button>
+          <p id="topicShareResult" class="topic-share-result"></p>
+          <button id="copyTopicCodeBtn" type="button" class="btn-share hidden">Copiar código</button>
+        </div>
       </details>
     </main>
     <script src="/app.js"></script>

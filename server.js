@@ -24,6 +24,9 @@ const invites = new Map();
 const PRESENCE_TTL_MS = 1000 * 45;
 const presence = new Map();
 
+const TOPIC_TTL_MS = 1000 * 60 * 60 * 24;
+const createdTopics = new Map();
+
 const EMOTIONS = [
   "ansiedad",
   "duda",
@@ -34,6 +37,112 @@ const EMOTIONS = [
   "positivo",
   "dolor_fisico",
 ];
+
+const COUNTRY_CATALOG = [
+  { code: "AR", label: "Argentina", flag: "🇦🇷" },
+  { code: "MX", label: "México", flag: "🇲🇽" },
+  { code: "CO", label: "Colombia", flag: "🇨🇴" },
+  { code: "ES", label: "España", flag: "🇪🇸" },
+  { code: "US", label: "Estados Unidos", flag: "🇺🇸" },
+  { code: "BR", label: "Brasil", flag: "🇧🇷" },
+  { code: "CL", label: "Chile", flag: "🇨🇱" },
+  { code: "PE", label: "Perú", flag: "🇵🇪" },
+  { code: "FR", label: "Francia", flag: "🇫🇷" },
+  { code: "JP", label: "Japón", flag: "🇯🇵" },
+];
+
+function parseClientIP(req) {
+  const forwarded = String(req.headers["x-forwarded-for"] || "")
+    .split(",")[0]
+    .trim();
+  const raw = forwarded || req.socket?.remoteAddress || "";
+  return raw.replace(/^::ffff:/, "");
+}
+
+function hashStringToInt(value) {
+  let h = 2166136261;
+  for (let i = 0; i < value.length; i += 1) {
+    h ^= value.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return Math.abs(h);
+}
+
+function pickCountryDeterministic(ip) {
+  const idx = hashStringToInt(ip) % COUNTRY_CATALOG.length;
+  return COUNTRY_CATALOG[idx];
+}
+
+function pickCountryRandom() {
+  return COUNTRY_CATALOG[Math.floor(Math.random() * COUNTRY_CATALOG.length)];
+}
+
+function looksPrivateIP(ip) {
+  return (
+    ip === "127.0.0.1" ||
+    ip === "::1" ||
+    ip.startsWith("10.") ||
+    ip.startsWith("192.168.") ||
+    ip.startsWith("172.16.") ||
+    ip.startsWith("172.17.") ||
+    ip.startsWith("172.18.") ||
+    ip.startsWith("172.19.") ||
+    ip.startsWith("172.2") ||
+    ip.startsWith("172.30.") ||
+    ip.startsWith("172.31.")
+  );
+}
+
+function getCountryFromIP(ip) {
+  if (!ip || looksPrivateIP(ip)) {
+    return pickCountryRandom();
+  }
+  return pickCountryDeterministic(ip);
+}
+
+function pickCountryWithControlledNoise(ip) {
+  const real = getCountryFromIP(ip);
+  if (Math.random() < 0.1) {
+    const noisy = pickCountryRandom();
+    return noisy.code === real.code ? pickCountryRandom() : noisy;
+  }
+  return real;
+}
+
+function calculateSyncLevel(input, bestMatch) {
+  const score = Number(bestMatch?.score || 0);
+  const overlap = Number(bestMatch?.overlap || 0);
+  const exactWordRatio = input.tokens.length ? overlap / input.tokens.length : 0;
+  const createdAt = bestMatch?.created_at ? new Date(bestMatch.created_at).getTime() : null;
+  const timeDiffMs = createdAt ? Math.max(0, Date.now() - createdAt) : null;
+
+  const closeInTime = timeDiffMs != null && timeDiffMs <= 45_000;
+  const veryCloseInTime = timeDiffMs != null && timeDiffMs <= 12_000;
+
+  if (score >= 0.92 && exactWordRatio >= 0.85 && veryCloseInTime) {
+    return { tier: "EPICO", message: "⚡ MATCH CASI PERFECTO", timeDiffMs };
+  }
+  if (score >= 0.78 && exactWordRatio >= 0.6 && closeInTime) {
+    return { tier: "ORO", message: "Sincronía fuerte detectada", timeDiffMs };
+  }
+  if (score >= 0.55) {
+    return { tier: "PLATA", message: "Varias mentes en la misma línea", timeDiffMs };
+  }
+  return { tier: "BRONCE", message: "Coincidencia lejana detectada", timeDiffMs };
+}
+
+function describeConnection(syncLevel, inputCountry, bestMatchCountry) {
+  const seconds = syncLevel.timeDiffMs != null ? Math.max(1, Math.round(syncLevel.timeDiffMs / 1000)) : null;
+  const timeLine = seconds ? `Alguien pensó esto hace ${seconds} segundos.` : "Esto está ocurriendo ahora.";
+  const placeLine =
+    inputCountry && bestMatchCountry && inputCountry.code !== bestMatchCountry.code
+      ? "2 personas en distintos lugares coincidieron contigo."
+      : "Esto está ocurriendo ahora.";
+  if (syncLevel.tier === "EPICO" || syncLevel.tier === "ORO") {
+    return `${timeLine} ${placeLine}`;
+  }
+  return timeLine;
+}
 
 function clamp01(value) {
   return Math.max(0, Math.min(1, value));
@@ -234,10 +343,21 @@ function detectIntent(text) {
   return "reflexion";
 }
 
-async function saveThought(text, emotion, intent, tokens) {
+async function ensureThoughtsSchema() {
   await pool.query(
-    "INSERT INTO thoughts (text, emotion, intent, tokens) VALUES ($1, $2, $3, $4)",
-    [text, emotion, intent, tokens]
+    "CREATE TABLE IF NOT EXISTS thoughts (id SERIAL PRIMARY KEY, text TEXT NOT NULL, emotion TEXT, intent TEXT, tokens TEXT[], country_code TEXT, created_at TIMESTAMPTZ DEFAULT NOW());"
+  );
+  await pool.query("ALTER TABLE thoughts ADD COLUMN IF NOT EXISTS emotion TEXT;");
+  await pool.query("ALTER TABLE thoughts ADD COLUMN IF NOT EXISTS intent TEXT;");
+  await pool.query("ALTER TABLE thoughts ADD COLUMN IF NOT EXISTS tokens TEXT[];");
+  await pool.query("ALTER TABLE thoughts ADD COLUMN IF NOT EXISTS country_code TEXT;");
+  await pool.query("ALTER TABLE thoughts ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ;");
+}
+
+async function saveThought(text, emotion, intent, tokens, countryCode) {
+  await pool.query(
+    "INSERT INTO thoughts (text, emotion, intent, tokens, country_code) VALUES ($1, $2, $3, $4, $5)",
+    [text, emotion, intent, tokens, countryCode || null]
   );
 }
 
@@ -245,9 +365,10 @@ async function insertThought(text) {
   const tokens = tokenize(text);
   const emotion = classifyEmotion(text);
   const intent = detectIntent(text);
+  const country = pickCountryRandom();
   const result = await pool.query(
-    "INSERT INTO thoughts (text, emotion, intent, tokens) VALUES ($1, $2, $3, $4) RETURNING *",
-    [text, emotion, intent, tokens]
+    "INSERT INTO thoughts (text, emotion, intent, tokens, country_code) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+    [text, emotion, intent, tokens, country.code]
   );
   return result.rows[0];
 }
@@ -255,7 +376,7 @@ async function insertThought(text) {
 async function getRealMatches(tokens) {
   const result = await pool.query(
     `
-    SELECT text, emotion, intent, tokens,
+    SELECT text, emotion, intent, tokens, country_code, created_at,
     (
       SELECT COUNT(*)
       FROM unnest(tokens) t
@@ -535,6 +656,7 @@ async function handleSync(req, res) {
 
   req.on("end", async () => {
     try {
+      await ensureThoughtsSchema();
       const body = JSON.parse(rawBody || "{}");
       const input = typeof body.text === "string" ? body.text : "";
       const topic = typeof body.topic === "string" ? body.topic : "";
@@ -546,8 +668,10 @@ async function handleSync(req, res) {
       const tokens = tokenize(input);
       const emotion = classifyEmotion(input);
       const intent = detectIntent(input);
+      const ip = parseClientIP(req);
+      const inputCountry = pickCountryWithControlledNoise(ip);
 
-      await saveThought(input, emotion, intent, tokens);
+      await saveThought(input, emotion, intent, tokens, inputCountry.code);
 
       const matches = await getRealMatches(tokens);
       const inputMeta = { tokens, emotion, intent };
@@ -557,6 +681,12 @@ async function handleSync(req, res) {
       }));
       scoredMatches.sort((a, b) => b.score - a.score || b.overlap - a.overlap);
       const realCount = scoredMatches.filter((m) => m.overlap > 0).length;
+      const bestMatch = scoredMatches.find((m) => m.overlap > 0) || null;
+      const bestMatchCountry = bestMatch?.country_code
+        ? COUNTRY_CATALOG.find((c) => c.code === bestMatch.country_code) || null
+        : null;
+      const syncLevel = calculateSyncLevel(inputMeta, bestMatch);
+      const connectionLine = describeConnection(syncLevel, inputCountry, bestMatchCountry);
 
       const similarThoughts = scoredMatches
         .filter((m) => m.overlap > 0)
@@ -565,19 +695,24 @@ async function handleSync(req, res) {
           text: m.text,
           emotion: m.emotion,
           intent: m.intent,
+          country: m.country_code || null,
           score: m.score,
         }));
 
       return sendJson(res, 200, {
         emotion,
         intent,
+        country: inputCountry.code,
         topic: topic || null,
+        syncLevel,
+        connectionLine,
         approxTodayCount: realCount,
         similarThoughts,
         recentFeed: scoredMatches.slice(0, 10).map((m) => ({
           text: m.text,
           emotion: m.emotion,
           intent: m.intent,
+          country: m.country_code || null,
           matches: m.overlap,
           score: m.score,
         })),
@@ -614,6 +749,42 @@ const server = http.createServer((req, res) => {
       presence.set(clientId, now);
     }
     sendJson(res, 200, { activeUsers: presence.size });
+    return;
+  }
+
+  if (req.method === "POST" && parsed.pathname === "/api/topic") {
+    let rawBody = "";
+    req.on("data", (chunk) => {
+      rawBody += chunk;
+    });
+    req.on("end", async () => {
+      try {
+        const body = JSON.parse(rawBody || "{}");
+        const topic = typeof body.topic === "string" ? body.topic.trim() : "";
+        if (!topic || topic.length < 3) {
+          sendJson(res, 400, { error: "Tópico inválido." });
+          return;
+        }
+        const topicId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+        const shareCode = `SYN-${Math.floor(1000 + Math.random() * 9000)}`;
+        createdTopics.set(topicId, { topicId, topic, shareCode, createdAt: Date.now() });
+        sendJson(res, 200, { topicId, shareCode });
+      } catch (error) {
+        console.error(error);
+        sendJson(res, 500, { error: "Error interno." });
+      }
+    });
+    return;
+  }
+
+  if (req.method === "GET" && parsed.pathname.startsWith("/topic/")) {
+    const topicId = parsed.pathname.split("/")[2] || "";
+    const entry = createdTopics.get(topicId);
+    if (!entry || Date.now() - entry.createdAt > TOPIC_TTL_MS) {
+      sendJson(res, 404, { error: "Tópico no encontrado." });
+      return;
+    }
+    sendJson(res, 200, { topicId: entry.topicId, topic: entry.topic, shareCode: entry.shareCode, thoughts: [] });
     return;
   }
 
