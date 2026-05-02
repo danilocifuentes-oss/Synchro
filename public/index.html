@@ -10,8 +10,7 @@
 </head>
 <body>
   <div class="app">
-
-    <!-- HEADER FIJO -->
+    <!-- HEADER -->
     <header class="top-header">
       <div class="header-content">
         <div class="logo">
@@ -20,19 +19,17 @@
         <div class="header-center">
           <span id="localClock"></span>
           <span class="divider">·</span>
-          <span id="activeUsersLine" class="active-users"></span>
+          <span id="activeUsersLine"></span>
         </div>
         <div class="header-right">
-          <i class="fas fa-bell notification-icon"></i>
-          <div class="user-avatar">
-            <i class="fas fa-user-circle"></i>
-          </div>
+          <i class="fas fa-bell"></i>
+          <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
         </div>
       </div>
     </header>
 
     <div class="main-container">
-      <!-- SIDEBAR IZQUIERDA -->
+      <!-- Sidebar Izquierda -->
       <nav class="sidebar-left">
         <ul>
           <li class="nav-item active"><i class="fas fa-home"></i><span>Inicio</span></li>
@@ -43,7 +40,7 @@
         </ul>
       </nav>
 
-      <!-- CONTENIDO CENTRAL -->
+      <!-- Contenido Central -->
       <main class="feed">
         <section class="input-card">
           <label for="thoughtInput">¿Qué estás pensando ahora?</label>
@@ -52,24 +49,23 @@
           <p id="status" class="status"></p>
         </section>
 
-        <!-- RESULTADO -->
+        <!-- Resultado -->
         <section id="resultPanel" class="result-panel hidden">
           <h2>Conexión establecida</h2>
-          
+
           <div class="match-header">
             <span id="syncLevelBadge" class="sync-badge"></span>
           </div>
 
-          <div id="perfectMatchBanner" class="perfect-match-banner hidden">⚡ MATCH PERFECTO</div>
+          <div id="perfectMatchBanner" class="perfect-match-banner hidden">⚡ NEXUS ACTIVADO</div>
 
           <p id="submittedThoughtLine" class="submitted-thought"></p>
-          
+
           <div class="stats-row">
             <p id="countLine"></p>
             <p id="emotionLine"></p>
           </div>
 
-          <!-- Patrón Mental Científico -->
           <div class="mental-patterns">
             <h3>Patrón mental detectado</h3>
             <div id="mentalBars" class="mental-bars"></div>
@@ -80,19 +76,18 @@
           <ul id="similarList" class="thought-list"></ul>
         </section>
 
-        <!-- Secciones colapsables -->
+        <!-- Secciones colapsables con mejor espaciado -->
         <details class="panel" open>
           <summary>Tu resonancia</summary>
           <div class="resonance-content">
             <p id="resonanceLine"></p>
             <div class="resonance-meter"><div id="resonanceFill"></div></div>
-            <p id="stateLine"></p>
           </div>
         </details>
 
         <details class="panel" id="worldNowSection">
           <summary>Mundo ahora <span class="live-dot"></span></summary>
-          <p id="worldLiveHint" class="world-live-hint"></p>
+          <p id="worldLiveHint"></p>
           <ul id="worldNowList" class="world-now-list"></ul>
         </details>
 
@@ -102,19 +97,19 @@
         </details>
       </main>
 
-      <!-- SIDEBAR DERECHA - Perfil -->
+      <!-- Sidebar Derecha -->
       <aside id="profileSidebar" class="sidebar-right hidden">
         <div class="profile-panel">
           <div class="profile-header">
             <span class="profile-badge">Tu perfil SYNCHRO</span>
           </div>
-          <div id="profileText" class="profile-insight-stack"></div>
-          <p id="profileConfidenceLine" class="profile-confidence-line"></p>
+          <div id="profileText"></div>
+          <p id="profileConfidenceLine"></p>
         </div>
       </aside>
     </div>
 
-    <!-- Crear tópico compartido -->
+    <!-- Crear tópico -->
     <section class="topic-share-panel">
       <h3>Crear tópico compartido</h3>
       <p class="subtitle">Invita a otros a sincronizarse en el mismo pensamiento</p>
