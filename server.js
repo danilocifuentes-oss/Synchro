@@ -960,6 +960,7 @@ const server = http.createServer((req, res) => {
   sendJson(res, 404, { error: "Ruta no encontrada." });
 });
 
-server.listen(PORT, () => {
-  console.log(`SYNCHRO MVP running on http://localhost:${PORT}`);
+const HOST = process.env.HOST || "0.0.0.0";
+server.listen(PORT, HOST, () => {
+  console.log(`SYNCHRO MVP running on http://${HOST}:${PORT}`);
 });
