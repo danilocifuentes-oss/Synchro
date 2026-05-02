@@ -89,7 +89,10 @@ function apiSyncToUiPayload(api, inputText) {
 }
 
 function hideLearnMoreSection() {
-  document.getElementById("learnMoreSection")?.classList.add("hidden");
+  const section = document.getElementById("learnMoreSection");
+  if (!section) return;
+  section.classList.add("hidden");
+  section.classList.add("learn-more-collapsed");
 }
 
 function renderLearnMoreSection() {
@@ -98,57 +101,68 @@ function renderLearnMoreSection() {
   if (!container || !section) return;
 
   container.innerHTML = `
-    <div class="learn-more-item"><h4>Energía</h4><p>Fuerza e intensidad del pensamiento; alta energía suele ir con urgencia o pasión.</p></div>
-    <div class="learn-more-item"><h4>Emoción</h4><p>Inclinación positiva o negativa del mensaje (-100 a +100).</p></div>
-    <div class="learn-more-item"><h4>Claridad</h4><p>Qué tan claro y entendible es lo que expresas.</p></div>
-    <div class="learn-more-item"><h4>Foco</h4><p>Si el eje está más en tu mundo interior o en el exterior.</p></div>
-    <div class="learn-more-item"><h4>Tensión</h4><p>Conflicto interno, presión o urgencia emocional asociada al texto.</p></div>
+    <div class="learn-more-item">
+      <h4>Energía</h4>
+      <p>Fuerza e intensidad del pensamiento. Alta energía suele ir con urgencia o pasión.</p>
+    </div>
+    <div class="learn-more-item">
+      <h4>Emoción</h4>
+      <p>Inclinación positiva o negativa del mensaje (-100 a +100).</p>
+    </div>
+    <div class="learn-more-item">
+      <h4>Claridad</h4>
+      <p>Qué tan claro y entendible es lo que expresas.</p>
+    </div>
+    <div class="learn-more-item">
+      <h4>Foco</h4>
+      <p>Si estás centrado en ti mismo (interno) o en el mundo / otros (externo).</p>
+    </div>
+    <div class="learn-more-item">
+      <h4>Tensión</h4>
+      <p>Conflicto interno, frustración o urgencia emocional.</p>
+    </div>
   `;
+
   section.classList.remove("hidden");
+  section.classList.add("learn-more-collapsed");
+
+  if (!section.dataset.learnToggleBound) {
+    section.dataset.learnToggleBound = "1";
+    section.addEventListener("click", () => {
+      section.classList.toggle("learn-more-collapsed");
+    });
+  }
 }
 
-/** @param {object} state @param {boolean} [compact] cinco barras visibles; novelty/social siguen en el objeto para similitud */
-function renderMentalBars(state, compact = true) {
+function renderMentalBars(state) {
   if (!mentalBars || !state) return;
 
-  const t = {
-    e: "Qué tan cargado de intensidad y urgencia está tu pensamiento",
-    m: "Si tu pensamiento tiende hacia lo positivo o lo negativo",
-    c: "Qué tan claro y fácil de entender es tu mensaje",
-    f: "Si estás pensando más en ti o en el mundo exterior",
-    ten: "Cuánto conflicto, urgencia o tensión emocional hay",
-  };
-
-  const extras = compact
-    ? ""
-    : `
-    <div class="bar-row" data-tooltip="Qué tan nuevo o poco habitual es el tema para ti" title="Qué tan nuevo o poco habitual es el tema para ti">
-      <span>Novedad</span><div class="bar"><div class="fill" style="width:${state.novelty}%"></div></div><span>${state.novelty}</span>
-    </div>
-    <div class="bar-row" data-tooltip="Qué tan orientado a vínculos u otros está el mensaje" title="Qué tan orientado a vínculos u otros está el mensaje">
-      <span>Socialidad</span><div class="bar"><div class="fill" style="width:${state.social}%"></div></div><span>${state.social}</span>
-    </div>`;
-
-  const focusLabel =
-    state.direction > 20 ? "Externo" : state.direction < -20 ? "Interno" : "Mixto";
-
   mentalBars.innerHTML = `
-    <div class="bar-row" data-tooltip="${t.e}" title="${t.e}">
-      <span>Energía</span><div class="bar"><div class="fill" style="width:${state.activation}%"></div></div><span>${state.activation}</span>
+    <div class="bar-row" data-tooltip="Qué tan cargado de intensidad y urgencia está tu pensamiento">
+      <span>Energía</span>
+      <div class="bar"><div class="fill" style="width:${state.activation}%"></div></div>
+      <span>${state.activation}</span>
     </div>
-    <div class="bar-row" data-tooltip="${t.m}" title="${t.m}">
-      <span>Emoción</span><div class="bar"><div class="fill valence" style="width:${(state.valence + 100) / 2}%"></div></div><span>${state.valence > 0 ? "+" : ""}${state.valence}</span>
+    <div class="bar-row" data-tooltip="Si tu pensamiento tiende hacia lo positivo o negativo">
+      <span>Emoción</span>
+      <div class="bar"><div class="fill valence" style="width:${(state.valence + 100) / 2}%"></div></div>
+      <span>${state.valence > 0 ? "+" : ""}${state.valence}</span>
     </div>
-    <div class="bar-row" data-tooltip="${t.c}" title="${t.c}">
-      <span>Claridad</span><div class="bar"><div class="fill" style="width:${state.clarity}%"></div></div><span>${state.clarity}</span>
+    <div class="bar-row" data-tooltip="Qué tan claro y fácil de entender es tu mensaje">
+      <span>Claridad</span>
+      <div class="bar"><div class="fill" style="width:${state.clarity}%"></div></div>
+      <span>${state.clarity}</span>
     </div>
-    <div class="bar-row" data-tooltip="${t.f}" title="${t.f}">
-      <span>Foco</span><div class="bar"><div class="fill" style="width:${(state.direction + 100) / 2}%"></div></div><span>${focusLabel}</span>
+    <div class="bar-row" data-tooltip="Si estás pensando más en ti mismo (interno) o en el mundo exterior">
+      <span>Foco</span>
+      <div class="bar"><div class="fill" style="width:${(state.direction + 100) / 2}%"></div></div>
+      <span>${state.direction > 20 ? "Externo" : state.direction < -20 ? "Interno" : "Mixto"}</span>
     </div>
-    <div class="bar-row" data-tooltip="${t.ten}" title="${t.ten}">
-      <span>Tensión</span><div class="bar"><div class="fill tension" style="width:${state.tension}%"></div></div><span>${state.tension}</span>
+    <div class="bar-row" data-tooltip="Cuánto conflicto, urgencia o tensión emocional hay">
+      <span>Tensión</span>
+      <div class="bar"><div class="fill tension" style="width:${state.tension}%"></div></div>
+      <span>${state.tension}</span>
     </div>
-    ${extras}
   `;
 
   renderLearnMoreSection();
@@ -179,16 +193,17 @@ function showResult(data) {
 
   if (syncInfo.level === "Nexus") {
     perfectMatchBanner?.classList.remove("hidden");
-    if (perfectMatchBanner) perfectMatchBanner.textContent = "⚡ NEXUS ACTIVADO";
   } else {
     perfectMatchBanner?.classList.add("hidden");
   }
 
+  const pct = typeof syncInfo.avgSimilarity === "number" ? syncInfo.avgSimilarity : 0;
   if (countLine) countLine.textContent = `${syncInfo.matchCount} mentes en resonancia ahora`;
-  if (emotionLine) emotionLine.textContent = `Intensidad promedio: ${syncInfo.avgSimilarity}%`;
+  if (emotionLine)
+    emotionLine.innerHTML = `Intensidad promedio: <strong>${pct}%</strong>`;
 
   if (data.mentalState) {
-    renderMentalBars(data.mentalState, true);
+    renderMentalBars(data.mentalState);
   } else {
     hideLearnMoreSection();
     if (mentalBars) mentalBars.innerHTML = "";
@@ -201,10 +216,7 @@ function showResult(data) {
   if (items.length > 0) {
     items.slice(0, 5).forEach((item) => {
       const li = document.createElement("li");
-      const span = document.createElement("span");
-      span.className = "thought-text";
-      span.textContent = typeof item === "string" ? item : item.thought ?? "";
-      li.appendChild(span);
+      li.textContent = typeof item === "string" ? item : item.thought ?? item;
       similarList.appendChild(li);
     });
   } else {
@@ -213,7 +225,7 @@ function showResult(data) {
     similarList.appendChild(li);
   }
 
-  statusEl.textContent = `Sincronía ${syncInfo.level} completada`;
+  statusEl.textContent = `Conexión ${syncInfo.level} establecida`;
   statusEl.style.color = syncInfo.color;
 
   resultPanel?.scrollIntoView({ behavior: "smooth", block: "center" });
