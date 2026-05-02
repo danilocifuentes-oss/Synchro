@@ -1,23 +1,22 @@
-// app.js - SYNCHRO (Versión corregida con sistema de sincronía mejorado)
+// app.js — SYNCHRO (UI métricas + educación + API /api/sync)
 
-import { calculateSyncLevel } from './syncLevel.js';
+import { calculateSyncLevel } from "./syncLevel.js";
 
-const thoughtInput = document.getElementById('thoughtInput');
-const syncButton = document.getElementById('syncButton');
-const statusEl = document.getElementById('status');
-const resultPanel = document.getElementById('resultPanel');
-const profileSidebar = document.getElementById('profileSidebar');
+const thoughtInput = document.getElementById("thoughtInput");
+const syncButton = document.getElementById("syncButton");
+const statusEl = document.getElementById("status");
+const resultPanel = document.getElementById("resultPanel");
+const profileSidebar = document.getElementById("profileSidebar");
 
-const submittedThoughtLine = document.getElementById('submittedThoughtLine');
-const syncLevelBadge = document.getElementById('syncLevelBadge');
-const perfectMatchBanner = document.getElementById('perfectMatchBanner');
-const countLine = document.getElementById('countLine');
-const emotionLine = document.getElementById('emotionLine');
-const similarCountLine = document.getElementById('similarCountLine');
-const similarList = document.getElementById('similarList');
-const mentalBars = document.getElementById('mentalBars');
+const submittedThoughtLine = document.getElementById("submittedThoughtLine");
+const syncLevelBadge = document.getElementById("syncLevelBadge");
+const perfectMatchBanner = document.getElementById("perfectMatchBanner");
+const countLine = document.getElementById("countLine");
+const emotionLine = document.getElementById("emotionLine");
+const similarCountLine = document.getElementById("similarCountLine");
+const similarList = document.getElementById("similarList");
+const mentalBars = document.getElementById("mentalBars");
 
-/** Perfil emocional → vector de estado mental para similitud (0–100 donde aplica). */
 const EMOTION_MENTAL = {
   ansiedad: { activation: 78, valence: -38, clarity: 44, direction: -25, tension: 84, novelty: 42, social: 32 },
   duda: { activation: 56, valence: -22, clarity: 48, direction: -45, tension: 58, novelty: 50, social: 44 },
@@ -43,9 +42,6 @@ function stableJitter(seed, salt) {
   return (Math.abs(h) % 21) - 10;
 }
 
-/**
- * Infiere un estado mental estable a partir de señales del backend (similar a lo que usaría el mock).
- */
 function inferMentalState({ emotion, intent, text = "", overlap = null, score = null }) {
   const base = EMOTION_MENTAL[emotion] || EMOTION_MENTAL.neutral;
   const juice = stableJitter(text, `${intent}|${emotion}|${overlap ?? ""}|${score ?? ""}`);
@@ -71,7 +67,6 @@ function inferMentalState({ emotion, intent, text = "", overlap = null, score = 
   };
 }
 
-/** Convierte la respuesta POST /api/sync al objeto que espera showResult */
 function apiSyncToUiPayload(api, inputText) {
   const mentalState = inferMentalState({
     emotion: api.emotion,
@@ -90,48 +85,91 @@ function apiSyncToUiPayload(api, inputText) {
     }),
   }));
 
-  return {
-    input: inputText,
-    mentalState,
-    similarThoughts,
-  };
+  return { input: inputText, mentalState, similarThoughts };
 }
 
-// Clock
+function hideLearnMoreSection() {
+  document.getElementById("learnMoreSection")?.classList.add("hidden");
+}
+
+function renderLearnMoreSection() {
+  const container = document.getElementById("learnMoreContent");
+  const section = document.getElementById("learnMoreSection");
+  if (!container || !section) return;
+
+  container.innerHTML = `
+    <div class="learn-more-item"><h4>Energía</h4><p>Fuerza e intensidad del pensamiento; alta energía suele ir con urgencia o pasión.</p></div>
+    <div class="learn-more-item"><h4>Emoción</h4><p>Inclinación positiva o negativa del mensaje (-100 a +100).</p></div>
+    <div class="learn-more-item"><h4>Claridad</h4><p>Qué tan claro y entendible es lo que expresas.</p></div>
+    <div class="learn-more-item"><h4>Foco</h4><p>Si el eje está más en tu mundo interior o en el exterior.</p></div>
+    <div class="learn-more-item"><h4>Tensión</h4><p>Conflicto interno, presión o urgencia emocional asociada al texto.</p></div>
+  `;
+  section.classList.remove("hidden");
+}
+
+/** @param {object} state @param {boolean} [compact] cinco barras visibles; novelty/social siguen en el objeto para similitud */
+function renderMentalBars(state, compact = true) {
+  if (!mentalBars || !state) return;
+
+  const t = {
+    e: "Qué tan cargado de intensidad y urgencia está tu pensamiento",
+    m: "Si tu pensamiento tiende hacia lo positivo o lo negativo",
+    c: "Qué tan claro y fácil de entender es tu mensaje",
+    f: "Si estás pensando más en ti o en el mundo exterior",
+    ten: "Cuánto conflicto, urgencia o tensión emocional hay",
+  };
+
+  const extras = compact
+    ? ""
+    : `
+    <div class="bar-row" data-tooltip="Qué tan nuevo o poco habitual es el tema para ti" title="Qué tan nuevo o poco habitual es el tema para ti">
+      <span>Novedad</span><div class="bar"><div class="fill" style="width:${state.novelty}%"></div></div><span>${state.novelty}</span>
+    </div>
+    <div class="bar-row" data-tooltip="Qué tan orientado a vínculos u otros está el mensaje" title="Qué tan orientado a vínculos u otros está el mensaje">
+      <span>Socialidad</span><div class="bar"><div class="fill" style="width:${state.social}%"></div></div><span>${state.social}</span>
+    </div>`;
+
+  const focusLabel =
+    state.direction > 20 ? "Externo" : state.direction < -20 ? "Interno" : "Mixto";
+
+  mentalBars.innerHTML = `
+    <div class="bar-row" data-tooltip="${t.e}" title="${t.e}">
+      <span>Energía</span><div class="bar"><div class="fill" style="width:${state.activation}%"></div></div><span>${state.activation}</span>
+    </div>
+    <div class="bar-row" data-tooltip="${t.m}" title="${t.m}">
+      <span>Emoción</span><div class="bar"><div class="fill valence" style="width:${(state.valence + 100) / 2}%"></div></div><span>${state.valence > 0 ? "+" : ""}${state.valence}</span>
+    </div>
+    <div class="bar-row" data-tooltip="${t.c}" title="${t.c}">
+      <span>Claridad</span><div class="bar"><div class="fill" style="width:${state.clarity}%"></div></div><span>${state.clarity}</span>
+    </div>
+    <div class="bar-row" data-tooltip="${t.f}" title="${t.f}">
+      <span>Foco</span><div class="bar"><div class="fill" style="width:${(state.direction + 100) / 2}%"></div></div><span>${focusLabel}</span>
+    </div>
+    <div class="bar-row" data-tooltip="${t.ten}" title="${t.ten}">
+      <span>Tensión</span><div class="bar"><div class="fill tension" style="width:${state.tension}%"></div></div><span>${state.tension}</span>
+    </div>
+    ${extras}
+  `;
+
+  renderLearnMoreSection();
+}
+
 function updateClock() {
   const now = new Date();
-  document.getElementById('localClock').textContent =
-    now.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+  const el = document.getElementById("localClock");
+  if (el) el.textContent = now.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit" });
 }
 setInterval(updateClock, 30000);
 updateClock();
 
-// Renderizar barras del patrón mental
-function renderMentalBars(state) {
-  if (!mentalBars || !state) return;
-
-  mentalBars.innerHTML = `
-    <div class="bar-row"><span>Activación</span><div class="bar"><div class="fill" style="width:${state.activation}%"></div></div><span>${state.activation}</span></div>
-    <div class="bar-row"><span>Valencia</span><div class="bar"><div class="fill valence" style="width:${(state.valence + 100)/2}%"></div></div><span>${state.valence}</span></div>
-    <div class="bar-row"><span>Claridad</span><div class="bar"><div class="fill" style="width:${state.clarity}%"></div></div><span>${state.clarity}</span></div>
-    <div class="bar-row"><span>Dirección</span><div class="bar"><div class="fill" style="width:${(state.direction + 100)/2}%"></div></div><span>${state.direction >= 0 ? 'Externa' : 'Interna'}</span></div>
-    <div class="bar-row"><span>Tensión</span><div class="bar"><div class="fill tension" style="width:${state.tension}%"></div></div><span>${state.tension}</span></div>
-    <div class="bar-row"><span>Novedad</span><div class="bar"><div class="fill" style="width:${state.novelty}%"></div></div><span>${state.novelty}</span></div>
-    <div class="bar-row"><span>Socialidad</span><div class="bar"><div class="fill" style="width:${state.social}%"></div></div><span>${state.social}</span></div>
-  `;
-}
-
-// Mostrar resultado con nueva lógica
 function showResult(data) {
-  resultPanel.classList.remove('hidden');
-  profileSidebar.classList.remove('hidden');
+  resultPanel?.classList.remove("hidden");
+  profileSidebar?.classList.remove("hidden");
 
   submittedThoughtLine.textContent = `"${data.input || thoughtInput.value}"`;
 
-  // Calcular nivel real de sincronía
   const syncInfo = calculateSyncLevel(data.mentalState, data.similarThoughts || []);
 
-  // Badge principal
   syncLevelBadge.textContent = syncInfo.title;
   syncLevelBadge.style.backgroundColor = syncInfo.color;
   syncLevelBadge.style.color = "#0a0a0f";
@@ -139,36 +177,38 @@ function showResult(data) {
   syncLevelBadge.style.borderRadius = "9999px";
   syncLevelBadge.style.fontWeight = "600";
 
-  // Perfect Match Banner (solo para Nexus)
   if (syncInfo.level === "Nexus") {
-    perfectMatchBanner.classList.remove('hidden');
-    perfectMatchBanner.innerHTML = "⚡ NEXUS ACTIVADO";
+    perfectMatchBanner?.classList.remove("hidden");
+    if (perfectMatchBanner) perfectMatchBanner.textContent = "⚡ NEXUS ACTIVADO";
   } else {
-    perfectMatchBanner.classList.add('hidden');
+    perfectMatchBanner?.classList.add("hidden");
   }
 
-  countLine.textContent = `${syncInfo.matchCount} mentes en resonancia ahora`;
-  emotionLine.textContent = `Intensidad promedio: ${syncInfo.avgSimilarity}%`;
+  if (countLine) countLine.textContent = `${syncInfo.matchCount} mentes en resonancia ahora`;
+  if (emotionLine) emotionLine.textContent = `Intensidad promedio: ${syncInfo.avgSimilarity}%`;
 
-  // Patrón mental
-  if (data.mentalState) renderMentalBars(data.mentalState);
+  if (data.mentalState) {
+    renderMentalBars(data.mentalState, true);
+  } else {
+    hideLearnMoreSection();
+    if (mentalBars) mentalBars.innerHTML = "";
+  }
 
-  // Pensamientos similares
-  similarCountLine.textContent = `${syncInfo.matchCount} coincidencias detectadas`;
-  similarList.innerHTML = '';
+  if (similarCountLine) similarCountLine.textContent = `${syncInfo.matchCount} coincidencias detectadas`;
+  similarList.innerHTML = "";
 
-  if (data.similarThoughts && data.similarThoughts.length > 0) {
-    data.similarThoughts.slice(0, 6).forEach((item) => {
+  const items = data.similarThoughts || [];
+  if (items.length > 0) {
+    items.slice(0, 5).forEach((item) => {
       const li = document.createElement("li");
       const span = document.createElement("span");
       span.className = "thought-text";
-      const line = typeof item === "string" ? item : item.thought ?? "";
-      span.textContent = line;
+      span.textContent = typeof item === "string" ? item : item.thought ?? "";
       li.appendChild(span);
       similarList.appendChild(li);
     });
   } else {
-    const li = document.createElement('li');
+    const li = document.createElement("li");
     li.textContent = "Aún no hay resonancias cercanas en este momento.";
     similarList.appendChild(li);
   }
@@ -176,10 +216,9 @@ function showResult(data) {
   statusEl.textContent = `Sincronía ${syncInfo.level} completada`;
   statusEl.style.color = syncInfo.color;
 
-  resultPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+  resultPanel?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
-// Manejar sincronización
 async function handleSync() {
   const thought = thoughtInput.value.trim();
   if (!thought) {
@@ -193,7 +232,7 @@ async function handleSync() {
     return;
   }
 
-  statusEl.textContent = "Buscando resonancia en el colectivo...";
+  statusEl.textContent = "Buscando resonancia...";
   statusEl.style.color = "#c084fc";
   syncButton.disabled = true;
 
@@ -203,20 +242,17 @@ async function handleSync() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: thought }),
     });
-
     const payload = await res.json().catch(() => ({}));
 
     if (!res.ok) {
-      const msg = typeof payload.error === "string" ? payload.error : "No se pudo sincronizar";
-      statusEl.textContent = msg;
+      statusEl.textContent = typeof payload.error === "string" ? payload.error : "No se pudo sincronizar";
       statusEl.style.color = "#f87171";
       return;
     }
 
-    const ui = apiSyncToUiPayload(payload, thought);
-    showResult(ui);
-  } catch (error) {
-    console.error(error);
+    showResult(apiSyncToUiPayload(payload, thought));
+  } catch (e) {
+    console.error(e);
     statusEl.textContent = "Error al conectar con el colectivo";
     statusEl.style.color = "#f87171";
   } finally {
@@ -224,22 +260,20 @@ async function handleSync() {
   }
 }
 
-// Eventos
-syncButton.addEventListener('click', handleSync);
+syncButton.addEventListener("click", handleSync);
 
-thoughtInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
+thoughtInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     handleSync();
   }
 });
 
-// Inicialización
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('%cSYNCHRO → Sistema de sincronía corregido y mejorado', 'color:#c084fc; font-weight:600');
-
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("%cSYNCHRO — versión final mejorada", "color:#c084fc; font-weight:600");
+  hideLearnMoreSection();
   setTimeout(() => {
-    const activeEl = document.getElementById('activeUsersLine');
+    const activeEl = document.getElementById("activeUsersLine");
     if (activeEl) activeEl.textContent = `${Math.floor(Math.random() * 15) + 8} mentes activas ahora`;
-  }, 800);
+  }, 600);
 });

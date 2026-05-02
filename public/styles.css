@@ -294,6 +294,81 @@ button:disabled {
 .fill.valence { background: linear-gradient(90deg, #f472b6, #c084fc); }
 .fill.tension { background: linear-gradient(90deg, #fb7185, #f43f5e); }
 
+/* Barras: tooltip en escritorio (touch usa atributo title en el HTML) */
+.bar-row[data-tooltip] {
+  position: relative;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bar-row[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%) translateY(-6px);
+    width: min(280px, 70vw);
+    padding: 10px 12px;
+    background: var(--surface2);
+    border: 1px solid rgba(192, 132, 252, 0.35);
+    border-radius: 10px;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: var(--text);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 30;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  }
+
+  .bar-row[data-tooltip]:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+/* Bloque educativo bajo las barras */
+.learn-more-wrap {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(192, 132, 252, 0.15);
+}
+
+.learn-more-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent2);
+  margin-bottom: 1rem;
+}
+
+.learn-more-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem 1.25rem;
+}
+
+.learn-more-item {
+  background: var(--surface2);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(192, 132, 252, 0.12);
+}
+
+.learn-more-item h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.92rem;
+  margin-bottom: 0.4rem;
+  color: var(--accent);
+}
+
+.learn-more-item p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
 /* Details / paneles colapsables */
 .panel summary {
   cursor: pointer;
