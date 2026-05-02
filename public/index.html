@@ -6,64 +6,105 @@
   <title>SYNCHRO</title>
   <link rel="stylesheet" href="/styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-  <main class="app">
-    <header class="hero">
-      <h1>SYNCHRO</h1>
-      <p class="tagline">No eres el único que lo está pensando.</p>
+  <div class="app">
+
+    <!-- HEADER FIJO -->
+    <header class="top-header">
+      <div class="header-content">
+        <div class="logo">
+          <h1>SYNCHRO</h1>
+        </div>
+        <div class="header-center">
+          <span id="localClock"></span>
+          <span class="divider">·</span>
+          <span id="activeUsersLine" class="active-users"></span>
+        </div>
+        <div class="header-right">
+          <i class="fas fa-bell notification-icon"></i>
+          <div class="user-avatar">
+            <i class="fas fa-user-circle"></i>
+          </div>
+        </div>
+      </div>
     </header>
 
-    <div class="main-grid">
-      <div class="left-column">
-        <section class="input-panel">
-          <div class="status-bar">
-            <span id="localClock"></span>
-            <span class="divider">·</span>
-            <span id="activeUsersLine"></span>
-          </div>
+    <div class="main-container">
+      <!-- SIDEBAR IZQUIERDA -->
+      <nav class="sidebar-left">
+        <ul>
+          <li class="nav-item active"><i class="fas fa-home"></i><span>Inicio</span></li>
+          <li class="nav-item"><i class="fas fa-sparkles"></i><span>Resonancia</span></li>
+          <li class="nav-item"><i class="fas fa-globe"></i><span>Mundo ahora</span></li>
+          <li class="nav-item"><i class="fas fa-clock"></i><span>Recientes</span></li>
+          <li class="nav-item"><i class="fas fa-share-alt"></i><span>Tópicos</span></li>
+        </ul>
+      </nav>
 
+      <!-- CONTENIDO CENTRAL -->
+      <main class="feed">
+        <section class="input-card">
           <label for="thoughtInput">¿Qué estás pensando ahora?</label>
-          <p id="topicLine" class="topic-line"></p>
           <textarea id="thoughtInput" maxlength="280" placeholder="Escribe una idea, emoción o pregunta..."></textarea>
-
           <button id="syncButton">Sincronizar mentes</button>
           <p id="status" class="status"></p>
         </section>
 
+        <!-- RESULTADO -->
         <section id="resultPanel" class="result-panel hidden">
           <h2>Conexión establecida</h2>
-
+          
           <div class="match-header">
             <span id="syncLevelBadge" class="sync-badge"></span>
-            <span id="connectionLine" class="connection-line"></span>
           </div>
 
-          <div id="perfectMatchBanner" class="perfect-match-banner hidden">
-            ⚡ MATCH PERFECTO
-            <span id="perfectMatchMeta" class="perfect-match-meta"></span>
-          </div>
+          <div id="perfectMatchBanner" class="perfect-match-banner hidden">⚡ MATCH PERFECTO</div>
 
           <p id="submittedThoughtLine" class="submitted-thought"></p>
-
+          
           <div class="stats-row">
-            <p id="countLine" class="count-line"></p>
-            <p id="emotionLine" class="emotion-line"></p>
+            <p id="countLine"></p>
+            <p id="emotionLine"></p>
+          </div>
+
+          <!-- Patrón Mental Científico -->
+          <div class="mental-patterns">
+            <h3>Patrón mental detectado</h3>
+            <div id="mentalBars" class="mental-bars"></div>
           </div>
 
           <h3>Pensamientos similares</h3>
           <p id="similarCountLine" class="similar-count-line"></p>
           <ul id="similarList" class="thought-list"></ul>
-
-          <div class="result-actions hidden">
-            <button type="button" id="shareResultBtn" class="btn-share" disabled>Compartir resultado</button>
-            <span id="shareFeedback" class="share-feedback hidden" aria-live="polite"></span>
-          </div>
         </section>
-      </div>
 
-      <aside id="profileSidebar" class="profile-sidebar hidden">
-        <div id="profilePanel" class="profile-panel hidden">
+        <!-- Secciones colapsables -->
+        <details class="panel" open>
+          <summary>Tu resonancia</summary>
+          <div class="resonance-content">
+            <p id="resonanceLine"></p>
+            <div class="resonance-meter"><div id="resonanceFill"></div></div>
+            <p id="stateLine"></p>
+          </div>
+        </details>
+
+        <details class="panel" id="worldNowSection">
+          <summary>Mundo ahora <span class="live-dot"></span></summary>
+          <p id="worldLiveHint" class="world-live-hint"></p>
+          <ul id="worldNowList" class="world-now-list"></ul>
+        </details>
+
+        <details class="panel">
+          <summary>Pensamientos recientes</summary>
+          <ul id="feedList" class="thought-list"></ul>
+        </details>
+      </main>
+
+      <!-- SIDEBAR DERECHA - Perfil -->
+      <aside id="profileSidebar" class="sidebar-right hidden">
+        <div class="profile-panel">
           <div class="profile-header">
             <span class="profile-badge">Tu perfil SYNCHRO</span>
           </div>
@@ -73,39 +114,7 @@
       </aside>
     </div>
 
-    <div class="accordion-sections">
-      <details class="panel">
-        <summary>Tu resonancia</summary>
-        <div class="resonance-content">
-          <p id="resonanceLine"></p>
-          <div class="resonance-meter">
-            <div id="resonanceFill" class="resonance-fill"></div>
-          </div>
-          <p id="stateLine"></p>
-          <p id="rankingLine"></p>
-        </div>
-      </details>
-
-      <details class="panel">
-        <summary>Perfil mental</summary>
-        <p id="profileLine" class="profile-line"></p>
-        <p id="insightLine" class="insight-line"></p>
-        <p id="predictionLine" class="prediction-line"></p>
-      </details>
-
-      <details class="panel" id="worldNowSection">
-        <summary>Mundo ahora <span class="live-dot"></span></summary>
-        <p id="worldLiveHint" class="world-live-hint">Señal colectiva en vivo</p>
-        <ul id="worldNowList" class="world-now-list"></ul>
-        <p id="worldEventLine"></p>
-      </details>
-
-      <details class="panel">
-        <summary>Pensamientos recientes</summary>
-        <ul id="feedList" class="thought-list"></ul>
-      </details>
-    </div>
-
+    <!-- Crear tópico compartido -->
     <section class="topic-share-panel">
       <h3>Crear tópico compartido</h3>
       <p class="subtitle">Invita a otros a sincronizarse en el mismo pensamiento</p>
@@ -116,8 +125,8 @@
         <button id="copyTopicCodeBtn" class="btn-share hidden">Copiar código</button>
       </div>
     </section>
-  </main>
+  </div>
 
-  <script src="/app.js"></script>
+  <script type="module" src="/app.js"></script>
 </body>
 </html>

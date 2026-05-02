@@ -619,6 +619,22 @@ function sendJson(res, status, payload) {
 function serveStatic(req, res) {
   const parsed = new URL(req.url, `http://${req.headers.host}`);
   const pathname = parsed.pathname === "/" ? "/index.html" : parsed.pathname;
+
+  if (pathname === "/syncLevel.js") {
+    const rootSyncLevel = path.join(__dirname, "syncLevel.js");
+    fs.readFile(rootSyncLevel, (err, data) => {
+      if (err) {
+        sendJson(res, 404, { error: "Not found" });
+        return;
+      }
+      res.writeHead(200, {
+        "Content-Type": "application/javascript; charset=utf-8",
+      });
+      res.end(data);
+    });
+    return;
+  }
+
   const filePath = path.join(PUBLIC_DIR, pathname);
 
   if (!filePath.startsWith(PUBLIC_DIR)) {
