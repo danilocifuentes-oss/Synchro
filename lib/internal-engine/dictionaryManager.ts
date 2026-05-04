@@ -11,41 +11,6 @@ function pick<T>(xs: readonly T[], h: number, salt: number): T {
   return xs[(Math.abs(h) + salt) % xs.length]!;
 }
 
-/** Hitos Santiago — descriptores gótico-punk / SchreckNet. */
-export const SANTIAGO_NEXO_SITES: readonly {
-  id: string;
-  lines: readonly string[];
-}[] = [
-  {
-    id: "beauchef",
-    lines: [
-      "Beauchef huele a solvente barato y a teoría que no paga alquiler: cables colgando como tripas de edificio que aún cree ser futuro.",
-      "El campus derrama luz fría sobre veredas donde el silencio no es inocencia sino contrato pendiente.",
-    ],
-  },
-  {
-    id: "mapocho",
-    lines: [
-      "El Mapocho lleva reflejos de neón enfermo; el agua negra anuncia cadáveres de juguetes y de promesas políticas.",
-      "Río urbano: memoria húmeda que arrastra etiquetas arrancadas y olor a metal barato con remordimiento.",
-    ],
-  },
-  {
-    id: "plaza_italia",
-    lines: [
-      "Plaza Italia es olla a presión de banderas y spray: cada muralla grita ideología mientras abajo alguien vende hambre con descuento.",
-      "Círculo de protesta y turismo roto: acá la ciudad muestra diente sin anestesia.",
-    ],
-  },
-  {
-    id: "costanera",
-    lines: [
-      "La Costanera alzada es insulto de vidrio contra el cerro; arriba, luces de oficina que nunca duermen del todo.",
-      "Torre de antenas disfrazada de shopping: el aire fino no tapa el sudor ni el miedo a miradas desde arriba.",
-    ],
-  },
-];
-
 const MALKAVIAN_PHYSICS_LEX: readonly string[] = [
   "La calle superpone estados hasta colapsar en un olor que no es solo olor: es interferencia entre luces.",
   "Tu sombra hace tunelamiento donde no debería haber túnel; el paso siguiente bifurca sin pedir permiso.",
@@ -54,21 +19,13 @@ const MALKAVIAN_PHYSICS_LEX: readonly string[] = [
   "Entrelazamiento espurio: dos rumores distintos comparten el mismo bit de miedo en esta esquina.",
 ];
 
-function maybeSantiagoInjection(profile: LexProfile, intent: NexoIntent, h: number): string {
-  if (!["move", "localization", "ambient", "survival_probe"].includes(intent)) return "";
-  const bias = profile.sigma * 0.04 + (profile.hambre > 2 ? 0.06 : 0);
-  if ((Math.abs(h) % 100) / 100 > 0.35 + bias) return "";
-  const site = pick(SANTIAGO_NEXO_SITES, h, 2);
-  return pick(site.lines, h, 5);
-}
-
 const AMBIENT: Record<NexoIntent, readonly string[]> = {
   greeting: [
     "Canal SchreckNet: eco húmedo en vidrios que nadie limpió desde el último verano político.",
     "Neón enfermo y aire a condicionador quemado — la ciudad te lee antes de que envíes.",
   ],
   survival_probe: [
-    "Santiago no reparte víveres: negocia rutas donde la cámara tiene catarata y el olor miente menos que la gente.",
+    "Prioridad básica: agua, cobertura y quién mira cuando eliges ruta.",
     "Cada refugio tiene dueño deudor; cada grifo tiene testigo anónimo archivando tu sed.",
   ],
   localization: [
@@ -81,7 +38,7 @@ const AMBIENT: Record<NexoIntent, readonly string[]> = {
   ],
   move: [
     "Desplazamiento urbano: el pavimento actualiza firmware de paranoia a cada manzana.",
-    "Zancada y sombra: la ciudad reescribe el clip antes de que llegues al corte.",
+    "Zancada y sombra: la trama urbana reescribe el clip antes de que llegues al corte.",
   ],
   social: [
     "Interfaz social: cada frase es handshake envenenado; el protocolo oculta dientes.",
@@ -123,7 +80,7 @@ const ACTION_CORE: Record<NexoIntent, readonly string[]> = {
     "El detalle incorrecto es puerta trasera; lo demás es UI bonita.",
   ],
   move: [
-    "Caminar por Santiago es negociar ángulos de cámara y olores industriales que mienten con convicción.",
+    "Caminar es negociar ángulos de cámara y olores industriales que mienten con convicción.",
     "Cada esquina es branch: eliges sombra larga o exposición corta.",
   ],
   social: [
@@ -200,8 +157,6 @@ export const DictionaryManager = {
   prefijoAmbiente(intent: NexoIntent, profile: LexProfile, h: number): string {
     let s = pick(AMBIENT[intent], h, 0);
     if (profile.sigma >= 4) s = `${s} // checksum urbano: FAIL`;
-    const st = maybeSantiagoInjection(profile, intent, h + 17);
-    if (st) s = `${s}\n\n${st}`;
     return s;
   },
 

@@ -42,7 +42,7 @@ export function ProfileHub({
           <p className="text-[11px] leading-relaxed text-neutral-500">
             Elige un personaje para entrar al <span className="text-neutral-400">Nexo</span> (canal, manifestar voluntad,
             digest de continuidad). Desde ahí elige el hilo{" "}
-            <span className="text-neutral-400">SOL · Crónica solitaria</span> para jugar la campaña en el panel central.
+            <span className="text-neutral-400">SOL · Campaña solitaria</span> para jugar en el panel central.
             Si ya tienes sesión y personaje activo, puedes usar el atajo{" "}
             <code className="rounded border border-neutral-800 bg-black/60 px-1 py-px text-[10px] text-neutral-400">
               {phaseToHref("soloCampaign")}

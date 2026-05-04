@@ -5,7 +5,7 @@ export type RollingByStrand = Record<NarrativeStrand, string>;
 
 export const STRAND_LABEL: Record<NarrativeStrand, string> = {
   principal: "Nexo",
-  paralela: "Crónica solitaria",
+  paralela: "Campaña solitaria",
   vivo: "Acción en vivo",
 };
 

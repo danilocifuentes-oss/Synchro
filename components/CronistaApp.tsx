@@ -1188,7 +1188,7 @@ function CronistaAppInner() {
             ) : (
               <div className="flex min-h-[min(40vh,22rem)] flex-col items-center justify-center gap-4 rounded-xl border border-white/[0.08] bg-black/45 px-6 py-10 text-center">
                 <p className="max-w-sm font-sans text-sm leading-relaxed text-neutral-400">
-                  La crónica solitaria usa tu ficha activa. Elige o crea un personaje en CRIPTA.
+                  La campaña solitaria usa tu ficha activa. Elige o crea un personaje en CRIPTA.
                 </p>
                 <button
                   type="button"
