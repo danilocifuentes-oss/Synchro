@@ -6,7 +6,12 @@ import type { CharacterSheet, ClanId } from "@/lib/character";
 import { CLAN_OPTIONS } from "@/lib/character";
 import { disciplineLabel } from "@/lib/sereno";
 import { ensureSoloProgress, isSoloSupportedClan } from "@/lib/soloCampaign/bootstrap";
-import { getSoloChapter, getSoloScene } from "@/lib/soloCampaign/chapters";
+import {
+  getSoloChapter,
+  getSoloScene,
+  resolveChapter08EntrySceneId,
+  resolveChapter09EntrySceneId,
+} from "@/lib/soloCampaign/chapters";
 import { checkOptionAvailability, listFailReasons, resolveSoloScenePlayerText } from "@/lib/soloCampaign/requirementEngine";
 import { listPlayerVisibleSoloOptions } from "@/lib/soloCampaign/optionPresentation";
 import { loadSheet, normalizeCharacterSheet, saveSheet } from "@/lib/character";
@@ -30,6 +35,14 @@ import {
 import { applyPreRollResourceCost, soloOptionUsesDice } from "@/lib/soloCampaign/rollResourceCost";
 
 const SOLO_BACK_STACK_LIMIT = 120;
+
+/** Texto legible para `chapter_pending_*` (evita "CONTINUAR EN CHAPTER03"). */
+function pendingChapterButtonLabel(chapterId: string): string {
+  const m = /^chapter(\d+)$/i.exec(chapterId);
+  if (m) return `Capítulo ${Number(m[1])}`;
+  if (chapterId === "epilogue") return "Epílogo";
+  return chapterId.replace(/_/g, " ");
+}
 
 function sumReputationDeltas(list: SoloOption["effects"]): number {
   if (!list?.length) return 0;
@@ -326,7 +339,7 @@ function SoloCampaignScreen({
 
   useEffect(() => {
     transitionLockRef.current = false;
-  }, [progress.sceneId, progress.chapterId]);
+  }, [progress.sceneId, progress.chapterId, progress.updatedAt]);
 
   useEffect(() => {
     setPendingReveal(null);
@@ -338,7 +351,6 @@ function SoloCampaignScreen({
     if (!scene) return [];
     return listPlayerVisibleSoloOptions(scene.options, sheet, progress);
   }, [scene, sheet, progress]);
-  const missingOptionCount = Math.max(0, 4 - (scene?.options?.length ?? 0));
   const pendingNextChapter = getPendingNextChapter(progress);
   const scenePanels = useMemo(() => {
     if (!scene) return { context: null as string | null, narration: "" };
@@ -674,11 +686,6 @@ function SoloCampaignScreen({
                   ) : null}
 
                   <div className="space-y-2.5">
-                    {missingOptionCount > 0 ? (
-                      <p className="border border-amber-900/50 bg-amber-950/25 px-3 py-2 text-[11px] text-amber-200">
-                        Faltan {missingOptionCount} opciones para cumplir el mínimo de 4 en esta escena ({scene.id}).
-                      </p>
-                    ) : null}
                     {displayedOptions.map((option) => {
                       const parsedOpt = parseOptionIaPanels(option.text);
 
@@ -761,8 +768,14 @@ function SoloCampaignScreen({
                           if (transitionLockRef.current) return;
                           transitionLockRef.current = true;
                           const target = pendingNextChapter;
-                          const targetStart = getSoloChapter(target)?.startSceneId;
-                          if (!targetStart) {
+                          const targetChapter = getSoloChapter(target);
+                          const targetStart =
+                            target === "chapter08"
+                              ? resolveChapter08EntrySceneId(progress.flags)
+                              : target === "chapter09"
+                                ? resolveChapter09EntrySceneId(progress.flags)
+                                : (targetChapter?.startSceneId ?? null);
+                          if (!targetChapter || !targetStart) {
                             transitionLockRef.current = false;
                             return;
                           }
@@ -782,7 +795,7 @@ function SoloCampaignScreen({
                         }}
                         className="border border-neutral-700 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-neutral-400 hover:border-neutral-500"
                       >
-                        Continuar en {pendingNextChapter}
+                        Continuar en {pendingChapterButtonLabel(pendingNextChapter)}
                       </button>
                       <button
                         type="button"

@@ -36,6 +36,12 @@ function evalRequirement(req: SoloRequirement, sheet: CharacterSheet, progress?:
         ? { available: true }
         : { available: false, reason: `${req.attribute} ${current}/${req.minLevel}.` };
     }
+    case "humanityMin": {
+      const h = Number(progress?.humanity ?? 0);
+      return h >= req.min
+        ? { available: true }
+        : { available: false, reason: `Humanidad ${h}/${req.min}.` };
+    }
     case "flag": {
       const expected = req.equals ?? true;
       const current = progress?.flags?.[req.flag] === true;
@@ -100,6 +106,7 @@ function isStoryRouteFailureReason(reason: string | undefined): boolean {
     reason === "Condición excluyente activa." ||
     reason === "Ninguna condición alternativa cumplida." ||
     reason.startsWith("Bandera ") ||
+    reason.startsWith("Humanidad ") ||
     reason.startsWith("Ruta ") ||
     reason.startsWith("Estado ")
   );

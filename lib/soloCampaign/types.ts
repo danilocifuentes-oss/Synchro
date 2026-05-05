@@ -10,6 +10,8 @@ export type SoloRequirement =
   | { type: "discipline"; discipline: DisciplineKey; minLevel: number }
   | { type: "skill"; skill: string; minLevel: number }
   | { type: "attribute"; attribute: keyof CharacterSheet["attributes"]; minLevel: number }
+  /** Humanidad actual del progreso de crónica (V5 típico 7–10 = «alta»). */
+  | { type: "humanityMin"; min: number }
   | { type: "flag"; flag: string; equals?: boolean }
   | { type: "route"; route: SoloRouteId | SoloRouteId[] }
   | { type: "stateTag"; tag: string }

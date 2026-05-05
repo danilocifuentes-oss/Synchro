@@ -18,26 +18,45 @@ const reqRutaViñaSinAncla = {
   ],
 };
 
+const reqUmbralDesafioInes = {
+  type: "all" as const,
+  requirements: [
+    reqRutaAnclaCatedral,
+    { type: "flag" as const, flag: "desafio_abierto_corte", equals: true },
+  ],
+};
+
+const reqUmbralLlegadaSigilosa = {
+  type: "all" as const,
+  requirements: [
+    reqRutaAnclaCatedral,
+    { type: "flag" as const, flag: "aproximacion_sigilosa_plaza", equals: true },
+    { type: "not" as const, requirement: { type: "flag" as const, flag: "desafio_abierto_corte", equals: true } },
+  ],
+};
+
+const reqUmbralAnclaSinMarcaLlegada = {
+  type: "all" as const,
+  requirements: [
+    reqRutaAnclaCatedral,
+    { type: "not" as const, requirement: { type: "flag" as const, flag: "desafio_abierto_corte", equals: true } },
+    { type: "not" as const, requirement: { type: "flag" as const, flag: "aproximacion_sigilosa_plaza", equals: true } },
+  ],
+};
+
 export const chapter06: SoloChapter = {
   id: "chapter06",
   title: "Santiago en Cenizas · CAPÍTULO 6: EL NODO DE LA CATEDRAL",
   description:
-    "Bloque 1/2: nave y descenso a la cripta ancla cuando vienes por la ruta plaza; cadena paralela Viña preservada tras bandera de citación.",
+    "Secuencia continua desde plaza hasta la cámara del Ancla, colapso del subsuelo y bifurcación hacia Santiago en llamas o ascenso del tirano.",
   startSceneId: "n6_0",
   scenes: [
     {
       id: "n6_0",
       chapterId: "chapter06",
-      title: "[ESCENA 6.0]: EL SILENCIO DE LAS NAVES / ENTRADA AL ACTO VI",
-      text: `NARRACIÓN: El capítulo mueve tu sangre donde la crónica exige nuevo tablero — convite sellado viña contra la piedra viva donde 1814 aún marca el pulso.`,
+      title: "[ESCENA 6.0]: EL UMBRAL DE LA FE Y LA SANGRE",
+      text: `Las bifurcaciones previas decidieron si hoy pisas viña fuera del cordón o piedra donde el año 1814 sigue reclamando pulso.`,
       contextLeadInByState: [
-        {
-          requirement: reqRutaAnclaCatedral,
-          text: `CONTEXTO: Interior de la Catedral Metropolitana de Santiago. Plaza de Armas. 01:15 AM.
-NARRACIÓN: La atmósfera dentro de la Catedral es tan densa que se puede saborear.
-
-El edificio no está vacío. Doña Inés y un destacamento de la Guardia de la Torre custodian el altar mayor. Bajo el suelo de mármol, las vibraciones de la Hiel son tan fuertes que hacen que tus colmillos duelan. Sientes el Ancla: un objeto o ser de inmenso poder místico que mantiene el Vínculo de Sangre de toda la ciudad.`,
-        },
         {
           requirement: reqRutaViñaSinAncla,
           text: `Viña del Silencio, alrededores de Buin. Madrugada profunda. El aire huele a tierra mojada y lavanda.
@@ -58,11 +77,35 @@ Elena te conduce hasta una casona patronal: "Adentro, la sangre es más espesa q
           text: "Los vitrales parecen susurrar nombres de vástagos olvidados.",
         },
         {
+          flag: "secreto_del_primogenito",
+          text: "En las juntas entre arco y tímpano te vuelve la frase del Tratado sobre la sangre del primogénito: el edificio parece apoyarse más en acuerdo viejo que en cantería.",
+        },
+        {
           flag: "guerra_abierta_principe",
           text: "El olor a incienso y cera fría te resulta insultante.",
         },
       ],
       contextVariantByState: [
+        {
+          requirement: reqUmbralDesafioInes,
+          text: `Si vienes con la bandera desafio_abierto_corte, las pesadas puertas de bronce muestran paso amplio y Doña Inés ocupa el eje del pasillo central rodeada de guardias cuya disciplina obliga a manos pegadas al arma.`,
+        },
+        {
+          requirement: reqUmbralLlegadaSigilosa,
+          text: `Si vienes por aproximacion_sigilosa_plaza, te deslizaste por una puerta lateral de madera menos vigilada y entraste en incienso rancio, penumbra de santos tallados y ecos que aplazan juicio.`,
+        },
+        {
+          requirement: reqUmbralAnclaSinMarcaLlegada,
+          text: `Tu llegada no pasó antes por ese escenario ostentoso ni por el boquete lateral disimulado: el umbral nave te recibe igual con el mismo campo magnético en los colmillos.`,
+        },
+        {
+          requirement: reqRutaAnclaCatedral,
+          text: `CONTEXTO: Atrio y naves laterales de la Catedral Metropolitana. 01:15 AM.
+
+NARRACIÓN: La Catedral se alza como fortaleza de piedra que parece repeler el neón de afuera. El aire del atrio resulta espeso: un magnetismo hace latir los colmillos por instinto antes de orden.
+
+El interior es caverna de mármol y oro gastado por siglos. Las columnas de granito muestran un revestimiento negro brillante que sube desde el suelo como enredaderas: Hiel casi limpio, vivo. El sistema de filtración que viste en la Estación Mapocho fue derivación menor; aquí late el centro del organismo.`,
+        },
         {
           requirement: {
             type: "all",
@@ -98,11 +141,11 @@ Elena te conduce hasta una casona patronal: "Adentro, la sangre es más espesa q
           type: "discipline",
           discipline: "presence",
           disciplineTitle: "Presencia",
-          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: Invocar tu majestad para sembrar la duda en los guardias de Inés antes de ser detectado.
+          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: Invocar tu autoridad para que la Guardia de la Torre dude de sus órdenes.
 
-PUENTE: Te ocultas tras una columna de granito. Proyectas una sensación de fatalidad inminente, un peso espiritual que sugiere que el tiempo del Príncipe ha terminado. Los guardias empiezan a mirarse entre sí; sus manos tiemblan sobre sus armas…
+PUENTE: Te detienes en el centro de la nave. Proyectas fatalidad inminente, peso espiritual que insinúa fin de ciclo para el Príncipe. «No soy intruso: soy quien hereda lo que este edificio oculta. Apártense o queden como ceniza en un capítulo que ya no les pertenece», sentencias sin alzar la voz más de lo necesario.
 
-CONSECUENCIA: Debilitas la resolución de la guardia. En un combate posterior, dos de ellos desertarán o dudarán al disparar.
+CONSECUENCIA: La voluntad de varios guardias flaquea; dos bajan armas y te dejan avanzar hacia el altar sin disparo inmediato, pero Inés te fija como blanco prioritario.
 
 RESULTADO: willpowerDelta: -1 | setFlag: duda_en_la_guardia | IR A [ESCENA 6.1]`,
           requirement: { type: "discipline", discipline: "presence", minLevel: 1 },
@@ -114,51 +157,58 @@ RESULTADO: willpowerDelta: -1 | setFlag: duda_en_la_guardia | IR A [ESCENA 6.1]`
           id: "n6_0_cat_sigilo",
           type: "skill",
           skill: "sigilo",
-          text: `OPCIÓN B [HABILIDAD: SIGILO]: Infiltrarte por el triforio (galerías superiores) para llegar al altar sin ser visto.
+          text: `OPCIÓN B [HABILIDAD: SIGILO]: Moverte por el triforio (galerías superiores) y observar el ritual desde las alturas.
 
-PUENTE: Escalas por las molduras laterales con la agilidad de un depredador. Desde las alturas observas el despliegue de Inés. Notas que el Ancla está conectada a cuatro cables de cobre que bajan hacia la cripta arzobispal…
+PUENTE: Escalas molduras laterales hasta fundir sombra con estatuas petreas. Debajo del vitral miras desde galerías altas cómo una figura se alinea frente al altar mayor y vierte sangre sobre rejilla de cobre que pierde líquido violeta hacia hueco que huele a cripta.
 
-CONSECUENCIA: Identificas los puntos débiles del sistema místico sin alertar a los enemigos.
+CONSECUENCIA: Memorizas disposición de enemigos y nodos donde el vínculo ancla físicamente antes del asalto final.
 
-RESULTADO: setFlag: puntos_debiles_visto | IR A [ESCENA 6.1]`,
+RESULTADO: setFlag: vision_superior_ritual | IR A [ESCENA 6.1]`,
           requirement: { type: "skill", skill: "sigilo", minLevel: 1 },
           visibilityRequirement: reqRutaAnclaCatedral,
           nextSceneId: "n6_cat_cripta",
-          effects: [{ type: "setFlag", flag: "puntos_debiles_visto" }],
+          effects: [
+            { type: "setFlag", flag: "vision_superior_ritual" },
+            { type: "setFlag", flag: "puntos_debiles_visto" },
+          ],
         },
         {
-          id: "n6_0_cat_dialogo",
+          id: "n6_0_cat_baptisterio",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Caminar por el pasillo central y exigir una última audiencia con Inés.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Si tienes entrada_por_catacumbas, empujar desde abajo una losa hacia una capilla lateral del baptisterio.
 
-PUENTE: No te ocultas. Tus pasos resuenan en el mármol. Inés se gira; su rostro de porcelana se contrae en una mueca de incredulidad. «Aún puedes elegir el bando correcto, Inés. El Príncipe se alimenta de nosotros, no solo de los humanos», dices con calma.
+PUENTE: El conducto técnico te escupe tras losa mohosa. Sales cubierto de polvo mineral y lámina de Hiel que prende al olfato Ventrue tras la línea de guardias antes de tiempo. El efecto sorpresa es tuyo; el perfume morado te marca frente a otro vástago.
 
-CONSECUENCIA: Ganas tiempo para que tus aliados (si tienes al Senescal o a Gato) se posicionen, pero quedas expuesto en el centro de la nave.
+CONSECUENCIA: Cortas perímetro ceremonial sin parlamentar antes; tensión física siguiente es inmediata.
+
+RESULTADO: setFlag: flanqueo_desde_el_suelo | IR A [ESCENA 6.1]`,
+          requirement: { type: "flag", flag: "entrada_por_catacumbas", equals: true },
+          visibilityRequirement: reqRutaAnclaCatedral,
+          nextSceneId: "n6_cat_cripta",
+          effects: [{ type: "setFlag", flag: "flanqueo_desde_el_suelo" }],
+        },
+        {
+          id: "n6_0_cat_residual",
+          type: "dialogue",
+          text: `OPCIÓN D [CAMINO ESTÁNDAR - ACCIÓN]: Avanzar sobre mármol sin Presencia destacada ni triforio ni trampilla previa marcada —apretar centro de nave en tensión diplomática mínima.
+
+PUENTE: Tus pasos suenan igual que llevan semanas sonando dentro de esta cabeza hasta el cansancio. Inés registra llegada antes de que decidas táctica alta.
+
+CONSECUENCIA: Mantienes exposición alta sin ventaja nueva de vigilancia desde arriba.
 
 RESULTADO: setFlag: parlamento_bajo_tension | IR A [ESCENA 6.1]`,
           requirement: { type: "none" },
-          visibilityRequirement: reqRutaAnclaCatedral,
+          visibilityRequirement: {
+            type: "all",
+            requirements: [
+              reqRutaAnclaCatedral,
+              { type: "not", requirement: { type: "discipline", discipline: "presence", minLevel: 1 } },
+              { type: "not", requirement: { type: "skill", skill: "sigilo", minLevel: 1 } },
+              { type: "not", requirement: { type: "flag", flag: "entrada_por_catacumbas", equals: true } },
+            ],
+          },
           nextSceneId: "n6_cat_cripta",
           effects: [{ type: "setFlag", flag: "parlamento_bajo_tension" }],
-        },
-        {
-          id: "n6_0_cat_hiel",
-          type: "dialogue",
-          text: `OPCIÓN D [RIESGO - INSTINTO]: Si tienes sangre_corrupta, liberar un pulso de Hiel para apagar las luces y sembrar el caos.
-
-PUENTE: Te concentras en el veneno de tus venas. Lo proyectas hacia el sistema eléctrico de la Catedral. Las luces estallan en una lluvia de chispas púrpuras y la oscuridad total —tu elemento— reclama el recinto.
-
-CONSECUENCIA: Generas un pánico absoluto. Inés pierde el control de sus hombres, pero la corrupción de la Hiel drena tu humanidad.
-
-RESULTADO: hungerDelta: +2 | humanityDelta: -1 | setFlag: caos_purpura | IR A [ESCENA 6.1]`,
-          requirement: { type: "flag", flag: "sangre_corrupta", equals: true },
-          visibilityRequirement: reqRutaAnclaCatedral,
-          nextSceneId: "n6_cat_cripta",
-          effects: [
-            { type: "hungerDelta", delta: 2 },
-            { type: "humanityDelta", delta: -1 },
-            { type: "setFlag", flag: "caos_purpura" },
-          ],
         },
         {
           id: "n6_0_etiqueta",
@@ -217,43 +267,111 @@ RESULTADO: hungerDelta: +2 | humanityDelta: -1 | setFlag: caos_purpura | IR A [E
     {
       id: "n6_cat_cripta",
       chapterId: "chapter06",
-      title: "[ESCENA 6.1]: EL DESCENSO A LA CRIPTA",
-      text: `CONTEXTO: La entrada a la cripta arzobispal, tras el altar.
-NARRACIÓN: El conflicto ha estallado o se ha evitado momentáneamente. La puerta de la cripta, una pesada losa de bronce, está entreabierta. Un brillo violáceo emana desde las profundidades, acompañado de un sonido de succión rítmico, como un corazón gigante latiendo bajo la piedra.
+      title: "[ESCENA 6.1]: EL DESCENSO A LA VERDAD",
+      text: `CONTEXTO: El altar mayor y umbral visible hacia la cripta arzobispal.
+NARRACIÓN: El gesto antes —diplomático o brutal— te dejó ante el altar como borde físico nuevo. Una figura con sello de la Corte se retiró hacia la violeta tras el volumen coral; dicen algunos gestos cerrados que el Príncipe bajó primero hasta la cámara donde late el pacto.
 
-Sin la llave tallada en medallón sagrado, vas a tener que romper otro tipo de cerradura; con ella, el hierro puede ceder sin anunciar tu descenso.`,
+Doña Inés queda como última cara visible antes del bronce. El suelo vibra con latido espeso casi líquido. La puerta hacia la cripta está entreabierta y escupe un fulgor violáceo que dibuja sombras incorrectas contra las bóvedas.`,
       flagAppends: [
         {
+          flag: "duda_en_la_guardia",
+          text: "Varios uniformes cortos de la Torre siguen dubitativos después de la nave; tu gesto aún trabaja dentro de esa grieta antes del bronce siguiente.",
+        },
+        {
+          flag: "vision_superior_ritual",
+          text: "Desde la galería ya trazaste dónde apuntaba la rejilla y quién ocupaba eje ceremonial: el descenso ahora es mapa cargado antes de pie.",
+        },
+        {
+          flag: "flanqueo_desde_el_suelo",
+          text: "El polvo y la lámina violeta siguen prendidos a la tela; otro vampiro cercano huele ese rastro antes de que tú ocupes sombra nueva.",
+        },
+        {
           flag: "llave_medallon_criptas",
-          text: "Encajas la llave del medallón: el vástago obedece sin estruendo antes de pisar escalera.",
+          text: "Todavía cargas la llave del medallón: encaja mejor de lo cómodo como contrapeso ante el bronce apenas rozado en el borde nuevo.",
+        },
+        {
+          flag: "mapa_catacumbas_regalo",
+          text: "La nota gris marca accesos y respiradero; confirma que no estás en calle equivocada aun cuando el rumor subterráneo cambie tonalidad violeta contra metal.",
         },
       ],
       options: [
         {
-          id: "n6_cat_dom_peon",
+          id: "n6_cat_domines",
           type: "discipline",
           discipline: "dominate",
           disciplineTitle: "Dominación",
-          text: `OPCIÓN A [DISCIPLINA: DOMINACIÓN]: Ordenar a un guardia capturado que baje primero para activar cualquier trampa.
+          text: `OPCIÓN A [DISCIPLINA: DOMINACIÓN]: Forzar a Doña Inés a reconocer que el Príncipe la está usando como amortiguador del ritual.
 
-PUENTE: Atrapas a uno de los hombres de Inés en el caos. Tus ojos se clavan en los suyos: «Baja y despeja el camino. No te detengas hasta que tu corazón explote», ordenas con una frialdad absoluta.
+PUENTE: Avanzas hasta donde su espacio deja margen táctico y le clavas mirada antes de recurrir a etiqueta alta. Susurras algo que apenas ella debe oír: «No busca salvar Santiago; se alimenta de nosotros hasta vaciar la institución. Mírame y admite cómo te arrastra ese vínculo al abismo». El eco de nave lo amortigua bastante antes de llegar al oído de la ciudad mortal.
 
-CONSECUENCIA: Sacrificas a un peón para asegurar tu entrada, eliminando a los Guardianes Silenciosos (ghouls deformes) que custodiaban el primer nivel de la cripta.
+CONSECUENCIA: Inés vacila; no firma aliado abierto pero cede medio frente suficiente para que no enfrentes ese filo solo ante el hueco inicial.
 
-RESULTADO: humanityDelta: -1 | setFlag: camino_despejado_peon | IR A [BLOQUE 2]`,
+RESULTADO: setFlag: neutralizacion_ines | IR A [BLOQUE 2]`,
           requirement: { type: "discipline", discipline: "dominate", minLevel: 1 },
           nextSceneId: "n6_cat_ancla",
-          effects: [{ type: "humanityDelta", delta: -1 }, { type: "setFlag", flag: "camino_despejado_peon" }],
+          effects: [{ type: "setFlag", flag: "neutralizacion_ines" }],
         },
         {
-          id: "n6_cat_sabotaje_cobre",
+          id: "n6_cat_sello_primogenito",
           type: "skill",
           skill: "perspicacia",
-          text: `OPCIÓN B [HABILIDAD: PERSPICACIA]: Si tienes puntos_debiles_visto, sabotear los cables de cobre antes de bajar.
+          text: `OPCIÓN B [HABILIDAD: PERSPICACIA]: Si tienes secreto_del_primogenito, recitar el nombre tabú ante runas vivas para colapsar mecanismo místico de la entrada.
 
-PUENTE: Antes de descender, usas la daga de plata para cortar las conexiones de cobre que alimentan el Ancla. El brillo violáceo disminuye en intensidad y escuchas un grito inhumano proveniente de abajo…
+PUENTE: Alto frente al bronce apenas separado marcas un instante inútil para respiración y pronuncias la orden silábica que la Biblioteca entregó entre líneas manchadas. Los grabados opacos chispean y se apagan por tramos; el metal gime como un resorte fuera de escala humana.
 
-CONSECUENCIA: Debilitas el poder místico del Príncipe en toda la ciudad. Los vástagos de Santiago sienten cómo su vínculo de sangre empieza a fracturarse.
+CONSECUENCIA: El hueco cede sin baño de sangre automático programado; quién espera abajo pierde un segundo de ventaja preparada.
+
+RESULTADO: setFlag: sello_roto_con_nombre | IR A [BLOQUE 2]`,
+          requirement: {
+            type: "all",
+            requirements: [
+              { type: "skill", skill: "perspicacia", minLevel: 1 },
+              { type: "flag", flag: "secreto_del_primogenito", equals: true },
+            ],
+          },
+          nextSceneId: "n6_cat_ancla",
+          effects: [{ type: "setFlag", flag: "sello_roto_con_nombre" }],
+        },
+        {
+          id: "n6_cat_daga_guardias",
+          type: "dialogue",
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Abrir paso físico ante último cordón usando daga cortesana sobre ghouls y armas cortas cercanas puerta bronce.
+
+PUENTE: Se acaban los discursos antes de la piedra nueva. Mueves la plata donde el metal busca la carne defensora del protocolo institucional convertido en músculo híbrido. El tramo deja sangre nueva sobre el mármol y un grito apenas amortiguado por la bóveda.
+
+CONSECUENCIA: Frontera queda despejada pero estruendo baja telegrama violeta antes de tiempo hacia sala interior y tu bolsa física muestra nueva merma antes de enfrentamiento mayor.
+
+RESULTADO: healthDamageDelta: -1 | IR A [BLOQUE 2]`,
+          requirement: { type: "none" },
+          nextSceneId: "n6_cat_ancla",
+          effects: [{ type: "healthDamageDelta", delta: 1 }],
+        },
+        {
+          id: "n6_cat_pulso_corrupto",
+          type: "dialogue",
+          text: `OPCIÓN D [RIESGO - INSTINTO]: Si tienes sangre_corrupta, inyectar pulso vivo de tu Hiel dentro del tatuaje ceremonial del umbral mismo.
+
+PUENTE: Las palmas encuentran frío antes de que discurra filosofía práctica sobre el metal. Permites que algo violeta y domado avance desde tus venas hacia la herrumbre institucional. El resultado no es abrir: es podrir el plano físico mismo hasta que un pigmento verdoso y negro deja un boquete irregular hacia lo que sigue.
+
+CONSECUENCIA: Ganas acceso físico rápido a cambio de un tramo más de Humanidad gastada y otra marca del mismo veneno.
+
+RESULTADO: humanityDelta: -1 | setFlag: acceso_corrupto | IR A [BLOQUE 2]`,
+          requirement: { type: "flag", flag: "sangre_corrupta", equals: true },
+          nextSceneId: "n6_cat_ancla",
+          effects: [
+            { type: "humanityDelta", delta: -1 },
+            { type: "setFlag", flag: "acceso_corrupto" },
+          ],
+        },
+        {
+          id: "n6_cat_legacy_sabotaje",
+          type: "skill",
+          skill: "perspicacia",
+          text: `OPCIÓN E [MARCA LEGADA]: Si llegaste antes con puntos_debiles_visto (sin nueva visión desde triforio), cortar alimentación de cobre visible antes del descenso.
+
+PUENTE: La daga de plata encuentra punto débil que ya ubicaste antes de estar aquí mismo: planchas sangrantes violeta sueltan intensidad suficiente para que rumor del subsuelo se queje igual que animal herido institucional.
+
+CONSECUENCIA: Santiago siente mismo pinchazo nuevo en vínculo aunque ceremonial siga vivo arriba todavía esperando siguiente movimiento físico grande.
 
 RESULTADO: willpowerDelta: -1 | setFlag: vinculo_fracturado | IR A [BLOQUE 2]`,
           requirement: {
@@ -261,48 +379,26 @@ RESULTADO: willpowerDelta: -1 | setFlag: vinculo_fracturado | IR A [BLOQUE 2]`,
             requirements: [
               { type: "skill", skill: "perspicacia", minLevel: 1 },
               { type: "flag", flag: "puntos_debiles_visto", equals: true },
+              {
+                type: "not",
+                requirement: { type: "flag", flag: "vision_superior_ritual", equals: true },
+              },
             ],
           },
           nextSceneId: "n6_cat_ancla",
           effects: [{ type: "willpowerDelta", delta: -1 }, { type: "setFlag", flag: "vinculo_fracturado" }],
-        },
-        {
-          id: "n6_cat_bajar_daga",
-          type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Bajar con la daga en alto, preparado para cualquier horror físico.
-
-PUENTE: Ignoras los riesgos sutiles. Bajas las escaleras de caracol con la determinación de un verdugo. La temperatura desciende drásticamente y el aire se vuelve metálico. Llegas al nivel de los sarcófagos mientras las sombras intentan atraparte…
-
-CONSECUENCIA: Entras en combate directo con los guardianes de la cripta. Conservas tu integridad moral pero sufres daños físicos.
-
-RESULTADO: daño físico (integridad) | IR A [BLOQUE 2]`,
-          requirement: { type: "none" },
-          nextSceneId: "n6_cat_ancla",
-          effects: [{ type: "healthDamageDelta", delta: 1 }],
-        },
-        {
-          id: "n6_cat_senescal_frente",
-          type: "dialogue",
-          text: `OPCIÓN D [RIESGO - VIOLENCIA]: Si tienes al aliado_senescal_antiguo, dejar que él lidere el asalto.
-
-PUENTE: «Esto es lo que has esperado un siglo. Hazlo», dices. El Senescal se lanza a la oscuridad con una furia suicida, diezmando a los defensores de la cripta mientras avanzas por su estela de ceniza.
-
-CONSECUENCIA: Limpias la cripta rápidamente, pero el Senescal muere en el proceso, dejándote solo frente al Ancla.
-
-RESULTADO: setFlag: senescal_sacrificado | IR A [BLOQUE 2]`,
-          requirement: { type: "flag", flag: "aliado_senescal_antiguo", equals: true },
-          nextSceneId: "n6_cat_ancla",
-          effects: [{ type: "setFlag", flag: "senescal_sacrificado" }],
         },
       ],
     },
     {
       id: "n6_cat_ancla",
       chapterId: "chapter06",
-      title: "[ESCENA 6.2]: EL ANCLA DE 1814",
+      title: "[ESCENA 6.2]: LA CÁMARA DEL ANCLA",
       text: `CONTEXTO: Cámara secreta bajo la cripta arzobispal. Las paredes de piedra están cubiertas por una red de capilares de cobre que pulsan con Hiel líquida.
 
-NARRACIÓN: El aire aquí es casi líquido, cargado de una estática que eriza el vello de tu nuca. En el centro de la sala, dentro de un sarcófago de cristal reforzado con alquimia, no hay un objeto, sino un ser: la vástago primigenia. Es una Ventrue de la época de la Reconquista, mantenida en un estado de letargo eterno y agonía constante. Su sangre se drena y filtra por el sistema de cobre para alimentar el Vínculo de Sangre que mantiene la ciudad bajo el puño del Príncipe.`,
+NARRACIÓN: El descenso por la escalera de caracol termina en una estancia que exhala un frío antinatural. El aire es denso, cargado de estática que hace brillar la Hiel con un pulso violáceo rítmico. En el centro, dentro de un sarcófago de cristal reforzado con alquimia colonial, yace la Vástago primigenia. No es reliquia: es un ser vivo —o lo que queda de uno—, una Ventrue de la época de la Reconquista en un letargo de agonía. Su sangre se drena y filtra por el cobre para alimentar el Vínculo que somete a la ciudad.
+
+El Príncipe de Santiago te espera junto al cristal, con las manos manchadas de la misma sustancia que corrompe el río. «Es el precio del orden», dice con voz quebrada. «Sin este sacrificio, nuestra casta se devoraría a sí misma en una semana. Tú ya viste la verdad. Ahora decide si eres el verdugo o el nuevo carcelero».`,
       flagAppends: [
         {
           flag: "vinculo_fracturado",
@@ -312,6 +408,18 @@ NARRACIÓN: El aire aquí es casi líquido, cargado de una estática que eriza e
           flag: "camino_despejado_peon",
           text: "El uniforme del guardia que enviabas delante yace disuelto junto a la entrada, consumido por la seguridad mística de la cámara.",
         },
+        {
+          flag: "neutralizacion_ines",
+          text: "Inés ocupó medio discurso y luego cedió física sin aplaudir: ese hueco marca tu ingreso antes de que el pacto revise lealtades con lapicero.",
+        },
+        {
+          flag: "sello_roto_con_nombre",
+          text: "El nombre impronunciable donde la Biblioteca te enseñó a leer cortó un trámite de sangre en bronce antes de tiempo; abajo perdieron medio pulso ritual preparado contra intrusión.",
+        },
+        {
+          flag: "acceso_corrupto",
+          text: "Lo que llamaste entrada es carcoma violeta institucional: el hueco apesta igual que cicatriz en metal vivo y te recuerda lo que decidiste cargar antes de llegar hasta el sarcófago.",
+        },
       ],
       options: [
         {
@@ -319,13 +427,13 @@ NARRACIÓN: El aire aquí es casi líquido, cargado de una estática que eriza e
           type: "discipline",
           discipline: "fortitude",
           disciplineTitle: "Fortaleza",
-          text: `OPCIÓN A [DISCIPLINA: FORTALEZA]: Romper el sarcófago de cristal a mano para liberar a la primigenia.
+          text: `OPCIÓN A [DISCIPLINA: FORTALEZA]: Romper el sarcófago de cristal con tus propias manos para liberar a la primigenia de su tormento.
 
-PUENTE: Ignoras el dolor de las descargas místicas del cristal. Golpeas una y otra vez con una fuerza que fractura tus propios huesos hasta que el cristal estalla…
+PUENTE: Ignoras las descargas místicas que saltan del cristal. Golpeas con fuerza que fractura hueso y disciplina hasta que el envase estalla. El fluido púrpura inunda el suelo y el Vínculo de Santiago se rompe con un grito psíquico que resuena en cada vástago con linaje bajo el pacto.
 
-CONSECUENCIA: Liberas al Ancla. El vínculo de sangre de Santiago se rompe de golpe: cientos de vástagos recuperan el albedrío y la Corte se hunde en el caos.
+CONSECUENCIA: Liberas al Ancla y el sistema de la Corte colapsa al instante: noche de caos y libre albedrío, pero el Príncipe te cargará con todo el odio que aún le quede en el cuerpo.
 
-RESULTADO: pérdida física severa | setFlag: vinculo_destruido | IR A [ESCENA 6.END]`,
+RESULTADO: healthDamageDelta: -2 | setFlag: vinculo_destruido | IR A [ESCENA 6.END]`,
           requirement: { type: "discipline", discipline: "fortitude", minLevel: 1 },
           nextSceneId: "n6_cat_cierre",
           effects: [{ type: "healthDamageDelta", delta: 2 }, { type: "setFlag", flag: "vinculo_destruido" }],
@@ -335,11 +443,11 @@ RESULTADO: pérdida física severa | setFlag: vinculo_destruido | IR A [ESCENA 6
           type: "discipline",
           discipline: "dominate",
           disciplineTitle: "Dominación",
-          text: `OPCIÓN B [DISCIPLINA: DOMINACIÓN]: Intentar suplantar al Príncipe y reclamar el control del sistema para ti.
+          text: `OPCIÓN B [DISCIPLINA: DOMINACIÓN]: Intentar suplantar la voluntad del Príncipe y reclamar el control del sistema para ti.
 
-PUENTE: No buscas destruir el sistema, sino heredarlo. Te conectas a los cables de cobre, dejas que la Hiel fluya por tus venas y proyectas tu voluntad sobre la primigenia. «Ahora yo soy tu voz. Yo soy Santiago», ruges por dentro…
+PUENTE: No buscas destruir el orden, sino heredarlo. Te acercas al circuito de filtración y, con tu propia sangre, intentas sintonizar tu voluntad con la de la primigenia. «El Príncipe falló. Yo soy el nuevo cauce», ruges dentro del cráneo, obligando a los capilares de cobre a reconocer tu autoridad.
 
-CONSECUENCIA: No rompes el vínculo: lo desvías hacia ti. Te conviertes en el usurpador, con un poder inmenso y una corrupción que no te soltará.
+CONSECUENCIA: No rompes el vínculo: lo desvías hacia tu persona. Te conviertes en el Usurpador, con poder político enorme y un alma atada a la corrupción eterna de la Hiel.
 
 RESULTADO: hungerDelta: +2 | humanityDelta: -2 | setFlag: usurpador_del_vinculo | IR A [ESCENA 6.END]`,
           requirement: { type: "discipline", discipline: "dominate", minLevel: 1 },
@@ -353,11 +461,11 @@ RESULTADO: hungerDelta: +2 | humanityDelta: -2 | setFlag: usurpador_del_vinculo 
         {
           id: "n6_cat_ancla_daga",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Usar la daga de plata para una eutanasia mística y acabar con el sufrimiento del Ancla.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Usar la daga de plata para una eutanasia mística y cerrar el ciclo de 1814.
 
-PUENTE: Entiendes que este horror no puede seguir. Clavas la daga de la Corte en el corazón de la mujer tras el cristal. La plata bendecida disuelve la magia oscura en un destello blanco que te ciega…
+PUENTE: Entiendes que este horror es la raíz de la enfermedad de Santiago. Clavas la daga de la Corte en el corazón de quien yace tras el cristal. La plata bendita disuelve la magia en un destello blanco que devora la Hiel y apaga el latido del subsuelo.
 
-CONSECUENCIA: La primigenia muere en paz. El sistema de Hiel se colapsa; el Príncipe queda vulnerable y sin su fuente, y tú sales exhausto.
+CONSECUENCIA: La primigenia muere en paz; el sistema se apaga por completo y el Príncipe pierde fuente visible de poder. Tú quedas al borde del letargo moral y físico.
 
 RESULTADO: willpowerDelta: -2 | setFlag: ancla_muerta | IR A [ESCENA 6.END]`,
           requirement: { type: "none" },
@@ -367,11 +475,11 @@ RESULTADO: willpowerDelta: -2 | setFlag: ancla_muerta | IR A [ESCENA 6.END]`,
         {
           id: "n6_cat_ancla_diablerie",
           type: "dialogue",
-          text: `OPCIÓN D [RIESGO - INSTINTO]: Si tienes sangre_corrupta, absorber la esencia de la primigenia para evolucionar.
+          text: `OPCIÓN D [RIESGO - INSTINTO]: Si tienes sangre_corrupta, devorar la esencia de la primigenia para evolucionar.
 
-PUENTE: La Bestia reconoce una fuente ancestral. Te alimentas de la vástago en letargo: no solo sangre, sino recuerdos de 1814 y potencia de linaje…
+PUENTE: La Bestia reconoce una fuente ancestral. No liberas ni gobiernas: consumes. Te alimentas directamente de la vástago en letargo en una diablerie mística que te vuelca siglos de recuerdos y potencia de sangre pavorosa.
 
-CONSECUENCIA: Cometes una diablerie mística. Tu poder sube de golpe, pero la marca del asesino queda en tu aura. Un grito ajeno empieza a repetirse en tu cabeza.
+CONSECUENCIA: Tu poder salta, pero la marca del asesino de almas queda en tu aura. El espíritu de la primigenia vuelve como voz de agonía constante en tu cabeza.
 
 RESULTADO: hungerDelta: -5 | humanityDelta: -3 | setFlag: diablerista_ancestral | IR A [ESCENA 6.END]`,
           requirement: { type: "flag", flag: "sangre_corrupta", equals: true },
@@ -388,32 +496,36 @@ RESULTADO: hungerDelta: -5 | humanityDelta: -3 | setFlag: diablerista_ancestral 
       id: "n6_cat_cierre",
       chapterId: "chapter06",
       title: "[ESCENA 6.END]: EL COLAPSO DEL SUBSUELO",
-      text: `CONTEXTO: La cámara empieza a derrumbarse. El sonido de la piedra cediendo resuena por toda la Catedral.
+      text: `CONTEXTO: La cámara secreta bajo la Catedral. 02:45 AM. Las paredes empiezan a ceder.
 
-NARRACIÓN: El acto ya está hecho. Los cimientos de la soberanía de Santiago no volverán a ser los mismos. Escapas de la cripta justo antes de que el suelo se trague el altar mayor. Al salir a la Plaza de Armas, el aire de la noche es frío y ya no huele a Hiel. A lo lejos, el Palacio Bruna arde. La guerra civil de los vástagos ha comenzado.`,
+NARRACIÓN: El acto ya se consumó. Los cimientos de la soberanía de Santiago han cambiado para siempre. El edificio sobre ti gime mientras el sistema místico que lo sostenía se desintegra. Escapas de la cripta justo antes de que el suelo se trague el altar mayor. En la Plaza de Armas, el aire de la noche es frío y ya no huele a Hiel. A lo lejos, el Palacio Bruna empieza a arder: el vacío de poder desata una guerra civil entre los vástagos de la capital.
+
+BIFURCACIÓN LÓGICA PARA EL ACTO FINAL (CAPÍTULO 7)
+Ruta de la Verdad (vinculo_destruido o ancla_muerta): reunir clanes para el asalto final al palacio en llamas → Santiago en llamas.
+Ruta del Poder (usurpador_del_vinculo o diablerista_ancestral): defender tu nuevo trono contra el Príncipe y los leales que sobrevivan → Ascenso del tirano.`,
       contextVariantByState: [
         {
           requirement: { type: "flag", flag: "vinculo_destruido", equals: true },
-          text: "Sientes un alivio psíquico masivo: el anillo colectivo acaba de soltarse del golpe.",
+          text: "Un alivio psíquico masivo atraviesa plaza y ciudad como ola tardía: el anillo que oprimía vástagos acaba de soltarse.",
         },
         {
           requirement: { type: "flag", flag: "usurpador_del_vinculo", equals: true },
-          text: "Una arrogancia oscura y nueva te sube a la cabeza: el nexo obedece tu pulso, no el del trono anterior.",
+          text: "Una arrogancia oscura y nueva te embriaga mientras el Príncipe cae de rodillas, derrotado: el nexo obedece tu pulso antes que el nombre viejo.",
         },
         {
           requirement: { type: "flag", flag: "ancla_muerta", equals: true },
-          text: "Conservaste el gesto limpio: no rompiste el vínculo a martillazos, lo apagaste con crueldad compasiva; la ciudad aún tiembla igual.",
+          text: "No rompiste el vínculo a martillo abierto; lo pagaste con eutanasia ritual: la ciudad tiembla igual, pero cargas gesto menos ruidoso en la memoria.",
         },
         {
           requirement: { type: "flag", flag: "diablerista_ancestral", equals: true },
-          text: "Llevas dentro un eco de 1814 que no es tuyo; cada paso en la plaza suena doble.",
+          text: "En tu cabeza conviven dos latidos donde antes había uno; cada paso en la plaza devuelve eco que no iniciaste tú.",
         },
       ],
       options: [
         {
           id: "n6_cat_cierre_ch7_llamas",
           type: "dialogue",
-          text: "Capítulo 7 — Santiago en llamas: reunir supervivientes para el asalto final.",
+          text: "Capítulo 7: Santiago en Llamas — reunir a los clanes para el asalto final al palacio.",
           requirement: { type: "none" },
           visibilityRequirement: {
             type: "any",
@@ -433,7 +545,7 @@ NARRACIÓN: El acto ya está hecho. Los cimientos de la soberanía de Santiago n
         {
           id: "n6_cat_cierre_ch7_tirano",
           type: "dialogue",
-          text: "Capítulo 7 — El ascenso del tirano: defender tu nuevo trono contra el Príncipe y los leales.",
+          text: "Capítulo 7: El Ascenso del Tirano — defender tu trono contra el Príncipe y los leales supervivientes.",
           requirement: { type: "none" },
           visibilityRequirement: {
             type: "any",

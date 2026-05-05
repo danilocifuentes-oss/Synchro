@@ -6,8 +6,8 @@ import { chapter04 } from "./chapter04";
 import { chapter05 } from "./chapter05";
 import { chapter06 } from "./chapter06";
 import { chapter07 } from "./chapter07";
-import { chapter08 } from "./chapter08";
-import { chapter09 } from "./chapter09";
+import { chapter08, resolveChapter08EntrySceneId } from "./chapter08";
+import { chapter09, resolveChapter09EntrySceneId } from "./chapter09";
 import { soloEpilogue } from "./epilogue";
 
 export const SOLO_CHAPTERS: SoloChapter[] = [
@@ -22,6 +22,8 @@ export const SOLO_CHAPTERS: SoloChapter[] = [
   chapter09,
   soloEpilogue,
 ];
+
+export { resolveChapter08EntrySceneId, resolveChapter09EntrySceneId };
 
 export function getSoloChapter(chapterId: string): SoloChapter | null {
   return SOLO_CHAPTERS.find((c) => c.id === chapterId) ?? null;

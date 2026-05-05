@@ -1,81 +1,84 @@
 import type { SoloChapter } from "@/lib/soloCampaign/types";
 
+/** Tramo urbano con logística de cuatro ruedas desde Mapocho (cap. 3). */
+const reqTrayectoBibliotecaConVehiculo = {
+  type: "any" as const,
+  requirements: [
+    { type: "flag" as const, flag: "cap3_sedan_blindado", equals: true },
+    { type: "flag" as const, flag: "llegada_vehiculo_corte", equals: true },
+  ],
+};
+
 export const chapter04: SoloChapter = {
   id: "chapter04",
-  title: "Santiago en Cenizas · CAPÍTULO 4: ARCHIVOS DESENTERRADOS",
+  title:
+    "Santiago en Cenizas · CRÓNICA VENTRUE (V3.1) · CAPÍTULO 4: ARCHIVOS DESENTERRADOS (BLOQUE 2/2)",
   description:
-    "Biblioteca Nacional, Archivista, emboscada de Inés en la hemeroteca y tres derroteros hacia el siguiente tramo de la crónica.",
+    "Trayecto a la Biblioteca y Archivista; emboscada de la «Limpieza» en hemeroteca; huida hacia Santa Lucía, Lastarria o periferia —salida táctica hacia el Capítulo 5.",
   startSceneId: "n4_0",
   scenes: [
     {
       id: "n4_0",
       chapterId: "chapter04",
-      title: "[ESCENA 4.0]: EL SANTUARIO DEL PAPEL",
-      text: `CONTEXTO: Biblioteca Nacional de Chile, Alameda. 02:30 AM. El edificio neoclásico parece un mausoleo custodiado por estatuas que, bajo la luz de la luna, parecen juzgar a los transeúntes.
-NARRACIÓN: La Biblioteca Nacional no es solo un depósito de libros; para la Camarilla de Santiago, es el archivo de sus pecados más antiguos.
-
-El aroma a papel viejo, cera de abejas y madera de roble es casi asfixiante. El silencio es absoluto, interrumpido solo por el zumbido de los sistemas de climatización. Buscas la sección de "Incunables Coloniales", donde el nombre "Archivista" —mencionado por la prisionera o deducido de tus notas— cobra sentido.`,
+      title: "[ESCENA 4.0]: EL TRAYECTO POR LA CALLE BANDERA",
       contextLeadInByState: [
         {
-          requirement: {
-            type: "any",
-            requirements: [
-              { type: "flag", flag: "nexo_sellado", equals: true },
-              { type: "flag", flag: "chapter04_route_politica", equals: true },
-            ],
-          },
-          text: "Entras por la puerta de servicios con una llave magnética oficial: la ruta del nexo sellado te ha valido logística de palacio, no teatro de cerco.",
-        },
-        {
-          requirement: {
-            type: "any",
-            requirements: [
-              { type: "flag", flag: "sangre_corrupta", equals: true },
-              { type: "flag", flag: "chapter04_route_renegado", equals: true },
-            ],
-          },
-          text: "Te has colado por una ventana del segundo piso, sintiendo que la Hiel en tus venas vibra en sintonía con el conocimiento oculto que duerme en los anaqueles.",
+          requirement: reqTrayectoBibliotecaConVehiculo,
+          text: "Aún tienes motor bajo mano: recorres Bandera y el costado de Ahumada con el sedán a mínimo, esquivando el alba que sube por el cerro como filo.",
         },
       ],
+      text: `CONTEXTO: Eje Calle Bandera / Paseo Ahumada hacia la Alameda. 05:55 AM. El cielo empieza a teñirse de un azul profundo previo al alba.
+
+NARRACIÓN: El trayecto desde el sector del Mercado Central hacia el corazón administrativo es una carrera contra el sol. Caminas cuando no hay otro recurso —o conduces hasta donde el cordón urbano permite estacionar— mientras los edificios gubernamentales proyectan sombras que parecen alargarse para atraparte antes de llegar al cruce con la Alameda y Mac Iver.
+
+Doña Inés se separa de ti cerca de la Plaza de Armas. «Yo me encargo de que el Príncipe reciba un informe preliminar que te favorezca», susurra al oído. «Tú entra en la Biblioteca. Busca la sección de Incunables Coloniales. Si el nombre "Archivista" es real, estará ahí: protegiendo lo que esta ciudad prefiere olvidar». Se diluye entre la madrugada con la rutina del que lleva años moviendo fichas públicas antes del turno mortal.
+
+Por fin te plantas ante la majestuosa fachada de la Biblioteca Nacional: neoclásico frío como mausoleo, estatuas en la cumbrera como juezas silenciosas de tu sangre.`,
       contextVariantByState: [
         {
-          requirement: { type: "flag", flag: "chapter04_route_politica", equals: true },
-          text: "La credencial pesa en el bolsillo: el Palacio devolvió orden a la superficie, pero el papel guarda lo que la Torre prefiere omitir.",
-        },
-        {
-          requirement: { type: "flag", flag: "archivista_entrega_corte", equals: true },
-          text: "Si entregaste a la vástago a la Corte, llegas con el peso visible de un rescate incompleto: el Archivista no puede ignorarte.",
-        },
-        {
-          requirement: { type: "flag", flag: "archivista_prisionera_oculta", equals: true },
-          text: "Si la guardaste oculta, cruzas el umbral solo con medio verdad en la lengua y la marca de Mapocho aún rozando tus sentidos.",
+          requirement: { type: "flag", flag: "marca_de_la_hiel", equals: true },
+          text: "Las luces de los semáforos te provocan una punzada detrás de los ojos, casi migrañosica; cada cruce hace sentir la calle más delgada, como si pudieras ver el esqueleto del asfalto entre la neblina violeta contenida.",
         },
         {
           requirement: {
-            type: "all",
+            type: "any",
             requirements: [
-              { type: "flag", flag: "chapter04_route_medica", equals: true },
-              { type: "not", requirement: { type: "flag", flag: "archivista_entrega_corte", equals: true } },
-              { type: "not", requirement: { type: "flag", flag: "archivista_prisionera_oculta", equals: true } },
+              { type: "flag", flag: "archivista_entrega_corte", equals: true },
+              { type: "flag", flag: "archivista_prisionera_oculta", equals: true },
             ],
           },
-          text: "Si vienes de la ruta médica (sin bifurcación de Archivista explícita), te cuelas por ventilación con la cicatriz de la Hiel todavía pulsando.",
+          text: "Lo de Mapocho te sigue a la zancada —la decisión sobre la vástago pesa igual que los pasos hacia Montt.",
         },
         {
-          requirement: { type: "flag", flag: "chapter04_route_renegado", equals: true },
-          text: "Si vienes de la ruta del renegado, finges normalidad hasta la primera sombra bibliotecaria; por dentro la Bestia cuenta otra historia.",
+          requirement: {
+            type: "any",
+            requirements: [
+              { type: "flag", flag: "chapter04_route_politica", equals: true },
+              { type: "flag", flag: "nexo_sellado", equals: true },
+            ],
+          },
+          text: "La llave institucional y el sello del nexo brillan ante la ciudad despierta: la Corte abrió el camino oficial; el papel es lo que puede derribarte igual.",
+        },
+        {
+          requirement: {
+            type: "any",
+            requirements: [
+              { type: "flag", flag: "chapter04_route_renegado", equals: true },
+              { type: "flag", flag: "sangre_corrupta", equals: true },
+            ],
+          },
+          text: "Caminas erguido bajo glamour de disciplina contenida pero la corrupción en venas marca latidos que no siguen ritmo de semáforo.",
         },
         {
           requirement: {
             type: "all",
             requirements: [
               { type: "flag", flag: "sabotaje_exitoso", equals: true },
-              { type: "not", requirement: { type: "flag", flag: "chapter04_route_medica", equals: true } },
-              { type: "not", requirement: { type: "flag", flag: "chapter04_route_politica", equals: true } },
-              { type: "not", requirement: { type: "flag", flag: "chapter04_route_renegado", equals: true } },
+              { type: "not", requirement: { type: "flag", flag: "marca_de_la_hiel", equals: true } },
+              { type: "not", requirement: { type: "flag", flag: "sangre_corrupta", equals: true } },
             ],
           },
-          text: "Si vienes sin credencial dorada ni trato de médico pero con el sabotaje en el alma, el edificio te recibe igual: papel, polvo y pactos viejoimpresos.",
+          text: "El sabotaje en la estación dejó ceniza moral en tus manos antes de llegar aquí —el mármol de la escalinata igual te recibirá hueso contra hueso político.",
         },
       ],
       options: [
@@ -84,63 +87,44 @@ El aroma a papel viejo, cera de abejas y madera de roble es casi asfixiante. El 
           type: "discipline",
           discipline: "dominate",
           disciplineTitle: "Dominación",
-          text: `OPCIÓN A [DISCIPLINA: DOMINACIÓN]: Someter al guardia nocturno para que te guíe a la "Bóveda de los Excluidos".
+          text: `OPCIÓN A [DISCIPLINA: DOMINACIÓN]: Someter al guardia de la entrada lateral para que ignore tu presencia y te entregue su pase maestro.
 
-PUENTE: Encuentras al vigilante en su ronda. Antes de que pueda alzar su linterna, atrapas su mirada. "No ves a nadie. Solo tienes un deseo: abrir la puerta del sótano tres y esperar afuera", ordenas con una voz que no admite réplica.
+PUENTE: Te acercas al vigilante que fuma en la puerta de servicio sobre calle Mac Iver. Atrapas su mirada antes de que pida identificación. «No estoy aquí. Solo tienes un deseo: entrar en la garita, cerrar los ojos y contar hasta mil», ordenas con el peso de siglos de mando.
 
-CONSECUENCIA: Accedes a la zona restringida sin activar alarmas, pero el guardia quedará con una cicatriz mental que podría ser detectada por otros.
+CONSECUENCIA: Entras sin activar alarmas físicas. El guardia no recordará tu rostro, pero su mente quedará marcada por el trance.
 
-RESULTADO: hungerDelta: +1 | setFlag: acceso_boveda_limpio | IR A [ESCENA 4.1]`,
+RESULTADO: hungerDelta: +1 | setFlag: entrada_limpia_biblioteca | IR A [ESCENA 4.1]`,
           requirement: { type: "discipline", discipline: "dominate", minLevel: 1 },
           nextSceneId: "n4_1",
-          effects: [{ type: "hungerDelta", delta: 1 }, { type: "setFlag", flag: "acceso_boveda_limpio" }],
+          effects: [{ type: "hungerDelta", delta: 1 }, { type: "setFlag", flag: "entrada_limpia_biblioteca" }],
         },
         {
-          id: "n4_0_investigacion",
+          id: "n4_0_sigilo",
           type: "skill",
-          skill: "investigacion",
-          text: `OPCIÓN B [HABILIDAD: INVESTIGACIÓN]: Localizar el sistema de clasificación secreto oculto en el catálogo público.
+          skill: "sigilo",
+          text: `OPCIÓN B [HABILIDAD: SIGILO]: Infiltrarte por los andamios de restauración de la fachada este.
 
-PUENTE: Te sientas frente a los antiguos ficheros de madera. No buscas por autor, sino por patrones de perforaciones en las tarjetas. Descubres que ciertos libros de historia de 1814 forman una coordenada geográfica que apunta al subsuelo del edificio...
+PUENTE: El ala este del edificio está bajo mantenimiento. Trepar por la estructura metálica y colarte por una ventana del segundo piso —mal sellada— te deposita en una sala de lectura vacía: estanterías hasta el techo, polvo de encuadernación y pasos que no dejan visita en planilla.
 
-CONSECUENCIA: Descifras el código de los fundadores. Encuentras un pasadizo tras una estantería de Derecho Canónico.
+CONSECUENCIA: Evitas todo contacto humano en el perímetro. Para cámaras y rondas pareces un error de sombra, no un nombre en log.
 
-RESULTADO: willpowerDelta: +1 | setFlag: codigo_1814_descifrado | IR A [ESCENA 4.1]`,
-          requirement: { type: "skill", skill: "investigacion", minLevel: 1 },
+RESULTADO: setFlag: infiltracion_fantasma | IR A [ESCENA 4.1]`,
+          requirement: { type: "skill", skill: "sigilo", minLevel: 1 },
           nextSceneId: "n4_1",
-          effects: [{ type: "willpowerDelta", delta: 1 }, { type: "setFlag", flag: "codigo_1814_descifrado" }],
+          effects: [{ type: "setFlag", flag: "infiltracion_fantasma" }],
         },
         {
-          id: "n4_0_forzar",
+          id: "n4_0_etiqueta_corte",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Forzar la entrada al sótano usando la daga de plata como palanca.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - ETIQUETA]: Usar tu identificación de «Consultor de Patrimonio» (otorgada por la Corte) para entrar de forma legal por el acceso principal.
 
-PUENTE: No tienes tiempo para juegos mentales. Localizas la puerta reforzada que lleva a los archivos históricos. Usas la daga de la Corte para forzar el mecanismo. El metal místico corta el acero convencional con un chirrido que resuena en el ala este...
+PUENTE: Presentas credenciales ante el puesto de seguridad. Los guardias están acostumbrados a investigadores nocturnos con respaldo de fundaciones opacas; registran un alias y te dejan pasar. El Salón de Honor devuelve tus pasos amplificados sobre mármol hasta el ascenso hacia las áreas restringidas—
 
-CONSECUENCIA: Entras, pero has activado una alerta silenciosa en el Palacio Bruna. Inés sabe que estás donde no deberías.
+CONSECUENCIA: Tu entrada es legítima, pero el sistema guarda el nombre falso. Si la noche se desordena, sabrán quién firmó la visita.
 
-RESULTADO: setFlag: alerta_biblioteca_activa | IR A [ESCENA 4.1]`,
+RESULTADO: (Avance estándar) | IR A [ESCENA 4.1]`,
           requirement: { type: "none" },
           nextSceneId: "n4_1",
-          effects: [{ type: "setFlag", flag: "alerta_biblioteca_activa" }],
-        },
-        {
-          id: "n4_0_instinto_hiel",
-          type: "dialogue",
-          text: `OPCIÓN D [RIESGO - INSTINTO]: Dejar que la sangre_corrupta te guíe por el rastro del "olor" de la verdad.
-
-PUENTE: Cierras los ojos. La hiel en tu sistema empieza a pulsar. No ves las paredes; ves corrientes de energía oscura que fluyen hacia una habitación específica. Caminas en trance, derribando cualquier obstáculo que se interponga en tu línea recta hacia el origen.
-
-CONSECUENCIA: Encuentras el archivo exacto, pero tu estado errático deja huellas de fluido púrpura en el suelo, imposibles de ocultar.
-
-RESULTADO: hungerDelta: +1 | humanityDelta: -1 | setFlag: rastro_corrupto_biblioteca | IR A [ESCENA 4.1]`,
-          requirement: { type: "flag", flag: "sangre_corrupta", equals: true },
-          nextSceneId: "n4_1",
-          effects: [
-            { type: "hungerDelta", delta: 1 },
-            { type: "humanityDelta", delta: -1 },
-            { type: "setFlag", flag: "rastro_corrupto_biblioteca" },
-          ],
         },
       ],
     },
@@ -148,26 +132,31 @@ RESULTADO: hungerDelta: +1 | humanityDelta: -1 | setFlag: rastro_corrupto_biblio
       id: "n4_1",
       chapterId: "chapter04",
       title: "[ESCENA 4.1]: EL ARCHIVISTA DE LAS SOMBRAS",
-      text: `CONTEXTO: Sala de Restauración de Documentos, subsuelo. Luz de tungsteno amarillenta y mesas llenas de pergaminos.
-NARRACIÓN: En el centro de la habitación, un hombre delgado, con gafas de montura de hierro y una palidez que rivaliza con la tuya, trabaja febrilmente. Es el Archivista. No se asusta al verte; parece que te ha estado esperando desde hace décadas. Sobre su mesa descansa el Tratado de la Viña del Silencio, un documento firmado por los padres de la patria y los primeros Ventrue de Chile.
+      text: `CONTEXTO: Sección de Incunables y Manuscritos —subsuelo de la Biblioteca Nacional—. Luz de tungsteno amarillenta y olor a papel acidificado por el tiempo.
 
-"La Hiel no es un accidente, Embajador", susurra sin despegar la vista del papel. "Es el diezmo. En 1814, Santiago compró su libertad al precio de convertir el Mapocho en un filtro. El Príncipe solo está intentando cobrar los intereses".`,
+NARRACIÓN: El descenso te aleja del pre-alba hasta topar una oficina de restauración. Un hombre de palidez extrema trabaja bajo lámpara de escritorio con gafas de montura de hierro que centellean al menor suspiro. Es el Archivista. Ni alza la vista: como si llevara cuenta regresiva de cuántos minutos tardarías desde Mapocho.
+
+El Tratado de la Viña del Silencio descansa ante él —pergamino amarillo, lacres antiguos— y vibra con la misma calidad incómoda que la Hiel bajo el río cuando la viste moverse donde no debía.
+
+«La sangre de los reyes siempre vuelve a la tierra», murmura él. «El Príncipe no quiere que limpies la estación, Embajador. Quiere que recuperes la llave de su propia cárcel».`,
       options: [
         {
           id: "n4_1_presencia",
           type: "discipline",
           discipline: "presence",
           disciplineTitle: "Presencia",
-          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: Intimidar al Archivista para que te entregue el documento original del Tratado.
+          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: Intimidar al Archivista para que revele la verdad oculta tras el Tratado de 1814.
 
-PUENTE: Te yergues, permitiendo que tu sombra se alargue por las paredes llenas de libros. "No he venido a escuchar parábolas. Dame el documento original o haré que este edificio sea tu pira funeraria", amenazas con una autoridad que hace temblar las estanterías.
+PUENTE: Te yergues, permitiendo que tu sombra cubra la habitación. «No he venido a escuchar profecías de sótano. Explícame qué es el "Ancla" y por qué el Príncipe te teme», exiges con una autoridad que hace que los frascos de tinta sobre la mesa vibren.
 
-CONSECUENCIA: El Archivista te entrega un pergamino sellado con sangre pura. Revela que el Príncipe tiene un "Hermano" atrapado bajo la ciudad.
+CONSECUENCIA: El Archivista confiesa que el Príncipe es un prisionero de un pacto antiguo y que la Hiel es el «exceso» de un ritual de sangre que mantiene a Santiago bajo control.
 
-RESULTADO: setFlag: secreto_del_hermano | IR A [BLOQUE 2]`,
+RESULTADO: willpowerDelta: +1 | setFlag: verdad_del_pacto | IR A [BLOQUE 2]`,
           requirement: { type: "discipline", discipline: "presence", minLevel: 1 },
           nextSceneId: "n4_2",
           effects: [
+            { type: "willpowerDelta", delta: 1 },
+            { type: "setFlag", flag: "verdad_del_pacto" },
             { type: "setFlag", flag: "secreto_del_hermano" },
             { type: "setFlag", flag: "lista_traidores" },
             { type: "setFlag", flag: "lore_cuarentena" },
@@ -175,21 +164,21 @@ RESULTADO: setFlag: secreto_del_hermano | IR A [BLOQUE 2]`,
           ],
         },
         {
-          id: "n4_1_persuasion",
+          id: "n4_1_investigacion",
           type: "skill",
-          skill: "persuasion",
-          text: `OPCIÓN B [HABILIDAD: PERSUASIÓN]: Convencerlo de que tú eres el único que puede detener lo que se ha desatado.
+          skill: "investigacion",
+          text: `OPCIÓN B [HABILIDAD: INVESTIGACIÓN]: Analizar los documentos de la mesa por tu cuenta mientras él habla.
 
-PUENTE: "El Príncipe me envió a limpiar el nexo, pero yo busco la cura, no solo el orden", dices con una sinceridad calculada. "Dime la verdad y te sacaré de este agujero antes de que Inés venga a silenciarte".
+PUENTE: Ignoras su misticismo y centras la mirada en mapas desplegados. Los puntos de mayor concentración de Hiel dibujan un patrón que converge hacia la Catedral Metropolitana y una nota marginal nombra a un «Hermano de Sangre» sacrificado.
 
-CONSECUENCIA: El Archivista confía en ti. Te revela que la Hiel es la sangre de un Antediluviano que duerme bajo el cerro Santa Lucía.
+CONSECUENCIA: Obtienes coordenadas tácticas precisas; el nido en Mapocho fue sólo un filtro y el verdadero pivote territorial queda ante la Plaza de Armas.
 
-RESULTADO: setFlag: aliado_archivista | IR A [BLOQUE 2]`,
-          requirement: { type: "skill", skill: "persuasion", minLevel: 1 },
+RESULTADO: setFlag: coordenadas_catedral | IR A [BLOQUE 2]`,
+          requirement: { type: "skill", skill: "investigacion", minLevel: 1 },
           nextSceneId: "n4_2",
           effects: [
-            { type: "setFlag", flag: "aliado_archivista" },
-            { type: "setFlag", flag: "traicion_ines" },
+            { type: "setFlag", flag: "coordenadas_catedral" },
+            { type: "setFlag", flag: "mapa_tuneles_catedral" },
             { type: "setFlag", flag: "lore_cuarentena" },
             { type: "setFlag", flag: "novel_ch4_lineage_mapped" },
           ],
@@ -197,39 +186,40 @@ RESULTADO: setFlag: aliado_archivista | IR A [BLOQUE 2]`,
         {
           id: "n4_1_dialogo",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Preguntar por la relación entre el "Sello de 1814" y el "Hombre del Traje Gris".
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Negociar su seguridad a cambio de la entrega de los documentos originales.
 
-PUENTE: "He visto marcas en la estación. Un círculo tachado. ¿Quién es el hombre que vigila mi despertar?", preguntas. El Archivista palidece. "Él es el Cobrador. El que no tiene nombre. Si él ha vuelto, el Tratado ya no vale nada".
+PUENTE: «Inés viene en camino. Si me entregas el Tratado original ahora, puedo asegurar que el Príncipe te perdone la vida», ofreces con pragmatismo. El Archivista te mira con lástima: «Nadie se salva de este contrato, joven Ventrue».
 
-CONSECUENCIA: Obtienes información sobre la tercera facción, pero el Archivista se niega a contarte más por puro terror.
+CONSECUENCIA: Te entrega una copia del Tratado, pero se guarda el original. Ganas un aliado temporal, pero te falta la prueba física definitiva.
 
-RESULTADO: setFlag: info_el_cobrador | IR A [BLOQUE 2]`,
+RESULTADO: setFlag: aliado_archivista | IR A [BLOQUE 2]`,
           requirement: { type: "none" },
           nextSceneId: "n4_2",
           effects: [
-            { type: "setFlag", flag: "info_el_cobrador" },
+            { type: "setFlag", flag: "aliado_archivista" },
             { type: "setFlag", flag: "lore_cuarentena" },
             { type: "setFlag", flag: "novel_ch4_lineage_mapped" },
           ],
         },
         {
-          id: "n4_1_violencia",
+          id: "n4_1_corrupta_1814",
           type: "dialogue",
-          text: `OPCIÓN D [RIESGO - VIOLENCIA]: Arrebatar el documento por la fuerza y registrar la oficina tú mismo.
+          text: `OPCIÓN D [RIESGO - INSTINTO]: Si tienes setFlag: sangre_corrupta, dejar que el veneno de tus venas «lea» la tinta del documento.
 
-PUENTE: No confías en las palabras de un viejo loco. Lo apartas de un empujón y empiezas a saquear los cajones. Encuentras un mapa de la red de túneles que conecta la Biblioteca con la Catedral de Santiago.
+PUENTE: Tocas el pergamino. La Hiel en tu sistema reacciona y te inundan visiones —gritos amortiguados, hierro ceremonial y una Santiago colonial tomada por fuego—
 
-CONSECUENCIA: Obtienes la ruta de escape y el siguiente punto del nexo, pero el Archivista logra activar una alarma de pánico manual.
+CONSECUENCIA: Comprendes la naturaleza del Ancla, pero la visión te desorienta y la Bestia se agita ante la injusticia del pacto.
 
-RESULTADO: humanityDelta: -1 | setFlag: mapa_tuneles_catedral | IR A [BLOQUE 2]`,
-          requirement: { type: "none" },
+RESULTADO: humanityDelta: -1 | setFlag: vision_1814 | IR A [BLOQUE 2]`,
+          requirement: { type: "flag", flag: "sangre_corrupta", equals: true },
           nextSceneId: "n4_2",
           effects: [
             { type: "humanityDelta", delta: -1 },
-            { type: "setFlag", flag: "mapa_tuneles_catedral" },
+            { type: "setFlag", flag: "vision_1814" },
+            { type: "setFlag", flag: "verdad_del_pacto" },
+            { type: "setFlag", flag: "secreto_del_hermano" },
             { type: "setFlag", flag: "lore_cuarentena" },
             { type: "setFlag", flag: "novel_ch4_lineage_mapped" },
-            { type: "setFlag", flag: "lista_traidores" },
           ],
         },
       ],
@@ -238,16 +228,31 @@ RESULTADO: humanityDelta: -1 | setFlag: mapa_tuneles_catedral | IR A [BLOQUE 2]`
       id: "n4_2",
       chapterId: "chapter04",
       title: "[ESCENA 4.2]: LA EMBOSCADA EN LOS ANAQUELES",
-      text: `CONTEXTO: Pasillos de la Hemeroteca, Biblioteca Nacional. La iluminación de emergencia baña los estantes de un rojo tenue.
-NARRACIÓN: El conocimiento tiene un precio. Justo cuando te dispones a abandonar la sala del Archivista, las puertas de roble de la salida principal se bloquean. Un equipo de operativos de la Corte —ghouls de élite bajo el mando directo de Inés— entra por los tragaluces superiores.`,
+      text: `CONTEXTO: Pasillos de la Hemeroteca y Salón de Lectura de la Biblioteca Nacional. La iluminación de emergencia tiñe los anaqueles de un rojo tenue.
+
+NARRACIÓN: El silencio reglamentario se rompe con el estampido del cristal en las claraboyas sobre tu cabeza. No es policía ciudadana cualquiera: es un equipo de «Limpieza» de la Corte —ghouls de élite vestidos en negro táctico y equipados con silenciadores— irrumpiendo desde arriba.
+
+Bajan antes de que cierre del todo la red ante la entrada principal. Doña Inés no necesariamente te mintió antes de dispersarse en Plaza de Armas, pero sí omitió bastante —para el Príncipe, un testigo es tan peligroso como el secreto mismo—
+
+Hay que abandonar la Biblioteca antes de que sellen todas las salidas o antes de que el sol, ya asomando tras el Cerro Santa Lucía, te convierta en ceniza.`,
+      contextVariantByState: [
+        {
+          requirement: { type: "flag", flag: "infiltracion_fantasma", equals: true },
+          text: "Como llegaste como infiltración fantasma, oyes primero la coordinación táctica antes de que el despliegue te localice contra la vista de un encuadre convencional de cámara.",
+        },
+        {
+          requirement: { type: "flag", flag: "alerta_biblioteca_activa", equals: true },
+          text: "Si arrastras alerta desde entradas forzadas o sensores disparados antes, irrumpen ya disparando contra la zona de la mesa donde estuvo el Archivista apenas segundos atrás.",
+        },
+      ],
       flagAppends: [
         {
-          flag: "alerta_biblioteca_activa",
-          text: "La alerta que disparaste al forzar el sótano ya hizo su trabajo: están en posición de tiro antes de que completes el giro.",
+          flag: "entrada_limpia_biblioteca",
+          text: "Entraste limpio de registro inicial: ese margen cuenta cuando cruzas la hemeroteca bajo sirena táctica porque no aparecías en libro de guardia como visitante habitual.",
         },
         {
           flag: "aliado_archivista",
-          text: "El Archivista, sin alzar la voz, te señala con la barbilla un montacargas de libros oculto detrás de una fila de periódicos del siglo XIX.",
+          text: "El Archivista, sin mover apenas la mandíbula, te señaló antes el montacargas de libros detrás del periódico decimonónico donde el papel hace barrera táctica igual que piedra apenas empujas el carro viejo contra el cerco nuevo.",
         },
       ],
       options: [
@@ -256,11 +261,11 @@ NARRACIÓN: El conocimiento tiene un precio. Justo cuando te dispones a abandona
           type: "discipline",
           discipline: "fortitude",
           disciplineTitle: "Fortaleza",
-          text: `OPCIÓN A [DISCIPLINA: FORTALEZA]: Avanzar frontalmente a través del fuego cruzado para forzar la salida.
+          text: `OPCIÓN A [DISCIPLINA: FORTALEZA]: Avanzar frontalmente por el pasillo central, usando los estantes metálicos como escudo.
 
-PUENTE: No te escondes. Tu piel se vuelve tan dura como la piedra del edificio. Las balas de los operativos rebotan en tu traje mientras caminas hacia ellos con una parsimonia aterradora, usando los estantes metálicos como escudos móviles...
+PUENTE: No te escondes. Tu piel se endurece hasta adquirir la densidad del granito. Las balas de los ghouls impactan en ti, pero apenas logran rasgar el traje. Avanzas con una parsimonia aterradora, derribando los estantes pesados sobre los tiradores para abrirte camino hasta la salida hacia la Alameda.
 
-CONSECUENCIA: Logras salir por la puerta principal tras eliminar a los guardias en combate cercano.
+CONSECUENCIA: Sales por la puerta principal después de atravesar la resistencia a quemarropa.
 
 RESULTADO: healthDamageDelta: -1 | setFlag: escape_por_fuerza | IR A [ESCENA 4.END]`,
           requirement: { type: "discipline", discipline: "fortitude", minLevel: 1 },
@@ -272,11 +277,11 @@ RESULTADO: healthDamageDelta: -1 | setFlag: escape_por_fuerza | IR A [ESCENA 4.E
           type: "discipline",
           discipline: "dominate",
           disciplineTitle: "Dominación",
-          text: `OPCIÓN B [DISCIPLINA: DOMINACIÓN]: Ordenar a los operativos que se ataquen entre ellos aprovechando la confusión.
+          text: `OPCIÓN B [DISCIPLINA: DOMINACIÓN]: Ordenar al líder del equipo de asalto que se vuelva contra sus propios hombres.
 
-PUENTE: Te ocultas en la penumbra. Esperas a que el líder del equipo dé la orden de avance y proyectas tu voluntad sobre él. "Tus hombres son traidores. Elimínalos", susurras con una potencia que anula su raciocinio...
+PUENTE: Te parapetas tras un pilar de mármol. Cuando el líder ordena flanqueo, proyectas tu voluntad con un golpe mental. «Tus hombres son traidores del Sabat. ¡Elimínalos!», lanzas sin alzar la voz en el mundo físico pero con estruendo en la suya.
 
-CONSECUENCIA: Creas una distracción sangrienta que te permite escabullirte mientras los ghouls se masacran entre sí.
+CONSECUENCIA: El caos sangriento te cubre la retirada: bajas por escaleras de servicio mientras los operativos se masacran entre sí en el pasillo de la Hemeroteca.
 
 RESULTADO: hungerDelta: +1 | setFlag: masacre_biblioteca | IR A [ESCENA 4.END]`,
           requirement: { type: "discipline", discipline: "dominate", minLevel: 1 },
@@ -286,110 +291,108 @@ RESULTADO: hungerDelta: +1 | setFlag: masacre_biblioteca | IR A [ESCENA 4.END]`,
         {
           id: "n4_2_montacargas",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN / SIGILO]: Usar el montacargas de libros para descender a los túneles de servicio.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Escapar por el montacargas de libros hacia el túnel de servicio ligado al Metro.
 
-PUENTE: Sigues la indicación del Archivista o tu propio instinto. Te deslizas por el estrecho hueco del montacargas justo cuando las granadas aturdidoras estallan en la sala. Caes en un sótano lleno de tuberías de vapor y humedad...
+PUENTE: Sigues la indicación que te dio el Archivista —o tu memoria táctica cuando no hubo tiempo de palabras—. Entras en el hueco angosto del montacargas manual; caes en un sótano oscuro que enlaza túneles de drenaje antiguos y, desde ahí, pasillos de mantenimiento hacia la estación Santa Lucía.
 
-CONSECUENCIA: Escapas sin ser visto, pero pierdes el rastro del Archivista, quien queda a merced de la Corte.
+CONSECUENCIA: Sales sin registrar huella ante los sistemas rutinarios del edificio, pero pierdes el contacto con el Archivista y debes abandonar parte del equipo pesado para no quedar trabado entre tubos y rejillas.
 
 RESULTADO: setFlag: escape_subterraneo | IR A [ESCENA 4.END]`,
           requirement: { type: "none" },
           nextSceneId: "n4_end",
           effects: [{ type: "setFlag", flag: "escape_subterraneo" }],
         },
-        {
-          id: "n4_2_colapso_hiel",
-          type: "dialogue",
-          text: `OPCIÓN D [RIESGO - INSTINTO]: Usar la sangre_corrupta para "sentir" las debilidades estructurales del techo y provocar un derrumbe.
-
-PUENTE: La Hiel en tus venas vibra. Golpeas un pilar de carga con una fuerza que no es tuya. El techo cede, sepultando a los perseguidores bajo toneladas de escombros y tomos históricos...
-
-CONSECUENCIA: Bloqueas la persecución permanentemente, pero destruyes gran parte de la historia que venías a proteger.
-
-RESULTADO: humanityDelta: -1 | setFlag: destruccion_archivos | IR A [ESCENA 4.END]`,
-          requirement: { type: "flag", flag: "sangre_corrupta", equals: true },
-          nextSceneId: "n4_end",
-          effects: [{ type: "humanityDelta", delta: -1 }, { type: "setFlag", flag: "destruccion_archivos" }],
-        },
       ],
     },
     {
       id: "n4_end",
       chapterId: "chapter04",
-      title: "[ESCENA 4.END]: LA CIUDAD BAJO LA CIUDAD",
-      text: `CONTEXTO: Salida de alcantarillado que desemboca cerca de la Iglesia de San Francisco. 04:45 AM.
-NARRACIÓN: Estás fuera del edificio, pero ya no estás en la superficie de Santiago. Te encuentras en un punto de no retorno.
+      title: "[ESCENA 4.END]: LA HUIDA AL REFUGIO",
+      text: `CONTEXTO: Calles aledañas al Cerro Santa Lucía / barrio Lastarria. 06:15 de la mañana. La luz solar ya es una amenaza real en los tejados.
 
-Has dejado de ser un simple ejecutor para convertirte en alguien que conoce el pecado original de la ciudad. El sol está cerca, y necesitas un refugio que no sea controlado por el Príncipe.
-
-BIFURCACIÓN DE SALIDA (CRÓNICA)
-documento del Hermano → Capítulo 5 Sangre y tierra; la Viña en datos queda tras el tramo siguiente.
-alerta biblioteca → busca y captura, refugio anarquista (chapter05_route_refugio_ceniza).
-aliado_archivista → mensaje / nodo Lastarria–Catedral (chapter05_route_nodo_catedral).`,
+NARRACIÓN: Sales a la superficie por una alcantarilla o por una puerta de servicio apenas registrada. El aire de la mañana es peligrosamente nítido. Necesitas sombra y un lugar para entrar en letargo antes de que el sol termine de subir.`,
       contextVariantByState: [
         {
-          requirement: { type: "flag", flag: "secreto_del_hermano", equals: true },
-          text: "El documento que arrebataste o negociaste vibra con una energía que tira de ti hacia la Catedral y, al mismo tiempo, hacia la idea de la Viña del Silencio como próximo tablero.",
-        },
-        {
-          requirement: { type: "flag", flag: "mapa_tuneles_catedral", equals: true },
-          text: "El mapa que arrancaste a la fuerza de la oficina calza con esta boca de túnel: sabes dónde no estarán las patrullas de Inés, al menos unos minutos.",
-        },
-        {
-          requirement: { type: "flag", flag: "escape_por_fuerza", equals: true },
-          text: "El eco del combate en la hemeroteca te sigue en los tímpanos; saliste por arriba, no por el honor.",
+          requirement: {
+            type: "any",
+            requirements: [
+              { type: "flag", flag: "verdad_del_pacto", equals: true },
+              { type: "flag", flag: "coordenadas_catedral", equals: true },
+            ],
+          },
+          text: "Lo que trajiste bajo plano vale más guardado vivo que ostentado sobre la mesa: Lastarria ofrece mezcla de rumor y alcantarilla antes del sol alto.",
         },
         {
           requirement: { type: "flag", flag: "masacre_biblioteca", equals: true },
-          text: "Detrás de ti, el silencio vuelve demasiado pronto: el precio de la distracción pesa en el aire.",
+          text: "Las hemerotecas siguen echando ceniza reputacional: cualquier ejecutor de Torre puede leerte como traidor si no cambias ritmo antes del próximo cerco institucional.",
+        },
+        {
+          requirement: { type: "flag", flag: "escape_por_fuerza", equals: true },
+          text: "Corres por la calle Mac Iver con el sol quemando la nuca hasta encontrar un vehículo, un portón entreabierto o un callejón que te conceda sombra unos minutos antes del amanecer completo.",
         },
         {
           requirement: { type: "flag", flag: "escape_subterraneo", equals: true },
-          text: "El vapor te ha devuelto a la ciudad bajo la ciudad; el Archivista quedó arriba, solo con Inés.",
+          text: "Apareces en un patio interior en Lastarria; a pocas cuadras está el Palacio Bruna, pero también es territorio hostil donde la Corte marca presencia y el rumor corre rápido.",
         },
         {
-          requirement: { type: "flag", flag: "destruccion_archivos", equals: true },
-          text: "Bajo el polvo imaginado de siglos, una verdad queda enterrada contigo: elegiste bloquear la Corte con escombros, no con argumentos.",
+          requirement: {
+            type: "all",
+            requirements: [
+              { type: "flag", flag: "aliado_archivista", equals: true },
+              {
+                type: "not",
+                requirement: {
+                  type: "any",
+                  requirements: [
+                    { type: "flag", flag: "escape_por_fuerza", equals: true },
+                    { type: "flag", flag: "escape_subterraneo", equals: true },
+                  ],
+                },
+              },
+            ],
+          },
+          text: "La pista del piso franco en Villavicencio vuelve antes de que el sol reclame cada techo.",
+        },
+        {
+          requirement: {
+            type: "all",
+            requirements: [
+              { type: "not", requirement: { type: "flag", flag: "aliado_archivista", equals: true } },
+              {
+                type: "not",
+                requirement: {
+                  type: "any",
+                  requirements: [
+                    { type: "flag", flag: "escape_subterraneo", equals: true },
+                    { type: "flag", flag: "escape_por_fuerza", equals: true },
+                  ],
+                },
+              },
+            ],
+          },
+          text: "Sin ese dato solo queda el trayecto largo bajo el alba hacia la Viña del Silencio afuera del cordón urbano.",
+        },
+        {
+          requirement: { type: "flag", flag: "mapa_tuneles_catedral", equals: true },
+          text: "Todavía llevas el mapa que conecta el archivo subterráneo con la traza hacia la Catedral.",
         },
       ],
       options: [
         {
-          id: "n4_end_ruta_vina",
+          id: "n4_end_ruta_nodo",
           type: "dialogue",
-          text: `Seguir el tirón del documento antes que el día te ate a otro altar: sangre y tierra en Buin antes de la siguiente escala.
+          text: `Prioridad: esconder la información en Lastarria antes de que el sol te ate al centro.
 
-CONSECUENCIA: Tomas el primer tramo tras la Biblioteca bajo otro tipo de cobijo; lo que sigue será el Arco Sangre y tierra del capítulo siguiente.
-
-RESULTADO: chapter_pending_chapter05`,
-          requirement: { type: "flag", flag: "secreto_del_hermano", equals: true },
-          nextSceneId: "n4_end",
-          effects: [{ type: "setFlag", flag: "chapter_pending_chapter05" }],
-        },
-        {
-          id: "n4_end_ruta_refugio_ceniza",
-          type: "dialogue",
-          text: `Meterse en la fricción de la ciudad: refugio con los anarquistas (busca y captura de la Corte).
-
-CONSECUENCIA: Inés te ha puesto nombre en lista; solo el humo de la barricada disimula tu sombra.
-
-RESULTADO: chapter05_route_refugio_ceniza | fugitivo_corte | chapter_pending_chapter05`,
-          requirement: { type: "flag", flag: "alerta_biblioteca_activa", equals: true },
-          nextSceneId: "n4_end",
-          effects: [
-            { type: "setFlag", flag: "chapter05_route_refugio_ceniza" },
-            { type: "setFlag", flag: "fugitivo_corte" },
-            { type: "setFlag", flag: "chapter_pending_chapter05" },
-          ],
-        },
-        {
-          id: "n4_end_ruta_nodo_catedral",
-          type: "dialogue",
-          text: `Abrir el mensaje anónimo: coordenada en Lastarria, nodo hacia la Catedral.
-
-CONSECUENCIA: El Archivista te alcanza en el aire digital antes de que Inés selle el centro.
+CONSECUENCIA: Tomas el lateral hacia el siguiente tramo con la Catedral todavía como idea magnética sobre el material que conservas.
 
 RESULTADO: chapter05_route_nodo_catedral | coordenada_lastarria | chapter_pending_chapter05`,
-          requirement: { type: "flag", flag: "aliado_archivista", equals: true },
+          requirement: {
+            type: "any",
+            requirements: [
+              { type: "flag", flag: "verdad_del_pacto", equals: true },
+              { type: "flag", flag: "coordenadas_catedral", equals: true },
+            ],
+          },
           nextSceneId: "n4_end",
           effects: [
             { type: "setFlag", flag: "chapter05_route_nodo_catedral" },
@@ -398,16 +401,97 @@ RESULTADO: chapter05_route_nodo_catedral | coordenada_lastarria | chapter_pendin
           ],
         },
         {
+          id: "n4_end_ruta_tierra",
+          type: "dialogue",
+          text: `Huir hacia la periferia Buin / Viña con el cuerpo marcado por la salida frontal.
+
+CONSECUENCIA: Sangre y tierra quedan como marco antes de volver a mirar el centro desde lejos.
+
+RESULTADO: chapter05_route_huida_periferia | chapter_pending_chapter05`,
+          requirement: { type: "flag", flag: "escape_por_fuerza", equals: true },
+          nextSceneId: "n4_end",
+          effects: [
+            { type: "setFlag", flag: "chapter05_route_huida_periferia" },
+            { type: "setFlag", flag: "chapter_pending_chapter05" },
+          ],
+        },
+        {
+          id: "n4_end_ruta_renegado",
+          type: "dialogue",
+          text: `Ante la masacre en la hemeroteca, la Corte puede leerte como traidor si no cortas distancia con Inés.
+
+CONSECUENCIA: Vas fugitivo hacia una sombra que no parezca celda institucional.
+
+RESULTADO: chapter05_route_renegado_biblioteca | fugitivo_corte | chapter_pending_chapter05`,
+          requirement: { type: "flag", flag: "masacre_biblioteca", equals: true },
+          nextSceneId: "n4_end",
+          effects: [
+            { type: "setFlag", flag: "chapter05_route_renegado_biblioteca" },
+            { type: "setFlag", flag: "fugitivo_corte" },
+            { type: "setFlag", flag: "chapter_pending_chapter05" },
+          ],
+        },
+        {
+          id: "n4_end_ruta_refugio_legacy",
+          type: "dialogue",
+          text: `Refugio entre anarquistas del cordón: una alerta antigua en la Biblioteca te empujó lejos de credenciales limpias.
+
+RESULTADO: chapter05_route_refugio_ceniza | fugitivo_corte | chapter_pending_chapter05`,
+          requirement: {
+            type: "all",
+            requirements: [
+              { type: "flag", flag: "alerta_biblioteca_activa", equals: true },
+              { type: "not", requirement: { type: "flag", flag: "masacre_biblioteca", equals: true } },
+            ],
+          },
+          nextSceneId: "n4_end",
+          effects: [
+            { type: "setFlag", flag: "chapter05_route_refugio_ceniza" },
+            { type: "setFlag", flag: "fugitivo_corte" },
+            { type: "setFlag", flag: "chapter_pending_chapter05" },
+          ],
+        },
+        {
+          id: "n4_end_ruta_vina_legacy",
+          type: "dialogue",
+          text: `Seguir el tirón del secreto del Hermano sin combate principal en la salida de la Alameda.
+
+RESULTADO: chapter_pending_chapter05`,
+          requirement: {
+            type: "all",
+            requirements: [
+              { type: "flag", flag: "secreto_del_hermano", equals: true },
+              {
+                type: "not",
+                requirement: {
+                  type: "any",
+                  requirements: [
+                    { type: "flag", flag: "verdad_del_pacto", equals: true },
+                    { type: "flag", flag: "coordenadas_catedral", equals: true },
+                    { type: "flag", flag: "escape_por_fuerza", equals: true },
+                    { type: "flag", flag: "masacre_biblioteca", equals: true },
+                  ],
+                },
+              },
+            ],
+          },
+          nextSceneId: "n4_end",
+          effects: [{ type: "setFlag", flag: "chapter_pending_chapter05" }],
+        },
+        {
           id: "n4_end_default",
           type: "dialogue",
-          text: "Huir por la trama general de la ciudad: continuar al Capítulo 5 (sin ruta prioritaria).",
+          text: "Continuar al Capítulo 5 sin ruta prioritaria marcada en el briefing nuevo.",
           requirement: { type: "none" },
           visibilityRequirement: {
             type: "all",
             requirements: [
-              { type: "not", requirement: { type: "flag", flag: "secreto_del_hermano", equals: true } },
+              { type: "not", requirement: { type: "flag", flag: "verdad_del_pacto", equals: true } },
+              { type: "not", requirement: { type: "flag", flag: "coordenadas_catedral", equals: true } },
+              { type: "not", requirement: { type: "flag", flag: "escape_por_fuerza", equals: true } },
+              { type: "not", requirement: { type: "flag", flag: "masacre_biblioteca", equals: true } },
               { type: "not", requirement: { type: "flag", flag: "alerta_biblioteca_activa", equals: true } },
-              { type: "not", requirement: { type: "flag", flag: "aliado_archivista", equals: true } },
+              { type: "not", requirement: { type: "flag", flag: "secreto_del_hermano", equals: true } },
             ],
           },
           nextSceneId: "n4_end",

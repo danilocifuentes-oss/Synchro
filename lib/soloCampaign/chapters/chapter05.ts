@@ -1,24 +1,83 @@
 import type { SoloChapter } from "@/lib/soloCampaign/types";
 
+/** Conocimiento místico del núcleo (Tratado / Ancla) — rutas nueva y legada cap. 5. */
+const reqLoreAnclaOPrimogenito = {
+  type: "any" as const,
+  requirements: [
+    { type: "flag" as const, flag: "conocimiento_del_ancla", equals: true },
+    { type: "flag" as const, flag: "secreto_del_primogenito", equals: true },
+  ],
+};
+
+/** Aliado institucional o tercera facción (Traje Gris). */
+const reqAliadoInstitucionalOSastre = {
+  type: "any" as const,
+  requirements: [
+    { type: "flag" as const, flag: "aliado_senescal_antiguo", equals: true },
+    { type: "flag" as const, flag: "rastro_del_sastre_identificado", equals: true },
+  ],
+};
+
+const reqRefugioLastarriaUrbano = {
+  type: "any" as const,
+  requirements: [
+    { type: "flag" as const, flag: "coordenada_lastarria", equals: true },
+    { type: "flag" as const, flag: "chapter05_route_nodo_catedral", equals: true },
+    { type: "flag" as const, flag: "escape_subterraneo", equals: true },
+    { type: "flag" as const, flag: "chapter05_route_renegado_biblioteca", equals: true },
+    { type: "flag" as const, flag: "chapter05_route_refugio_ceniza", equals: true },
+    { type: "flag" as const, flag: "alerta_biblioteca_activa", equals: true },
+  ],
+};
+
+/** Acercamiento encubierto desde cap. 5.interludio — compatible con ruta Superviviente en plaza. */
+const reqSigiloPlazaOClean = {
+  type: "any" as const,
+  requirements: [
+    { type: "flag" as const, flag: "aproximacion_sigilosa_plaza", equals: true },
+    { type: "flag" as const, flag: "escape_limpio_5", equals: true },
+  ],
+};
+
+const reqTierraBuinViña = {
+  type: "all" as const,
+  requirements: [
+    {
+      type: "any" as const,
+      requirements: [
+        { type: "flag" as const, flag: "escape_por_fuerza", equals: true },
+        { type: "flag" as const, flag: "chapter05_route_huida_periferia", equals: true },
+        { type: "flag" as const, flag: "secreto_del_hermano", equals: true },
+      ],
+    },
+    { type: "not" as const, requirement: reqRefugioLastarriaUrbano },
+  ],
+};
+
 export const chapter05: SoloChapter = {
   id: "chapter05",
   title: "Santiago en Cenizas · CAPÍTULO 5: SANGRE Y TIERRA",
   description:
-    "Del refugio al horizonte de piedra: Catedral ancla, rutas Verdad/Ambición/Superviviente y cierre del Acto II.",
+    "Letargo, sobre negro del Traje Gris, interludio urbano ante la plaza y Horizonte de piedra que cierra Acto II hacia la Catedral-ancla.",
   startSceneId: "n5_0",
   scenes: [
     {
       id: "n5_0",
       chapterId: "chapter05",
-      title: "[ESCENA 5.0]: EL REFUGIO TRAS LA TORMENTA",
-      text: `CONTEXTO: Madrugada (casi el alba). El lugar varía según la resolución del Capítulo 4.
-NARRACIÓN: El cielo sobre la cordillera empieza a clarear, una señal de muerte para los de tu clase.
+      title: "[ESCENA 5.0]: EL ABRAZO DEL LETARGO",
+      text: `CONTEXTO: El refugio elegido —piso franco en Lastarria o bodega en la Viña del Silencio—. 06:45 de la mañana. Quedan minutos antes de que el sol reclame Santiago.
 
-Has sobrevivido a la Biblioteca, pero el documento que posees (o la información que robaste) es una bomba de tiempo. El Tratado de 1814 menciona una "fuente de vitalidad" bajo la Catedral de Santiago, vinculada directamente al linaje del Príncipe.`,
+NARRACIÓN: El mundo se vuelve blanco. No por nieve, sino por la intensidad de la luz que empieza a filtrarse por las rendijas. Tu cuerpo, herido por las balas de la biblioteca o agotado por el uso de Disciplinas, exige el sueño de los muertos. Te derrumbas sobre un colchón viejo o directamente sobre el suelo frío.
+
+Antes de que la consciencia te abandone, los documentos robados —o las visiones de la Hiel— bailan en tu mente. El Tratado de 1814 no era un acuerdo de paz; era un sistema de alimentación.`,
       contextLeadInByState: [
         {
-          requirement: { type: "flag", flag: "secreto_del_hermano", equals: true },
-          text: "Te encuentras en un viñedo abandonado en las afueras de Buin; el aire huele a uva fermentada y tierra vieja. La ruta que abriste desde el papel te ha traído lejos del neón antes de tu próximo día.",
+          requirement: { type: "flag", flag: "chapter05_route_renegado_biblioteca", equals: true },
+          text: "La sangre fresca en la hemeroteca vuelve a la cabeza: saliste por rutas donde la Torre cuenta cuerpo por cuerpo. Aprietas Lastarria o el primer techo disponible porque Inés tiene demasiadas formas de leer esa masacre contra ti.",
+        },
+        {
+          requirement: { type: "flag", flag: "chapter05_route_huida_periferia", equals: true },
+          text: "La salida por la fuerza te dejó señales en chaqueta y pulso alto. Cayó el cordón rápido: estás más cerca del polvo de Buin o del verdor de Viña que de la seguridad ceremonial del centro.",
         },
         {
           requirement: {
@@ -40,8 +99,20 @@ Has sobrevivido a la Biblioteca, pero el documento que posees (o la información
           },
           text: "Estás en un sótano de Lastarria lleno de grafitis que parecen moverse en la penumbra: aquí nadie registra entrada a tiempo para la lista de la Corte.",
         },
+        {
+          requirement: { type: "flag", flag: "secreto_del_hermano", equals: true },
+          text: "Te encuentras en un viñedo abandonado en las afueras de Buin; el aire huele a uva fermentada y tierra vieja. La ruta que abriste desde el papel te ha traído lejos del neón antes de tu próximo día.",
+        },
       ],
       contextVariantByState: [
+        {
+          requirement: reqRefugioLastarriaUrbano,
+          text: "En el sótano húmedo de Lastarria el agua gotea por tuberías viejas; cada gota suena a reloj mortal contando hacia el día.",
+        },
+        {
+          requirement: reqTierraBuinViña,
+          text: "En la bodega afuera del cordón, el olor a tierra seca y uva fermentada te envuelve mientras cierras una puerta de hierro que pesa como veredicto.",
+        },
         {
           requirement: { type: "flag", flag: "fugitivo_corte", equals: true },
           text: "El pulso por busca y captura no deja espacio para el glamour: cada sombra lleva cara de ejecutor.",
@@ -57,155 +128,159 @@ Has sobrevivido a la Biblioteca, pero el documento que posees (o la información
           type: "discipline",
           discipline: "fortitude",
           disciplineTitle: "Fortaleza",
-          text: `OPCIÓN A [DISCIPLINA: FORTALEZA]: Resistir el letargo del alba para organizar tus siguientes movimientos antes de dormir.
+          text: `OPCIÓN A [DISCIPLINA: FORTALEZA]: Luchar contra el sopor del alba unos minutos extra para asegurar el perímetro.
 
-PUENTE: Tu cuerpo exige el descanso de la tierra, pero obligas a tus nervios a mantenerse despiertos. Analizas el mapa robado —o el papel que aún llevas vivo en el bolso—, marcando los puntos de entrada a la Catedral mientras el primer rayo de sol quema la superficie fuera…
+PUENTE: Tus párpados pesan como plomo, pero obligas a tus nervios a responder una última vez. Revisas cerraduras, apilas cajas como barricada breve y dejas una salida de emergencia despejada antes de ceder al letargo.
 
-CONSECUENCIA: Ganas claridad táctica; el día siguiente lo encaras con menos improvisación.
+CONSECUENCIA: Despiertas con sensación de que el refugio no se abrió solo; ganas margen defensivo ante visitas nocturnas.
 
-RESULTADO: willpowerDelta: -1 | setFlag: planificacion_maestra | IR A [ESCENA 5.1]`,
+RESULTADO: willpowerDelta: -1 | setFlag: refugio_asegurado | IR A [ESCENA 5.1]`,
           requirement: { type: "discipline", discipline: "fortitude", minLevel: 1 },
           nextSceneId: "n5_1",
-          effects: [{ type: "willpowerDelta", delta: -1 }, { type: "setFlag", flag: "planificacion_maestra" }],
+          effects: [{ type: "willpowerDelta", delta: -1 }, { type: "setFlag", flag: "refugio_asegurado" }],
         },
         {
           id: "n5_0_ocultismo",
           type: "skill",
           skill: "ocultismo",
-          text: `OPCIÓN B [HABILIDAD: LORE / OCULTISMO]: Estudiar el Tratado de 1814 para encontrar la debilidad mística del Príncipe.
+          text: `OPCIÓN B [HABILIDAD: LORE / OCULTISMO]: Dedicar tus últimos momentos de lucidez a memorizar un pasaje clave del Tratado.
 
-PUENTE: Te encierras con los documentos. Descubres que el vínculo de sangre que une a la Corte de Santiago no es natural; fue creado mediante un sacrificio en la Catedral hace dos siglos. Si destruyes el "Ancla", el Príncipe pierde afianzamiento sobre sus subordinados.
+PUENTE: El sol ya quema el exterior, pero tus ojos se clavan en el pergamino. Entre líneas en latín vulgar lees —o reconstruyes— la tesis: «El Ancla requiere la sangre del primogénito para que el Vínculo no se rompa». Entiendes que el Príncipe no es el autor del sistema, sino su guardián actual.
 
-CONSECUENCIA: Tomas el camino abierto por el derrocamiento místico cuando decidas empujarlo.
+CONSECUENCIA: Guardas munición para chantajear al Príncipe o para liberar la ciudad en el clímax.
 
-RESULTADO: setFlag: conocimiento_del_ancla | IR A [ESCENA 5.1]`,
+RESULTADO: setFlag: secreto_del_primogenito | IR A [ESCENA 5.1]`,
           requirement: { type: "skill", skill: "ocultismo", minLevel: 1 },
           nextSceneId: "n5_1",
-          effects: [{ type: "setFlag", flag: "conocimiento_del_ancla" }],
+          effects: [{ type: "setFlag", flag: "secreto_del_primogenito" }],
         },
         {
-          id: "n5_0_contacto",
+          id: "n5_0_descanso",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Contactar a un aliado —Inés o Gato— para negociar reingreso o seguridad.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Dejarte caer y confiar en que el agotamiento repare el cuerpo durante el día.
 
-PUENTE: Usas un teléfono desechable. Si llamas a Inés, insistes en una versión en la que la Corte perdió el orden en la Biblioteca no por tu culpa. Si llamas a Gato, ofreces papel o silencios a cambio de techo hasta el ocaso siguiente…
+PUENTE: No quedan fuerzas para más. Te envuelves en la chaqueta rasgada y cierras los ojos. El silencio de la muerte reclama mientras el tráfico matutino empieza a vibrar sobre tu cabeza.
 
-CONSECUENCIA: Recuperas vínculos con suministro y refugio, pero quien está al otro lado ya pudo marcar tus coordenadas.
+CONSECUENCIA: Despiertas con heridas más llevaderas, sin ventaja estratégica extra.
 
-RESULTADO: setFlag: apoyo_externo_negociado | IR A [ESCENA 5.1]`,
+RESULTADO: healthDamageDelta: +1 | IR A [ESCENA 5.1]`,
           requirement: { type: "none" },
           nextSceneId: "n5_1",
-          effects: [{ type: "setFlag", flag: "apoyo_externo_negociado" }],
-        },
-        {
-          id: "n5_0_purificacion",
-          type: "dialogue",
-          text: `OPCIÓN D [RIESGO - INSTINTO]: Alimentarte de la sangre de la tierra —vid o animal cercano— para purificar la sangre corrupta.
-
-PUENTE: Sientes la Hiel adosada al pulso. Te arrodillas y bebes donde la vida aún surge sin etiqueta aristocrática, buscando expulsar el violáceo con lo crudo que ofrece el campo o el cerco.
-
-CONSECUENCIA: Tu sistema se aplana algo, pero la Bestia prueba algo que marca el orgullo Ventrue.
-
-RESULTADO: hungerDelta: -1 | humanityDelta: -1 | setFlag: purificacion_parcial | IR A [ESCENA 5.1]`,
-          requirement: { type: "flag", flag: "sangre_corrupta", equals: true },
-          nextSceneId: "n5_1",
-          effects: [
-            { type: "hungerDelta", delta: -1 },
-            { type: "humanityDelta", delta: -1 },
-            { type: "setFlag", flag: "purificacion_parcial" },
-          ],
+          effects: [{ type: "healthDamageDelta", delta: -1 }],
         },
       ],
     },
     {
       id: "n5_1",
       chapterId: "chapter05",
-      title: "[ESCENA 5.1]: LA SOMBRA EN EL VIÑEDO / EL SÓTANO",
-      text: `CONTEXTO: El interior del refugio elegido. El silencio es roto por un sonido inesperado: pasos metálicos.
-NARRACIÓN: No estás solo. Alguien ha seguido tu rastro, sorteando tus medidas de seguridad. De la penumbra emerge una figura que no esperabas: un vástago de aspecto antiguo, vestido con ropas militares del siglo XIX, pero con ojos modernos y calculadores. No es un simple enemigo: es superviviente del ritual de 1814.
-
-"El Príncipe cree que el tiempo ha borrado sus crímenes", dice el extraño, mostrando una cicatriz en su cuello idéntica a la de la prisionera de la estación. "Pero la Hiel no olvida. Ella quiere volver a casa, y la Catedral es su puerta".`,
+      title: "[ESCENA 5.1]: EL DESPERTAR DE LA NOCHE QUINTA",
+      text: `CONTEXTO: El mismo refugio. 20:30. Santiago se hunde de nuevo en la oscuridad.
+NARRACIÓN: Despiertas con un tirón seco en el estómago. El hambre ya no es molestia: es punzante. Tu sangre se siente delgada; necesitas nutrirte antes de lo que viene. Al incorporarte ves lo imposible: sobre una mesa cercana hay un sobre negro que no estaba cuando cerraste los ojos. Alguien entró durante el letargo.`,
       contextVariantByState: [
         {
+          requirement: { type: "flag", flag: "refugio_asegurado", equals: true },
+          text: "El sobre viene clavado en la barricada improvisada como tarjeta de visita: quien entró registró tus defensas y las respetó lo bastante como para no moverlas.",
+        },
+        {
+          requirement: { type: "not", requirement: { type: "flag", flag: "refugio_asegurado", equals: true } },
+          text: "El sobre reposa sobre tu pecho cuando abres los ojos. Podrían haberte acabado con la misma facilidad; el mensaje no deja lugar a sutilezas.",
+        },
+        {
           requirement: { type: "flag", flag: "secreto_del_hermano", equals: true },
-          text: "El pergamino en tu bolso se calienta un instante: el visitante no hace ademán de quitártelo, pero ambos saben que ya comparten mapa.",
+          text: "El papel del Hermano en tu bolsa late al compás del hambre: la ciudad no te va a esperar comedida.",
         },
         {
           requirement: { type: "flag", flag: "mapa_tuneles_catedral", equals: true },
-          text: "Por instinto superpones el mapa que arrancaste con lo que él insinúa: las líneas concuerdan con un claustro bajo el coro.",
+          text: "Los trazos subterráneos que arrastras desde la Biblioteca encajan demasiado bien con lo que ese sobre pudiera anunciar sobre la piedra vieja.",
         },
       ],
       options: [
         {
-          id: "n5_1_dominate",
+          id: "n5_1_auspex",
           type: "discipline",
-          discipline: "dominate",
-          disciplineTitle: "Dominación",
-          text: `OPCIÓN A [DISCIPLINA: DOMINACIÓN]: Forzar al extraño a revelar su verdadera identidad y quién lo envía.
+          discipline: "auspex",
+          disciplineTitle: "Auspex",
+          text: `OPCIÓN A [DISCIPLINA: AUSPEX]: Rastrear el aroma del intruso antes de abrir el sobre.
 
-PUENTE: No aceptas intrusos. Tu voz resuena con autoridad hasta en las fibras viejas del refugio. "Nombre y mandante", exiges antes de dar un paso de más.
+PUENTE: Inhalas hasta el borde racional del letargo tardío. No es Inés, ni el olor metálico de los ghouls de la Biblioteca: sándalo y ozono como bajo los portales de una imprenta en Teatinos. Es la firma que asocias con el Hombre del Traje Gris.
 
-CONSECUENCIA: Habla como quien cargó cargas de ciudad: viejo Senescal, tiempo muerto oficialmente, vida contada sólo entre archivos cerrados.
+CONSECUENCIA: Confirmas que la tercera facción tiene tu posición y que, por ahora, parece tratarte como pie útil antes que como ceniza expeditable.
 
-RESULTADO: setFlag: aliado_senescal_antiguo | IR A [BLOQUE 2]`,
-          requirement: { type: "discipline", discipline: "dominate", minLevel: 1 },
+RESULTADO: setFlag: rastro_del_sastre_identificado | IR A [BLOQUE 2]`,
+          requirement: { type: "discipline", discipline: "auspex", minLevel: 1 },
           nextSceneId: "n5_2",
-          effects: [{ type: "setFlag", flag: "aliado_senescal_antiguo" }],
+          effects: [{ type: "setFlag", flag: "rastro_del_sastre_identificado" }],
         },
         {
           id: "n5_1_perspicacia",
           type: "skill",
           skill: "perspicacia",
-          text: `OPCIÓN B [HABILIDAD: PERSPICACIA]: Escuchar su historia y detectar si es una trampa de la Corte.
+          text: `OPCIÓN B [HABILIDAD: PERSPICACIA]: Abrir el sobre con maniobra extrema y leer sólo después de aislar trampas evidentes.
 
-PUENTE: Mantienes la distancia. Cuando menciona la Catedral, sus dedos tiemblan; no llega perfil de ejecutor templado desde el sillón Bru.
+PUENTE: Partes el lacre sin arrastrarlo hacia la piel. Dentro hay una fotografía de la Catedral Metropolitana con una marca escarlata sobre la entrada a catacumba y una frase escrita a mano: «El tiempo del Príncipe se agota. Elige bien tu corona».
 
-CONSECUENCIA: Concluyes un pacto provisional: sobrevive quien coopere antes que obedezca como títere del Príncipe.
+CONSECUENCIA: Aseguras una ruta de infiltración directa antes de exponerte en plaza; el combate frontal queda aplazado mientras tanto.
 
-RESULTADO: setFlag: pacto_de_supervivencia | IR A [BLOQUE 2]`,
+RESULTADO: setFlag: mapa_catacumbas_regalo | IR A [BLOQUE 2]`,
           requirement: { type: "skill", skill: "perspicacia", minLevel: 1 },
           nextSceneId: "n5_2",
-          effects: [{ type: "setFlag", flag: "pacto_de_supervivencia" }],
+          effects: [{ type: "setFlag", flag: "mapa_catacumbas_regalo" }],
         },
         {
-          id: "n5_1_combate_declarado",
+          id: "n5_1_cazar",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Prepararte para el combate y exigirle que se retire.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Dejar el sobre intacto por ahora y salir a cazar para aplacar Hambre antes de mover piezas políticas.
 
-PUENTE: Desenvainas la daga de plata con la calma Ventrue convertida en límite. "Mi refugio. Sales o cerramos el ciclo aquí mismo", cortas. El otro retrocede… y deja un medallón pesado donde antes no había nada útil.
+PUENTE: Archivas el símbolo de la ciudad en tu retina y cierras el sobre sin leer cada detalle caligráfico; la prioridad primero sangre estable. Deslizarte por Lastarria o campo de Buin hasta hallar víctima aristocrática o, al menos, alimento que atrase a la Bestia.
 
-CONSECUENCIA: Mantienes soberanía en el lugar, pero pierdes un aliado potencial en el mismo intento.
+CONSECUENCIA: Sangre nueva en tus venas, pero también ventana perdida frente al aviso contenido por el papel.
 
-RESULTADO: setFlag: llave_medallon_criptas | IR A [BLOQUE 2]`,
+RESULTADO: hungerDelta: -2 | IR A [BLOQUE 2]`,
           requirement: { type: "none" },
           nextSceneId: "n5_2",
-          effects: [{ type: "setFlag", flag: "llave_medallon_criptas" }],
+          effects: [{ type: "hungerDelta", delta: -2 }],
         },
         {
           id: "n5_1_paranoia_corrupta",
           type: "dialogue",
-          text: `OPCIÓN D [RIESGO - VIOLENCIA]: Si tienes sangre_corrupta, atacar impulsado por la paranoia.
+          text: `OPCIÓN D [RIESGO - INSTINTO]: Si tienes sangre_corrupta, destruir el sobre y acechar al mensajero.
 
-PUENTE: La Hiel traduce cualquier perfil alto como invasión. Te lanzas; el encuentro raspa pared y lata igual que en Mapocho.
+PUENTE: La paranoia gana antes que la etiqueta diplomática; quemas el papel sintiendo el encogimiento de la esperanza en ceniza oscura del refugio. Te fundes en ángulos muertos esperando quién reclame segunda entrega entre dientes cerrados…
 
-CONSECUENCIA: Sangre nueva en el lugar; el intruso escapa raspado pero el rumor queda prendido ahí donde dormías.
+CONSECUENCIA: Ahuyenas posibles aliados con el mismo gesto que te blinda ante sorpresa inmediata.
 
-RESULTADO: healthDamageDelta: -1 | setFlag: ubicacion_revelada_persecución | IR A [BLOQUE 2]`,
+RESULTADO: humanityDelta: -1 | setFlag: postura_paranoica | IR A [BLOQUE 2]`,
           requirement: { type: "flag", flag: "sangre_corrupta", equals: true },
           nextSceneId: "n5_2",
-          effects: [{ type: "healthDamageDelta", delta: 1 }, { type: "setFlag", flag: "ubicacion_revelada_persecución" }],
+          effects: [
+            { type: "humanityDelta", delta: -1 },
+            { type: "setFlag", flag: "postura_paranoica" },
+          ],
         },
       ],
     },
     {
       id: "n5_2",
       chapterId: "chapter05",
-      title: "[ESCENA 5.2]: EL DESPERTAR DEL INTERLUDIO",
-      text: `CONTEXTO: Interior del refugio. 08:00 PM. El sol se ha puesto y la sangre en tus venas vuelve a bullir.
-NARRACIÓN: La noche cae sobre Santiago con un peso inusual.
+      title: "[ESCENA 5.2]: EL INTERLUDIO DE LAS SOMBRAS",
+      text: `CONTEXTO: Exterior del refugio —Calle Villavicencio en Lastarria o desvío sobre el Camino a Buin—. 21:30. Santiago brilla bajo una capa de smog que filtra luces de neón.
 
-La tregua del día ha terminado; la información que sacaste de la Biblioteca te convierte en el vástago más peligroso —o más valioso— de la ciudad. El Tratado de 1814 es claro: quien controle el ancla en la Catedral, afianza el vínculo de sangre sobre la región metropolitana.`,
+NARRACIÓN: El contenido del sobre negro —leído en detalle o no— pesa en la cabeza. Te desplazas hacia el centro; la Catedral Metropolitana se dibuja como titán de piedra sobre el tiempo colonial.
+
+Tu ruta fuerza cercanía al Palacio Bruna. Hay más camiones blindados privados del que marca un martes habitual; Vástagos de la Torre entrando y saliendo con prisa. El Príncipe ya echó cuenta: sea porque el Archivista habló o porque Mapocho fue sólo primer diente de engranaje.`,
       flagAppends: [
+        {
+          flag: "mapa_catacumbas_regalo",
+          text: "La foto marca el callejón donde la piedra lame humedad: una línea dibujada a bolígrafos finos dibuja el desnivel hasta catacumba sin pasar Plaza de Armas en bandera alta.",
+        },
+        {
+          flag: "rastro_del_sastre_identificado",
+          text: "El olor ozono‑sándalo queda pegado como declaración jurada: nadie llamó oficialmente pero el mensajero viene de esa facción de trajes impecables detrás del papel fino.",
+        },
+        {
+          flag: "refugio_asegurado",
+          text: "Tu barricada siguió en orden al despertar: quien pisó dentro lo hizo con demasiada seguridad incluso ante tu Fortaleza adormilada.",
+        },
         {
           flag: "aliado_senescal_antiguo",
           text: "Despiertas con un croquis minucioso sobre la mesa: asedio, timings, ángulos ciegos del coro al sótano. El Senescal estuvo aquí antes de marcharse.",
@@ -215,77 +290,83 @@ La tregua del día ha terminado; la información que sacaste de la Biblioteca te
           text: "Neumáticos frenan en seco contra el cemento fuera del refugio. La Corte tardó menos de lo cómodo en conectar tus huellas hasta aquí.",
         },
       ],
+      contextVariantByState: [
+        {
+          requirement: { type: "flag", flag: "rastro_del_sastre_identificado", equals: true },
+          text: "Un sedán gris mantiene distancia táctica paralela a tus pasos: mismo semáforo, mismo giro improvisado cuando esquivas el taco en Morandé.",
+        },
+        {
+          requirement: { type: "flag", flag: "postura_paranoica", equals: true },
+          text: "Cada bajo arco sobre la Merced podría esconder garganta de ejecutor cortés; incluso una sombra de turista lleva cara de censo de Torre hasta que pisas luz suficiente.",
+        },
+      ],
       options: [
         {
-          id: "n5_2_presencia_parlamento",
+          id: "n5_2_callejeo_paralelo",
+          type: "skill",
+          skill: "callejeo",
+          text: `OPCIÓN A [HABILIDAD: CALLEJEO]: Usar pasajes del centro —Paseo Huérfanos y conexiones comerciales— para flanquear desde el sur hasta la plaza.
+
+PUENTE: Te mezclas entre mortales tarde‑turno entre vidrieras medio apagadas. Sorteas lente de seguridad cercana al Palacio y llegas a línea visual de Plaza de Armas sin firmar cara delante del protocolo público más obvio.
+
+CONSECUENCIA: Quien observa desde la Torre no recibe foto clara antes de tiempo.
+
+RESULTADO: setFlag: aproximacion_sigilosa_plaza | IR A [ESCENA 5.END]`,
+          requirement: { type: "skill", skill: "callejeo", minLevel: 1 },
+          nextSceneId: "n5_end",
+          effects: [{ type: "setFlag", flag: "aproximacion_sigilosa_plaza" }],
+        },
+        {
+          id: "n5_2_presencia_calle",
           type: "discipline",
           discipline: "presence",
           disciplineTitle: "Presencia",
-          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: Obligar al equipo de asalto a parlamentar antes del primer disparo.
+          text: `OPCIÓN B [DISCIPLINA: PRESENCIA]: Caminar visible por la calle principal como quien porta corona provisional.
 
-PUENTE: Te plantas en el umbral bañado por un filo de luna. Obligas al grupo a dudar con el arma tensa antes de que gane el protocolo cerrado del Príncipe.
+PUENTE: No te ocultas. Pisas centro de vereda y la autoridad contenida proyecta campo silencioso: peatones apartan sin poder explicarlo. Quien lleve bandera corta desde la Torre lo duda medio segundo antes del protocolo cerrado sobre tu nombre.
 
-CONSECUENCIA: La lealtad baja arma o se fisura; algunos se retiran antes de ejecutar orden.
+CONSECUENCIA: Tu llegada es declaración de independencia o de guerra ceremonial; Doña Inés intercepta rutas antes de que marques entrada en mármol.
 
-RESULTADO: willpowerDelta: +1 | setFlag: desercion_en_la_corte | IR A [ESCENA 5.END]`,
+RESULTADO: willpowerDelta: +1 | setFlag: desafio_abierto_corte | IR A [ESCENA 5.END]`,
           requirement: { type: "discipline", discipline: "presence", minLevel: 1 },
-          visibilityRequirement: { type: "flag", flag: "ubicacion_revelada_persecución", equals: true },
           nextSceneId: "n5_end",
-          effects: [{ type: "willpowerDelta", delta: 1 }, { type: "setFlag", flag: "desercion_en_la_corte" }],
+          effects: [{ type: "willpowerDelta", delta: 1 }, { type: "setFlag", flag: "desafio_abierto_corte" }],
         },
         {
-          id: "n5_2_sigilo_escape",
-          type: "skill",
-          skill: "sigilo",
-          text: `OPCIÓN B [HABILIDAD: SIGILO]: Salir antes de que el perímetro selle del todo.
-
-PUENTE: No discutes con la calle; leyes las sombras donde una cámara juraría que no hay nadie.
-
-CONSECUENCIA: Mantienes anonimato y reservas fuerza física pensando en el asalto a la Catedral.
-
-RESULTADO: setFlag: escape_limpio_5 | IR A [ESCENA 5.END]`,
-          requirement: { type: "skill", skill: "sigilo", minLevel: 1 },
-          nextSceneId: "n5_end",
-          effects: [{ type: "setFlag", flag: "escape_limpio_5" }],
-        },
-        {
-          id: "n5_2_medallon_drenaje",
+          id: "n5_2_metro_catacumbas",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Insertar llave_medallon_criptas y abrir el drenaje colonial hacia la piedra sagrada.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Si tienes mapa_catacumbas_regalo, buscar la rejilla de mantenimiento en el eje de Monjitas hacia el subsuelo común con la Catedral.
 
-PUENTE: El mecanismo gime piedra contra piedra. El hueco apesta primero a barro vivo y luego a Hiel en charcos quietos.
+PUENTE: Evitas el tablero iluminado de la plaza. Fuerzas acceso con la daga de plata en el marco disimulado y desciendes hacia túneles donde el Metro se funde con cimiento colonial; charcos de Hiel estancada lamen botas y garganta.
 
-CONSECUENCIA: Te mueves sin pelear esta franja en la superficie; pagas hambre y la humedad púrpura del subsuelo.
+CONSECUENCIA: El sol en la superficie deja de importar un tramo, pero el hambre sube un escalón en el intercambio.
 
-RESULTADO: hungerDelta: +1 | setFlag: ruta_subterranea_directa | IR A [ESCENA 5.END]`,
-          requirement: { type: "flag", flag: "llave_medallon_criptas", equals: true },
+RESULTADO: hungerDelta: +1 | setFlag: entrada_por_catacumbas | IR A [ESCENA 5.END]`,
+          requirement: { type: "flag", flag: "mapa_catacumbas_regalo", equals: true },
           nextSceneId: "n5_end",
-          effects: [{ type: "hungerDelta", delta: 1 }, { type: "setFlag", flag: "ruta_subterranea_directa" }],
+          effects: [{ type: "hungerDelta", delta: 1 }, { type: "setFlag", flag: "entrada_por_catacumbas" }],
         },
         {
-          id: "n5_2_purga_operativos",
+          id: "n5_2_transito_expuesto",
           type: "dialogue",
-          text: `OPCIÓN D [RIESGO - VIOLENCIA]: Con purificación parcial intacta, salir contra quien espere tras la puerta.
+          text: `OPCIÓN D [CAMINO ESTÁNDAR - ACCIÓN]: Recorrer Merced y accesos directos sin técnica formal de callejeo ni brillo de Presencia.
 
-PUENTE: La Bestia no te arrastra, pero sí el juicio rápido que te inventás. El encuentro grita guerra abierta hasta el Palacio Bruna.
+PUENTE: Mides cada cruce con instinto puro: no tienes plan de pasaje ni mapa de catacumba. Llegas con la misma nerviosura que cualquier mortal apurado, pero tu sombra pesa distinto bajo el neón.
 
-CONSECUENCIA: El mensaje llega igual que el ruido: el Embajador protocolario está muerto ante la Corte; el contendiente ha nacido.
+CONSECUENCIA: No ganás ventaja táctica clara; tampoco firmás manifiesto abierto como con Presencia.
 
-RESULTADO: humanityDelta: -1 | setFlag: guerra_abierta_principe | IR A [ESCENA 5.END]`,
-          requirement: { type: "flag", flag: "purificacion_parcial", equals: true },
-          nextSceneId: "n5_end",
-          effects: [{ type: "humanityDelta", delta: -1 }, { type: "setFlag", flag: "guerra_abierta_principe" }],
-        },
-        {
-          id: "n5_2_retirada_dialogo",
-          type: "dialogue",
-          text: `Huir antes de que cierre el cerco sin práctica formal de sigilo: calles, oxígeno y suerte encima.
-
-RESULTADO: setFlag: escape_limpio_5 | IR A [ESCENA 5.END]`,
+RESULTADO: (sin bandera de aproximación prioritaria) | IR A [ESCENA 5.END]`,
           requirement: { type: "none" },
-          visibilityRequirement: { type: "not", requirement: { type: "skill", skill: "sigilo", minLevel: 1 } },
+          visibilityRequirement: {
+            type: "all",
+            requirements: [
+              { type: "not", requirement: { type: "skill", skill: "callejeo", minLevel: 1 } },
+              { type: "not", requirement: { type: "discipline", discipline: "presence", minLevel: 1 } },
+              { type: "not", requirement: { type: "flag", flag: "mapa_catacumbas_regalo", equals: true } },
+            ],
+          },
           nextSceneId: "n5_end",
-          effects: [{ type: "setFlag", flag: "escape_limpio_5" }],
+          effects: [],
         },
       ],
     },
@@ -293,17 +374,43 @@ RESULTADO: setFlag: escape_limpio_5 | IR A [ESCENA 5.END]`,
       id: "n5_end",
       chapterId: "chapter05",
       title: "[ESCENA 5.END]: EL HORIZONTE DE PIEDRA",
-      text: `CONTEXTO: Mirador frente a la Plaza de Armas. La Catedral Metropolitana se alza como fortaleza de fe y piedra.
-NARRACIÓN: Santiago arde en una calma tensa. La Catedral, el siguiente nodo, observa desde su altura. El Acto II de tu crónica tiende a cerrar aquí si no lo empujas tú mismo: la verdad de 1814 ya no cabe sólo en anaqueles.
+      text: `CONTEXTO: Plaza de Armas, frente a la Catedral Metropolitana. 23:45.
+NARRACIÓN: Estás frente al objetivo declarado. La Catedral no es sólo arquitectura devota: es el corazón del Vínculo de Sangre que amarra a Santiago al Príncipe.
 
-BIFURCACIÓN LÓGICA PARA CAPÍTULO 6
-Verdad: conocimiento_del_ancla + aliado_senescal_antiguo → entrar para destruir el vínculo.
-Ambición: guerra_abierta_principe → entrar por el ancla.
-Superviviente: escape_limpio_5 → infiltrarte y medir el tablero antes de mover ficha.`,
+Un viento frío raspa la piedra y levanta hojas muertas contra la luz de faroles. La Guardia de la Torre bloquea puertas principales; el aire vibra con la misma electricidad púrpura que conociste bajo Mapocho. El Acto II termina en este umbral: al cruzarlo dejas de figurar como peón y pasas a nombre propio en el Tratado… o a otra línea de víctimas de 1814.
+
+BIFURCACIÓN LÓGICA PARA EL CAPÍTULO 6
+Verdad: lore del Ancla / primogénito + aliado del Senescal o rastro del Traje Gris → asalto decidido al vínculo interior.
+Ambición: guerra_abierta_principe declarada antes → toma frontal simbólica del ancla en plaza.
+Superviviente: aproximación sigilosa desde interludio u otra ruta limpia (escape_limpio_5) → medir ritual y sombras antes del movimiento mayor.
+Entrada catacumbas: bandera entrada_por_catacumbas → el capítulo puede abrir desde galería técnica bajo plaza.
+Desafío abierto: bandera desafio_abierto_corte → la primera escena en ancla enfatiza el cruce verbal o tenso con Doña Inés.`,
       contextVariantByState: [
         {
-          requirement: { type: "flag", flag: "conocimiento_del_ancla", equals: true },
+          requirement: { type: "flag", flag: "secreto_del_primogenito", equals: true },
+          text: "Sabes que lo que aguarda dentro no es reliquia museada: es sangre de familia atada a un tormento que alimenta cordura de la Corte.",
+        },
+        {
+          requirement: {
+            type: "all",
+            requirements: [
+              { type: "flag", flag: "conocimiento_del_ancla", equals: true },
+              { type: "not", requirement: { type: "flag", flag: "secreto_del_primogenito", equals: true } },
+            ],
+          },
           text: "Tienes claro que el Ancla es la argolla simbiótica entre el linaje dominante del Príncipe y cada Ventrue menor que juró después.",
+        },
+        {
+          requirement: { type: "flag", flag: "entrada_por_catacumbas", equals: true },
+          text: "No miras el frontis desde la baldosa todavía: el mapa te dejó saborear Hiel bajo registro antes de nombrar la nave en público.",
+        },
+        {
+          requirement: { type: "flag", flag: "aproximacion_sigilosa_plaza", equals: true },
+          text: "Tu ángulo llegó por laterales: desde acá la procesión de guardias se lee como diagrama antes de que te exijan firmar postura.",
+        },
+        {
+          requirement: { type: "flag", flag: "desafio_abierto_corte", equals: true },
+          text: "Caminaste con corona prestada encendida: cada lente de seguridad felicitó la convocatoria antes de que llegues a texto de Inés.",
         },
         {
           requirement: { type: "flag", flag: "desercion_en_la_corte", equals: true },
@@ -327,10 +434,7 @@ Superviviente: escape_limpio_5 → infiltrarte y medir el tablero antes de mover
 RESULTADO: chapter06_ruta_verdad_ancla | chapter_pending_chapter06`,
           requirement: {
             type: "all",
-            requirements: [
-              { type: "flag", flag: "conocimiento_del_ancla", equals: true },
-              { type: "flag", flag: "aliado_senescal_antiguo", equals: true },
-            ],
+            requirements: [reqLoreAnclaOPrimogenito, reqAliadoInstitucionalOSastre],
           },
           nextSceneId: "n5_end",
           effects: [{ type: "setFlag", flag: "chapter06_ruta_verdad_ancla" }, { type: "setFlag", flag: "chapter_pending_chapter06" }],
@@ -351,7 +455,7 @@ RESULTADO: chapter06_ruta_ambicion_ancla | chapter_pending_chapter06`,
           text: `Ruta del Superviviente: infiltrarte sin bandera antes de conocer ganador inicial.
 
 RESULTADO: chapter06_ruta_superviviente_ancla | chapter_pending_chapter06`,
-          requirement: { type: "flag", flag: "escape_limpio_5", equals: true },
+          requirement: reqSigiloPlazaOClean,
           nextSceneId: "n5_end",
           effects: [{ type: "setFlag", flag: "chapter06_ruta_superviviente_ancla" }, { type: "setFlag", flag: "chapter_pending_chapter06" }],
         },
@@ -370,13 +474,10 @@ RESULTADO: chapter06_ruta_superviviente_ancla | chapter_pending_chapter06`,
                   requirements: [
                     {
                       type: "all",
-                      requirements: [
-                        { type: "flag", flag: "conocimiento_del_ancla", equals: true },
-                        { type: "flag", flag: "aliado_senescal_antiguo", equals: true },
-                      ],
+                      requirements: [reqLoreAnclaOPrimogenito, reqAliadoInstitucionalOSastre],
                     },
                     { type: "flag", flag: "guerra_abierta_principe", equals: true },
-                    { type: "flag", flag: "escape_limpio_5", equals: true },
+                    reqSigiloPlazaOClean,
                   ],
                 },
               },
@@ -430,13 +531,10 @@ RESULTADO: chapter06_ruta_superviviente_ancla | chapter_pending_chapter06`,
                   requirements: [
                     {
                       type: "all",
-                      requirements: [
-                        { type: "flag", flag: "conocimiento_del_ancla", equals: true },
-                        { type: "flag", flag: "aliado_senescal_antiguo", equals: true },
-                      ],
+                      requirements: [reqLoreAnclaOPrimogenito, reqAliadoInstitucionalOSastre],
                     },
                     { type: "flag", flag: "guerra_abierta_principe", equals: true },
-                    { type: "flag", flag: "escape_limpio_5", equals: true },
+                    reqSigiloPlazaOClean,
                     { type: "flag", flag: "alianza_anarquista", equals: true },
                     { type: "flag", flag: "herida_escape", equals: true },
                     { type: "flag", flag: "chapter05_needs_blood", equals: true },
@@ -457,13 +555,10 @@ RESULTADO: chapter06_ruta_superviviente_ancla | chapter_pending_chapter06`,
                         requirements: [
                           {
                             type: "all",
-                            requirements: [
-                              { type: "flag", flag: "conocimiento_del_ancla", equals: true },
-                              { type: "flag", flag: "aliado_senescal_antiguo", equals: true },
-                            ],
+                            requirements: [reqLoreAnclaOPrimogenito, reqAliadoInstitucionalOSastre],
                           },
                           { type: "flag", flag: "guerra_abierta_principe", equals: true },
-                          { type: "flag", flag: "escape_limpio_5", equals: true },
+                          reqSigiloPlazaOClean,
                         ],
                       },
                     },
