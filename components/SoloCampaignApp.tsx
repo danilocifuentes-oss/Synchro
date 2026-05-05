@@ -448,19 +448,18 @@ function SoloCampaignScreen({
         finalizeCommitDraft(pendingReveal.draft);
         return;
       }
-      if (pendingReveal && pendingReveal.draft.option.id !== option.id) return;
+      if (pendingReveal !== null && pendingReveal.draft.option.id !== option.id) return;
 
-      const panels = parseOptionIaPanels(option.text);
+      const { consequence } = parseOptionIaPanels(option.text);
+      const consec = consequence?.trim() ?? null;
       const draft = buildSoloCommitDraft(option, sheet, progress);
 
-      const consequence = panels.consequence?.trim();
-
-      if (!consequence) {
+      if (!consec) {
         finalizeCommitDraft(draft);
         return;
       }
 
-      setPendingReveal({ draft, consequenceText: consequence });
+      setPendingReveal({ draft, consequenceText: consec });
       setLastRollLine(draft.rollLine);
     },
     [finalizeCommitDraft, pendingReveal, progress, sheet],
@@ -679,15 +678,12 @@ function SoloCampaignScreen({
                       </p>
                     ) : null}
                     {displayedOptions.map((option) => {
-                      const iaOpt = parseOptionIaPanels(option.text);
-                      const blockedBySibling =
-                        pendingReveal !== null && pendingReveal.draft.option.id !== option.id;
-                      const isRevealed = pendingReveal?.draft.option.id === option.id;
+                      const parsedOpt = parseOptionIaPanels(option.text);
 
                       const state = checkOptionAvailability(option, sheet, progress);
                       const fail = listFailReasons(option, sheet, progress);
                       const promptBody =
-                        iaOpt.promptBody.trim() ||
+                        parsedOpt.promptBody.trim() ||
                         option.text.trim().slice(0, 400) ||
                         "Acción disponible.";
                       let mechanicCue: string | null = null;
@@ -696,40 +692,43 @@ function SoloCampaignScreen({
                       else if (option.skill !== undefined) mechanicCue = option.skill;
                       const choiceLabelShort = mechanicCue ? `${promptBody} · ${mechanicCue}` : promptBody;
 
-                      const disabledChoice = !state.available || blockedBySibling;
+                      const awaitingSecondTap = pendingReveal?.draft.option.id === option.id;
+                      const blockedSibling = pendingReveal !== null && pendingReveal.draft.option.id !== option.id;
+                      const disabledChoice = !state.available || blockedSibling;
 
                       return (
                         <button
                           key={option.id}
                           type="button"
                           disabled={disabledChoice}
+                          aria-pressed={awaitingSecondTap}
                           aria-label={state.available ? choiceLabelShort : `${choiceLabelShort}. No disponible.`}
                           aria-describedby={!state.available && fail.length ? `${option.id}-why` : undefined}
                           onClick={() => activateOptionChoice(option)}
-                          className={`w-full border px-4 py-3 text-left transition ${
-                            disabledChoice
+                          className={`w-full border px-4 py-3 text-left transition duration-150 ${
+                            disabledChoice && !blockedSibling
                               ? "cursor-not-allowed border-neutral-800/80 bg-black/20 opacity-55"
+                              : awaitingSecondTap
+                                ? "solo-choice-await-pulse border-[var(--terminal)]/45 bg-black/50"
+                              : blockedSibling
+                                ? "cursor-not-allowed border-neutral-800/80 bg-black/15 opacity-40"
                               : "border-neutral-700/90 bg-black/40 hover:border-[var(--terminal)]/55 hover:bg-black/65"
-                          } ${isRevealed ? "border-[var(--terminal)]/40 bg-black/55" : ""}`}
+                          } ${awaitingSecondTap && !disabledChoice ? "cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--terminal)]/55" : ""}`}
                         >
                           {mechanicCue ? (
-                            <div className="mb-2 flex flex-wrap items-center gap-2 font-mono text-[9px] uppercase tracking-[0.18em] text-neutral-500">
+                            <div
+                              className={`mb-2 flex flex-wrap items-center gap-2 font-mono text-[9px] uppercase tracking-[0.18em] ${awaitingSecondTap ? "text-neutral-600" : "text-neutral-500"}`}
+                            >
                               <span className="rounded border border-neutral-700/80 bg-black/55 px-1.5 py-0.5 text-neutral-300">
                                 {option.discipline !== undefined ? "Disciplina" : option.skill !== undefined ? "Habilidad" : "Acción"}
                               </span>
                               <span className="normal-case tracking-normal text-[11px] text-neutral-400">{mechanicCue}</span>
                             </div>
                           ) : null}
-                          {isRevealed && pendingReveal ? (
-                            <div className="space-y-2">
-                              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--terminal)]">
-                                Resultado narrativo
-                              </p>
-                              <p className="whitespace-pre-line text-sm leading-relaxed italic text-neutral-200">
-                                {pendingReveal.consequenceText}
-                              </p>
-                              <p className="text-[11px] text-neutral-500">Volvé a elegir esta tarjeta para continuar.</p>
-                            </div>
+                          {awaitingSecondTap && pendingReveal ? (
+                            <p className="solo-book-prose whitespace-pre-line text-[15px] font-normal leading-[1.82] tracking-[0.015em] text-neutral-100">
+                              {pendingReveal.consequenceText}
+                            </p>
                           ) : (
                             <p className="text-sm leading-relaxed text-neutral-200">{promptBody}</p>
                           )}

@@ -1,6 +1,6 @@
 /**
- * Divide el texto tipo "Arquitectura IA" entre lo que debe ver el jugador
- * y la guía PUENTE/RESULTADO pensada como mecánica back.
+ * Divide el texto tipo “arquitectura IA”: jugador sólo ve elección/narración;
+ * PUENTE, CONSECUENCIA y RESULTADO son instrucciones de contenido/motor — no UI.
  */
 
 export type ParsedScenePanels = {
@@ -12,18 +12,34 @@ export type ParsedScenePanels = {
 export type ParsedOptionPanels = {
   /** Una o dos líneas: verbo jugable (+ tipo implícito vía etiqueta fuera del texto). */
   promptBody: string;
-  /** Narrativa resultado si existe bloque CONSECUENCIA. */
+  /** Prosa entre CONSECUENCIA y RESULTADO (solo para UI entre dos pulsaciones). */
   consequence: string | null;
-  /** True si había marcadores PUENTE/CONSECUENCIA/RESULTADO u OPCIÓN con subbloques. */
-  hasIaMarkers: boolean;
 };
 
 function normalizeNewlines(raw: string): string {
-  return raw.replace(/\r\n/g, "\n").trim();
+  return raw.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
+}
+
+/** Primer índice donde empieza un bloque de notas (PUENTE / CONSECUENCIA / RESULTADO). */
+function firstIaOptionBlockIndex(raw: string): number {
+  const re = /(?:^|\n)\s*(?:PUENTE|CONSECUENCIA|RESULTADO)\s*:/gi;
+  let min = raw.length;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(raw)) !== null) {
+    if (m.index < min) min = m.index;
+  }
+  return min;
 }
 
 function stripLeadingOpcionBanner(block: string): string {
   return block.replace(/^OPCIÓN\s+[A-Z0-9.]+\s*(?:\[[^\]]+\])?\s*:\s*/im, "").trim();
+}
+
+/** Texto después de CONSECUENCIA: hasta antes de RESULTADO: (bloque IA, línea aparte habitual). */
+function extractIaConsequence(raw: string): string | null {
+  const m = /\n\s*CONSECUENCIA\s*:\s*([\s\S]*?)(?=\n\s*RESULTADO\s*:|$)/i.exec(raw);
+  const t = m?.[1]?.trim();
+  return t?.length ? t : null;
 }
 
 /** Escena tipo CONTEXTO / NARRACIÓN / (notas tipo BIFURCACIÓN para diseño → no jugador). */
@@ -59,41 +75,19 @@ export function parseSceneIaPanels(raw: string): ParsedScenePanels {
   return { context: contextText, narration: narrationBlock || head };
 }
 
-/** Opciones tipo OPCIÓN … / PUENTE / CONSECUENCIA / RESULTADO. */
+/** Opciones: solo la parte jugable ante “OPCIÓN …”. PUENTE / CONSECUENCIA / RESULTADO son notas para el motor / IA — no jugador. */
 export function parseOptionIaPanels(fullText: string): ParsedOptionPanels {
   const raw = normalizeNewlines(fullText);
-  if (!raw) return { promptBody: "", consequence: null, hasIaMarkers: false };
+  if (!raw) return { promptBody: "", consequence: null };
 
-  const lower = raw.toLowerCase();
-  const idxPuente = lower.search(/\n\s*PUENTE\s*:/);
-  const idxConsec = lower.search(/\n\s*CONSECUENCIA\s*:/);
-
-  const hasMarkers = idxPuente >= 0 || idxConsec >= 0 || /\n\s*RESULTADO\s*:/i.test(raw);
-  if (!hasMarkers) {
-    return {
-      promptBody: stripLeadingOpcionBanner(raw),
-      consequence: null,
-      hasIaMarkers: /^OPCIÓN\b/i.test(raw),
-    };
+  let cut = firstIaOptionBlockIndex(raw);
+  if (cut >= raw.length) {
+    const inline = /\s+(?:PUENTE|CONSECUENCIA|RESULTADO)\s*:/i.exec(raw);
+    if (inline?.index !== undefined) cut = inline.index;
   }
 
-  let cutPrompt = raw.length;
-  for (const i of [idxPuente, idxConsec]) {
-    if (i >= 0 && i < cutPrompt) cutPrompt = i;
-  }
-  let promptSlice = stripLeadingOpcionBanner(raw.slice(0, cutPrompt).trim());
+  const promptBody = stripLeadingOpcionBanner(raw.slice(0, cut).trim()).trim();
+  const consequence = extractIaConsequence(raw);
 
-  const singleLineOpcion = /^OPCIÓN\s+[A-Z0-9.]+\s*(?:\[[^\]]+\])?\s*:\s*(.+)$/im.exec(promptSlice.split("\n")[0] ?? "");
-  if ((promptSlice.split("\n").length === 1 || !promptSlice) && singleLineOpcion?.[1]) {
-    promptSlice = singleLineOpcion[1].trim();
-  }
-
-  const consecBlock = /\n\s*CONSECUENCIA\s*:\s*([\s\S]*?)(?=\n\s*RESULTADO\s*:|$)/i.exec(raw);
-  const consequence = consecBlock?.[1]?.trim().length ? consecBlock[1].trim() : null;
-
-  return {
-    promptBody: promptSlice || stripLeadingOpcionBanner(raw.split("\n")[0] ?? raw),
-    consequence,
-    hasIaMarkers: true,
-  };
+  return { promptBody, consequence };
 }

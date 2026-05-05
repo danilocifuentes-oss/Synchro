@@ -249,7 +249,7 @@ export function compileGenesisManuscript(
     if (name.length < 3) continue;
     if (sceneBlob && !sceneLower.includes(name.toLowerCase())) {
       warnings.push(
-        `Coherencia: la escena sembrada no menciona al antagonista «${name}» — revisá INTRO_ESCENA / CONFLICTO o el nombre.`,
+        `Coherencia: la escena sembrada no menciona al antagonista «${name}» — revisa INTRO_ESCENA / CONFLICTO o el nombre.`,
       );
     }
   }
