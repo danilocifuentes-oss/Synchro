@@ -79,3 +79,9 @@ export function consumePendingSynapticDisruption(): string | null {
   if (t) localStorage.removeItem(PENDING_SYNAPTIC_KEY);
   return t;
 }
+
+/** Borra el texto pendiente (limpieza tras retirar motor IA / eco viejo). */
+export function clearPendingSynapticDisruption(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(PENDING_SYNAPTIC_KEY);
+}

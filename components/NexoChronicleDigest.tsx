@@ -5,7 +5,6 @@ import type { SoloNexoDigest } from "@/lib/soloCampaign/soloDigestNexo";
 
 type Props = {
   chronicle: ChronicleConfig;
-  rollingSummary: string;
   pendingSynaptic: string;
   inquisitionThreat: number;
   /** Si hay campaña solitaria activa, la columna prioriza su eco sobre rumor genérico. */
@@ -19,7 +18,6 @@ function clip(s: string, max: number) {
 
 export function NexoChronicleDigest({
   chronicle,
-  rollingSummary,
   pendingSynaptic,
   inquisitionThreat,
   soloDigest,
@@ -54,11 +52,12 @@ export function NexoChronicleDigest({
     );
   }
 
+  /** Sin `rollingSummary`: era eco del narrador IA eliminado y persistía basura en localStorage. */
   const beat =
-    rollingSummary.trim() ||
     chronicle.ESTADO_GLOBAL.trim() ||
     chronicle.TENSION.trim() ||
-    chronicle.AMBIENTE.trim();
+    chronicle.AMBIENTE.trim() ||
+    chronicle.foundations.trim();
 
   return (
     <div className="space-y-6 px-5 py-6 font-sans text-[13px] leading-relaxed tracking-[0.01em]">

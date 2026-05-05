@@ -1,3 +1,4 @@
+import { clearPendingSynapticDisruption } from "@/lib/chronicleConfig";
 import type { NarrativeLogEntry, NarradorRollPrompt } from "@/lib/narrativeTypes";
 import {
   defaultRollingByStrand,
@@ -27,6 +28,8 @@ function stripLegacyPreludeEcho(entries: NarrativeLogEntry[]): NarrativeLogEntry
 const LOG_KEY = "cronista-narrative-log-v1";
 const SUMMARY_KEY = "cronista-narrative-summary-v1";
 const ROLLING_BY_STRAND_KEY = "cronista-rolling-by-strand-v1";
+/** Una vez: borra resúmenes legacy del motor narrativo simulado (no se vuelve a mostrar en Nexo). */
+const NEXO_PURGE_LEGACY_ROLLING = "cronista-nexo-purge-legacy-rolling-v1";
 const ACTIVE_STRAND_KEY = "cronista-active-strand-v1";
 const MJ_KEY = "cronista-mj-directives-v1";
 const IDEAS_KEY = "cronista-ideas-repo-v1";
@@ -141,6 +144,11 @@ function migrateRollingFromLegacyIfNeeded(): RollingByStrand {
 export function loadRollingByStrand(): RollingByStrand {
   if (typeof window === "undefined") return defaultRollingByStrand();
   try {
+    if (!localStorage.getItem(NEXO_PURGE_LEGACY_ROLLING)) {
+      localStorage.setItem(NEXO_PURGE_LEGACY_ROLLING, "1");
+      wipeLocalRollingState();
+      clearPendingSynapticDisruption();
+    }
     const raw = localStorage.getItem(ROLLING_BY_STRAND_KEY);
     if (!raw) {
       const migrated = migrateRollingFromLegacyIfNeeded();

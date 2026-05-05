@@ -20,7 +20,6 @@ import {
   loadActiveStrand,
   saveActiveStrand,
   loadNarrativeLog,
-  loadRollingSummary,
   saveNarrativeLog,
 } from "@/lib/narrativeMemory";
 import { STRAND_TAG, type NarrativeStrand } from "@/lib/narrativeStrands";
@@ -515,7 +514,6 @@ function CronistaAppInner() {
   }
 
   const genesisSnap = useMemo(() => loadChronicle(), [logs.length, profileIndexTick]);
-  const rollingSnap = useMemo(() => loadRollingSummary(), [logs, activeStrand]);
   const pendingSynapticPreview = peekPendingSynapticDisruption()?.trim() ?? "";
 
   const soloNexoDigest = useMemo(() => {
@@ -527,7 +525,6 @@ function CronistaAppInner() {
   const chronicleAsideProps = {
     chronicle: genesisSnap,
     inquisitionThreat,
-    rollingSummary: rollingSnap,
     pendingSynaptic: pendingSynapticPreview,
     soloDigest: soloNexoDigest,
   } as const;
