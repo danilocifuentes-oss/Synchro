@@ -17,6 +17,29 @@ export function ensureSoloProgress(profileId: string, sheet: CharacterSheet): So
   const startSceneId = startSceneForClan();
   const existing = loadSoloProgress(profileId, sheet.clan);
   if (existing) return existing;
+
+  /** No crear save nuevo para linajes sin crónica (evita basura en localStorage); solo objeto en memoria para hooks. */
+  if (!isSoloSupportedClan(sheet.clan)) {
+    return {
+      version: 1,
+      profileId,
+      playerName: sheet.name?.trim() || "Sin nombre",
+      clan: sheet.clan,
+      humanity: sheet.humanity,
+      reputation: 0,
+      chronicleExperience: 0,
+      chapterId: "chapter01",
+      sceneId: startSceneId,
+      chroniclePreludeSeenVersion: 0,
+      chapterContextSeen: {},
+      flags: { clan_intro_seen: false },
+      visitedSceneIds: [startSceneId],
+      soloSceneBackStack: [],
+      decisionHistory: [],
+      updatedAt: Date.now(),
+    };
+  }
+
   const base: SoloProgress = {
     version: 1,
     profileId,

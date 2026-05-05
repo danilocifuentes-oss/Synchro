@@ -223,6 +223,40 @@ export function hydrateGlobalsFromBundle(bundle: ProfileBundle): void {
   saveIdeasRepository(ideas);
 }
 
+/**
+ * Tras actualizar la app o recargar, la hoja global a veces queda como plantilla vacía (`other` sin nombre)
+ * mientras el bundle del perfil activo sigue teniendo la ficha real. Rehidrata globals desde el bundle.
+ * Devuelve true si hubo cambio (conviene refrescar React con applyGlobalsToUi).
+ */
+export function reconcileActiveProfileIfGlobalsStale(): boolean {
+  if (typeof window === "undefined") return false;
+  const id = getActiveProfileId();
+  if (!id) return false;
+  const bundle = loadBundle(id);
+  if (!bundle) return false;
+  const g = loadSheet();
+  const bs = bundle.sheet;
+
+  if (!g) {
+    hydrateGlobalsFromBundle(bundle);
+    return true;
+  }
+
+  const globalLooksLikeEmptyTemplate =
+    g.clan === "other" && !g.name?.trim() && !g.concept?.trim();
+  if (globalLooksLikeEmptyTemplate && bs.name?.trim() && bs.clan !== "other") {
+    hydrateGlobalsFromBundle(bundle);
+    return true;
+  }
+
+  if (!g.name?.trim() && bs.name?.trim()) {
+    hydrateGlobalsFromBundle(bundle);
+    return true;
+  }
+
+  return false;
+}
+
 export function migrateLegacyToProfiles(): void {
   if (typeof window === "undefined") return;
   if (localStorage.getItem(MIGRATION_FLAG)) return;

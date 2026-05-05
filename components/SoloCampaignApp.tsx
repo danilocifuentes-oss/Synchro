@@ -175,35 +175,9 @@ export function SoloCampaignApp({
   /** Estado inicial sólo en montaje (el componente lleva key de perfil; no reprocesar al mutar hambre en vivo). */
   const [initialProgress] = useState(() => ensureSoloProgress(profileId, sheet));
 
+  /** El padre (Nexo) no monta SOL para linajes no jugables; retorno nulo por si se reutiliza el componente. */
   if (!isSupported) {
-    const clanLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
-    return (
-      <div
-        className={`bg-[#050505] px-4 py-10 font-mono text-neutral-300 ${
-          embedded ? "flex min-h-0 flex-1 flex-col overflow-y-auto" : "min-h-screen"
-        }`}
-      >
-        <div className="mx-auto max-w-2xl space-y-4 border border-amber-900/40 bg-black/50 p-6 sharp-border-inner">
-          <p className="text-[10px] uppercase tracking-[0.28em] text-amber-300">Campaña Solitaria</p>
-          <h2 className="font-sans text-xl text-neutral-100">Clan aún no disponible</h2>
-          <p className="text-sm leading-relaxed text-neutral-400">
-            Tu personaje es <span className="text-neutral-200">{clanLabel}</span>. Por ahora la crónica solitaria abre con{" "}
-            <span className="text-neutral-200">Brujah</span>, <span className="text-neutral-200">Ventrue</span>,{" "}
-            <span className="text-neutral-200">Toreador</span> y <span className="text-neutral-200">Malkavian</span>.
-          </p>
-          <p className="text-xs text-neutral-500">
-            Puedes conservar esta hoja y volver aquí cuando publiquemos su capítulo de clan.
-          </p>
-          <button
-            type="button"
-            onClick={onExit}
-            className="border border-neutral-700 px-3 py-2 text-[10px] uppercase tracking-[0.2em]"
-          >
-            Volver al Nexo
-          </button>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   const screen = (

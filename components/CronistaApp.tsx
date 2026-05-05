@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import {
   loadCampaignSyncSettings,
   saveCampaignSyncSettings,
@@ -55,6 +55,7 @@ import {
   getActiveProfileId,
   listProfiles,
   migrateLegacyToProfiles,
+  reconcileActiveProfileIfGlobalsStale,
   selectProfile,
   syncActiveBundleFromGlobals,
 } from "@/lib/profileStore";
@@ -203,6 +204,26 @@ function CronistaAppInner() {
 
   const healthHudFilled = HEALTH_MAX_UI - Math.min(sheet.healthDamage, HEALTH_MAX_UI);
   const nexusActiveProfileId = getActiveProfileId();
+
+  /**
+   * Tras deploy/recarga: rehidratar globals desde el bundle si la hoja global es plantilla vacía.
+   * Si el hilo es SOL pero el linaje no tiene crónica jugable (p. ej. LIN_IND), pasar al canal NEX sin pantalla bloqueante.
+   */
+  useLayoutEffect(() => {
+    if (phase !== "nexus") return;
+    if (reconcileActiveProfileIfGlobalsStale()) {
+      applyGlobalsToUi(setSheet, setSheetLocked, setLogs, commitStrand);
+    }
+    const clan = loadSheet()?.clan ?? sheet.clan;
+    if (
+      activeStrand === "paralela" &&
+      getActiveProfileId() &&
+      clan &&
+      !isSoloSupportedClan(clan)
+    ) {
+      commitStrand("principal");
+    }
+  }, [phase, activeStrand, sheet.clan, profileIndexTick, commitStrand]);
 
   useEffect(() => {
     let cancelled = false;
@@ -797,19 +818,21 @@ function CronistaAppInner() {
             >
               {activeStrand === "paralela" ? (
                 nexusActiveProfileId ? (
-                  <SoloCampaignApp
-                    key={nexusActiveProfileId}
-                    profileId={nexusActiveProfileId}
-                    sheet={sheet}
-                    embedded
-                    providerWrapped={soloShellActive}
-                    emitParalelaNarration={(text) => pushLog({ role: "narrador", text, strand: "paralela" })}
-                    onExit={() => commitStrand("principal")}
-                    onSheetSynced={(next) => {
-                      setSheet(mergeStoredSheet(next));
-                      persistActiveProfile();
-                    }}
-                  />
+                  isSoloSupportedClan(sheet.clan) ? (
+                    <SoloCampaignApp
+                      key={nexusActiveProfileId}
+                      profileId={nexusActiveProfileId}
+                      sheet={sheet}
+                      embedded
+                      providerWrapped={soloShellActive}
+                      emitParalelaNarration={(text) => pushLog({ role: "narrador", text, strand: "paralela" })}
+                      onExit={() => commitStrand("principal")}
+                      onSheetSynced={(next) => {
+                        setSheet(mergeStoredSheet(next));
+                        persistActiveProfile();
+                      }}
+                    />
+                  ) : null
                 ) : (
                   <div className="flex min-h-[min(40vh,22rem)] flex-col items-center justify-center gap-4 px-6 py-10 text-center">
                     <p className="max-w-sm font-sans text-sm leading-relaxed text-neutral-400">
