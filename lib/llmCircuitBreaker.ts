@@ -1,4 +1,4 @@
-import type { LlmDriverId } from "./config";
+import type { LlmDriverId } from "@/lib/llmDriverConfig";
 
 const WINDOW_MS = 8 * 60 * 1000;
 const MAX_FAILS_IN_WINDOW = 4;
@@ -11,7 +11,6 @@ function prune(id: "gemini" | "openai", now: number): number[] {
   return arr;
 }
 
-/** Tras error de red o salida rechazada. */
 export function recordExternalDriverFailure(id: "gemini" | "openai"): void {
   const now = Date.now();
   const arr = prune(id, now);
@@ -19,12 +18,10 @@ export function recordExternalDriverFailure(id: "gemini" | "openai"): void {
   failTimes[id] = arr;
 }
 
-/** Tras una respuesta aceptada por el guardián. */
 export function recordExternalDriverSuccess(id: "gemini" | "openai"): void {
   failTimes[id] = [];
 }
 
-/** Si true, se omite el driver un tiempo para no martillar APIs rotas. */
 export function isExternalDriverCooling(id: "gemini" | "openai"): boolean {
   return prune(id, Date.now()).length >= MAX_FAILS_IN_WINDOW;
 }

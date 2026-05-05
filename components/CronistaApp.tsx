@@ -1,14 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { fetchCampaignTail, pushCampaignEntry } from "@/lib/campaignClient";
 import {
   loadCampaignSyncSettings,
   saveCampaignSyncSettings,
   type CampaignSyncSettings,
 } from "@/lib/campaignLocalSettings";
-import { mergeCampaignIntoLog, recentLinesFromCampaign } from "@/lib/campaignMerge";
-import { normalizeCampaignId, normalizePlayerTag } from "@/lib/campaignTypes";
 import {
   CLAN_ACCENTS,
   CLAN_OPTIONS,
@@ -18,59 +15,39 @@ import {
   saveSheet,
   type CharacterSheet,
 } from "@/lib/character";
-import { askCronista } from "@/lib/narrativeApi";
 import {
   appendMjDirective,
-  filterLogsByStrand,
   loadActiveStrand,
   saveActiveStrand,
-  loadMjDirectives,
   loadNarrativeLog,
-  loadRollingByStrand,
   loadRollingSummary,
-  recentLinesForStrand,
   saveNarrativeLog,
-  saveRollingSummary,
 } from "@/lib/narrativeMemory";
-import { buildCrossStrandContext, STRAND_TAG, type NarrativeStrand } from "@/lib/narrativeStrands";
-import { consumePendingSynapticDisruption, loadChronicle, peekPendingSynapticDisruption } from "@/lib/chronicleConfig";
+import { STRAND_TAG, type NarrativeStrand } from "@/lib/narrativeStrands";
+import { loadChronicle, peekPendingSynapticDisruption } from "@/lib/chronicleConfig";
 import {
   appendXpLog,
   loadMeta,
   saveMeta,
 } from "@/lib/sessionMeta";
-import {
-  completeImpulseSpend,
-  letargoPoolPenalty,
-  tickImpulseRefill,
-  touchSignificantAction,
-} from "@/lib/impulseUnits";
-import { formatWorldNexusPromptBlock, ingestRollingSummary, loadNexusWorldState, saveNexusWorldState } from "@/lib/nexusWorldState";
+import { tickImpulseRefill } from "@/lib/impulseUnits";
 import { applyMandatoryServerChronicleReset, factoryResetLocalNexoPreserveGenesis } from "@/lib/clientNexoReset";
 import {
   fetchServerClientResetEpoch,
   readLocalClientResetEpoch,
   writeLocalClientResetEpoch,
 } from "@/lib/nexoSessionSync";
-import { formatNexoApiFailure } from "@/lib/nexoErrors";
-import { sanitizePlayerFacingNarration, sanitizeSuggestionLine } from "@/lib/playerFacingText";
-import { buildSheetSummaryLite } from "@/lib/sheetSummary";
-import type { NarrativeLogEntry, NarradorRecentLine } from "@/lib/narrativeTypes";
+import type { NarrativeLogEntry } from "@/lib/narrativeTypes";
 import { CharacterCreation } from "./CharacterCreation";
-import type { ConclaveMate } from "./ConclavePanel";
-import { ConclavePanel } from "./ConclavePanel";
 import { CampaignSyncBar } from "./CampaignSyncBar";
 import { AdminConsole } from "./AdminConsole";
-import { NarrativeFlow } from "./NarrativeFlow";
+import { NexoChannelPanel } from "./NexoChannelPanel";
 import { SidebarMesa } from "./SidebarMesa";
 import { NexoChronicleDigest } from "./NexoChronicleDigest";
 import { SchreckNetLogin } from "./SchreckNetLogin";
 import { GameSessionProvider, useGameSession } from "@/context/GameSessionContext";
-import { ManifestWill } from "./ManifestWill";
 import { ForcedDestinyOverlay } from "./ForcedDestinyOverlay";
 import { TechnicalHud } from "./TechnicalHud";
-import { streamCronistaMotorWithFallback } from "@/lib/cronistaClient";
-import { serializeV5Roll, type V5RollResult } from "@/lib/dice";
 import {
   clearLocalPlayerProfilesOnly,
   createBlankProfile,
@@ -98,46 +75,9 @@ import {
   isOperatorSessionUnlocked,
   setOperatorSessionUnlocked,
 } from "@/lib/operatorSessionGate";
-import {
-  acquireNexoPrimeLock,
-  buildArrivalNarradorPayload,
-  nexoNeedsNarrativePriming,
-  releaseNexoPrimeLock,
-  stripBootPlaceholder,
-  synthesizeInternalArrivalScene,
-} from "@/lib/nexoArrivalPrime";
 import { buildSoloNexoDigest } from "@/lib/soloCampaign/soloDigestNexo";
 
 const HEALTH_MAX_UI = 7;
-
-/** Oculta ruido procedural / mensajes sistema que rompen la lectura del canal. */
-function keepNexoChannelEntry(e: NarrativeLogEntry): boolean {
-  if (e.role === "sistema") {
-    if (/Tu CODEX quedó sellado|Campaña Solitaria cuando quieras/i.test(e.text)) return false;
-  }
-  if (e.role === "narrador") {
-    if (/Σ_GLIFOS|ECO DEL CANAL\s*Σ|survival_probe/i.test(e.text)) return false;
-  }
-  return true;
-}
-
-function orchestrationNpcKeyFromPlayerTag(tag: string): string | undefined {
-  const slug = normalizePlayerTag(tag)
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9_.-]/g, "")
-    .slice(0, 48);
-  if (!slug) return undefined;
-  const key = `pj:${slug}`.slice(0, 64);
-  return /^[a-zA-Z0-9_:.\-]+$/.test(key) ? key : undefined;
-}
-
-const MOCK_CONCLAVE: ConclaveMate[] = [
-  { id: "1", name: "Mireya V.", clan: "Tremere", status: "refugio" },
-  { id: "2", name: "_nullface", clan: "Nosferatu", status: "caceria" },
-  { id: "3", name: "Elías K.", clan: "Brujah", status: "conclave" },
-];
 
 function uid() {
   return `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -146,15 +86,6 @@ function uid() {
 function famineSealWallClock(): number {
   return Date.now();
 }
-
-/** Placeholder de arranque: el motor interno reemplazará esta entrada al entrar al Nexo si hace falta. */
-const BOOT_STREAM: NarrativeLogEntry = {
-  id: "0",
-  role: "narrador",
-  text: "La ciudad te recuerda igual de fría cuando el día la suelta al neón viejo y al ruido de metal húmedo. El siguiente movimiento será escena apenas cruces la primera sombra donde el mapa sí te reconoce.",
-  ts: 0,
-  strand: "principal",
-};
 
 function mergeStoredSheet(raw: CharacterSheet): CharacterSheet {
   return normalizeCharacterSheet(raw);
@@ -175,7 +106,7 @@ function applyGlobalsToUi(
   if (stored) setSheet(mergeStoredSheet(stored));
   setSheetLocked(loadMeta().sheetLocked);
   const nar = loadNarrativeLog();
-  setLogs(nar.length > 0 ? nar : [BOOT_STREAM]);
+  setLogs(nar);
   commitStrand?.(loadActiveStrand());
 }
 
@@ -193,17 +124,14 @@ function CronistaAppInner() {
   const [sheetLocked, setSheetLocked] = useState<boolean>(() =>
     typeof window === "undefined" ? false : loadMeta().sheetLocked,
   );
-  const [logs, setLogs] = useState<NarrativeLogEntry[]>(() => [BOOT_STREAM]);
-  const logsRef = useRef(logs);
+  const [logs, setLogs] = useState<NarrativeLogEntry[]>(() => []);
   const [beastPulse, setBeastPulse] = useState(false);
-  const [cronistaProcessing, setCronistaProcessing] = useState(false);
-  const [composer, setComposer] = useState("");
+  const [nexoLlmReady, setNexoLlmReady] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
   const [inquisitionThreat, setInquisitionThreat] = useState(2);
   const [mjCmd, setMjCmd] = useState("");
   const [profileIndexTick, setProfileIndexTick] = useState(0);
   /** Re-render impulsos / letargo tras gastar o pasar el ciclo. */
-  const [impulseRev, setImpulseRev] = useState(0);
   /** Multimesa: mismo `campaignId` + Upstash fusiona turnos en el hilo activo. */
   const [campaignSync, setCampaignSync] = useState<CampaignSyncSettings>(() => loadCampaignSyncSettings());
   const [remoteCampaignStore, setRemoteCampaignStore] = useState(false);
@@ -270,20 +198,24 @@ function CronistaAppInner() {
     return listProfiles();
   }, [profileIndexTick]);
 
-  const displayLogs = useMemo(() => {
-    const scoped = filterLogsByStrand(logs, activeStrand);
-    const base = isNarrator
-      ? scoped
-      : scoped.filter((e) => !(e.role === "sistema" && /^\[\s*MJ_PIPE\s*\]:/i.test(e.text.trim())));
-    return base.filter(keepNexoChannelEntry);
-  }, [logs, activeStrand, isNarrator]);
-
   const healthHudFilled = HEALTH_MAX_UI - Math.min(sheet.healthDamage, HEALTH_MAX_UI);
   const nexusActiveProfileId = getActiveProfileId();
 
   useEffect(() => {
-    logsRef.current = logs;
-  }, [logs]);
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/nexo-capabilities", { cache: "no-store" });
+        const j = (await res.json()) as { llmReady?: boolean };
+        if (!cancelled && res.ok) setNexoLlmReady(Boolean(j.llmReady));
+      } catch {
+        if (!cancelled) setNexoLlmReady(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   /** Detecta Upstash en servidor (GET devuelve storeDisabled: false). */
   useEffect(() => {
@@ -333,114 +265,6 @@ function CronistaAppInner() {
       document.removeEventListener("visibilitychange", onVis);
     };
   }, []);
-
-  /** Fusiona turnos remotos en el buffer local (mismo id-sala + hilo). */
-  useEffect(() => {
-    if (!campaignSync.enabled) return;
-    const cid = normalizeCampaignId(campaignSync.campaignId);
-    if (!cid) return;
-
-    const run = async () => {
-      if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
-      const { entries } = await fetchCampaignTail(cid, activeStrand, 48);
-      if (!entries.length) return;
-      setLogs((prev) => {
-        const merged = mergeCampaignIntoLog(prev, entries);
-        if (merged.length === prev.length) return prev;
-        saveNarrativeLog(merged);
-        queueMicrotask(() => {
-          const aid = getActiveProfileId();
-          if (aid) syncActiveBundleFromGlobals(aid);
-        });
-        return merged;
-      });
-    };
-
-    void run();
-    const id = window.setInterval(() => void run(), 32000);
-    return () => window.clearInterval(id);
-  }, [campaignSync.enabled, campaignSync.campaignId, activeStrand]);
-
-  /** Apertura Nexo principal: narración siempre primero (motor interno, sin API). */
-  useEffect(() => {
-    if (phase !== "nexus") return;
-    if (!sheetLocked) return;
-    if (activeStrand !== "principal") return;
-    if (!acquireNexoPrimeLock()) return;
-
-    void (async () => {
-      try {
-        let merged = loadNarrativeLog();
-        const cmp = campaignSyncRef.current;
-        const cid = normalizeCampaignId(cmp.campaignId);
-        if (cmp.enabled && cid && remoteCampaignStore) {
-          try {
-            const { entries } = await fetchCampaignTail(cid, "principal", 40);
-            const next = mergeCampaignIntoLog(merged.length ? merged : logs, entries);
-            if (next.length > 0 && (next.length !== merged.length || entries.length > 0)) {
-              merged = next;
-              saveNarrativeLog(merged);
-              setLogs(merged);
-            }
-          } catch {
-            /* cola remota opcional */
-          }
-        }
-
-        const candidate = merged.length > 0 ? merged : logs;
-        if (!nexoNeedsNarrativePriming(candidate, "principal")) return;
-
-        const chron = loadChronicle();
-        const world = loadNexusWorldState();
-        const worldBlock = formatWorldNexusPromptBlock(world, "principal");
-        const body = buildArrivalNarradorPayload({
-          sheet,
-          chronicle: chron,
-          strand: "principal",
-          inquisitionThreat,
-          worldState: world,
-          worldNexusPrompt: worldBlock,
-          rollingSummary: loadRollingSummary()?.trim() || undefined,
-          activeProfileId: getActiveProfileId(),
-        });
-        const out = synthesizeInternalArrivalScene(body);
-        const narrId = uid();
-        const summary = out.resumen_actualizado?.trim();
-
-        setLogs((prev) => {
-          const stripped = stripBootPlaceholder(prev);
-          const next: NarrativeLogEntry[] = [
-            ...stripped,
-            {
-              id: narrId,
-              role: "narrador",
-              strand: "principal",
-              ts: Date.now(),
-              text: sanitizePlayerFacingNarration(out.narracion.trim()),
-              ...(Array.isArray(out.suggestions) && out.suggestions.length
-                ? { suggestions: out.suggestions.slice(0, 8).map(sanitizeSuggestionLine) }
-                : {}),
-            },
-          ];
-          saveNarrativeLog(next);
-          queueMicrotask(() => {
-            const aid = getActiveProfileId();
-            if (aid) syncActiveBundleFromGlobals(aid);
-          });
-          return next;
-        });
-
-        if (summary) {
-          saveRollingSummary(summary);
-          saveNexusWorldState(ingestRollingSummary(world, summary));
-        }
-        setImpulseRev((x) => x + 1);
-      } finally {
-        releaseNexoPrimeLock();
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- arranque tras hidratar/cambiar log principal
-  }, [phase, sheetLocked, activeStrand, sheet, inquisitionThreat, logs, remoteCampaignStore]);
 
   useEffect(() => {
     const saved = loadNarrativeLog();
@@ -549,7 +373,6 @@ function CronistaAppInner() {
       saveMeta(next);
       const aid = getActiveProfileId();
       if (aid) syncActiveBundleFromGlobals(aid);
-      setImpulseRev((n) => n + 1);
     };
     sync();
     const id = window.setInterval(sync, 60_000);
@@ -668,7 +491,7 @@ function CronistaAppInner() {
   }
 
   const genesisSnap = useMemo(() => loadChronicle(), [logs.length, profileIndexTick]);
-  const rollingSnap = useMemo(() => loadRollingSummary(), [logs, activeStrand, impulseRev]);
+  const rollingSnap = useMemo(() => loadRollingSummary(), [logs, activeStrand]);
   const pendingSynapticPreview = peekPendingSynapticDisruption()?.trim() ?? "";
 
   const soloNexoDigest = useMemo(() => {
@@ -691,96 +514,6 @@ function CronistaAppInner() {
     navigateToPhase("profileHub", { replace: true });
   }, [phase, navigateToPhase]);
 
-  const sendPlayer = async () => {
-    const t = composer.trim();
-    if (!t) return;
-    setComposer("");
-    const playerMsgId = uid();
-    pushLog({ id: playerMsgId, role: "jugador", text: t });
-
-    const strand = activeStrandRef.current;
-    const prior = recentLinesForStrand(logs, strand, 4);
-    const cmp = campaignSync;
-    const cid = normalizeCampaignId(cmp.campaignId);
-    const tag = normalizePlayerTag(cmp.playerTag || sheet.name?.trim() || "PJ") || "PJ";
-    const orchestrationNpcKey = orchestrationNpcKeyFromPlayerTag(tag);
-
-    let recentLogs: NarradorRecentLine[];
-    if (cmp.enabled && cid && remoteCampaignStore) {
-      await pushCampaignEntry({
-        campaignId: cid,
-        playerTag: tag,
-        strand,
-        role: "jugador",
-        text: t,
-        id: playerMsgId,
-        ts: Date.now(),
-      });
-      const { entries } = await fetchCampaignTail(cid, strand, 32);
-      const fromCamp = recentLinesFromCampaign(entries, strand, 6);
-      recentLogs = fromCamp.length ? fromCamp : [...prior, { role: "jugador" as const, text: t }].slice(-5);
-    } else {
-      recentLogs = [...prior, { role: "jugador" as const, text: t }].slice(-5);
-    }
-
-    const cross = buildCrossStrandContext(strand, loadRollingByStrand());
-    const worldNexusContext = formatWorldNexusPromptBlock(loadNexusWorldState(), strand);
-
-    try {
-      const out = await askCronista({
-        playerAction: t,
-        recentLogs,
-        sheetSummary: buildSheetSummaryLite(sheet),
-        inquisitionThreat,
-        mjDirectives: loadMjDirectives(),
-        rollingSummary: loadRollingSummary() || undefined,
-        chronicle: loadChronicle(),
-        synapticDisruption: consumePendingSynapticDisruption() || undefined,
-        ideasRepository: undefined,
-        narrativeStrand: strand,
-        crossStrandContext: cross.trim() || undefined,
-        worldNexusContext,
-        ...(orchestrationNpcKey ? { orchestrationNpcKey } : {}),
-      });
-      const narrId = uid();
-      pushLog({
-        id: narrId,
-        role: "narrador",
-        text: out.narration,
-        ...(out.suggestions?.length ? { suggestions: out.suggestions } : {}),
-        ...(out.rollPrompt ? { rollPrompt: out.rollPrompt } : {}),
-        ...(sheet.hunger > 3 ? { beastTone: true } : {}),
-      });
-      if (out.nexoInternalV1?.systemWhispers?.length) {
-        for (const w of out.nexoInternalV1.systemWhispers) {
-          pushLog({ role: "sistema", text: w, sigmaGlitch: true });
-        }
-      }
-      if (cmp.enabled && cid && remoteCampaignStore) {
-        void pushCampaignEntry({
-          campaignId: cid,
-          playerTag: tag,
-          strand,
-          role: "narrador",
-          text: out.narration.slice(0, 4500),
-          id: narrId,
-          ts: Date.now(),
-        });
-      }
-      if (out.rollingSummary) saveRollingSummary(out.rollingSummary);
-      saveNexusWorldState(ingestRollingSummary(loadNexusWorldState(), out.rollingSummary));
-      saveMeta(touchSignificantAction(loadMeta()));
-      const aid = getActiveProfileId();
-      if (aid) syncActiveBundleFromGlobals(aid);
-      setImpulseRev((n) => n + 1);
-    } catch (e) {
-      pushLog({
-        role: "sistema",
-        text: formatNexoApiFailure(e instanceof Error ? e.message : String(e)),
-      });
-    }
-  };
-
   const emitMj = () => {
     const cmd = mjCmd.trim();
     if (!cmd || !isNarrator) return;
@@ -789,108 +522,6 @@ function CronistaAppInner() {
     setMjCmd("");
     setAdminOpen(false);
   };
-
-  const handleManifestMotor = useCallback(
-    async ({ roll, intent, ledgerLine }: { roll: V5RollResult; intent: string; ledgerLine: string }) => {
-      if (!isNarrator) {
-        const metaNow = tickImpulseRefill(loadMeta());
-        if (metaNow.impulseUnits <= 0) {
-          pushLog({
-            role: "sistema",
-            text: "Todavía no sientes el impulso que exige manifestar voluntad frente a esta ciudad — espera el ciclo o muévete más en el canal antes de volver a tirar.",
-          });
-          return;
-        }
-        saveMeta(completeImpulseSpend(metaNow));
-        const aid0 = getActiveProfileId();
-        if (aid0) syncActiveBundleFromGlobals(aid0);
-        setImpulseRev((n) => n + 1);
-      }
-
-      pushLog({ role: "sistema", text: ledgerLine });
-      if (roll.fracasoBestial || sheet.hunger >= 5) setBeastPulse(true);
-
-      const streamId = uid();
-      const strand = activeStrandRef.current;
-      setCronistaProcessing(true);
-      setLogs((prev) => [
-        ...prev,
-        {
-          id: streamId,
-          role: "narrador",
-          text: "",
-          ts: Date.now(),
-          cronistaOut: true,
-          strand,
-        },
-      ]);
-
-      const recentLogs = [
-        ...recentLinesForStrand(logsRef.current, strand, 4),
-        { role: "sistema", text: ledgerLine },
-      ].slice(-5);
-      const cross = buildCrossStrandContext(strand, loadRollingByStrand());
-      const worldNexusContext = formatWorldNexusPromptBlock(loadNexusWorldState(), strand);
-
-      try {
-        let acc = "";
-        await streamCronistaMotorWithFallback(
-          {
-            codex: sheet,
-            tirada: serializeV5Roll(roll),
-            hambre: sheet.hunger,
-            input: intent,
-            recentLogs,
-            chronicle: loadChronicle(),
-            synapticDisruption: peekPendingSynapticDisruption() || undefined,
-            ideasRepository: undefined,
-            narrativeStrand: strand,
-            crossStrandContext: cross.trim() || undefined,
-            worldNexusContext,
-          },
-          (delta) => {
-            acc += delta;
-            setLogs((prev) => prev.map((e) => (e.id === streamId ? { ...e, text: acc } : e)));
-          },
-        );
-        const finalText =
-          sanitizePlayerFacingNarration(acc.trim()) ||
-          "El silencio pesa igual que evidencia vieja pegada en la suela hasta que decides pisar más fuerte de nuevo.";
-        setLogs((prev) => {
-          const next = prev.map((e) => (e.id === streamId ? { ...e, text: finalText } : e));
-          saveNarrativeLog(next);
-          queueMicrotask(() => {
-            const aid = getActiveProfileId();
-            if (aid) syncActiveBundleFromGlobals(aid);
-          });
-          return next;
-        });
-        const cmp = campaignSyncRef.current;
-        const cid = normalizeCampaignId(cmp.campaignId);
-        const tag = normalizePlayerTag(cmp.playerTag || sheet.name?.trim() || "PJ") || "PJ";
-        if (remoteCampaignStore && cmp.enabled && cid) {
-          void pushCampaignEntry({
-            campaignId: cid,
-            playerTag: tag,
-            strand,
-            role: "narrador",
-            text: finalText.slice(0, 4500),
-            id: streamId,
-            ts: Date.now(),
-          });
-        }
-      } catch (e) {
-        setLogs((prev) => prev.filter((e) => e.id !== streamId));
-        pushLog({
-          role: "sistema",
-          text: formatNexoApiFailure(e instanceof Error ? e.message : String(e)),
-        });
-      } finally {
-        setCronistaProcessing(false);
-      }
-    },
-    [sheet, isNarrator, remoteCampaignStore],
-  );
 
   const tweakRemoteSimulation = () => {
     if (!isNarrator) return;
@@ -916,14 +547,6 @@ function CronistaAppInner() {
   ]
     .filter(Boolean)
     .join(" ");
-
-  const impulseMeta = useMemo(() => {
-    void impulseRev;
-    return tickImpulseRefill(loadMeta());
-  }, [impulseRev, phase]);
-
-  const manifestPenalty = letargoPoolPenalty(impulseMeta);
-  const impulseBlocked = !isNarrator && impulseMeta.impulseUnits <= 0;
 
   const goToLogin = () => {
     persistActiveProfile();
@@ -964,7 +587,6 @@ function CronistaAppInner() {
           factoryResetLocalNexoPreserveGenesis();
           applyGlobalsToUi(setSheet, setSheetLocked, setLogs, commitStrand);
           setProfileIndexTick((n) => n + 1);
-          setComposer("");
           setInquisitionThreat(2);
           navigateToPhase("profileHub");
         }}
@@ -1098,7 +720,6 @@ function CronistaAppInner() {
           <span style={{ color: accent }} className="font-medium text-neutral-300">
             {STRAND_TAG[activeStrand]}
           </span>
-          {cronistaProcessing ? <span className="animate-pulse text-[color:var(--neon)]">La voz del canal…</span> : null}
           {isNarrator ? (
             <span className="text-neutral-600">
               σ {inquisitionThreat} · Reloj {famineIntervalMinutes}m
@@ -1201,36 +822,15 @@ function CronistaAppInner() {
             )
           ) : (
             <>
-              <NarrativeFlow
-                logs={displayLogs}
-                composer={composer}
-                onComposer={setComposer}
-                onSend={sendPlayer}
+              <NexoChannelPanel
                 accent={accent}
-                processing={cronistaProcessing}
-                showTechnicalAnchors={isNarrator}
-                identityHint={identityHint}
-                onPickSuggestion={(s) =>
-                  setComposer((c) => {
-                    const t = c.trim();
-                    return t ? `${t}\n${s}` : s;
-                  })
-                }
                 activeStrand={activeStrand}
                 onStrandChange={commitStrand}
+                identityHint={identityHint}
+                showTechnicalAnchors={isNarrator}
                 glyphContext={{ inquisitionThreat, hunger: sheet.hunger }}
+                llmReady={nexoLlmReady}
               />
-              <ManifestWill
-                key={`${sheet.hunger}-${sheet.name}-${impulseRev}`}
-                sheet={sheet}
-                hungerLevel={sheet.hunger}
-                accent={accent}
-                onManifest={handleManifestMotor}
-                isProcessing={cronistaProcessing}
-                poolPenalty={isNarrator ? 0 : manifestPenalty}
-                impulseBlocked={impulseBlocked}
-              />
-
               <details className="lg:hidden rounded-xl border border-white/[0.06] bg-black/35 px-4 py-3">
                 <summary className="cursor-pointer text-[10px] uppercase tracking-[0.2em] text-neutral-500">
                   Eco del mundo
@@ -1250,16 +850,6 @@ function CronistaAppInner() {
           <div className="min-h-0 min-w-0 flex-1 overflow-y-auto">
             <NexoChronicleDigest {...chronicleAsideProps} />
           </div>
-          {activeStrand !== "paralela" ? (
-            <div className="flex min-h-[9rem] shrink-0 flex-col border-t border-white/[0.05] lg:min-h-0 lg:max-h-[38%] lg:overflow-hidden">
-              <ConclavePanel
-                mates={MOCK_CONCLAVE}
-                accent={accent}
-                embedded
-                soloEchoLines={soloNexoDigest ? soloNexoDigest.echoLines : undefined}
-              />
-            </div>
-          ) : null}
         </aside>
       </div>
 

@@ -1,14 +1,6 @@
 /**
- * Selección del motor narrativo (solo servidor / env).
- * El cliente no envía flags: todo es transparente para el jugador.
- *
- * Variables:
- * - NEXO_LLM_PROVIDER=auto|gemini|openai|internal
- *   · auto: primera API con clave (orden por NEXO_LLM_PREFER), si ninguna → internal
- *   · gemini|openai|internal: fuerza ese primario; ante fallo se encadena fallback (ver abajo)
- * - NEXO_LLM_PREFER=gemini|openai (solo auto; por defecto gemini)
- *
- * Claves: GEMINI_API_KEY / GOOGLE_GENERATIVE_AI_API_KEY, OPENAI_API_KEY
+ * Selección del motor LLM (solo servidor / env).
+ * Usado por health, pulso-mundo y capacidades Nexo — no por el canal narrativo multijugador (desactivado).
  */
 
 import { resolveGeminiApiKey } from "@/lib/geminiEnv";
@@ -40,11 +32,6 @@ function preferInAuto(): "gemini" | "openai" {
   return x === "openai" ? "openai" : "gemini";
 }
 
-/**
- * Cadena de intentos ante fallo de red/cuota/modelo.
- * Siempre termina en `internal` para que la mesa nunca quede sin respuesta.
- * Operador o env pueden forzar solo motor interno (sin APIs de pago / externas).
- */
 export function resolveDriverChain(): LlmDriverId[] {
   if (isExternalLlmBlocked()) {
     return ["internal"];
@@ -81,7 +68,6 @@ function resolveDriverChainBase(): LlmDriverId[] {
     return dedupe(chain);
   }
 
-  // auto
   const chain: LlmDriverId[] = [...apisOrdered, "internal"];
   return dedupe(chain);
 }
@@ -97,7 +83,6 @@ function dedupe(chain: LlmDriverId[]): LlmDriverId[] {
   return out;
 }
 
-/** Para diagnóstico en /api/health (sin secretos). */
 export function describeDriverResolution(): {
   providerEnv: string;
   chain: LlmDriverId[];

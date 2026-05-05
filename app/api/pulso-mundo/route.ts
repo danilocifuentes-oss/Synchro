@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { executePulsoMundo, internalPulsoDual } from "@/lib/narrativeDrivers/runPulsoMundo";
+import { executePulsoMundo, internalPulsoDual } from "@/lib/pulsoMundo";
 
 export const runtime = "nodejs";
 export const maxDuration = 45;

@@ -201,7 +201,7 @@ export const SKILL_KEYS = [
   "tecnologia",
 ] as const;
 
-/** Re-export para ManifestWill / creación */
+/** Re-export para ficha / creación */
 export { SERENO_SKILL_KEYS, SERENO_SKILLS } from "@/lib/sereno";
 
 export function defaultSkills(): Record<string, number> {

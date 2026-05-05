@@ -2,10 +2,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 import { resolveGeminiApiKey } from "@/lib/geminiEnv";
 import { isQuotaOrRateLimitError, resolveGeminiModels, withExponentialBackoff } from "@/lib/geminiRetry";
+import { openAiModel } from "@/lib/llmDriverConfig";
 import { tryOpenAiClient } from "@/lib/openAiClient";
 import { getOperatorSeedBlock, isExternalLlmBlocked } from "@/lib/operatorRuntimeSettings";
-
-import { openAiModel } from "./config";
 
 /** Eco banal / ciudad vs eco vampírico / místico para la bitácora dual. */
 export type PulsoMundoDual = {

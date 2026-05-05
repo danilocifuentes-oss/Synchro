@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { isGeminiConfigured, whichGeminiEnvName } from "@/lib/geminiEnv";
-import { describeDriverResolution, hasOpenAiKey } from "@/lib/narrativeDrivers/config";
-import { applyDriverCircuitToChain, getLlmCircuitDiagnostics } from "@/lib/narrativeDrivers/llmCircuitBreaker";
+import { describeDriverResolution, hasOpenAiKey } from "@/lib/llmDriverConfig";
+import { applyDriverCircuitToChain, getLlmCircuitDiagnostics } from "@/lib/llmCircuitBreaker";
 import {
   getOperatorRuntimeState,
   isExternalLlmBlocked,
