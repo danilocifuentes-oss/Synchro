@@ -284,24 +284,33 @@ function SoloCampaignScreen({
   const preludeGateDoneUi = isChroniclePreludeDismissed(progress);
   const openingVitalsApplied = Boolean(progress.flags[SOLO_FLAG_OPENING_VITALS]);
 
+  /** Incrustado en el Nexo: el preludio vive solo en este panel, no en el stream global. */
   useEffect(() => {
-    if (!emitParalelaNarration) return;
+    if (!emitParalelaNarration || embedded) return;
     if (preludeGateDoneUi) return;
     const key = `${profileId}:${CHRONICLE_PRELUDE_CONTENT_VERSION}:prelude`;
     if (preludeChannelKeyRef.current === key) return;
     emitParalelaNarration(`${CHRONICLE_PRELUDE_COMMON}\n\n${preludeStinger}`.trim());
     preludeChannelKeyRef.current = key;
-  }, [emitParalelaNarration, preludeGateDoneUi, profileId, preludeStinger]);
+  }, [emitParalelaNarration, embedded, preludeGateDoneUi, profileId, preludeStinger]);
 
   useEffect(() => {
-    if (!emitParalelaNarration) return;
+    if (!emitParalelaNarration || embedded) return;
     if (!preludeGateDoneUi) return;
     if (progress.chapterId !== "chapter01" || progress.flags.clan_intro_seen) return;
     const key = `${profileId}:clan_intro_echo`;
     if (clanChannelKeyRef.current === key) return;
     emitParalelaNarration(clanPresentationText);
     clanChannelKeyRef.current = key;
-  }, [emitParalelaNarration, preludeGateDoneUi, progress.chapterId, progress.flags.clan_intro_seen, profileId, clanPresentationText]);
+  }, [
+    emitParalelaNarration,
+    embedded,
+    preludeGateDoneUi,
+    progress.chapterId,
+    progress.flags.clan_intro_seen,
+    profileId,
+    clanPresentationText,
+  ]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -552,14 +561,10 @@ function SoloCampaignScreen({
 
               {!isChroniclePreludeDismissed(progress) ? (
                 <section className="space-y-4 border border-[var(--terminal)]/25 bg-black/55 p-5 sharp-border-inner">
-                  {emitParalelaNarration ? (
-                    <p className="text-sm text-neutral-500">El arranque quedó en el canal.</p>
-                  ) : (
-                    <>
-                      <p className="whitespace-pre-line text-sm leading-relaxed text-neutral-300">{CHRONICLE_PRELUDE_COMMON}</p>
-                      <p className={`text-sm leading-relaxed italic ${CLAN_TONE[sheet.clan] ?? "text-neutral-200"}`}>{preludeStinger}</p>
-                    </>
-                  )}
+                  <>
+                    <p className="whitespace-pre-line text-sm leading-relaxed text-neutral-300">{CHRONICLE_PRELUDE_COMMON}</p>
+                    <p className={`text-sm leading-relaxed italic ${CLAN_TONE[sheet.clan] ?? "text-neutral-200"}`}>{preludeStinger}</p>
+                  </>
                   <button
                     type="button"
                     onClick={() => {
@@ -581,9 +586,7 @@ function SoloCampaignScreen({
 
               {isChroniclePreludeDismissed(progress) && progress.chapterId === "chapter01" && !progress.flags.clan_intro_seen ? (
                 <section className="space-y-4 border border-neutral-900 bg-black/45 p-5 sharp-border-inner">
-                  {!emitParalelaNarration ? (
-                    <p className={`text-sm leading-relaxed ${CLAN_TONE[sheet.clan] ?? "text-neutral-200"}`}>{clanPresentationText}</p>
-                  ) : null}
+                  <p className={`text-sm leading-relaxed ${CLAN_TONE[sheet.clan] ?? "text-neutral-200"}`}>{clanPresentationText}</p>
                   <button
                     type="button"
                     onClick={() => {
