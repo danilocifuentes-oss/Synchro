@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { CharacterSheet, ClanId } from "@/lib/character";
 import { CLAN_OPTIONS } from "@/lib/character";
@@ -10,7 +10,8 @@ import { getSoloChapter, getSoloScene } from "@/lib/soloCampaign/chapters";
 import { checkOptionAvailability, listFailReasons } from "@/lib/soloCampaign/requirementEngine";
 import { loadSheet, normalizeCharacterSheet, saveSheet } from "@/lib/character";
 import { loadSoloProgress, saveSoloProgress } from "@/lib/soloCampaign/progressStore";
-import type { SoloOption, SoloProgress, SoloSceneEffect } from "@/lib/soloCampaign/types";
+import type { SoloEndingId, SoloOption, SoloProgress, SoloRouteId, SoloSceneEffect } from "@/lib/soloCampaign/types";
+import { parseOptionIaPanels, parseSceneIaPanels } from "@/lib/soloCampaign/soloIaPresentation";
 import { getPendingNextChapter } from "@/lib/soloCampaign/soloProgressSelectors";
 import { syncActiveBundleFromGlobals } from "@/lib/profileStore";
 import { TechnicalHud } from "@/components/TechnicalHud";
@@ -26,12 +27,6 @@ import {
   SOLO_FLAG_OPENING_VITALS,
 } from "@/lib/soloCampaign/chronicleMechanics";
 import { applyPreRollResourceCost, soloOptionUsesDice } from "@/lib/soloCampaign/rollResourceCost";
-
-const OPTION_TYPE_LABEL: Record<string, string> = {
-  discipline: "DISCIPLINA",
-  skill: "HABILIDAD",
-  clan: "CLAN",
-};
 
 const SOLO_BACK_STACK_LIMIT = 120;
 
@@ -75,6 +70,125 @@ type Props = {
 
 function clamp(n: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, n));
+}
+
+type SoloCommitDraft = {
+  option: SoloOption;
+  sheetBeforeDecision: CharacterSheet;
+  /** Gasto opcional antes de tirar (disciplinas). */
+  disciplineActivationHint?: "willpower" | "hunger";
+  rollLine: string;
+  rollPassed: boolean;
+  targetSceneId: string;
+  branchEffects: SoloSceneEffect[];
+  nextSheet: CharacterSheet;
+  nextFlags: Record<string, boolean>;
+  chronicleXpThisChoice: number;
+  reputationGain: number;
+  nextActiveRoute: SoloRouteId;
+  nextStateTags: string[];
+  nextEndingId: SoloEndingId | null;
+  nextFatalOutcome: SoloProgress["fatalOutcome"];
+  nextSceneId: string;
+};
+
+/** Resuelve mecánica y banderas sin persistir (segundo clic aplica efectos visibles). */
+function buildSoloCommitDraft(option: SoloOption, sheet: CharacterSheet, progress: SoloProgress): SoloCommitDraft {
+  let nextSheet = sheet;
+  const nextFlags = { ...progress.flags };
+  let rollLine: string;
+  let rollPassed = true;
+  let targetSceneId = option.nextSceneId;
+  let branchEffects: SoloSceneEffect[];
+  let rollXpEarned = 0;
+  let xpFromNarrative = 0;
+
+  let disciplineActivationHint: "willpower" | "hunger" | undefined;
+
+  if (soloOptionUsesDice(option)) {
+    const wpBefore = nextSheet.willpowerCur;
+    const hungerBeforePre = nextSheet.hunger;
+    nextSheet = applyPreRollResourceCost(nextSheet, option);
+    if (nextSheet.willpowerCur < wpBefore) disciplineActivationHint = "willpower";
+    else if (nextSheet.hunger > hungerBeforePre) disciplineActivationHint = "hunger";
+
+    const rollPlan = resolveSoloRollPlan(option, nextSheet);
+    const roll = rollPoolV5(rollPlan.pool, nextSheet.hunger, rollPlan.difficulty);
+    rollLine = `${rollPlan.label} · ${summarizeRollPlayerLog(roll)}`;
+    rollPassed = roll.passed;
+    const isCritical = roll.criticalNormal || roll.messyCritical;
+    branchEffects = roll.passed
+      ? isCritical
+        ? [...(option.effects ?? []), ...(option.effectsOnCritical ?? [])]
+        : option.effects ?? []
+      : [...(option.effects ?? []), ...(option.effectsOnFail ?? [])];
+    const partRoll = partitionExperienceEffects(branchEffects);
+    xpFromNarrative = partRoll.xpFromNarrative;
+    for (const effect of partRoll.sheetFx) {
+      nextSheet = applySceneEffectDraft(nextSheet, nextFlags, effect);
+    }
+    if (rollPassed) {
+      rollXpEarned = option.experienceOnSuccessfulRoll ?? CHRONICLE_XP_ROLL_SUCCESS_DEFAULT;
+      if (isCritical) rollXpEarned += CHRONICLE_XP_CRITICAL_EXTRA;
+    }
+    if (!roll.passed) {
+      nextSheet = { ...nextSheet, hunger: Math.max(0, Math.min(5, nextSheet.hunger + 1)) };
+      nextFlags[`roll_fail_${option.id}`] = true;
+      if (roll.fracasoBestial) {
+        nextSheet = { ...nextSheet, humanity: Math.max(0, Math.min(10, nextSheet.humanity - 1)) };
+      }
+    } else if (isCritical) {
+      nextFlags[`roll_crit_${option.id}`] = true;
+    }
+    targetSceneId = !roll.passed
+      ? option.nextSceneIdOnFail ?? option.nextSceneId
+      : isCritical
+        ? option.nextSceneIdOnCritical ?? option.nextSceneId
+        : option.nextSceneId;
+  } else {
+    rollLine = "Elección directa";
+    branchEffects = option.effects ?? [];
+    const partDlg = partitionExperienceEffects(branchEffects);
+    xpFromNarrative = partDlg.xpFromNarrative;
+    for (const effect of partDlg.sheetFx) {
+      nextSheet = applySceneEffectDraft(nextSheet, nextFlags, effect);
+    }
+  }
+
+  const chronicleXpThisChoice = xpFromNarrative + rollXpEarned;
+  const nextScene = getSoloScene(progress.chapterId, targetSceneId);
+  const nextSceneId = nextScene?.id ?? progress.sceneId;
+  const reputationGain = sumReputationDeltas(branchEffects);
+  let nextActiveRoute: SoloRouteId = progress.activeRoute ?? "main";
+  let nextStateTags = [...(progress.stateTags ?? [])];
+  let nextEndingId: SoloEndingId | null = progress.endingId ?? null;
+  let nextFatalOutcome = progress.fatalOutcome ?? null;
+  for (const effect of branchEffects) {
+    if (effect.type === "setRoute") nextActiveRoute = effect.route;
+    if (effect.type === "addStateTag" && !nextStateTags.includes(effect.tag)) nextStateTags.push(effect.tag);
+    if (effect.type === "removeStateTag") nextStateTags = nextStateTags.filter((t) => t !== effect.tag);
+    if (effect.type === "setEnding") nextEndingId = effect.endingId;
+    if (effect.type === "fatalOutcome") nextFatalOutcome = { id: effect.id, title: effect.title, body: effect.body };
+  }
+
+  return {
+    option,
+    sheetBeforeDecision: sheet,
+    disciplineActivationHint,
+    rollLine,
+    rollPassed,
+    targetSceneId,
+    branchEffects,
+    nextSheet,
+    nextFlags,
+    chronicleXpThisChoice,
+    reputationGain,
+    nextActiveRoute,
+    nextStateTags,
+    nextEndingId,
+    nextFatalOutcome,
+    nextSceneId,
+  };
 }
 
 function applySceneEffectDraft(base: CharacterSheet, flags: Record<string, boolean>, effect: NonNullable<SoloOption["effects"]>[number]) {
@@ -203,10 +317,19 @@ function SoloCampaignScreen({
   const transitionLockRef = useRef(false);
   const reduceMotion = useReducedMotion();
   const [lastRollLine, setLastRollLine] = useState<string>("");
+  const [pendingReveal, setPendingReveal] = useState<{
+    draft: SoloCommitDraft;
+    consequenceText: string;
+  } | null>(null);
   const chapterAdvanceRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     transitionLockRef.current = false;
+  }, [progress.sceneId, progress.chapterId]);
+
+  useEffect(() => {
+    setPendingReveal(null);
+    setLastRollLine("");
   }, [progress.sceneId, progress.chapterId]);
   const chapter = useMemo(() => getSoloChapter(progress.chapterId), [progress.chapterId]);
   const scene = useMemo(() => getSoloScene(progress.chapterId, progress.sceneId), [progress.chapterId, progress.sceneId]);
@@ -216,7 +339,10 @@ function SoloCampaignScreen({
   }, [scene]);
   const missingOptionCount = Math.max(0, 4 - displayedOptions.length);
   const pendingNextChapter = getPendingNextChapter(progress);
-  const sceneDisplayBody = useMemo(() => (scene ? scene.text : ""), [scene]);
+  const scenePanels = useMemo(
+    () => (scene ? parseSceneIaPanels(scene.text) : { context: null as string | null, narration: "" }),
+    [scene],
+  );
   const clanLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
   const openingVitalsApplied = Boolean(progress.flags[SOLO_FLAG_OPENING_VITALS]);
 
@@ -252,131 +378,93 @@ function SoloCampaignScreen({
     patchProgress(progFlag);
   }, [scene?.id, openingVitalsApplied, profileId, sheet.clan, patchProgress, onSheetSynced]);
 
-  const applyOption = (option: SoloOption) => {
-    if (transitionLockRef.current) return;
-    const availability = checkOptionAvailability(option, sheet, progress);
-    if (!availability.available) return;
-    transitionLockRef.current = true;
+  const finalizeCommitDraft = useCallback(
+    (draft: SoloCommitDraft) => {
+      if (transitionLockRef.current) return;
+      transitionLockRef.current = true;
 
-    let nextSheet = sheet;
-    const nextFlags = { ...progress.flags };
-    let rollLine: string;
-    let rollPassed = true;
-    let targetSceneId = option.nextSceneId;
-    let branchEffects: SoloSceneEffect[];
-    let rollXpEarned = 0;
-    let xpFromNarrative = 0;
+      const { option, nextSheet, chronicleXpThisChoice } = draft;
 
-    if (soloOptionUsesDice(option)) {
-      const wpBefore = nextSheet.willpowerCur;
-      const hungerBefore = nextSheet.hunger;
-      nextSheet = applyPreRollResourceCost(nextSheet, option);
-      if (nextSheet.willpowerCur < wpBefore) {
+      if (draft.disciplineActivationHint === "willpower") {
         appendXpLog("Crónica: activación de disciplina (−1 voluntad).");
-      } else if (nextSheet.hunger > hungerBefore) {
+      } else if (draft.disciplineActivationHint === "hunger") {
         appendXpLog("Crónica: activación de disciplina (+1 presión de hambre / Vitae).");
       }
-      const rollPlan = resolveSoloRollPlan(option, nextSheet);
-      const roll = rollPoolV5(rollPlan.pool, nextSheet.hunger, rollPlan.difficulty);
-      rollLine = `${rollPlan.label} · ${summarizeRollPlayerLog(roll)}`;
-      rollPassed = roll.passed;
-      const isCritical = roll.criticalNormal || roll.messyCritical;
-      branchEffects = roll.passed
-        ? isCritical
-          ? [...(option.effects ?? []), ...(option.effectsOnCritical ?? [])]
-          : option.effects ?? []
-        : [...(option.effects ?? []), ...(option.effectsOnFail ?? [])];
-      const partRoll = partitionExperienceEffects(branchEffects);
-      xpFromNarrative = partRoll.xpFromNarrative;
-      for (const effect of partRoll.sheetFx) {
-        nextSheet = applySceneEffectDraft(nextSheet, nextFlags, effect);
-      }
-      if (rollPassed) {
-        rollXpEarned = option.experienceOnSuccessfulRoll ?? CHRONICLE_XP_ROLL_SUCCESS_DEFAULT;
-        if (isCritical) rollXpEarned += CHRONICLE_XP_CRITICAL_EXTRA;
-      }
-      if (!roll.passed) {
-        nextSheet = { ...nextSheet, hunger: Math.max(0, Math.min(5, nextSheet.hunger + 1)) };
-        nextFlags[`roll_fail_${option.id}`] = true;
-        if (roll.fracasoBestial) {
-          nextSheet = { ...nextSheet, humanity: Math.max(0, Math.min(10, nextSheet.humanity - 1)) };
-        }
-      } else if (isCritical) {
-        nextFlags[`roll_crit_${option.id}`] = true;
-      }
-      targetSceneId = !roll.passed
-        ? option.nextSceneIdOnFail ?? option.nextSceneId
-        : isCritical
-          ? option.nextSceneIdOnCritical ?? option.nextSceneId
-          : option.nextSceneId;
-    } else {
-      rollLine = "Elección directa";
-      branchEffects = option.effects ?? [];
-      const partDlg = partitionExperienceEffects(branchEffects);
-      xpFromNarrative = partDlg.xpFromNarrative;
-      for (const effect of partDlg.sheetFx) {
-        nextSheet = applySceneEffectDraft(nextSheet, nextFlags, effect);
-      }
-    }
 
-    const chronicleXpThisChoice = xpFromNarrative + rollXpEarned;
+      setLastRollLine(draft.rollLine);
 
-    setLastRollLine(rollLine);
+      if (nextSheet !== draft.sheetBeforeDecision) {
+        saveSheet(nextSheet);
+        syncActiveBundleFromGlobals(profileId);
+        onSheetSynced?.(nextSheet);
+      }
+      if (chronicleXpThisChoice > 0) appendXpLog(`Crónica +${chronicleXpThisChoice} PX`);
+      if (chronicleXpThisChoice > 0 || nextSheet !== draft.sheetBeforeDecision) syncActiveBundleFromGlobals(profileId);
 
-    if (nextSheet !== sheet) {
-      saveSheet(nextSheet);
-      syncActiveBundleFromGlobals(profileId);
-      onSheetSynced?.(nextSheet);
-    }
-    if (chronicleXpThisChoice > 0) appendXpLog(`Crónica +${chronicleXpThisChoice} PX`);
-    if (chronicleXpThisChoice > 0 || nextSheet !== sheet) syncActiveBundleFromGlobals(profileId);
-    const nextScene = getSoloScene(progress.chapterId, targetSceneId);
-    const sceneId = nextScene?.id ?? progress.sceneId;
-    const reputationGain = sumReputationDeltas(branchEffects);
-    const tick = progress.updatedAt + 1;
-    const backSnap = { chapterId: progress.chapterId, sceneId: progress.sceneId };
-    const prevStack = progress.soloSceneBackStack ?? [];
-    let nextActiveRoute = progress.activeRoute ?? "main";
-    let nextStateTags = [...(progress.stateTags ?? [])];
-    let nextEndingId = progress.endingId ?? null;
-    let nextFatalOutcome = progress.fatalOutcome ?? null;
-    for (const effect of branchEffects) {
-      if (effect.type === "setRoute") nextActiveRoute = effect.route;
-      if (effect.type === "addStateTag" && !nextStateTags.includes(effect.tag)) nextStateTags.push(effect.tag);
-      if (effect.type === "removeStateTag") nextStateTags = nextStateTags.filter((t) => t !== effect.tag);
-      if (effect.type === "setEnding") nextEndingId = effect.endingId;
-      if (effect.type === "fatalOutcome") nextFatalOutcome = { id: effect.id, title: effect.title, body: effect.body };
-    }
-    const next: SoloProgress = {
-      ...progress,
-      playerName: sheet.name?.trim() || progress.playerName,
-      clan: sheet.clan,
-      humanity: nextSheet.humanity,
-      chronicleExperience: Math.max(0, (progress.chronicleExperience ?? 0) + chronicleXpThisChoice),
-      reputation: progress.reputation + reputationGain,
-      sceneId,
-      activeRoute: nextActiveRoute,
-      stateTags: nextStateTags,
-      endingId: nextEndingId,
-      fatalOutcome: nextFatalOutcome,
-      flags: nextFlags,
-      visitedSceneIds: Array.from(new Set([...progress.visitedSceneIds, sceneId])),
-      soloSceneBackStack: [...prevStack, backSnap].slice(-SOLO_BACK_STACK_LIMIT),
-      decisionHistory: [
-        ...progress.decisionHistory,
-        {
-          sceneId: progress.sceneId,
-          optionId: option.id,
-          routeAtDecision: progress.activeRoute ?? "main",
-          ts: tick,
-          rollSummary: rollLine,
-          rollPassed,
-        },
-      ].slice(-120),
-      updatedAt: tick,
-    };
-    navigateProgress(next, 1);
-  };
+      const tick = progress.updatedAt + 1;
+      const backSnap = { chapterId: progress.chapterId, sceneId: progress.sceneId };
+      const prevStack = progress.soloSceneBackStack ?? [];
+
+      const next: SoloProgress = {
+        ...progress,
+        playerName: sheet.name?.trim() || progress.playerName,
+        clan: sheet.clan,
+        humanity: nextSheet.humanity,
+        chronicleExperience: Math.max(0, (progress.chronicleExperience ?? 0) + chronicleXpThisChoice),
+        reputation: progress.reputation + draft.reputationGain,
+        sceneId: draft.nextSceneId,
+        activeRoute: draft.nextActiveRoute,
+        stateTags: draft.nextStateTags,
+        endingId: draft.nextEndingId,
+        fatalOutcome: draft.nextFatalOutcome,
+        flags: draft.nextFlags,
+        visitedSceneIds: Array.from(new Set([...(progress.visitedSceneIds ?? []), draft.nextSceneId])),
+        soloSceneBackStack: [...prevStack, backSnap].slice(-SOLO_BACK_STACK_LIMIT),
+        decisionHistory: [
+          ...progress.decisionHistory,
+          {
+            sceneId: progress.sceneId,
+            optionId: option.id,
+            routeAtDecision: progress.activeRoute ?? "main",
+            ts: tick,
+            rollSummary: draft.rollLine,
+            rollPassed: draft.rollPassed,
+          },
+        ].slice(-120),
+        updatedAt: tick,
+      };
+      setPendingReveal(null);
+      navigateProgress(next, 1);
+    },
+    [navigateProgress, onSheetSynced, profileId, progress, sheet.name, sheet.clan],
+  );
+
+  const activateOptionChoice = useCallback(
+    (option: SoloOption) => {
+      if (transitionLockRef.current) return;
+      if (!checkOptionAvailability(option, sheet, progress).available) return;
+
+      if (pendingReveal?.draft.option.id === option.id) {
+        finalizeCommitDraft(pendingReveal.draft);
+        return;
+      }
+      if (pendingReveal && pendingReveal.draft.option.id !== option.id) return;
+
+      const panels = parseOptionIaPanels(option.text);
+      const draft = buildSoloCommitDraft(option, sheet, progress);
+
+      const consequence = panels.consequence?.trim();
+
+      if (!consequence) {
+        finalizeCommitDraft(draft);
+        return;
+      }
+
+      setPendingReveal({ draft, consequenceText: consequence });
+      setLastRollLine(draft.rollLine);
+    },
+    [finalizeCommitDraft, pendingReveal, progress, sheet],
+  );
 
   const revertToPrevScene = () => {
     if (transitionLockRef.current) return;
@@ -399,6 +487,7 @@ function SoloCampaignScreen({
     };
     navigateProgress(next, -1);
     setLastRollLine("");
+    setPendingReveal(null);
   };
 
   if (!chapter || !scene) {
@@ -559,8 +648,19 @@ function SoloCampaignScreen({
                     <h2 id={sceneHeadingId} className="sr-only">
                       {scene.title}
                     </h2>
+                    {scenePanels.context?.trim() ? (
+                      <div
+                        aria-label="Contexto de escena"
+                        className="rounded-sm border border-white/[0.08] bg-black/35 px-4 py-3 font-sans text-[12px] leading-relaxed tracking-wide text-neutral-400"
+                      >
+                        <p className="mb-1 font-mono text-[9px] uppercase tracking-[0.24em] text-neutral-500">Contexto</p>
+                        <p className="whitespace-pre-line text-neutral-300">{scenePanels.context.trim()}</p>
+                      </div>
+                    ) : null}
                     <div className="solo-book-prose font-serif text-[15px] font-normal leading-[1.82] tracking-[0.015em] text-neutral-200">
-                      <p className="whitespace-pre-line">{sceneDisplayBody}</p>
+                      <p className="whitespace-pre-line">
+                        {(scenePanels.narration.trim() || scene.text.trim()) || "—"}
+                      </p>
                     </div>
                   </section>
                 </div>
@@ -569,7 +669,7 @@ function SoloCampaignScreen({
               <div className="shrink-0 border-t border-white/[0.06] bg-gradient-to-t from-black via-black/92 to-transparent px-3 pb-6 pt-4 sm:px-6">
                 <div className="mx-auto max-w-2xl space-y-3">
                   {lastRollLine ? (
-                    <p className="text-center font-sans text-xs leading-relaxed text-neutral-500">{lastRollLine}</p>
+                    <p className="text-center font-sans text-[11px] leading-relaxed text-neutral-400">{lastRollLine}</p>
                   ) : null}
 
                   <div className="space-y-2.5">
@@ -579,36 +679,60 @@ function SoloCampaignScreen({
                       </p>
                     ) : null}
                     {displayedOptions.map((option) => {
+                      const iaOpt = parseOptionIaPanels(option.text);
+                      const blockedBySibling =
+                        pendingReveal !== null && pendingReveal.draft.option.id !== option.id;
+                      const isRevealed = pendingReveal?.draft.option.id === option.id;
+
                       const state = checkOptionAvailability(option, sheet, progress);
                       const fail = listFailReasons(option, sheet, progress);
-                      const optionText = option.text;
-                      const typeLine = OPTION_TYPE_LABEL[option.type];
-                      const choiceLabel =
-                        option.type === "dialogue"
-                          ? optionText
-                          : option.discipline !== undefined
-                            ? `${typeLine ?? ""}: ${disciplineLabel(option.discipline)} — ${optionText}`.replace(/^:\s*/, "")
-                            : option.skill !== undefined
-                              ? `${typeLine ?? ""}: ${option.skill} — ${optionText}`.replace(/^:\s*/, "")
-                              : typeLine
-                                ? `${typeLine}: ${optionText}`
-                                : optionText;
+                      const promptBody =
+                        iaOpt.promptBody.trim() ||
+                        option.text.trim().slice(0, 400) ||
+                        "Acción disponible.";
+                      let mechanicCue: string | null = null;
+                      if (option.discipline !== undefined)
+                        mechanicCue = disciplineLabel(option.discipline).replace(/\s*\([^)]*\)\s*/g, "").trim();
+                      else if (option.skill !== undefined) mechanicCue = option.skill;
+                      const choiceLabelShort = mechanicCue ? `${promptBody} · ${mechanicCue}` : promptBody;
+
+                      const disabledChoice = !state.available || blockedBySibling;
 
                       return (
                         <button
                           key={option.id}
                           type="button"
-                          disabled={!state.available}
-                          aria-label={state.available ? choiceLabel : `${choiceLabel}. No disponible.`}
+                          disabled={disabledChoice}
+                          aria-label={state.available ? choiceLabelShort : `${choiceLabelShort}. No disponible.`}
                           aria-describedby={!state.available && fail.length ? `${option.id}-why` : undefined}
-                          onClick={() => applyOption(option)}
+                          onClick={() => activateOptionChoice(option)}
                           className={`w-full border px-4 py-3 text-left transition ${
-                            state.available
-                              ? "border-neutral-700/90 bg-black/40 hover:border-[var(--terminal)]/55 hover:bg-black/65"
-                              : "cursor-not-allowed border-neutral-800/80 bg-black/20 opacity-55"
-                          }`}
+                            disabledChoice
+                              ? "cursor-not-allowed border-neutral-800/80 bg-black/20 opacity-55"
+                              : "border-neutral-700/90 bg-black/40 hover:border-[var(--terminal)]/55 hover:bg-black/65"
+                          } ${isRevealed ? "border-[var(--terminal)]/40 bg-black/55" : ""}`}
                         >
-                          <p className="text-sm leading-relaxed text-neutral-200">{optionText}</p>
+                          {mechanicCue ? (
+                            <div className="mb-2 flex flex-wrap items-center gap-2 font-mono text-[9px] uppercase tracking-[0.18em] text-neutral-500">
+                              <span className="rounded border border-neutral-700/80 bg-black/55 px-1.5 py-0.5 text-neutral-300">
+                                {option.discipline !== undefined ? "Disciplina" : option.skill !== undefined ? "Habilidad" : "Acción"}
+                              </span>
+                              <span className="normal-case tracking-normal text-[11px] text-neutral-400">{mechanicCue}</span>
+                            </div>
+                          ) : null}
+                          {isRevealed && pendingReveal ? (
+                            <div className="space-y-2">
+                              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--terminal)]">
+                                Resultado narrativo
+                              </p>
+                              <p className="whitespace-pre-line text-sm leading-relaxed italic text-neutral-200">
+                                {pendingReveal.consequenceText}
+                              </p>
+                              <p className="text-[11px] text-neutral-500">Volvé a elegir esta tarjeta para continuar.</p>
+                            </div>
+                          ) : (
+                            <p className="text-sm leading-relaxed text-neutral-200">{promptBody}</p>
+                          )}
                           {!state.available && fail.length ? (
                             <p id={`${option.id}-why`} className="mt-2 text-[11px] text-neutral-500">
                               {fail[0]}
