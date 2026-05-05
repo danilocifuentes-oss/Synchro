@@ -747,7 +747,7 @@ function CronistaAppInner() {
       />
 
       <header className="flex shrink-0 flex-col gap-3 border-b border-[#1a1a1e] bg-[#050506] px-4 py-4 font-sans text-[10px] text-neutral-500 sm:gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:px-6">
-        <div className="min-w-0 flex-1 space-y-1.5 xl:hidden">
+        <div className="min-w-0 flex-1 space-y-1.5 lg:hidden">
           <p className="text-[11px] font-light tracking-[0.32em] text-neutral-300">Codex V · ciudad</p>
           <p className="truncate text-[13px] font-medium tracking-tight text-neutral-100">
             <span style={{ color: accent }}>{sheet.name?.trim() || "Sin nombre"}</span>
@@ -775,7 +775,7 @@ function CronistaAppInner() {
             </span>
           ) : null}
         </div>
-        <div className="flex w-full flex-wrap items-center justify-between gap-3 border-t border-white/[0.04] pt-3 sm:gap-4 lg:w-auto lg:border-t-0 lg:pt-0">
+        <div className="hidden w-full flex-wrap items-center justify-between gap-3 border-t border-white/[0.04] pt-3 sm:gap-4 lg:w-auto lg:border-t-0 lg:pt-0">
           <TechnicalHud
             healthFilled={healthHudFilled}
             healthMax={HEALTH_MAX_UI}
@@ -831,11 +831,30 @@ function CronistaAppInner() {
           isSoloSupportedClan(sheet.clan);
 
         const nexoCenterColumn = (
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-hidden px-4 py-4 lg:gap-5 lg:px-6 lg:py-5">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-hidden px-3 py-3 sm:px-4 sm:py-4 lg:gap-5 lg:px-5 lg:py-5 xl:px-6">
             <NexoChannelPanel
               accent={accent}
               activeStrand={activeStrand}
-              onStrandChange={commitStrand}
+              onStrandChange={(nextStrand) => {
+                if (nextStrand !== "paralela") {
+                  commitStrand(nextStrand);
+                  return;
+                }
+                const id = getActiveProfileId();
+                if (!id) {
+                  goToProfileHub();
+                  return;
+                }
+                if (reconcileActiveProfileIfGlobalsStale()) {
+                  applyGlobalsToUi(setSheet, setSheetLocked, setLogs, commitStrand);
+                }
+                const clanNow = loadSheet()?.clan ?? sheet.clan;
+                if (!isSoloSupportedClan(clanNow)) {
+                  navigateToPhase("chargen");
+                  return;
+                }
+                commitStrand("paralela");
+              }}
               identityHint={identityHint}
               showTechnicalAnchors={isNarrator}
               glyphContext={{ inquisitionThreat, hunger: sheet.hunger }}
@@ -886,7 +905,7 @@ function CronistaAppInner() {
         );
 
         const threeColumns = (
-          <div className="flex min-h-0 flex-1 flex-col xl:flex-row xl:items-stretch">
+          <div className="flex min-h-0 flex-1 flex-col lg:flex-row lg:items-stretch">
           {(() => {
             const pid = getActiveProfileId();
             const prog = pid && isSoloSupportedClan(sheet.clan) ? loadSoloProgress(pid, sheet.clan) : null;
@@ -913,7 +932,7 @@ function CronistaAppInner() {
 
             {nexoCenterColumn}
 
-            <aside className="hidden min-h-0 shrink-0 self-stretch border-l border-white/[0.06] bg-[linear-gradient(180deg,#060607,#0a0a0d)] lg:flex lg:w-[min(20vw,22rem)] lg:max-w-sm lg:flex-col lg:overflow-hidden xl:w-[min(17rem,24vw)]">
+            <aside className="hidden min-h-0 shrink-0 self-stretch border-l border-white/[0.06] bg-[linear-gradient(180deg,#060607,#0a0a0d)] xl:flex xl:w-[min(18vw,20rem)] xl:max-w-sm xl:flex-col xl:overflow-hidden">
               <div className="border-b border-white/[0.05] px-5 py-4 font-sans text-[10px] font-light uppercase tracking-[0.35em] text-neutral-500">
                 Eco
               </div>

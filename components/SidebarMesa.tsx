@@ -133,7 +133,7 @@ export function SidebarMesa({
 
   return (
     <aside
-      className="sticky top-0 hidden min-h-0 w-[min(16rem,100%)] shrink-0 flex-col border-r border-white/[0.06] bg-void bg-[linear-gradient(180deg,rgba(5,5,5,0.97),rgba(12,12,16,0.98))] font-mono xl:flex xl:max-h-none"
+      className="sticky top-0 hidden min-h-0 w-[min(16rem,100%)] shrink-0 flex-col border-r border-white/[0.06] bg-void bg-[linear-gradient(180deg,rgba(5,5,5,0.97),rgba(12,12,16,0.98))] font-mono lg:flex lg:max-h-none"
       aria-label="Terminal mesa SchreckNet"
     >
       <div

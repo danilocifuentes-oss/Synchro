@@ -114,11 +114,13 @@ export function NexoChannelPanel({
         {children != null ? (
           <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">{children}</div>
         ) : (
-          <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 py-12 text-center">
-            <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[color:var(--neon)]">
-              Narración con Motor IA
-            </p>
-            <p className="mt-5 max-w-md font-sans text-sm leading-relaxed text-neutral-300">Próximamente.</p>
+          <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6 sm:py-8 text-center">
+            <div className="w-full max-w-md rounded-md border border-white/[0.08] bg-black/30 px-5 py-5 sm:px-6 sm:py-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[color:var(--neon)]">
+                Narración con Motor IA
+              </p>
+              <p className="mt-3 font-sans text-sm leading-relaxed text-neutral-300">Próximamente.</p>
+            </div>
           </div>
         )}
       </div>
