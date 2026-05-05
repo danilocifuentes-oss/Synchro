@@ -51,6 +51,6 @@ Devuelve solo JSON actualizado o bloques de escenas pedidos; incrementa contentV
 
 [MEJORAS LÓGICAS DE REFERENCIA YA EN REPO]
 
-- n1_3_potence: Potencia además humilla humanidad debe elevar huella alto perfil → bandera high_profile_kill con eco en plaza (p. ej. cap. 5).
+- n1_2_instinto: Drenaje total en Mapocho humilla humanidad → bandera asesino_del_mapocho con eco posterior (p. ej. cap. 5).
 - Linajes tras cap. 4: banderas de lectura del pacto enlazan texto extra frente al Príncipe (cap. 13).
 `;

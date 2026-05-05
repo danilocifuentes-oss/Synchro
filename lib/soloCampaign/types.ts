@@ -72,6 +72,11 @@ export type SoloScene = {
   title: string;
   text: string;
   /**
+   * Párrafos que se anteponen al `text` cuando el requisito se cumple (orden del arreglo).
+   * Útil para inserciones de llegada antes del cuerpo común de la escena.
+   */
+  contextLeadInByState?: readonly { requirement: SoloRequirement; text: string }[];
+  /**
    * Párrafos adicionales (tras `text`) cuando `progress.flags[flag]` ya es true — hooks entre capítulos sin duplicar escenas enteras.
    */
   flagAppends?: readonly { flag: string; text: string }[];

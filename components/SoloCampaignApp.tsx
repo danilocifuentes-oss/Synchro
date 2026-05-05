@@ -7,7 +7,7 @@ import { CLAN_OPTIONS } from "@/lib/character";
 import { disciplineLabel } from "@/lib/sereno";
 import { ensureSoloProgress, isSoloSupportedClan } from "@/lib/soloCampaign/bootstrap";
 import { getSoloChapter, getSoloScene } from "@/lib/soloCampaign/chapters";
-import { checkOptionAvailability, listFailReasons } from "@/lib/soloCampaign/requirementEngine";
+import { checkOptionAvailability, listFailReasons, resolveSoloScenePlayerText } from "@/lib/soloCampaign/requirementEngine";
 import { listPlayerVisibleSoloOptions } from "@/lib/soloCampaign/optionPresentation";
 import { loadSheet, normalizeCharacterSheet, saveSheet } from "@/lib/character";
 import { loadSoloProgress, saveSoloProgress } from "@/lib/soloCampaign/progressStore";
@@ -340,10 +340,11 @@ function SoloCampaignScreen({
   }, [scene, sheet, progress]);
   const missingOptionCount = Math.max(0, 4 - (scene?.options?.length ?? 0));
   const pendingNextChapter = getPendingNextChapter(progress);
-  const scenePanels = useMemo(
-    () => (scene ? parseSceneIaPanels(scene.text) : { context: null as string | null, narration: "" }),
-    [scene],
-  );
+  const scenePanels = useMemo(() => {
+    if (!scene) return { context: null as string | null, narration: "" };
+    const raw = resolveSoloScenePlayerText(scene, sheet, progress);
+    return parseSceneIaPanels(raw);
+  }, [scene, sheet, progress]);
   const clanLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
   const openingVitalsApplied = Boolean(progress.flags[SOLO_FLAG_OPENING_VITALS]);
 

@@ -62,6 +62,7 @@ function summarizeScene(scene: SoloScene): Record<string, unknown> {
     chapterId: scene.chapterId,
     titulo: scene.title,
     narracion: scene.text,
+    contexto_previo_por_estado: scene.contextLeadInByState ?? [],
     adjuntos_cuando_bandera_activa: scene.flagAppends ?? [],
     contexto_por_estado: scene.contextVariantByState ?? [],
     variante_por_clan: scene.clanFlavor ?? null,

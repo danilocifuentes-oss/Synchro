@@ -1,6 +1,6 @@
 import type { CharacterSheet } from "@/lib/character";
 import { disciplineLabel } from "@/lib/sereno";
-import type { SoloOption, SoloProgress, SoloRequirement } from "./types";
+import type { SoloOption, SoloProgress, SoloRequirement, SoloScene } from "./types";
 
 export type RequirementResult = {
   available: boolean;
@@ -125,4 +125,30 @@ export function resolveDisciplineTierText(option: SoloOption, sheet: CharacterSh
     .sort((a, b) => b - a)[0];
   if (!eligibleTier) return option.text;
   return option.textByDisciplineLevel[eligibleTier] ?? option.text;
+}
+
+/** Texto de escena con variante por estado y adjuntos por bandera (para la UI de crónica). */
+export function resolveSoloScenePlayerText(scene: SoloScene, sheet: CharacterSheet, progress: SoloProgress): string {
+  const leadIns: string[] = [];
+  if (scene.contextLeadInByState?.length) {
+    for (const row of scene.contextLeadInByState) {
+      if (evalRequirement(row.requirement, sheet, progress).available) leadIns.push(row.text);
+    }
+  }
+  let text = scene.text.trim();
+  if (leadIns.length) text = `${leadIns.join("\n\n")}\n\n${text}`;
+
+  const inserts: string[] = [];
+  if (scene.contextVariantByState?.length) {
+    for (const row of scene.contextVariantByState) {
+      if (evalRequirement(row.requirement, sheet, progress).available) inserts.push(row.text);
+    }
+  }
+  if (scene.flagAppends?.length) {
+    for (const row of scene.flagAppends) {
+      if (progress.flags[row.flag]) inserts.push(row.text);
+    }
+  }
+  if (!inserts.length) return text;
+  return `${text}\n\n${inserts.join("\n\n")}`;
 }

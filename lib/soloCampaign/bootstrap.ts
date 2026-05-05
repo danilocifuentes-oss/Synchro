@@ -1,4 +1,5 @@
 import type { CharacterSheet, ClanId } from "@/lib/character";
+import { chapter01 } from "@/lib/soloCampaign/chapters/chapter01";
 import { loadSoloProgress, saveSoloProgress } from "@/lib/soloCampaign/progressStore";
 import type { SoloProgress } from "@/lib/soloCampaign/types";
 
@@ -9,7 +10,7 @@ export function isSoloSupportedClan(clan: ClanId): boolean {
 }
 
 function startSceneForClan(): string {
-  return "n1_1";
+  return chapter01.startSceneId;
 }
 
 /** Garantiza un `SoloProgress` persistido para perfil + clan (usado al montar el Nexo en SOL). */

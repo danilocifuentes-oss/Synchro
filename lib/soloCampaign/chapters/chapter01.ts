@@ -2,28 +2,29 @@ import type { SoloChapter } from "@/lib/soloCampaign/types";
 
 export const chapter01: SoloChapter = {
   id: "chapter01",
-  title: "CLAN: VENTRUE | CAPÍTULO 1: EL BESO DEL MAPOCHO",
-  description: "Despertar en Teatinos, centinela en la calle y primer cobro junto al Mapocho.",
+  title: "CAPÍTULO 1: EL BESO DEL MAPOCHO",
+  description: "Despertar en Teatinos, centinela tras la imprenta, primer cobro junto al Mapocho y cita con la máscara.",
   startSceneId: "n1_0",
   scenes: [
     {
       id: "n1_0",
       chapterId: "chapter01",
       title: "[ESCENA 1.0]: EL DESPERTAR EN LA IMPRENTA",
-      text: `CONTEXTO: Sótano de una vieja imprenta en calle Teatinos. Oscuridad casi total. El aire huele a tinta seca, moho y a algo metálico que reconoces como sangre vieja.
+      text: `CONTEXTO: Sótano de una vieja imprenta en calle Teatinos. 02:45 AM.
+NARRACIÓN: El despertar no es un retorno gradual, sino un impacto. Tus ojos se abren a una oscuridad espesa, interrumpida solo por el parpadeo moribundo de un tubo fluorescente en el pasillo superior. El aire es denso; huele a tinta de periódico seca, a polvo de décadas y a ese rastro metálico y dulzón que tu nueva naturaleza identifica con una precisión aterradora: sangre vieja.
 
-NARRACIÓN: El silencio es lo primero que te golpea; un vacío absoluto donde debería estar el ritmo de tu corazón. Al incorporarte, el crujido de la madera bajo tu peso suena como un disparo en la habitación vacía. En tu garganta persiste un ardor químico: el recuerdo del frasco que un anciano te entregó en la calle Bandera antes de que el mundo se borrara. Tu linaje Ventrue se rebela ante la inmundicia del suelo; un Rey no debería despertar entre cajas de cartón y ratas. El hambre es una garra que aprieta tus entrañas, pero tu orgullo exige entender quién te ha puesto en esta situación.`,
+Te encuentras sobre un palé de madera, rodeado de resmas de papel amarillento. Tu ropa, un traje que costó más de lo que muchos ganan en un año, está arrugada pero intacta. En tu garganta arde un fuego químico, el residuo del frasco que un anciano te entregó en la calle Bandera antes de que el mundo se apagara. Como Ventrue, el desorden de este lugar es una ofensa personal. Un soberano no debería despertar en un osario industrial. El hambre es una aguja que cose tu estómago, pero antes de buscar sustento, tu mente exige orden.`,
       options: [
         {
           id: "n1_0_fortaleza",
           type: "discipline",
           discipline: "fortitude",
           disciplineTitle: "Fortaleza",
-          text: `OPCIÓN A [DISCIPLINA: FORTALEZA]: Forzar a tu mente a ignorar el hambre y el frío para concentrarte en el recuerdo del Abrazo.
+          text: `OPCIÓN A [DISCIPLINA: FORTALEZA]: Cerrar los ojos y forzar a tu cuerpo a ignorar el hambre para reconstruir tus memorias mediante la voluntad pura.
 
-PUENTE: Cierras los ojos y tensas tu voluntad. El dolor del hambre se vuelve un ruido de fondo mientras obligas a los fragmentos de memoria a encajar como piezas de un rompecabezas de mármol...
+PUENTE: Te quedas inmóvil, tensando cada fibra de tu ser. El rugido de la Bestia en tu estómago se vuelve un susurro lejano mientras obligas a los fragmentos de la noche anterior a alinearse. El rostro del Príncipe, la firma del contrato, el frío del acero... todo encaja.
 
-CONSECUENCIA: Recuperas el protocolo de emergencia de la Corte y el nombre de tu sire.
+CONSECUENCIA: Recuperas el protocolo de etiqueta de la Corte y el nombre de tu Sire, lo que te dará ventaja política inmediata.
 
 RESULTADO: willpowerDelta: +1 | setFlag: protocolo_corte | IR A [ESCENA 1.1]`,
           requirement: { type: "discipline", discipline: "fortitude", minLevel: 1 },
@@ -34,25 +35,25 @@ RESULTADO: willpowerDelta: +1 | setFlag: protocolo_corte | IR A [ESCENA 1.1]`,
           id: "n1_0_investigacion",
           type: "skill",
           skill: "investigacion",
-          text: `OPCIÓN B [HABILIDAD: INVESTIGACIÓN]: Registrar meticulosamente el sótano buscando rastros físicos de tus "anfitriones".
+          text: `OPCIÓN B [HABILIDAD: INVESTIGACIÓN]: Registrar el sótano con frialdad analítica antes de abandonarlo.
 
-PUENTE: Ignoras el malestar y obligas a tus manos a registrar el entorno. Tus dedos rozan el metal frío de las prensas hasta dar con un pequeño objeto de vidrio escondido bajo un palé...
+PUENTE: Te incorporas y, con dedos enguantados, comienzas a registrar las cajas de cartón y las prensas oxidadas. No buscas una salida, buscas una explicación. Bajo una pila de periódicos de 1990, encuentras un pequeño frasco de vidrio oscuro con un sello de lacre rojo.
 
-CONSECUENCIA: Hallas el frasco vacío con un sello de lacre: una "V" entrelazada con espinas.
+CONSECUENCIA: El sello muestra una "V" entrelazada con espinas. Reconoces la marca de una familia Ventrue caída en desgracia.
 
-RESULTADO: setFlag: sello_viña | IR A [ESCENA 1.1]`,
+RESULTADO: setFlag: sello_viña_caida | IR A [ESCENA 1.1]`,
           requirement: { type: "skill", skill: "investigacion", minLevel: 1 },
           nextSceneId: "n1_1",
-          effects: [{ type: "setFlag", flag: "sello_viña" }],
+          effects: [{ type: "setFlag", flag: "sello_viña_caida" }],
         },
         {
           id: "n1_0_estandar",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Incorporarte con dignidad y buscar la salida hacia la calle para recuperar el control.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO/ACCIÓN]: Sacudirte el polvo y subir las escaleras con la dignidad de quien es dueño del edificio.
 
-PUENTE: Te sacudes el polvo de la chaqueta con un gesto automático. No sabes qué ha pasado, pero no lo averiguarás en este agujero. Subes las escaleras con paso firme, buscando el aire de la noche...
+PUENTE: Te pones en pie, ajustas los puños de tu camisa y te limpias la chaqueta. No importa dónde estés, un Ventrue siempre es el centro de la habitación. Subes los peldaños de madera, que crujen bajo tu peso muerto, buscando la salida hacia la calle Teatinos.
 
-CONSECUENCIA: Sales a la calle rápidamente, manteniendo tu compostura pero sin pistas sobre quién te dejó allí.
+CONSECUENCIA: Sales a la calle rápidamente. No tienes pistas, pero conservas tu entereza mental para lo que viene.
 
 RESULTADO: (Avance estándar) | IR A [ESCENA 1.1]`,
           requirement: { type: "none" },
@@ -61,19 +62,19 @@ RESULTADO: (Avance estándar) | IR A [ESCENA 1.1]`,
         {
           id: "n1_0_instinto",
           type: "dialogue",
-          text: `OPCIÓN D [RÍSGO - INSTINTO]: Ceder al pánico del hambre y salir corriendo a la calle en busca de la primera fuente de vida.
+          text: `OPCIÓN D [RIESGO - INSTINTO]: Dejar que la sed dicte tus movimientos y salir violentamente hacia la superficie.
 
-PUENTE: La Bestia toma el control. No hay pensamientos, solo necesidad. Subes las escaleras a gatas, empujando la puerta con una fuerza inhumana que la saca de sus bisagras...
+PUENTE: El hambre es demasiado. La elegancia se pierde cuando la Bestia araña el interior de tus costillas. Subes las escaleras a gatas, tus uñas se clavan en la madera y empujas la puerta de salida con una fuerza que dobla el marco de metal.
 
-CONSECUENCIA: Sales a la calle en un estado semi-frenético, lo que te hace vulnerable a ser detectado.
+CONSECUENCIA: Estás fuera, pero tus sentidos están embotados por la rabia. Has dejado rastro de tu fuerza inhumana.
 
-RESULTADO: hungerDelta: +1 | humanityDelta: -1 | setFlag: rastro_violento | IR A [ESCENA 1.3]`,
+RESULTADO: hungerDelta: +1 | humanityDelta: -1 | setFlag: rastro_fuerza_bruta | IR A [ESCENA 1.1]`,
           requirement: { type: "none" },
-          nextSceneId: "n1_3",
+          nextSceneId: "n1_1",
           effects: [
             { type: "hungerDelta", delta: 1 },
             { type: "humanityDelta", delta: -1 },
-            { type: "setFlag", flag: "rastro_violento" },
+            { type: "setFlag", flag: "rastro_fuerza_bruta" },
           ],
         },
       ],
@@ -81,105 +82,103 @@ RESULTADO: hungerDelta: +1 | humanityDelta: -1 | setFlag: rastro_violento | IR A
     {
       id: "n1_1",
       chapterId: "chapter01",
-      title: "[ESCENA 1.1]: EL CENTINELA DE TEATINOS",
-      text: `CONTEXTO: Calle Teatinos, afuera de la imprenta. La noche es fría y el alumbrado público parpadea.
-
-NARRACIÓN: El aire de Santiago te golpea la cara. A pocos metros, oculto tras un contenedor de basura, un hombre andrajoso te observa. No es un vagabundo común; su mirada es fija, profesional. Al notar que lo has visto, intenta fingir que busca comida, pero sus manos —demasiado limpias para su ropa— lo delatan. Es un centinela que ha estado esperando que la puerta de la imprenta se abriera.`,
+      title: "[ESCENA 1.1]: EL CENTINELA TRAS EL CONTENEDOR",
+      text: `CONTEXTO: Calle Teatinos, afuera de la imprenta. El alumbrado público arroja sombras largas sobre el asfalto mojado.
+NARRACIÓN: El aire de Santiago, cargado de smog y frío cordillerano, te golpea. La calle está desierta, a excepción de un hombre andrajoso que se oculta tras un contenedor de basura a pocos metros. Intenta parecer un indigente buscando desperdicios, pero su postura es demasiado alerta, sus ojos se clavan en ti con una intensidad que no es de este mundo. Se toca el bolsillo del pecho, donde se adivina la forma de un dispositivo de comunicación. Alguien te estaba esperando.`,
       options: [
         {
           id: "n1_1_dominate",
           type: "discipline",
           discipline: "dominate",
           disciplineTitle: "Dominación",
-          text: `OPCIÓN A [DISCIPLINA: DOMINACIÓN]: Atrapar su mirada y ordenarle que confiese quién lo envió.
+          text: `OPCIÓN A [DISCIPLINA: DOMINACIÓN]: Atrapar su mirada desde la distancia y ordenarle que camine hacia ti.
 
-PUENTE: Te acercas con una lentitud depredadora. Tus ojos encuentran los suyos y el peso de tu linaje aplasta su voluntad como si fuera cristal...
+PUENTE: No dices una palabra. Simplemente fijas tus ojos en los suyos. El hombre se tensa, sus pupilas se dilatan y, contra toda su voluntad, sus pies empiezan a moverse hacia la luz de la farola donde tú aguardas.
 
-CONSECUENCIA: El hombre confiesa que un "hombre de traje gris" le paga por vigilarte y reportar tu salida.
+CONSECUENCIA: El hombre confiesa bajo trance que trabaja para un "hombre de traje gris" que paga por saber cuándo "despertaría el Rey".
 
-RESULTADO: hungerDelta: +1 | setFlag: info_traje_gris | IR A [ESCENA 1.3]`,
+RESULTADO: hungerDelta: +1 | setFlag: info_traje_gris | IR A [ESCENA 1.2]`,
           requirement: { type: "discipline", discipline: "dominate", minLevel: 1 },
-          nextSceneId: "n1_3",
+          nextSceneId: "n1_2",
           effects: [{ type: "hungerDelta", delta: 1 }, { type: "setFlag", flag: "info_traje_gris" }],
         },
         {
-          id: "n1_1_perspicacia",
+          id: "n1_1_sigilo",
           type: "skill",
-          skill: "perspicacia",
-          text: `OPCIÓN B [HABILIDAD: PERSPICACIA]: Observar sus gestos y equipo antes de que pueda reaccionar.
+          skill: "sigilo",
+          text: `OPCIÓN B [HABILIDAD: SIGILO / PERSPICACIA]: Rodear el contenedor por las sombras para sorprenderlo antes de que dé la alarma.
 
-PUENTE: Te detienes a una distancia prudente. Analizas la forma en que se toca el bolsillo del pecho: un bulto rectangular, probablemente un teléfono o una radio. No es un mendigo, es un informante...
+PUENTE: Te fundes con la oscuridad de los portales vecinos. Te mueves sin hacer ruido, aprovechando el paso de un camión de basura para cubrir tu avance. Apareces detrás de él justo cuando se disponía a hablar por su radio.
 
-CONSECUENCIA: Identificas que está transmitiendo tu posición en tiempo real.
+CONSECUENCIA: Le quitas el dispositivo de comunicación. Descubres que es una radio de frecuencia militar.
 
-RESULTADO: setFlag: vigilado_en_vivo | IR A [ESCENA 1.3]`,
-          requirement: { type: "skill", skill: "perspicacia", minLevel: 1 },
-          nextSceneId: "n1_3",
-          effects: [{ type: "setFlag", flag: "vigilado_en_vivo" }],
+RESULTADO: setFlag: radio_militar | IR A [ESCENA 1.2]`,
+          requirement: { type: "skill", skill: "sigilo", minLevel: 1 },
+          nextSceneId: "n1_2",
+          effects: [{ type: "setFlag", flag: "radio_militar" }],
         },
         {
           id: "n1_1_estandar",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Acercarte con calma y tratar de comprar su silencio o información.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Confrontarlo verbalmente con autoridad diplomática.
 
-PUENTE: Sacas tu billetera de cuero, esperando que el dinero mortal aún tenga valor. "Dime para quién trabajas y esta noche será la más afortunada de tu vida", dices con tono transaccional...
+PUENTE: "¿Para quién trabajas? Elige bien tus palabras, mi paciencia se quedó en ese sótano", dices con una calma que hiela la sangre. El hombre se asusta ante tu porte y empieza a balbucear sobre una "deuda que debe cobrarse".
 
-CONSECUENCIA: El hombre duda, acepta el dinero pero huye asustado, dándote solo un nombre a medias: "La Viña".
+CONSECUENCIA: El hombre huye corriendo hacia la Alameda, pero deja caer una tarjeta de presentación: "Viña del Silencio".
 
-RESULTADO: setFlag: pista_viña | IR A [ESCENA 1.3]`,
+RESULTADO: setFlag: tarjeta_viña | IR A [ESCENA 1.2]`,
           requirement: { type: "none" },
-          nextSceneId: "n1_3",
-          effects: [{ type: "setFlag", flag: "pista_viña" }],
+          nextSceneId: "n1_2",
+          effects: [{ type: "setFlag", flag: "tarjeta_viña" }],
         },
         {
           id: "n1_1_violencia",
           type: "dialogue",
-          text: `OPCIÓN D [RÍSGO - VIOLENCIA]: Silenciar al testigo antes de que pueda dar la alarma.
+          text: `OPCIÓN D [RIESGO - VIOLENCIA]: Eliminar la amenaza de inmediato para asegurar tu anonimato.
 
-PUENTE: No te arriesgarás a que un mortal arruine tu anonimato. Te lanzas sobre él con una velocidad que tu cuerpo humano nunca tuvo. Tus manos se cierran sobre su garganta...
+PUENTE: No dejarás testigos de tu primer despertar. Te lanzas sobre él con la velocidad de un depredador. Tus manos se cierran sobre su cuello antes de que pueda gritar. El crujido de sus vértebras es la única respuesta que obtienes.
 
-CONSECUENCIA: Eliminas la amenaza, pero dejas un cadáver que la policía encontrará en breve.
+CONSECUENCIA: No hay alarma, pero ahora hay un cadáver de un mortal en tu punto de origen. La policía y la Camarilla investigarán.
 
-RESULTADO: humanityDelta: -1 | setFlag: rastro_sangre | IR A [ESCENA 1.3]`,
+RESULTADO: humanityDelta: -1 | setFlag: rastro_sangre_teatinos | IR A [ESCENA 1.2]`,
           requirement: { type: "none" },
-          nextSceneId: "n1_3",
-          effects: [{ type: "humanityDelta", delta: -1 }, { type: "setFlag", flag: "rastro_sangre" }],
+          nextSceneId: "n1_2",
+          effects: [{ type: "humanityDelta", delta: -1 }, { type: "setFlag", flag: "rastro_sangre_teatinos" }],
         },
       ],
     },
     {
-      id: "n1_3",
+      id: "n1_2",
       chapterId: "chapter01",
-      title: "[ESCENA 1.3]: EL BANQUETE DEL RÍO (PUNTO DE CONVERGENCIA)",
-      text: `CONTEXTO: Baranda del río Mapocho, cerca del Mercado Central. Las luces de la ciudad se reflejan en el agua turbia.
-
-NARRACIÓN: El hambre se ha vuelto un rugido insoportable. Ves a un joven solitario apoyado en el puente, fumando y mirando el cauce del río. Es la oportunidad perfecta. Debes decidir cómo realizar tu primer "cobro" como vástago. La forma en que te alimentes hoy definirá la fuerza de tu Bestia mañana.`,
+      title: "[ESCENA 1.2]: EL BANQUETE DEL RÍO",
+      text: `CONTEXTO: Baranda del río Mapocho, cerca del Mercado Central. El agua corre turbia y rápida.
+NARRACIÓN: El hambre ha dejado de ser un pinchazo para convertirse en un incendio. Necesitas sangre, y la necesitas ahora. Ves a un joven solitario apoyado en el puente de metal; fuma con la mirada perdida en el agua, ajeno a que la muerte lo observa. La moralidad es un lujo que tu condición actual no puede permitirse, pero como Ventrue, incluso la caza debe tener una estética.`,
       options: [
         {
-          id: "n1_3_presencia",
+          id: "n1_2_presencia",
           type: "discipline",
           discipline: "presence",
           disciplineTitle: "Presencia",
-          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: Usar tu encanto sobrenatural para que el joven se acerque voluntariamente.
+          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: Usar tu magnetismo sobrenatural para que el joven se entregue a ti con devoción.
 
-PUENTE: Emites un aura de confianza y magnetismo. El joven te mira y, sin saber por qué, se siente atraído hacia ti, bajando la guardia por completo...
+PUENTE: Te acercas y le pides fuego. Tu voz suena como terciopelo. El joven te mira y, de repente, no hay nadie más en el mundo para él. Se siente eufórico, entregándote su cuello con una sonrisa de ensueño mientras tus colmillos emergen.
 
-CONSECUENCIA: Te alimentas sin violencia, dejando al joven en un estado de euforia, sin recuerdos traumáticos.
+CONSECUENCIA: Te alimentas de forma limpia. El joven recordará la noche como el mejor encuentro de su vida.
 
-RESULTADO: hungerDelta: -2 | setFlag: beso_ventrue | IR A [ESCENA 1.END]`,
+RESULTADO: hungerDelta: -2 | setFlag: beso_limpio | IR A [ESCENA 1.END]`,
           requirement: { type: "discipline", discipline: "presence", minLevel: 1 },
           nextSceneId: "n1_cita_mascara",
-          effects: [{ type: "hungerDelta", delta: -2 }, { type: "setFlag", flag: "beso_ventrue" }],
+          effects: [{ type: "hungerDelta", delta: -2 }, { type: "setFlag", flag: "beso_limpio" }],
         },
         {
-          id: "n1_3_sigilo",
+          id: "n1_2_sigilo",
           type: "skill",
           skill: "sigilo",
-          text: `OPCIÓN B [HABILIDAD: SIGILO]: Acecharlo desde las sombras y tomar lo que necesitas sin que sepa qué lo golpeó.
+          text: `OPCIÓN B [HABILIDAD: SIGILO]: Inmovilizarlo en las sombras bajo el puente y tomar lo que es tuyo por derecho.
 
-PUENTE: Te fundes con la oscuridad de los pilares del puente. Te mueves sin hacer ruido hasta quedar a su espalda. Un movimiento rápido, y tus colmillos encuentran su cuello...
+PUENTE: Lo sigues cuando decide bajar hacia la orilla del río. Te mueves como una exhalación. Antes de que pueda girarse, tu brazo lo bloquea y tu boca se cierra sobre su yugular. Es una transacción rápida y eficiente.
 
-CONSECUENCIA: Te alimentas rápidamente, pero el forcejeo deja marcas visibles.
+CONSECUENCIA: Obtienes la sangre, pero el joven queda traumatizado y con heridas visibles que podrían atraer atención.
 
 RESULTADO: hungerDelta: -2 | willpowerDelta: -1 | IR A [ESCENA 1.END]`,
           requirement: { type: "skill", skill: "sigilo", minLevel: 1 },
@@ -187,13 +186,13 @@ RESULTADO: hungerDelta: -2 | willpowerDelta: -1 | IR A [ESCENA 1.END]`,
           effects: [{ type: "hungerDelta", delta: -2 }, { type: "willpowerDelta", delta: -1 }],
         },
         {
-          id: "n1_3_estandar",
+          id: "n1_2_estandar",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Inventar una excusa para llevarlo a un callejón oscuro.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Engañarlo con una historia de necesidad para llevarlo a un lugar discreto.
 
-PUENTE: "Disculpa, ¿tienes fuego? Se me ha parado el coche ahí atrás y necesito ayuda", dices con tu mejor máscara de ciudadano en apuros. El joven, ingenuo, accede a seguirte...
+PUENTE: "Disculpa, me han asaltado hace un momento. ¿Podrías ayudarme a llegar a ese portal?", dices con una vulnerabilidad fingida. El joven accede. En la oscuridad del portal, el cazador revela su verdadera cara.
 
-CONSECUENCIA: Logras alimentarte en privado, aunque la culpa de la mentira persiste.
+CONSECUENCIA: Sacias tu sed, pero la mentira deja un sabor amargo en tu conciencia.
 
 RESULTADO: hungerDelta: -2 | IR A [ESCENA 1.END]`,
           requirement: { type: "none" },
@@ -201,21 +200,21 @@ RESULTADO: hungerDelta: -2 | IR A [ESCENA 1.END]`,
           effects: [{ type: "hungerDelta", delta: -2 }],
         },
         {
-          id: "n1_3_instinto",
+          id: "n1_2_instinto",
           type: "dialogue",
-          text: `OPCIÓN D [RÍSGO - INSTINTO]: Beber hasta drenarlo por completo para recuperar toda tu fuerza.
+          text: `OPCIÓN D [RIESGO - INSTINTO]: Drenarlo hasta que su corazón deje de latir para recuperar toda tu potencia.
 
-PUENTE: El sabor de la sangre es demasiado bueno. No puedes detenerte. Ignoras sus espasmos y sus súplicas silenciosas mientras su corazón late por última vez...
+PUENTE: El sabor es embriagador. No puedes detenerte. Ignoras sus espasmos. Bebes hasta que su pulso es un hilo y luego nada. El cuerpo cae al Mapocho con un chapoteo sordo.
 
-CONSECUENCIA: Recuperas toda tu vitalidad, pero has cometido un asesinato innecesario.
+CONSECUENCIA: Recuperas toda tu fuerza, pero has cometido un asesinato. La Bestia está satisfecha, pero tu alma es más oscura.
 
-RESULTADO: hungerDelta: -3 | humanityDelta: -2 | setFlag: asesino_de_mapocho | IR A [ESCENA 1.END]`,
+RESULTADO: hungerDelta: -3 | humanityDelta: -2 | setFlag: asesino_del_mapocho | IR A [ESCENA 1.END]`,
           requirement: { type: "none" },
           nextSceneId: "n1_cita_mascara",
           effects: [
             { type: "hungerDelta", delta: -3 },
             { type: "humanityDelta", delta: -2 },
-            { type: "setFlag", flag: "asesino_de_mapocho" },
+            { type: "setFlag", flag: "asesino_del_mapocho" },
           ],
         },
       ],
@@ -224,17 +223,16 @@ RESULTADO: hungerDelta: -3 | humanityDelta: -2 | setFlag: asesino_de_mapocho | I
       id: "n1_cita_mascara",
       chapterId: "chapter01",
       title: "[ESCENA 1.END]: LA CITA CON LA MÁSCARA",
-      text: `CONTEXTO: El joven yace en el suelo (vivo o muerto). El aire se vuelve gélido de repente.
+      text: `CONTEXTO: Al final del puente, bajo la luz de un farol. Doña Inés te espera.
+NARRACIÓN: El mundo parece más nítido ahora que la sangre corre por tus venas. Al final del puente, una mujer de una elegancia anacrónica te observa. Es Doña Inés, la mano derecha del Príncipe. Su ropa de sastre es impecable, ni una mota de polvo de Santiago se atreve a posarse sobre ella. "Has tardado en alimentarte", dice con una voz que corta el aire. "El Príncipe no es un hombre paciente. Sígueme al Palacio Bruna, tu verdadera noche comienza ahora".
 
-NARRACIÓN: Te limpias la comisura de los labios. Al alzar la vista, ves a una mujer de una elegancia anacrónica esperándote al final del puente. Es Doña Inés. Su palidez es perfecta, su ropa de sastre impecable. Te observa con la mirada de quien examina una propiedad recién adquirida. "El Príncipe te espera en el Palacio Bruna", dice. "No hagas que se arrepienta de haberte dado una segunda oportunidad".
+BIFURCACIÓN DE ESTADO (Hacia Capítulo 2):
 
-BIFURCACIÓN DE SALIDA:
+Si setFlag: beso_limpio: Inés te trata con cortesía diplomática. (Ruta del Embajador).
 
-Si setFlag: rastro_violento o rastro_sangre: Inés te mira con asco. "Eres un animal. Limpia tus huellas antes de que la Inquisición las encuentre". -> IR A [CAPÍTULO 2: RUTA DEL PARIA]
+Si setFlag: rastro_sangre_teatinos o rastro_fuerza_bruta: Inés te mira con desprecio. "Eres un animal descuidado". (Ruta del Paria).
 
-Si setFlag: beso_ventrue: Inés asiente levemente. "Al menos conservas el estilo de tu linaje. Sígueme". -> IR A [CAPÍTULO 2: RUTA DEL EMBAJADOR]
-
-Si setFlag: info_traje_gris: Tienes la opción de preguntarle por el hombre del traje, lo que cambia su actitud a una más defensiva. -> IR A [CAPÍTULO 2: RUTA DE LA INTRIGA]`,
+Si tienes setFlag: info_traje_gris: Tienes una opción de diálogo especial para cuestionar la lealtad del Príncipe. (Ruta de la Intriga).`,
       options: [
         {
           id: "n1_cita_paria",
@@ -242,13 +240,11 @@ Si setFlag: info_traje_gris: Tienes la opción de preguntarle por el hombre del 
           requirement: {
             type: "any",
             requirements: [
-              { type: "flag", flag: "rastro_violento" },
-              { type: "flag", flag: "rastro_sangre" },
+              { type: "flag", flag: "rastro_fuerza_bruta" },
+              { type: "flag", flag: "rastro_sangre_teatinos" },
             ],
           },
-          text: `Salida — RUTA DEL PARIA (prioridad si rastro_violento o rastro_sangre).
-
-Inés te mira con asco. "Eres un animal. Limpia tus huellas antes de que la Inquisición las encuentre".
+          text: `Inés te mira con desprecio. "Eres un animal descuidado".
 
 RESULTADO: IR A [CAPÍTULO 2: RUTA DEL PARIA]`,
           nextSceneId: "n1_end",
@@ -269,17 +265,15 @@ RESULTADO: IR A [CAPÍTULO 2: RUTA DEL PARIA]`,
                 requirement: {
                   type: "any",
                   requirements: [
-                    { type: "flag", flag: "rastro_violento" },
-                    { type: "flag", flag: "rastro_sangre" },
+                    { type: "flag", flag: "rastro_fuerza_bruta" },
+                    { type: "flag", flag: "rastro_sangre_teatinos" },
                   ],
                 },
               },
-              { type: "flag", flag: "beso_ventrue" },
+              { type: "flag", flag: "beso_limpio" },
             ],
           },
-          text: `Salida — RUTA DEL EMBAJADOR (si beso_ventrue y sin rastro_violento/rastro_sangre).
-
-Inés asiente levemente. "Al menos conservas el estilo de tu linaje. Sígueme".
+          text: `Inés te trata con cortesía diplomática.
 
 RESULTADO: IR A [CAPÍTULO 2: RUTA DEL EMBAJADOR]`,
           nextSceneId: "n1_end",
@@ -300,18 +294,16 @@ RESULTADO: IR A [CAPÍTULO 2: RUTA DEL EMBAJADOR]`,
                 requirement: {
                   type: "any",
                   requirements: [
-                    { type: "flag", flag: "rastro_violento" },
-                    { type: "flag", flag: "rastro_sangre" },
+                    { type: "flag", flag: "rastro_fuerza_bruta" },
+                    { type: "flag", flag: "rastro_sangre_teatinos" },
                   ],
                 },
               },
               { type: "flag", flag: "info_traje_gris" },
-              { type: "flag", flag: "beso_ventrue", equals: false },
+              { type: "flag", flag: "beso_limpio", equals: false },
             ],
           },
-          text: `Salida — RUTA DE LA INTRIGA (si info_traje_gris, sin violencia en Teatinos y sin beso_ventrue activo como prioridad de embajador).
-
-Tienes la opción de preguntarle por el hombre del traje, lo que cambia su actitud a una más defensiva.
+          text: `Tienes margen para cuestionar la lealtad del Príncipe respecto al hombre de traje gris.
 
 RESULTADO: IR A [CAPÍTULO 2: RUTA DE LA INTRIGA]`,
           nextSceneId: "n1_end",
@@ -332,18 +324,16 @@ RESULTADO: IR A [CAPÍTULO 2: RUTA DE LA INTRIGA]`,
                 requirement: {
                   type: "any",
                   requirements: [
-                    { type: "flag", flag: "rastro_violento" },
-                    { type: "flag", flag: "rastro_sangre" },
+                    { type: "flag", flag: "rastro_fuerza_bruta" },
+                    { type: "flag", flag: "rastro_sangre_teatinos" },
                   ],
                 },
               },
-              { type: "flag", flag: "beso_ventrue", equals: false },
+              { type: "flag", flag: "beso_limpio", equals: false },
               { type: "flag", flag: "info_traje_gris", equals: false },
             ],
           },
-          text: `Camino estándar hacia el Palacio Bruna (cuando ninguna de las bifurcaciones anteriores aplica por banderas).
-
-Sigues a Inés hacia la cita; el tono es frío, pero sin la condena del paria ni la validación explícita del embajador.
+          text: `Sigues a Inés hacia el Palacio Bruna; el tono es frío, sin la etiqueta del embajador ni la confrontación del paria.
 
 RESULTADO: IR A [CAPÍTULO 2]`,
           nextSceneId: "n1_end",
