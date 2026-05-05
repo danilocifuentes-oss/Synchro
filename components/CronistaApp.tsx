@@ -210,14 +210,14 @@ function CronistaAppInner() {
   const nexusActiveProfileId = getActiveProfileId();
 
   /**
-   * Tras deploy/recarga: rehidratar globals desde el bundle si la hoja global es plantilla vacía.
+   * Tras recarga: primero alinear `localStorage` global con el bundle si quedó plantilla vacía;
+   * luego **siempre** volcar globals → React (el estado inicial es `emptySheet()` y no lee solo).
    * Si el hilo es SOL pero el linaje no tiene crónica jugable (p. ej. LIN_IND), pasar al canal NEX sin pantalla bloqueante.
    */
   useLayoutEffect(() => {
     if (phase === "login") return;
-    if (reconcileActiveProfileIfGlobalsStale()) {
-      applyGlobalsToUi(setSheet, setSheetLocked, setLogs, commitStrand);
-    }
+    reconcileActiveProfileIfGlobalsStale();
+    applyGlobalsToUi(setSheet, setSheetLocked, setLogs, commitStrand);
     if (phase !== "nexus") return;
     const clan = loadSheet()?.clan ?? sheet.clan;
     if (
@@ -845,9 +845,8 @@ function CronistaAppInner() {
                   goToProfileHub();
                   return;
                 }
-                if (reconcileActiveProfileIfGlobalsStale()) {
-                  applyGlobalsToUi(setSheet, setSheetLocked, setLogs, commitStrand);
-                }
+                reconcileActiveProfileIfGlobalsStale();
+                applyGlobalsToUi(setSheet, setSheetLocked, setLogs, commitStrand);
                 const clanNow = loadSheet()?.clan ?? sheet.clan;
                 if (!isSoloSupportedClan(clanNow)) {
                   navigateToPhase("chargen");
