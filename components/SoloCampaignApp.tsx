@@ -236,7 +236,7 @@ function SoloCampaignScreen({
   embedded = false,
   emitParalelaNarration,
 }: Props) {
-  const { progress, setProgress } = useSoloCampaign();
+  const { progress, transitionSlide, patchProgress, navigateProgress } = useSoloCampaign();
   const transitionLockRef = useRef(false);
   const reduceMotion = useReducedMotion();
   const [lastRollLine, setLastRollLine] = useState<string>("");
@@ -310,9 +310,8 @@ function SoloCampaignScreen({
       flags: { ...latest.flags, [SOLO_FLAG_OPENING_VITALS]: true },
       updatedAt: latest.updatedAt + 1,
     };
-    saveSoloProgress(progFlag);
-    setProgress(progFlag);
-  }, [preludeGateDoneUi, clanIntroGateDone, scene?.id, openingVitalsApplied, profileId, sheet.clan, setProgress, onSheetSynced]);
+    patchProgress(progFlag);
+  }, [preludeGateDoneUi, clanIntroGateDone, scene?.id, openingVitalsApplied, profileId, sheet.clan, patchProgress, onSheetSynced]);
 
   const applyOption = (option: SoloOption) => {
     if (transitionLockRef.current) return;
@@ -421,8 +420,7 @@ function SoloCampaignScreen({
       ].slice(-120),
       updatedAt: tick,
     };
-    saveSoloProgress(next);
-    setProgress(next);
+    navigateProgress(next, 1);
   };
 
   const revertToPrevScene = () => {
@@ -444,8 +442,7 @@ function SoloCampaignScreen({
       decisionHistory: nextDecisionHistory,
       updatedAt: progress.updatedAt + 1,
     };
-    saveSoloProgress(next);
-    setProgress(next);
+    navigateProgress(next, -1);
     setLastRollLine("");
   };
 
@@ -533,7 +530,10 @@ function SoloCampaignScreen({
         </div>
       ) : null}
 
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden" aria-label="Historia y opciones">
+      <div
+        className="relative flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-hidden"
+        aria-label="Historia y opciones"
+      >
         {!mainGameplay ? (
           <div
             className={`min-h-0 flex-1 overflow-y-auto ${embedded ? "px-3 py-3 sm:px-4" : "px-4 py-5 sm:px-8"}`}
@@ -558,8 +558,7 @@ function SoloCampaignScreen({
                         flags: { ...progress.flags, chronicle_curtain_seen: true },
                         updatedAt: progress.updatedAt + 1,
                       };
-                      saveSoloProgress(next);
-                      setProgress(next);
+                      patchProgress(next);
                     }}
                     className="border border-[var(--terminal)]/40 bg-neutral-950/80 px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-[var(--terminal)]"
                   >
@@ -579,8 +578,7 @@ function SoloCampaignScreen({
                         flags: { ...progress.flags, clan_intro_seen: true },
                         updatedAt: progress.updatedAt + 1,
                       };
-                      saveSoloProgress(next);
-                      setProgress(next);
+                      patchProgress(next);
                     }}
                     className="border border-[var(--terminal)]/40 bg-neutral-950/80 px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-[var(--terminal)]"
                   >
@@ -591,29 +589,64 @@ function SoloCampaignScreen({
             </div>
           </div>
         ) : (
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" custom={transitionSlide}>
             <motion.div
               key={`${progress.chapterId}:${progress.sceneId}`}
-              className="flex min-h-0 min-w-0 flex-1 flex-col"
-              initial={reduceMotion ? false : { x: "100%", opacity: 0 }}
-              animate={reduceMotion ? undefined : { x: 0, opacity: 1 }}
-              exit={reduceMotion ? undefined : { x: "-100%", opacity: 0 }}
-              transition={{ duration: reduceMotion ? 0 : 0.38, ease: [0.22, 1, 0.36, 1] }}
+              role="article"
+              aria-label={`Escena: ${scene.title}`}
+              className="solo-book-spread flex min-h-0 min-w-0 flex-1 flex-col"
+              custom={transitionSlide}
+              variants={
+                reduceMotion
+                  ? {
+                      enter: { opacity: 0 },
+                      center: { opacity: 1, transition: { duration: 0 } },
+                      exit: { opacity: 0, transition: { duration: 0 } },
+                    }
+                  : {
+                      enter: (dir: 1 | -1) => ({
+                        x: dir === 1 ? "105%" : "-105%",
+                        opacity: 0,
+                        filter: "blur(5px)",
+                      }),
+                      center: {
+                        x: 0,
+                        opacity: 1,
+                        filter: "blur(0px)",
+                        transition: { duration: 0.52, ease: [0.22, 1, 0.36, 1] },
+                      },
+                      exit: (dir: 1 | -1) => ({
+                        x: dir === 1 ? "-42%" : "42%",
+                        opacity: 0,
+                        filter: "blur(4px)",
+                        transition: { duration: 0.44, ease: [0.22, 1, 0.36, 1] },
+                      }),
+                    }
+              }
+              initial="enter"
+              animate="center"
+              exit="exit"
             >
               <div
                 className={`min-h-0 flex-1 overflow-y-auto pb-2 ${embedded ? "px-3 py-3 sm:px-4" : "px-4 py-5 sm:px-8"}`}
               >
-                <div className="mx-auto max-w-2xl space-y-6">
-                  {!embedded ? (
-                    <p className="font-sans text-[10px] uppercase tracking-[0.22em] text-neutral-600">{chapter.title}</p>
-                  ) : null}
-                  <section className="space-y-4" aria-labelledby={sceneHeadingId}>
+                <div className="solo-book-page mx-auto max-w-2xl space-y-6 rounded-sm border border-white/[0.07] bg-[linear-gradient(165deg,rgba(18,17,16,0.97)_0%,rgba(8,8,10,0.99)_40%,rgba(5,5,6,1)_100%)] px-5 py-6 shadow-[inset_10px_0_24px_-14px_rgba(255,255,255,0.06),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-8 sm:py-8">
+                  <p className="border-b border-white/[0.06] pb-3 font-sans text-[10px] uppercase tracking-[0.28em] text-neutral-500">
+                    <span className="text-neutral-400">{chapter.title}</span>
+                    <span className="mx-2 text-neutral-700">·</span>
+                    <span style={{ color: "var(--accent-clan, #a3a3a3)" }}>{scene.title}</span>
+                  </p>
+                  <section className="space-y-5" aria-labelledby={sceneHeadingId}>
                     <h2 id={sceneHeadingId} className="sr-only">
                       {scene.title}
                     </h2>
-                    <p className="whitespace-pre-line leading-relaxed text-neutral-200">{scene.text}</p>
+                    <div className="solo-book-prose font-serif text-[15px] font-normal leading-[1.82] tracking-[0.015em] text-neutral-200">
+                      <p className="whitespace-pre-line">{scene.text}</p>
+                    </div>
                     {scene.clanFlavor?.[sheet.clan] ? (
-                      <p className={`text-sm italic leading-relaxed ${CLAN_TONE[sheet.clan] ?? "text-neutral-300"}`}>{scene.clanFlavor[sheet.clan]}</p>
+                      <p className={`border-l-2 border-[color:var(--accent-clan)]/35 pl-4 font-serif text-sm italic leading-relaxed ${CLAN_TONE[sheet.clan] ?? "text-neutral-300"}`}>
+                        {scene.clanFlavor[sheet.clan]}
+                      </p>
                     ) : null}
                   </section>
                 </div>
@@ -690,8 +723,7 @@ function SoloCampaignScreen({
                             soloSceneBackStack: [...prevStack, backSnap].slice(-SOLO_BACK_STACK_LIMIT),
                             updatedAt: progress.updatedAt + 1,
                           };
-                          saveSoloProgress(next);
-                          setProgress(next);
+                          navigateProgress(next, 1);
                         }}
                         className="border border-neutral-700 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-neutral-400 hover:border-neutral-500"
                       >
