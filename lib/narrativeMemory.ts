@@ -10,11 +10,17 @@ import { CHRONICLE_PRELUDE_COMMON } from "@/lib/soloCampaign/preludeCopy";
 
 /** Eco antiguo del preludio que se volcó al log del Nexo; ya no debe mostrarse en el stream. */
 const PRELUDE_LOG_SNIP = CHRONICLE_PRELUDE_COMMON.trimStart().slice(0, 72);
+const PRELUDE_MARKER = "Santiago no es una ciudad";
+
+function isLegacyPreludeNarration(text: string): boolean {
+  const t = text.trim();
+  return t.startsWith(PRELUDE_LOG_SNIP) || t.includes(PRELUDE_MARKER);
+}
 
 function stripLegacyPreludeEcho(entries: NarrativeLogEntry[]): NarrativeLogEntry[] {
   return entries.filter((e) => {
     if (e.role !== "narrador") return true;
-    return !e.text.trimStart().startsWith(PRELUDE_LOG_SNIP);
+    return !isLegacyPreludeNarration(e.text);
   });
 }
 

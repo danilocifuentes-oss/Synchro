@@ -43,7 +43,10 @@ export function AdminConsole({
   onForcedFrenesy,
   onForcedRage,
 }: Props) {
-  if (!isNarrator) {
+  /** En producción (p. ej. Vercel) la consola flotante sólo si se declara explícitamente. */
+  const mjConsoleEnabled =
+    process.env.NODE_ENV !== "production" || process.env.NEXT_PUBLIC_MJ_CONSOLE === "1";
+  if (!mjConsoleEnabled || !isNarrator) {
     return null;
   }
 
