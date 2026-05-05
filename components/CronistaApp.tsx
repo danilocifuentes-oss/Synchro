@@ -60,7 +60,10 @@ import {
 } from "@/lib/profileStore";
 import { ProfileHub } from "./ProfileHub";
 import { NarratorCommandCenter } from "./NarratorCommandCenter";
+import { SoloCampaignProvider } from "@/context/SoloCampaignContext";
+import { ensureSoloProgress, isSoloSupportedClan } from "@/lib/soloCampaign/bootstrap";
 import { SoloCampaignApp } from "./SoloCampaignApp";
+import { SoloSceneNav } from "./SoloSceneNav";
 import { SoloCampaignPhaseRedirect } from "./SoloCampaignPhaseRedirect";
 import type { Phase } from "@/lib/schreckPhase";
 import {
@@ -775,83 +778,109 @@ function CronistaAppInner() {
         />
       ) : null}
 
-      <div className="flex min-h-0 flex-1 flex-col xl:flex-row xl:items-stretch">
-        <SidebarMesa
-          accent={accent}
-          sheet={sheet}
-          citySigma={inquisitionThreat}
-          healthFilled={healthHudFilled}
-          healthMax={HEALTH_MAX_UI}
-          hunger={sheet.hunger}
-          onEidolonVault={goToProfileHub}
-          onCodex={() => {
-            persistActiveProfile();
-            navigateToPhase("chargen");
-          }}
-          onLogout={goToLogin}
-        />
+      {(() => {
+        const soloShellActive =
+          activeStrand === "paralela" &&
+          Boolean(nexusActiveProfileId) &&
+          isSoloSupportedClan(sheet.clan);
 
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-hidden px-4 py-4 lg:gap-5 lg:px-6 lg:py-5">
-          {activeStrand === "paralela" ? (
-            nexusActiveProfileId ? (
-              <SoloCampaignApp
-                key={nexusActiveProfileId}
-                profileId={nexusActiveProfileId}
-                sheet={sheet}
-                embedded
-                emitParalelaNarration={(text) => pushLog({ role: "narrador", text, strand: "paralela" })}
-                onExit={() => commitStrand("principal")}
-                onSheetSynced={(next) => {
-                  setSheet(mergeStoredSheet(next));
-                  persistActiveProfile();
-                }}
-              />
-            ) : (
-              <div className="flex min-h-[min(40vh,22rem)] flex-col items-center justify-center gap-4 rounded-xl border border-white/[0.08] bg-black/45 px-6 py-10 text-center">
-                <p className="max-w-sm font-sans text-sm leading-relaxed text-neutral-400">
-                  La campaña solitaria usa tu ficha activa. Elige o crea un personaje en CRIPTA.
-                </p>
-                <button
-                  type="button"
-                  onClick={goToProfileHub}
-                  className="border border-[var(--terminal)]/40 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--terminal)] hover:bg-[var(--terminal)]/10"
-                >
-                  Ir al registro
-                </button>
+        const nexoCenterColumn = (
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-hidden px-4 py-4 lg:gap-5 lg:px-6 lg:py-5">
+            <NexoChannelPanel
+              accent={accent}
+              activeStrand={activeStrand}
+              onStrandChange={commitStrand}
+              identityHint={identityHint}
+              showTechnicalAnchors={isNarrator}
+              glyphContext={{ inquisitionThreat, hunger: sheet.hunger }}
+              llmReady={nexoLlmReady}
+            >
+              {activeStrand === "paralela" ? (
+                nexusActiveProfileId ? (
+                  <SoloCampaignApp
+                    key={nexusActiveProfileId}
+                    profileId={nexusActiveProfileId}
+                    sheet={sheet}
+                    embedded
+                    providerWrapped={soloShellActive}
+                    emitParalelaNarration={(text) => pushLog({ role: "narrador", text, strand: "paralela" })}
+                    onExit={() => commitStrand("principal")}
+                    onSheetSynced={(next) => {
+                      setSheet(mergeStoredSheet(next));
+                      persistActiveProfile();
+                    }}
+                  />
+                ) : (
+                  <div className="flex min-h-[min(40vh,22rem)] flex-col items-center justify-center gap-4 px-6 py-10 text-center">
+                    <p className="max-w-sm font-sans text-sm leading-relaxed text-neutral-400">
+                      La campaña solitaria usa tu ficha activa. Elige o crea un personaje en CRIPTA.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={goToProfileHub}
+                      className="border border-[var(--terminal)]/40 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--terminal)] hover:bg-[var(--terminal)]/10"
+                    >
+                      Ir al registro
+                    </button>
+                  </div>
+                )
+              ) : null}
+            </NexoChannelPanel>
+            <details className="lg:hidden rounded-xl border border-white/[0.06] bg-black/35 px-4 py-3">
+              <summary className="cursor-pointer text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+                Eco del mundo
+              </summary>
+              <div className="mt-3 max-h-[48vh] overflow-y-auto rounded-lg border border-white/[0.04]">
+                <NexoChronicleDigest {...chronicleAsideProps} />
               </div>
-            )
-          ) : (
-            <>
-              <NexoChannelPanel
-                accent={accent}
-                activeStrand={activeStrand}
-                onStrandChange={commitStrand}
-                identityHint={identityHint}
-                showTechnicalAnchors={isNarrator}
-                glyphContext={{ inquisitionThreat, hunger: sheet.hunger }}
-                llmReady={nexoLlmReady}
-              />
-              <details className="lg:hidden rounded-xl border border-white/[0.06] bg-black/35 px-4 py-3">
-                <summary className="cursor-pointer text-[10px] uppercase tracking-[0.2em] text-neutral-500">
-                  Eco del mundo
-                </summary>
-                <div className="mt-3 max-h-[48vh] overflow-y-auto rounded-lg border border-white/[0.04]">
-                  <NexoChronicleDigest {...chronicleAsideProps} />
-                </div>
-              </details>
-            </>
-          )}
-        </div>
+            </details>
+          </div>
+        );
 
-        <aside className="hidden min-h-0 shrink-0 self-stretch border-l border-white/[0.06] bg-[linear-gradient(180deg,#060607,#0a0a0d)] lg:flex lg:w-[min(20vw,22rem)] lg:max-w-sm lg:flex-col lg:overflow-hidden xl:w-[min(17rem,24vw)]">
-          <div className="border-b border-white/[0.05] px-5 py-4 font-sans text-[10px] font-light uppercase tracking-[0.35em] text-neutral-500">
-            Eco
+        const threeColumns = (
+          <div className="flex min-h-0 flex-1 flex-col xl:flex-row xl:items-stretch">
+            <SidebarMesa
+              accent={accent}
+              sheet={sheet}
+              citySigma={inquisitionThreat}
+              healthFilled={healthHudFilled}
+              healthMax={HEALTH_MAX_UI}
+              hunger={sheet.hunger}
+              soloSceneNav={soloShellActive ? <SoloSceneNav /> : undefined}
+              onEidolonVault={goToProfileHub}
+              onCodex={() => {
+                persistActiveProfile();
+                navigateToPhase("chargen");
+              }}
+              onLogout={goToLogin}
+            />
+
+            {nexoCenterColumn}
+
+            <aside className="hidden min-h-0 shrink-0 self-stretch border-l border-white/[0.06] bg-[linear-gradient(180deg,#060607,#0a0a0d)] lg:flex lg:w-[min(20vw,22rem)] lg:max-w-sm lg:flex-col lg:overflow-hidden xl:w-[min(17rem,24vw)]">
+              <div className="border-b border-white/[0.05] px-5 py-4 font-sans text-[10px] font-light uppercase tracking-[0.35em] text-neutral-500">
+                Eco
+              </div>
+              <div className="min-h-0 min-w-0 flex-1 overflow-y-auto">
+                <NexoChronicleDigest {...chronicleAsideProps} />
+              </div>
+            </aside>
           </div>
-          <div className="min-h-0 min-w-0 flex-1 overflow-y-auto">
-            <NexoChronicleDigest {...chronicleAsideProps} />
-          </div>
-        </aside>
-      </div>
+        );
+
+        if (soloShellActive && nexusActiveProfileId) {
+          return (
+            <SoloCampaignProvider
+              key={nexusActiveProfileId}
+              initialProgress={ensureSoloProgress(nexusActiveProfileId, sheet)}
+            >
+              {threeColumns}
+            </SoloCampaignProvider>
+          );
+        }
+
+        return threeColumns;
+      })()}
 
       <AdminConsole
         open={adminOpen}

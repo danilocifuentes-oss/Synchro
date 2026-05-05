@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { CharacterSheet, ClanId } from "@/lib/character";
 import { CLAN_OPTIONS } from "@/lib/character";
 import { disciplineLabel } from "@/lib/sereno";
+import { ensureSoloProgress, isSoloSupportedClan } from "@/lib/soloCampaign/bootstrap";
 import { getSoloChapter, getSoloScene } from "@/lib/soloCampaign/chapters";
 import { checkOptionAvailability, listFailReasons, resolveDisciplineTierText } from "@/lib/soloCampaign/requirementEngine";
 import { filterSoloOptionsForSheet, sortSoloOptionsForDisplay } from "@/lib/soloCampaign/optionPresentation";
@@ -75,17 +76,9 @@ type Props = {
   embedded?: boolean;
   /** Inyecta texto al hilo paralelo del SchreckNet (eco narrativo). */
   emitParalelaNarration?: (text: string) => void;
+  /** El `SoloCampaignProvider` ya envuelve el marco (barra lateral + canal); no duplicar. */
+  providerWrapped?: boolean;
 };
-
-const SOLO_SUPPORTED_CLANS: ClanId[] = ["brujah", "ventrue", "toreador", "malkavian"];
-
-function isSoloSupportedClan(clan: ClanId): boolean {
-  return SOLO_SUPPORTED_CLANS.includes(clan);
-}
-
-function startSceneForClan(): string {
-  return "n1_1";
-}
 
 function clamp(n: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, n));
@@ -169,32 +162,6 @@ function resolveSoloRollPlan(option: SoloOption, sheet: CharacterSheet): { pool:
   };
 }
 
-function ensureProgress(profileId: string, sheet: CharacterSheet): SoloProgress {
-  const startSceneId = startSceneForClan();
-  const existing = loadSoloProgress(profileId, sheet.clan);
-  if (existing) return existing;
-  const base: SoloProgress = {
-    version: 1,
-    profileId,
-    playerName: sheet.name?.trim() || "Sin nombre",
-    clan: sheet.clan,
-    humanity: sheet.humanity,
-    reputation: 0,
-    chronicleExperience: 0,
-    chapterId: "chapter01",
-    sceneId: startSceneId,
-    chroniclePreludeSeenVersion: 0,
-    chapterContextSeen: {},
-    flags: { clan_intro_seen: false },
-    visitedSceneIds: [startSceneId],
-    soloSceneBackStack: [],
-    decisionHistory: [],
-    updatedAt: Date.now(),
-  };
-  saveSoloProgress(base);
-  return base;
-}
-
 export function SoloCampaignApp({
   profileId,
   sheet,
@@ -202,15 +169,20 @@ export function SoloCampaignApp({
   onSheetSynced,
   embedded = false,
   emitParalelaNarration,
+  providerWrapped = false,
 }: Props) {
   const isSupported = isSoloSupportedClan(sheet.clan);
   /** Estado inicial sólo en montaje (el componente lleva key de perfil; no reprocesar al mutar hambre en vivo). */
-  const [initialProgress] = useState(() => ensureProgress(profileId, sheet));
+  const [initialProgress] = useState(() => ensureSoloProgress(profileId, sheet));
 
   if (!isSupported) {
     const clanLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
     return (
-      <div className="min-h-screen bg-[#050505] px-4 py-10 font-mono text-neutral-300">
+      <div
+        className={`bg-[#050505] px-4 py-10 font-mono text-neutral-300 ${
+          embedded ? "flex min-h-0 flex-1 flex-col overflow-y-auto" : "min-h-screen"
+        }`}
+      >
         <div className="mx-auto max-w-2xl space-y-4 border border-amber-900/40 bg-black/50 p-6 sharp-border-inner">
           <p className="text-[10px] uppercase tracking-[0.28em] text-amber-300">Campaña Solitaria</p>
           <h2 className="font-sans text-xl text-neutral-100">Clan aún no disponible</h2>
@@ -234,16 +206,24 @@ export function SoloCampaignApp({
     );
   }
 
+  const screen = (
+    <SoloCampaignScreen
+      profileId={profileId}
+      sheet={sheet}
+      onExit={onExit}
+      onSheetSynced={onSheetSynced}
+      embedded={embedded}
+      emitParalelaNarration={emitParalelaNarration}
+    />
+  );
+
+  if (providerWrapped) {
+    return screen;
+  }
+
   return (
     <SoloCampaignProvider key={profileId} initialProgress={initialProgress}>
-      <SoloCampaignScreen
-        profileId={profileId}
-        sheet={sheet}
-        onExit={onExit}
-        onSheetSynced={onSheetSynced}
-        embedded={embedded}
-        emitParalelaNarration={emitParalelaNarration}
-      />
+      {screen}
     </SoloCampaignProvider>
   );
 }
@@ -471,7 +451,11 @@ function SoloCampaignScreen({
 
   if (!chapter || !scene) {
     return (
-      <div className="min-h-screen bg-[#050505] px-4 py-10 font-mono text-neutral-300">
+      <div
+        className={`bg-[#050505] px-4 py-10 font-mono text-neutral-300 ${
+          embedded ? "flex min-h-0 flex-1 flex-col overflow-y-auto" : "min-h-screen"
+        }`}
+      >
         <div className="mx-auto max-w-2xl space-y-4 border border-red-900/40 bg-black/50 p-6">
           <p className="text-[10px] uppercase tracking-[0.28em] text-red-300">Campaña Solitaria</p>
           <p>No se pudo cargar la escena actual. Vuelve al Nexo o al registro de fichas y revisa el personaje.</p>

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import {
   NARRATIVE_STRANDS,
   STRAND_ACCENT,
@@ -23,6 +24,8 @@ type Props = {
   glyphContext?: NexoGlyphContext;
   /** true si el servidor expone al menos una API de IA (ver /api/nexo-capabilities). */
   llmReady: boolean;
+  /** Contenido del canal (p. ej. campaña solitaria). Si es null/undefined, se muestra el estado vacío del hilo. */
+  children?: ReactNode;
 };
 
 /**
@@ -37,6 +40,7 @@ export function NexoChannelPanel({
   showTechnicalAnchors = false,
   glyphContext,
   llmReady,
+  children,
 }: Props) {
   const strandBorder = STRAND_ACCENT[activeStrand];
 
@@ -106,28 +110,34 @@ export function NexoChannelPanel({
         </div>
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 py-12 text-center">
-        {!llmReady ? (
-          <>
-            <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-neutral-600">Canal Nexo · sin motor</p>
-            <p className="mt-5 max-w-md font-sans text-sm leading-relaxed text-neutral-400">
-              No hay API de narración configurada en este despliegue. La mesa común permanece cerrada: no hay texto automático ni campo para escribir aquí.
-            </p>
-            <p className="mt-4 max-w-md font-sans text-[13px] leading-relaxed text-neutral-500">
-              Para jugar ahora, usa el hilo{" "}
-              <span className="font-medium text-[color:var(--accent-clan)]">SOL · Campaña solitaria</span>.
-            </p>
-          </>
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        {children != null ? (
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">{children}</div>
         ) : (
-          <>
-            <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[color:var(--neon)]">Motor IA · detectado</p>
-            <p className="mt-5 max-w-md font-sans text-sm leading-relaxed text-neutral-300">
-              Las claves de IA están disponibles en el servidor. El modo multijugador con narración compartida se activará en una versión posterior; esta build se centra en la campaña solitaria.
-            </p>
-            <p className="mt-4 max-w-sm font-sans text-[12px] text-neutral-500">
-              Mientras tanto, el canal común permanece inactivo para evitar respuestas simuladas heredadas de versiones anteriores.
-            </p>
-          </>
+          <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 py-12 text-center">
+            {!llmReady ? (
+              <>
+                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-neutral-600">Canal Nexo · sin motor</p>
+                <p className="mt-5 max-w-md font-sans text-sm leading-relaxed text-neutral-400">
+                  No hay API de narración configurada en este despliegue. La mesa común permanece cerrada: no hay texto automático ni campo para escribir aquí.
+                </p>
+                <p className="mt-4 max-w-md font-sans text-[13px] leading-relaxed text-neutral-500">
+                  Para jugar ahora, usa el hilo{" "}
+                  <span className="font-medium text-[color:var(--accent-clan)]">SOL · Campaña solitaria</span>.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[color:var(--neon)]">Motor IA · detectado</p>
+                <p className="mt-5 max-w-md font-sans text-sm leading-relaxed text-neutral-300">
+                  Las claves de IA están disponibles en el servidor. El modo multijugador con narración compartida se activará en una versión posterior; esta build se centra en la campaña solitaria.
+                </p>
+                <p className="mt-4 max-w-sm font-sans text-[12px] text-neutral-500">
+                  Mientras tanto, el canal común permanece inactivo para evitar respuestas simuladas heredadas de versiones anteriores.
+                </p>
+              </>
+            )}
+          </div>
         )}
       </div>
     </section>

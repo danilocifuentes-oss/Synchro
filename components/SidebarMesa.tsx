@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { CLAN_OPTIONS, type CharacterSheet } from "@/lib/character";
 import { NexusLibrary } from "@/components/icons/NexusLibrary";
@@ -26,6 +26,8 @@ type Props = {
   onEidolonVault: () => void;
   onCodex: () => void;
   onLogout: () => void;
+  /** Campaña solitaria: selector de escena del capítulo actual. */
+  soloSceneNav?: ReactNode;
 };
 
 function DisciplineGlyph({ k, className }: { k: DisciplineKey; className?: string }) {
@@ -75,6 +77,7 @@ export function SidebarMesa({
   onEidolonVault,
   onCodex,
   onLogout,
+  soloSceneNav,
 }: Props) {
   const reduceMotion = useReducedMotion();
   const prevHealth = useRef(healthFilled);
@@ -255,6 +258,8 @@ export function SidebarMesa({
             Pasivos: vigilancia / canal. Activos: mandato σ · circuito · destino sangrado.
           </p>
         </section>
+
+        {soloSceneNav}
 
         <nav className="flex flex-col gap-2 border-t border-white/[0.06] pt-3">
           <button
