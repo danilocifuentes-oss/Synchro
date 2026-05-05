@@ -52,6 +52,7 @@ import {
   createBlankProfile,
   ensureShadowPackNpcs,
   getActiveProfileId,
+  loadBundle,
   listProfiles,
   migrateLegacyToProfiles,
   reconcileActiveProfileIfGlobalsStale,
@@ -79,6 +80,7 @@ import {
   setOperatorSessionUnlocked,
 } from "@/lib/operatorSessionGate";
 import { buildSoloNexoDigest } from "@/lib/soloCampaign/soloDigestNexo";
+import { loadSoloProgress, saveSoloProgress } from "@/lib/soloCampaign/progressStore";
 
 const HEALTH_MAX_UI = 7;
 
@@ -156,7 +158,7 @@ function CronistaAppInner() {
   }, []);
 
   /** Navega y escribe entrada en historial (`?v=`) para atrás/adelante en el mismo origen. */
-  const navigateToPhase = useCallback((next: Phase, opts?: { replace?: boolean }) => {
+  const navigateToPhase = useCallback((next: Phase, opts?: { replace?: boolean; preserveStrand?: boolean }) => {
     if (typeof window !== "undefined") {
       const href = phaseToHref(next);
       if (opts?.replace) {
@@ -165,13 +167,16 @@ function CronistaAppInner() {
         window.history.pushState({ phase: next }, "", href);
       }
     }
+    if (next === "nexus" && phase !== "nexus" && !opts?.preserveStrand) {
+      commitStrand("principal");
+    }
     setPhase(next);
-  }, []);
+  }, [commitStrand, phase]);
 
   /** `/?v=solitario` → Nexo + paralela. */
   const replaceSoloBookmarkWithNexus = useCallback(() => {
     commitStrand("paralela");
-    navigateToPhase("nexus", { replace: true });
+    navigateToPhase("nexus", { replace: true, preserveStrand: true });
   }, [commitStrand, navigateToPhase]);
 
   const historyBootRef = useRef(false);
@@ -209,10 +214,11 @@ function CronistaAppInner() {
    * Si el hilo es SOL pero el linaje no tiene crónica jugable (p. ej. LIN_IND), pasar al canal NEX sin pantalla bloqueante.
    */
   useLayoutEffect(() => {
-    if (phase !== "nexus") return;
+    if (phase === "login") return;
     if (reconcileActiveProfileIfGlobalsStale()) {
       applyGlobalsToUi(setSheet, setSheetLocked, setLogs, commitStrand);
     }
+    if (phase !== "nexus") return;
     const clan = loadSheet()?.clan ?? sheet.clan;
     if (
       activeStrand === "paralela" &&
@@ -657,13 +663,16 @@ function CronistaAppInner() {
   if (phase === "chargen") {
     const meta = loadMeta();
     const stored = loadSheet();
+    const activeId = getActiveProfileId();
+    const activeBundleSheet = activeId ? loadBundle(activeId)?.sheet ?? null : null;
+    const safeStored = stored && stored.name?.trim() ? stored : activeBundleSheet;
     const mechanicalLocked = Boolean(meta.sheetLocked && !isNarrator && stored?.name?.trim());
 
     const initialForChargen: CharacterSheet =
-      meta.sheetLocked && isNarrator && stored
-        ? mergeStoredSheet(stored)
-        : stored && stored.name?.trim()
-          ? mergeStoredSheet(stored)
+      meta.sheetLocked && isNarrator && safeStored
+        ? mergeStoredSheet(safeStored)
+        : safeStored && safeStored.name?.trim()
+          ? mergeStoredSheet(safeStored)
           : emptySheet();
 
     function persistCodexNarrative(s: CharacterSheet) {
@@ -673,6 +682,23 @@ function CronistaAppInner() {
       persistActiveProfile();
       navigateToPhase("nexus");
       appendXpLog(`Identidad marcada · ${next.name?.trim() || "—"}`);
+    }
+
+    const pid = activeId;
+    const soloProg = pid ? loadSoloProgress(pid, initialForChargen.clan) : null;
+    const soloXp = soloProg?.chronicleExperience ?? 0;
+
+    function spendChronicleXp(cost: number): boolean {
+      if (!pid) return false;
+      const latest = loadSoloProgress(pid, initialForChargen.clan);
+      if (!latest) return false;
+      const pool = Math.max(0, Math.floor(latest.chronicleExperience ?? 0));
+      const c = Math.max(0, Math.floor(cost));
+      if (c <= 0 || pool < c) return false;
+      const next = { ...latest, chronicleExperience: pool - c, updatedAt: latest.updatedAt + 1 };
+      saveSoloProgress(next);
+      syncActiveBundleFromGlobals(pid);
+      return true;
     }
 
     return (
@@ -690,6 +716,8 @@ function CronistaAppInner() {
         <CharacterCreation
           initial={initialForChargen}
           mechanicalLocked={mechanicalLocked}
+          chronicleXpAvailable={soloXp}
+          onSpendChronicleXp={spendChronicleXp}
           onSave={(s) => {
             if (mechanicalLocked) {
               persistCodexNarrative(s);
@@ -859,21 +887,29 @@ function CronistaAppInner() {
 
         const threeColumns = (
           <div className="flex min-h-0 flex-1 flex-col xl:flex-row xl:items-stretch">
-            <SidebarMesa
-              accent={accent}
-              sheet={sheet}
-              citySigma={inquisitionThreat}
-              healthFilled={healthHudFilled}
-              healthMax={HEALTH_MAX_UI}
-              hunger={sheet.hunger}
-              soloSceneNav={soloShellActive ? <SoloSceneNav /> : undefined}
-              onEidolonVault={goToProfileHub}
-              onCodex={() => {
-                persistActiveProfile();
-                navigateToPhase("chargen");
-              }}
-              onLogout={goToLogin}
-            />
+          {(() => {
+            const pid = getActiveProfileId();
+            const prog = pid && isSoloSupportedClan(sheet.clan) ? loadSoloProgress(pid, sheet.clan) : null;
+            const xp = prog?.chronicleExperience ?? 0;
+            return (
+              <SidebarMesa
+                accent={accent}
+                sheet={sheet}
+                chronicleXp={xp}
+                citySigma={inquisitionThreat}
+                healthFilled={healthHudFilled}
+                healthMax={HEALTH_MAX_UI}
+                hunger={sheet.hunger}
+                soloSceneNav={soloShellActive ? <SoloSceneNav /> : undefined}
+                onEidolonVault={goToProfileHub}
+                onCodex={() => {
+                  persistActiveProfile();
+                  navigateToPhase("chargen");
+                }}
+                onLogout={goToLogin}
+              />
+            );
+          })()}
 
             {nexoCenterColumn}
 

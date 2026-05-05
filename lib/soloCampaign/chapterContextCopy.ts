@@ -84,42 +84,6 @@ En la periferia con Gato aparece la palabra exacta para tu malestar: Vínculo. N
 
 Romper esa cadena no es discurso; es hambre, costo humano y decisiones que dejan marca.`,
   },
-  chapter10: {
-    contentVersion: 3,
-    label: "Contexto · cacería abierta",
-    body: `Con el Vínculo mordiendo la nuca, vuelves a Mapocho. Esta vez no hay margen para fingir normalidad: el Sabat salió de la sombra y convirtió la estación en vitrina de horror.
-
-La cabeza tira en dos direcciones: obedecer la orden implantada o impedir que algo peor despierte.
-
-Cuando el rito empieza, ya no peleas por bando; peleas por si la ciudad llega entera al amanecer.`,
-  },
-  chapter11: {
-    contentVersion: 3,
-    label: "Contexto · debajo de todo",
-    body: `Lo que se abrió en la cripta no cabía en ninguna estrategia de corte ni en ningún delirio sabático. Solo cabía correr.
-
-Huyes hacia la red más vieja de Santiago: barro, metano, ladrillo colonial y comunidades que sobreviven fuera del protocolo de arriba.
-
-Allí te espera El Choro con una oferta clásica de este mundo: información real a cambio de ensuciarte más.`,
-  },
-  chapter12: {
-    contentVersion: 3,
-    label: "Contexto · la última llave",
-    body: `La llave oxidada no abre una puerta física; abre una consecuencia. Si El Choro dijo la verdad, bajo la Catedral está el nudo que sostiene la correa con el Príncipe.
-
-Romper ese nudo no será gratis; nada que toque fe, sangre y memoria lo es.
-
-Esta puede ser una noche de libertad ganada y también la pérdida de lo último que te quedaba de inocencia.`,
-  },
-  chapter13: {
-    contentVersion: 3,
-    label: "Contexto · trono de humo",
-    body: `Sales de la Catedral sin cadena, pero no sin daño. La libertad llegó acompañada de ceniza y un vacío que no se llena con victoria.
-
-Queda un cierre pendiente: subir a Sanhattan y enfrentar al arquitecto de tu caída.
-
-En la torre, la pregunta no será quién tiene la razón; será qué decides ser después de saber toda la verdad.`,
-  },
   epilogue: {
     contentVersion: 3,
     label: "Contexto · después de la caída",

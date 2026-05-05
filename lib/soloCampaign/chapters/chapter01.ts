@@ -1,111 +1,140 @@
 import type { SoloChapter } from "@/lib/soloCampaign/types";
 
-/** Capítulo 1 — «El Beso del Mapocho». Narrativa y tono centrados en la experiencia Ventrue (salón, tablero, máscara); segunda persona. */
 export const chapter01: SoloChapter = {
   id: "chapter01",
-  title: "Santiago en Cenizas · Capítulo 1 · El Beso del Mapocho (linaje del Trono)",
-  description:
-    "Primera noche: Teatinos, Bandera y el Mapocho. Sangre fría, orden sobre el caos y el tributo elegido bajo el puente.",
-  startSceneId: "n1_1",
+  title: "Santiago en Cenizas · Capítulo 1 · El Beso del Mapocho (Logic V3 · Ventrue)",
+  description: "Despertar, umbral, ruta de riesgo y convergencia en el puente con bifurcación temprana.",
+  startSceneId: "n1_0",
   scenes: [
+    {
+      id: "n1_0",
+      chapterId: "chapter01",
+      title: "1.0 · El despertar en la imprenta",
+      text: `Sótano de Teatinos. Oscuridad total. Aroma a tinta seca y polvo colonial.
+
+El silencio es lo primero que te golpea: un vacío absoluto donde debería estar el ritmo de tu corazón. Al incorporarte, el crujido de la madera bajo tu peso suena como un disparo. En tu garganta persiste un ardor químico: el recuerdo del frasco que un anciano te entregó en la calle Bandera.
+
+Tu linaje Ventrue se rebela ante la inmundicia; un Rey no debería despertar en un osario de papel viejo.`,
+      options: [
+        {
+          id: "n1_0_investigar",
+          type: "skill",
+          skill: "investigacion",
+          text: "Registrar los restos de la imprenta buscando pistas.",
+          requirement: { type: "skill", skill: "investigacion", minLevel: 1 },
+          nextSceneId: "n1_1",
+          effects: [
+            { type: "setFlag", flag: "sello_viña" },
+            { type: "setFlag", flag: "novel_ch1_teatinos_surface" },
+          ],
+        },
+        {
+          id: "n1_0_instinto",
+          type: "dialogue",
+          text: "El ardor en la garganta exige salir de inmediato.",
+          requirement: { type: "none" },
+          nextSceneId: "n1_2",
+          effects: [{ type: "hungerDelta", delta: 1 }],
+        },
+        {
+          id: "n1_0_fortaleza",
+          type: "discipline",
+          discipline: "fortitude",
+          disciplineTitle: "Protocolo de linaje",
+          text: "Forzar a tu mente a recordar el protocolo de emergencia de la Corte.",
+          requirement: { type: "discipline", discipline: "fortitude", minLevel: 1 },
+          nextSceneId: "n1_1",
+          effects: [
+            { type: "willpowerDelta", delta: 1 },
+            { type: "setFlag", flag: "protocolo_corte" },
+          ],
+        },
+        {
+          id: "n1_0_negacion",
+          type: "dialogue",
+          text: "Quedarte inmóvil esperando despertar de esta pesadilla.",
+          requirement: { type: "none" },
+          nextSceneId: "n1_0",
+          effects: [
+            {
+              type: "fatalOutcome",
+              id: "fd_teatinos_sun",
+              title: "Cenizas en Teatinos",
+              body: "La luz entra por la claraboya. No era despertar: era fuego. La noche termina antes de empezar.",
+            },
+          ],
+        },
+      ],
+    },
     {
       id: "n1_1",
       chapterId: "chapter01",
-      title: "1.1 · Teatinos · La dignidad entre el polvo",
-      text: `Despiertas en la oscuridad de una imprenta abandonada en Teatinos. No recuerdas haberte acostado, pero el sabor metálico del frasco que recibiste en la calle Bandera todavía te escuece la garganta.
+      title: "1.1 · El umbral de Teatinos",
+      text: `Calle Teatinos, hora muerta. El aire huele a ozono y asfalto frío.
 
-El refugio es un sótano húmedo que huele a tinta seca y a negligencia. Tus articulaciones no crujen, pero la ausencia de pulso al incorporarte es un vacío que te resulta inaceptable. Sientes que tu voluntad ya no te pertenece del todo, pero tu sangre —aunque fría— exige que impongas orden sobre este caos.`,
+A pocos metros, oculto tras un contenedor, un hombre andrajoso te observa. No es un curioso: es un centinela.`,
       options: [
         {
-          id: "n1_1_surface",
-          type: "dialogue",
-          text: "«Esto es inaceptable»: ponerme en pie y sacudirme el polvo de la imprenta. Recuperar la compostura antes de que alguien me vea en este estado.",
-          requirement: { type: "none" },
-          nextSceneId: "n1_2",
-          effects: [{ type: "setFlag", flag: "novel_ch1_teatinos_surface" }],
-        },
-        {
-          id: "n1_1_recall",
-          type: "dialogue",
-          text: "Ejercer auto‑dominio: quedarme un minuto en la oscuridad analizando el sabor metálico. No actuar sin procesar la información.",
-          requirement: { type: "none" },
-          nextSceneId: "n1_2",
-          effects: [
-            { type: "hungerDelta", delta: 1 },
-            { type: "setFlag", flag: "novel_ch1_teatinos_recall" },
-          ],
-        },
-        {
-          id: "n1_1_etiquette",
-          type: "skill",
-          skill: "etiqueta",
-          text: "Recordar mi estatus: analizar si el anciano de Bandera me trató con el respeto debido a mi linaje.",
-          requirement: { type: "skill", skill: "etiqueta", minLevel: 1 },
-          nextSceneId: "n1_2",
-          effects: [{ type: "willpowerDelta", delta: 1 }, { type: "setFlag", flag: "novel_ch1_bandera_etiquette" }],
-        },
-        {
-          id: "n1_1_dominate_silence",
+          id: "n1_1_dominate",
           type: "discipline",
           discipline: "dominate",
-          disciplineTitle: "Orden al silencio",
-          text: "Intentar que la ciudad arriba deje de distraerme: imponer quietud interior con la disciplina del linaje.",
+          disciplineTitle: "Interrogatorio forzado",
+          text: "Ordenarle que confiese quién lo envió.",
           requirement: { type: "discipline", discipline: "dominate", minLevel: 1 },
-          nextSceneId: "n1_2",
-          effects: [
-            { type: "hungerDelta", delta: 1 },
-            { type: "setFlag", flag: "novel_ch1_teatinos_dominate_focus" },
-          ],
+          nextSceneId: "n1_3",
+          effects: [{ type: "hungerDelta", delta: 1 }, { type: "setFlag", flag: "rastro_traje_gris" }],
+        },
+        {
+          id: "n1_1_presence",
+          type: "discipline",
+          discipline: "presence",
+          disciplineTitle: "Quiebre psicológico",
+          text: "Dejar que tu porte aristocrático lo destruya por dentro.",
+          requirement: { type: "discipline", discipline: "presence", minLevel: 1 },
+          nextSceneId: "n1_3",
+          effects: [{ type: "setFlag", flag: "telefono_espia" }],
+        },
+        {
+          id: "n1_1_avanzar",
+          type: "dialogue",
+          text: "Seguir sin interrogar: no darle a ese hombre más ventaja de la que ya tiene.",
+          requirement: { type: "none" },
+          nextSceneId: "n1_3",
+          effects: [{ type: "willpowerDelta", delta: -1 }],
         },
       ],
     },
     {
       id: "n1_2",
       chapterId: "chapter01",
-      title: "1.2 · Parque Forestal · Selección del tributo",
-      text: `Santiago te recibe con smog y tráfico congestionado. Al llegar a las barandas del Parque Forestal, tus sentidos filtran el mundo de una forma nueva: ya no ves ciudadanos, ves recipientes de recursos.
-
-El hambre es una marea negra, pero tu sangre es selectiva; no cualquier vida es digna de ser reclamada. Te duelen las encías; la mandíbula protesta. Si no canalizas esto, la Bestia hablará antes que tú.`,
+      title: "1.2 · Parque Forestal · Ruta de riesgo",
+      text: `El Hambre te nubla. Un grupo de jóvenes late como un tambor abierto bajo la noche.`,
       options: [
         {
-          id: "n1_2_careful",
+          id: "n1_2_brutal",
           type: "dialogue",
-          text: "Análisis de mercado: elegir un objetivo con cuidado, midiendo su valor como si la ciudad fuera un tablero.",
+          text: "Alimentación brutal sobre el más rezagado.",
           requirement: { type: "none" },
-          nextSceneId: "n1_3",
+          nextSceneId: "n1_2",
           effects: [
-            { type: "hungerDelta", delta: -1 },
-            { type: "setFlag", flag: "novel_ch1_mapocho_careful" },
+            {
+              type: "fatalOutcome",
+              id: "fd_mascarada_rota",
+              title: "La Mascarada cae sobre tu cuello",
+              body: "Una cámara captura el Beso completo. Doña Inés no negocia fugas de protocolo.",
+            },
           ],
         },
         {
-          id: "n1_2_dominate_gravity",
-          type: "discipline",
-          discipline: "dominate",
-          disciplineTitle: "Gravedad silenciosa",
-          text: "Gravedad social: volver mi quietud una invitación para que el espécimen más adecuado se acerque.",
-          requirement: { type: "discipline", discipline: "dominate", minLevel: 1 },
-          nextSceneId: "n1_3",
-          effects: [{ type: "setFlag", flag: "novel_ch1_mapocho_dominate_lure" }],
-        },
-        {
-          id: "n1_2_insight",
-          type: "skill",
-          skill: "perspicacia",
-          text: "Identificar la presa: buscar en la multitud a alguien cuyo pulso sugiera una vida de orden, algo que mi paladar pueda tolerar.",
-          requirement: { type: "skill", skill: "perspicacia", minLevel: 1 },
-          nextSceneId: "n1_3",
-          effects: [{ type: "willpowerDelta", delta: 1 }, { type: "setFlag", flag: "novel_ch1_mapocho_insight" }],
-        },
-        {
-          id: "n1_2_resist",
+          id: "n1_2_autocontrol",
           type: "dialogue",
-          text: "Resistir el impulso vulgar: mantener la máscara de civilidad un instante más antes de ceder a la necesidad.",
+          text: "Buscar objetivo solitario y contener a la Bestia.",
           requirement: { type: "none" },
-          nextSceneId: "n1_3",
+          nextSceneId: "n1_4",
           effects: [
-            { type: "hungerDelta", delta: 1 },
-            { type: "setFlag", flag: "novel_ch1_mapocho_mask_hold" },
+            { type: "hungerDelta", delta: -2 },
+            { type: "willpowerDelta", delta: -1 },
+            { type: "setFlag", flag: "novel_ch1_feed_spare" },
           ],
         },
       ],
@@ -113,105 +142,72 @@ El hambre es una marea negra, pero tu sangre es selectiva; no cualquier vida es 
     {
       id: "n1_3",
       chapterId: "chapter01",
-      title: "1.3 · El muchacho de la baranda",
-      text: `—¿Buscando algo, flaco?
+      title: "1.3 · Puente del Mapocho · Punto de convergencia",
+      text: `La paranoia Ventrue despierta. Sobre el puente hacia Recoleta, una silueta inmóvil: el hombre del traje gris.
 
-Un muchacho de unos veinte años, chaqueta deportiva sucia, gorra baja. El aroma de su vida es embriagador; su aspecto es tosco. Tu Hambre lucha con tu orgullo: coquetea con la muerte sin saberlo.`,
+Te observa, asiente como quien confirma una inversión, y camina hacia la oscuridad de Bellavista.`,
       options: [
         {
-          id: "n1_3_lure",
+          id: "n1_3_follow_q",
           type: "dialogue",
-          text: "Invitarlo al cauce: palabras medidas para bajar a la oscuridad del río bajo el puente.",
+          text: "Seguir al sujeto de traje gris.",
+          requirement: {
+            type: "any",
+            requirements: [
+              { type: "flag", flag: "rastro_traje_gris", equals: true },
+              { type: "flag", flag: "telefono_espia", equals: true },
+            ],
+          },
+          nextSceneId: "n1_end",
+          effects: [
+            { type: "setRoute", route: "q" },
+            { type: "addStateTag", tag: "path_conspiracy" },
+            { type: "setFlag", flag: "chapter_pending_chapter02" },
+            { type: "setFlag", flag: "route_q_opened" },
+          ],
+        },
+        {
+          id: "n1_3_protocol_main",
+          type: "dialogue",
+          text: "Ignorar la provocación e ir a la Corte.",
           requirement: { type: "none" },
           nextSceneId: "n1_end",
           effects: [
-            { type: "hungerDelta", delta: -3 },
-            { type: "humanityDelta", delta: 1 },
-            { type: "healthDamageDelta", delta: -5 },
-            { type: "willpowerDelta", delta: 1 },
-            { type: "setFlag", flag: "novel_ch1_lure_downstairs" },
-            { type: "setFlag", flag: "novel_ch1_feed_spare" },
+            { type: "setRoute", route: "main" },
+            { type: "addStateTag", tag: "path_protocol" },
+            { type: "setFlag", flag: "chapter_pending_chapter02" },
           ],
         },
+      ],
+    },
+    {
+      id: "n1_4",
+      chapterId: "chapter01",
+      title: "1.4 · Callejón de autocontrol",
+      text: `Aprietas el mando sobre la Bestia. Te alimentas sin espectáculo y vuelves al borde del río con la cabeza fría.`,
+      options: [
         {
-          id: "n1_3_dominate",
-          type: "discipline",
-          discipline: "dominate",
-          disciplineTitle: "«Acompáñame»",
-          text: "Orden silenciosa que anula su capacidad de negarse.",
-          requirement: { type: "discipline", discipline: "dominate", minLevel: 1 },
-          nextSceneId: "n1_end",
-          effects: [
-            { type: "hungerDelta", delta: -3 },
-            { type: "humanityDelta", delta: 1 },
-            { type: "healthDamageDelta", delta: -5 },
-            { type: "willpowerDelta", delta: 1 },
-            { type: "setFlag", flag: "novel_ch1_dominate_lure" },
-            { type: "setFlag", flag: "novel_ch1_feed_spare" },
-          ],
-        },
-        {
-          id: "n1_3_persuasion",
-          type: "skill",
-          skill: "persuasion",
-          text: "Promesa de beneficio: mentir sobre una oportunidad de trabajo o dinero que solo puedo discutir en privado.",
-          requirement: { type: "skill", skill: "persuasion", minLevel: 1 },
-          nextSceneId: "n1_end",
-          effects: [
-            { type: "hungerDelta", delta: -3 },
-            { type: "humanityDelta", delta: 1 },
-            { type: "healthDamageDelta", delta: -5 },
-            { type: "willpowerDelta", delta: 1 },
-            { type: "setFlag", flag: "novel_ch1_deceit_lure" },
-            { type: "setFlag", flag: "novel_ch1_feed_spare" },
-          ],
-        },
-        {
-          id: "n1_3_audit",
+          id: "n1_4_to_convergence",
           type: "dialogue",
-          text: "Evaluar la calidad antes de actuar: asegurarme de que su sangre no esté contaminada por el veneno de la calle.",
+          text: "Ir al puente del Mapocho.",
           requirement: { type: "none" },
-          nextSceneId: "n1_end",
-          effects: [
-            { type: "willpowerDelta", delta: 1 },
-            { type: "hungerDelta", delta: -3 },
-            { type: "humanityDelta", delta: 1 },
-            { type: "healthDamageDelta", delta: -5 },
-            { type: "setFlag", flag: "novel_ch1_prey_audit" },
-            { type: "setFlag", flag: "novel_ch1_feed_spare" },
-          ],
+          nextSceneId: "n1_3",
         },
       ],
     },
     {
       id: "n1_end",
       chapterId: "chapter01",
-      title: "1.E · La mirada del testigo",
-      text: `Bajo el puente, el Beso es un éxtasis seco. Bebes lo justo; dejas al muchacho vivo, con el recuerdo fracturado.
-
-Al limpiarte la boca, alzas la vista: sobre el puente, una figura te observa con quietud de estatua. No es un humano común: es alguien que acaba de verte alimentarte como un animal en el barro —y reconoce qué linaje lo permite intentar enmendarlo al día siguiente.
-
-El Mapocho te dio sustento; aquella mirada te cobra intereses.`,
+      title: "1.E · Cierre del capítulo",
+      text: `La decisión queda tomada. Santiago ya empezó a responderte según el camino elegido.`,
       options: [
         {
-          id: "n1_end_continue",
+          id: "n1_end_continue_ch2",
           type: "dialogue",
-          text: "Ignorar la mirada y retirarme con la dignidad intacta.",
+          text: "Continuar al Capítulo 2",
           requirement: { type: "none" },
           nextSceneId: "n1_end",
           effects: [{ type: "setFlag", flag: "chapter_pending_chapter02" }],
-        },
-        {
-          id: "n1_end_stealth",
-          type: "skill",
-          skill: "sigilo",
-          text: "Desaparecer entre sombras antes de que el testigo pueda identificarme del todo.",
-          requirement: { type: "skill", skill: "sigilo", minLevel: 1 },
-          nextSceneId: "n1_end",
-          effects: [
-            { type: "setFlag", flag: "chapter_pending_chapter02" },
-            { type: "setFlag", flag: "novel_ch1_hide_after_feed" },
-          ],
         },
       ],
     },

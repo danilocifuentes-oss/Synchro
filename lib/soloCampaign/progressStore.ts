@@ -60,6 +60,23 @@ export function loadSoloProgress(profileId: string, clan: string): SoloProgress 
       decisionHistory: Array.isArray(parsed.decisionHistory) ? parsed.decisionHistory : [],
       reputation: typeof parsed.reputation === "number" ? parsed.reputation : 0,
       chronicleExperience: typeof parsed.chronicleExperience === "number" ? parsed.chronicleExperience : 0,
+      activeRoute:
+        parsed.activeRoute === "q" || parsed.activeRoute === "w" || parsed.activeRoute === "e" || parsed.activeRoute === "r"
+          ? parsed.activeRoute
+          : "main",
+      stateTags: Array.isArray(parsed.stateTags) ? parsed.stateTags.filter((x): x is string => typeof x === "string") : [],
+      endingId:
+        parsed.endingId === "endingA" || parsed.endingId === "endingB" || parsed.endingId === "endingC" || parsed.endingId === "endingD"
+          ? parsed.endingId
+          : null,
+      fatalOutcome:
+        parsed.fatalOutcome &&
+        typeof parsed.fatalOutcome === "object" &&
+        typeof parsed.fatalOutcome.id === "string" &&
+        typeof parsed.fatalOutcome.title === "string" &&
+        typeof parsed.fatalOutcome.body === "string"
+          ? parsed.fatalOutcome
+          : null,
       updatedAt: typeof parsed.updatedAt === "number" ? parsed.updatedAt : Date.now(),
     };
     merged.chroniclePreludeSeenVersion = normalizeChroniclePreludeSeenVersion(merged);

@@ -63,6 +63,7 @@ import {
 import { CONCEPTOS_DATA, inferConceptPresetIdFromNombre } from "@/lib/conceptosCodex";
 import { ConceptCodexField } from "./ConceptCodexField";
 import { DotTrack } from "./DotTrack";
+import { disciplineXpFactor, maxAffordableTargetLevel, xpCostForIncrease } from "@/lib/soloCampaign/xpEconomy";
 /** Freebies CODEX ocultos en creación hasta rediseño de ese bloque. */
 const SHOW_CODEX_FREEBIES = false;
 
@@ -151,12 +152,24 @@ type Props = {
   viewOnly?: boolean;
   /** Sellado: sólo narrativa (nombre, concepto, transfondo) editable. */
   mechanicalLocked?: boolean;
+  /** PX de crónica disponibles (campaña solitaria). */
+  chronicleXpAvailable?: number;
+  /** Consume PX de crónica; retorna true si pudo gastar. */
+  onSpendChronicleXp?: (cost: number) => boolean;
 };
 
-export function CharacterCreation({ initial, onSave, viewOnly, mechanicalLocked }: Props) {
+export function CharacterCreation({
+  initial,
+  onSave,
+  viewOnly,
+  mechanicalLocked,
+  chronicleXpAvailable = 0,
+  onSpendChronicleXp,
+}: Props) {
   const [sheet, setSheet] = useState<CharacterSheet>(() => buildSheetFromInitial(initial));
   const [triedSeal, setTriedSeal] = useState(false);
   const [codexHint, setCodexHint] = useState<string | null>(null);
+  const [advancementOn, setAdvancementOn] = useState(false);
   const hintClearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function pokeHint(msg: string) {
@@ -178,7 +191,10 @@ export function CharacterCreation({ initial, onSave, viewOnly, mechanicalLocked 
 
   const vo = viewOnly === true;
   const mechLock = mechanicalLocked === true;
-  const mechanicsDisabled = vo || mechLock;
+  const xpAvail = Math.max(0, Math.floor(chronicleXpAvailable || 0));
+  const canAdvance = !vo && xpAvail > 0 && typeof onSpendChronicleXp === "function";
+  const advancementActive = canAdvance && advancementOn;
+  const mechanicsDisabled = vo || (mechLock && !advancementActive);
 
   const accent = CLAN_ACCENTS[sheet.clan];
   const clanLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
@@ -315,6 +331,16 @@ export function CharacterCreation({ initial, onSave, viewOnly, mechanicalLocked 
 
   function setAttr(key: keyof CharacterSheet["attributes"], v: number) {
     setSheet((s) => {
+      if (advancementActive) {
+        const cur = s.attributes[key];
+        if (v <= cur) return s;
+        const cost = xpCostForIncrease("attribute", v);
+        if (cost > xpAvail) {
+          queueMicrotask(() => pokeHint(`PX insuficientes (${xpAvail}/${cost}).`));
+          return s;
+        }
+        if (!onSpendChronicleXp?.(cost)) return s;
+      }
       if (!codexAllowsAttributeDots(s, key, v)) {
         queueMicrotask(() => {
           pokeHint(codexRejectHintAttribute(s, key, v));
@@ -334,6 +360,16 @@ export function CharacterCreation({ initial, onSave, viewOnly, mechanicalLocked 
 
   function setSkill(key: string, v: number) {
     setSheet((s) => {
+      if (advancementActive) {
+        const cur = s.skills[key] ?? 0;
+        if (v <= cur) return s;
+        const cost = xpCostForIncrease("skill", v);
+        if (cost > xpAvail) {
+          queueMicrotask(() => pokeHint(`PX insuficientes (${xpAvail}/${cost}).`));
+          return s;
+        }
+        if (!onSpendChronicleXp?.(cost)) return s;
+      }
       if (!codexAllowsSkillDots(s, key, v)) {
         queueMicrotask(() => pokeHint(codexRejectHintSkill(s, key, v)));
         return s;
@@ -344,6 +380,21 @@ export function CharacterCreation({ initial, onSave, viewOnly, mechanicalLocked 
 
   function setDisc(key: DisciplineKey, v: number) {
     setSheet((s) => {
+      if (advancementActive) {
+        const cur = (s.disciplines[key] as number | undefined) ?? 0;
+        if (v <= cur) return s;
+        const factor = disciplineXpFactor(s, key);
+        if (factor == null) {
+          queueMicrotask(() => pokeHint("Esa disciplina no puede subirse en esta ficha."));
+          return s;
+        }
+        const cost = xpCostForIncrease("discipline", v, factor);
+        if (cost > xpAvail) {
+          queueMicrotask(() => pokeHint(`PX insuficientes (${xpAvail}/${cost}).`));
+          return s;
+        }
+        if (!onSpendChronicleXp?.(cost)) return s;
+      }
       if (!codexAllowsDisciplineDots(s, key, v)) {
         queueMicrotask(() => pokeHint(codexRejectHintDiscipline(s, key, v)));
         return s;
@@ -426,6 +477,34 @@ export function CharacterCreation({ initial, onSave, viewOnly, mechanicalLocked 
             </button>
           ) : null}
         </header>
+
+        {canAdvance ? (
+          <section className="rounded-md border border-neutral-800/60 bg-black/35 px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="space-y-0.5">
+                <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-neutral-600">PX de crónica</p>
+                <p className="text-sm font-medium text-neutral-200">
+                  <span className="tabular-nums">{xpAvail}</span>{" "}
+                  <span className="text-neutral-500">disponibles</span>
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAdvancementOn((x) => !x)}
+                className={`border px-3 py-2 font-mono text-[9px] uppercase tracking-[0.18em] transition ${
+                  advancementActive
+                    ? "border-[var(--clan-accent)]/60 bg-[var(--clan-accent)]/10 text-[color:var(--clan-accent)]"
+                    : "border-neutral-700/60 text-neutral-300 hover:border-neutral-600 hover:text-neutral-100"
+                }`}
+              >
+                {advancementActive ? "Mejoras activas" : "Comprar mejoras"}
+              </button>
+            </div>
+            <p className="mt-2 text-[11px] leading-relaxed text-neutral-500">
+              Costos: Atributos (nuevo·4), Habilidades (nuevo·2), Disciplinas (nuevo·5).
+            </p>
+          </section>
+        ) : null}
 
         <section className="divide-y divide-[#161616] border border-[#161616] bg-black/20">
           <div className="grid gap-4 p-4 md:grid-cols-12">
@@ -691,12 +770,21 @@ export function CharacterCreation({ initial, onSave, viewOnly, mechanicalLocked 
                             accent={accent}
                             minimal={false}
                             baselineFilled={CHARGEN_ATTRIBUTE_DOT_BASE}
-                            increaseCeiling={codexMaxAttributeDots(sheet, key)}
+                            increaseCeiling={
+                              advancementActive
+                                ? maxAffordableTargetLevel(
+                                    sheet.attributes[key],
+                                    codexMaxAttributeDots(sheet, key),
+                                    xpAvail,
+                                    (next) => xpCostForIncrease("attribute", next),
+                                  )
+                                : codexMaxAttributeDots(sheet, key)
+                            }
                             onIncreaseBlocked={(t) =>
                               pokeHint(codexRejectHintAttribute(sheet, key, t))
                             }
                             value={sheet.attributes[key]}
-                            disabled={mechanicsDisabled}
+                            disabled={mechanicsDisabled || (canAdvance && !advancementActive && mechLock)}
                             onChange={(v) => setAttr(key, v)}
                           />
                         </div>
@@ -728,10 +816,19 @@ export function CharacterCreation({ initial, onSave, viewOnly, mechanicalLocked 
                           max={5}
                           accent={accent}
                           minimal={false}
-                          increaseCeiling={codexMaxSkillDots(sheet, key)}
+                          increaseCeiling={
+                            advancementActive
+                              ? maxAffordableTargetLevel(
+                                  sheet.skills[key] ?? 0,
+                                  codexMaxSkillDots(sheet, key),
+                                  xpAvail,
+                                  (next) => xpCostForIncrease("skill", next),
+                                )
+                              : codexMaxSkillDots(sheet, key)
+                          }
                           onIncreaseBlocked={(t) => pokeHint(codexRejectHintSkill(sheet, key, t))}
                           value={sheet.skills[key] ?? 0}
-                          disabled={mechanicsDisabled}
+                          disabled={mechanicsDisabled || (canAdvance && !advancementActive && mechLock)}
                           onChange={(v) => setSkill(key, v)}
                         />
                       </div>
@@ -782,10 +879,24 @@ export function CharacterCreation({ initial, onSave, viewOnly, mechanicalLocked 
                     max={classicMode ? timeline.classicMaxPerDot : timeline.v5MaxPerDot}
                     accent={accent}
                     minimal={false}
-                    increaseCeiling={codexMaxDisciplineDots(sheet, k)}
+                    increaseCeiling={
+                      advancementActive
+                        ? (() => {
+                            const hard = codexMaxDisciplineDots(sheet, k);
+                            const factor = disciplineXpFactor(sheet, k);
+                            if (factor == null) return Math.min(hard, (sheet.disciplines[k] as number) ?? 0);
+                            return maxAffordableTargetLevel(
+                              ((sheet.disciplines[k] as number) ?? 0),
+                              hard,
+                              xpAvail,
+                              (next) => xpCostForIncrease("discipline", next, factor),
+                            );
+                          })()
+                        : codexMaxDisciplineDots(sheet, k)
+                    }
                     onIncreaseBlocked={(t) => pokeHint(codexRejectHintDiscipline(sheet, k, t))}
                     value={(sheet.disciplines[k] as number) ?? 0}
-                    disabled={mechanicsDisabled}
+                    disabled={mechanicsDisabled || (canAdvance && !advancementActive && mechLock)}
                     onChange={(v) => setDisc(k, v)}
                   />
                 </div>

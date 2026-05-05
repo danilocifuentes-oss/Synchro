@@ -87,10 +87,29 @@ function clamp(n: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, n));
 }
 
-function resolveSoloSceneBody(scene: SoloScene, flags: Record<string, boolean | undefined>): string {
+function resolveSoloSceneBody(
+  scene: SoloScene,
+  flags: Record<string, boolean | undefined>,
+  sheet: CharacterSheet,
+  progress: SoloProgress,
+): string {
   let body = scene.text;
   for (const row of scene.flagAppends ?? []) {
     if (flags[row.flag]) body += `\n\n${row.text}`;
+  }
+  for (const row of scene.contextVariantByState ?? []) {
+    const ok = checkOptionAvailability(
+      {
+        id: "__ctx__",
+        type: "dialogue",
+        text: "",
+        requirement: row.requirement,
+        nextSceneId: scene.id,
+      },
+      sheet,
+      progress,
+    ).available;
+    if (ok) body += `\n\n${row.text}`;
   }
   return body;
 }
@@ -240,13 +259,13 @@ function SoloCampaignScreen({
   const scene = useMemo(() => getSoloScene(progress.chapterId, progress.sceneId), [progress.chapterId, progress.sceneId]);
   const displayedOptions = useMemo(() => {
     if (!scene) return [];
-    return sortSoloOptionsForDisplay(filterSoloOptionsForSheet(scene.options, sheet));
-  }, [scene, sheet]);
+    return sortSoloOptionsForDisplay(filterSoloOptionsForSheet(scene.options, sheet, progress));
+  }, [scene, sheet, progress]);
   const clanIntroGateDone = progress.chapterId !== "chapter01" || isChronicleClanIntroDismissed(progress);
   const pendingNextChapter = getPendingNextChapter(progress);
   const sceneDisplayBody = useMemo(
-    () => (scene ? resolveSoloSceneBody(scene, progress.flags) : ""),
-    [scene, progress.flags],
+    () => (scene ? resolveSoloSceneBody(scene, progress.flags, sheet, progress) : ""),
+    [scene, progress.flags, sheet, progress],
   );
   const clanLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
   const preludeStinger =
@@ -320,7 +339,7 @@ function SoloCampaignScreen({
 
   const applyOption = (option: SoloOption) => {
     if (transitionLockRef.current) return;
-    const availability = checkOptionAvailability(option, sheet);
+    const availability = checkOptionAvailability(option, sheet, progress);
     if (!availability.available) return;
     transitionLockRef.current = true;
 
@@ -402,6 +421,17 @@ function SoloCampaignScreen({
     const tick = progress.updatedAt + 1;
     const backSnap = { chapterId: progress.chapterId, sceneId: progress.sceneId };
     const prevStack = progress.soloSceneBackStack ?? [];
+    let nextActiveRoute = progress.activeRoute ?? "main";
+    let nextStateTags = [...(progress.stateTags ?? [])];
+    let nextEndingId = progress.endingId ?? null;
+    let nextFatalOutcome = progress.fatalOutcome ?? null;
+    for (const effect of branchEffects) {
+      if (effect.type === "setRoute") nextActiveRoute = effect.route;
+      if (effect.type === "addStateTag" && !nextStateTags.includes(effect.tag)) nextStateTags.push(effect.tag);
+      if (effect.type === "removeStateTag") nextStateTags = nextStateTags.filter((t) => t !== effect.tag);
+      if (effect.type === "setEnding") nextEndingId = effect.endingId;
+      if (effect.type === "fatalOutcome") nextFatalOutcome = { id: effect.id, title: effect.title, body: effect.body };
+    }
     const next: SoloProgress = {
       ...progress,
       playerName: sheet.name?.trim() || progress.playerName,
@@ -410,6 +440,10 @@ function SoloCampaignScreen({
       chronicleExperience: Math.max(0, (progress.chronicleExperience ?? 0) + chronicleXpThisChoice),
       reputation: progress.reputation + reputationGain,
       sceneId,
+      activeRoute: nextActiveRoute,
+      stateTags: nextStateTags,
+      endingId: nextEndingId,
+      fatalOutcome: nextFatalOutcome,
       flags: nextFlags,
       visitedSceneIds: Array.from(new Set([...progress.visitedSceneIds, sceneId])),
       soloSceneBackStack: [...prevStack, backSnap].slice(-SOLO_BACK_STACK_LIMIT),
@@ -418,6 +452,7 @@ function SoloCampaignScreen({
         {
           sceneId: progress.sceneId,
           optionId: option.id,
+          routeAtDecision: progress.activeRoute ?? "main",
           ts: tick,
           rollSummary: rollLine,
           rollPassed,
@@ -476,6 +511,8 @@ function SoloCampaignScreen({
   const sceneHeadingId = `solo-scene-title-${scene.id.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
   const hudFilled = CHRONICLE_HEALTH_TRACK_UI - Math.min(sheet.healthDamage, CHRONICLE_HEALTH_TRACK_UI);
   const mainGameplay = isChroniclePreludeDismissed(progress) && clanIntroGateDone;
+  const fatalOutcome = progress.fatalOutcome ?? null;
+  const endingId = progress.endingId ?? null;
 
   return (
     <div
@@ -596,6 +633,23 @@ function SoloCampaignScreen({
               ) : null}
             </div>
           </div>
+        ) : fatalOutcome ? (
+          <div className={`min-h-0 flex-1 overflow-y-auto ${embedded ? "px-3 py-3 sm:px-4" : "px-4 py-5 sm:px-8"}`}>
+            <section className="mx-auto max-w-2xl space-y-4 border border-red-900/50 bg-black/55 p-6 sharp-border-inner">
+              <p className="font-sans text-[10px] uppercase tracking-[0.22em] text-red-300">Muerte definitiva · {fatalOutcome.id}</p>
+              <h2 className="text-lg text-red-100">{fatalOutcome.title}</h2>
+              <p className="whitespace-pre-line text-sm leading-relaxed text-neutral-300">{fatalOutcome.body}</p>
+              <div className="flex flex-wrap gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => onExit()}
+                  className="border border-[var(--terminal)]/35 bg-neutral-950/80 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[var(--terminal)]"
+                >
+                  Volver al Nexo
+                </button>
+              </div>
+            </section>
+          </div>
         ) : (
           <AnimatePresence mode="wait" custom={transitionSlide}>
             <motion.div
@@ -668,8 +722,8 @@ function SoloCampaignScreen({
 
                   <div className="space-y-2.5">
                     {displayedOptions.map((option) => {
-                      const state = checkOptionAvailability(option, sheet);
-                      const fail = listFailReasons(option, sheet);
+                      const state = checkOptionAvailability(option, sheet, progress);
+                      const fail = listFailReasons(option, sheet, progress);
                       const optionText = resolveDisciplineTierText(option, sheet);
                       const typeLine = OPTION_TYPE_LABEL[option.type];
                       const choiceLabel =
@@ -707,6 +761,12 @@ function SoloCampaignScreen({
                       );
                     })}
                   </div>
+
+                  {endingId ? (
+                    <div className="border-t border-white/[0.04] pt-4">
+                      <p className="text-[11px] uppercase tracking-[0.18em] text-emerald-300">Final desbloqueado: {endingId}</p>
+                    </div>
+                  ) : null}
 
                   {pendingNextChapter ? (
                     <div

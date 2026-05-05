@@ -1,13 +1,13 @@
 import type { CharacterSheet } from "@/lib/character";
 import { disciplineLabel } from "@/lib/sereno";
-import type { SoloOption, SoloRequirement } from "./types";
+import type { SoloOption, SoloProgress, SoloRequirement } from "./types";
 
 export type RequirementResult = {
   available: boolean;
   reason?: string;
 };
 
-function evalRequirement(req: SoloRequirement, sheet: CharacterSheet): RequirementResult {
+function evalRequirement(req: SoloRequirement, sheet: CharacterSheet, progress?: SoloProgress): RequirementResult {
   switch (req.type) {
     case "none":
       return { available: true };
@@ -36,17 +36,53 @@ function evalRequirement(req: SoloRequirement, sheet: CharacterSheet): Requireme
         ? { available: true }
         : { available: false, reason: `${req.attribute} ${current}/${req.minLevel}.` };
     }
+    case "flag": {
+      const expected = req.equals ?? true;
+      const current = progress?.flags?.[req.flag] === true;
+      return current === expected ? { available: true } : { available: false, reason: `Bandera ${req.flag}.` };
+    }
+    case "route": {
+      const activeRoute = progress?.activeRoute ?? "main";
+      const ok = Array.isArray(req.route) ? req.route.includes(activeRoute) : req.route === activeRoute;
+      return ok ? { available: true } : { available: false, reason: `Ruta ${activeRoute}.` };
+    }
+    case "stateTag": {
+      const has = (progress?.stateTags ?? []).includes(req.tag);
+      return has ? { available: true } : { available: false, reason: `Estado ${req.tag}.` };
+    }
+    case "any": {
+      for (const child of req.requirements ?? []) {
+        if (evalRequirement(child, sheet, progress).available) return { available: true };
+      }
+      return { available: false, reason: "Ninguna condición alternativa cumplida." };
+    }
+    case "all": {
+      for (const child of req.requirements ?? []) {
+        const r = evalRequirement(child, sheet, progress);
+        if (!r.available) return r;
+      }
+      return { available: true };
+    }
+    case "not": {
+      const r = evalRequirement(req.requirement, sheet, progress);
+      return r.available ? { available: false, reason: "Condición excluyente activa." } : { available: true };
+    }
     default:
       return { available: true };
   }
 }
 
-export function checkOptionAvailability(option: SoloOption, sheet: CharacterSheet): RequirementResult {
-  return evalRequirement(option.requirement, sheet);
+export function checkOptionAvailability(option: SoloOption, sheet: CharacterSheet, progress?: SoloProgress): RequirementResult {
+  return evalRequirement(option.requirement, sheet, progress);
 }
 
-export function listFailReasons(option: SoloOption, sheet: CharacterSheet): string[] {
-  const state = checkOptionAvailability(option, sheet);
+export function checkOptionVisibility(option: SoloOption, sheet: CharacterSheet, progress?: SoloProgress): RequirementResult {
+  if (!option.visibilityRequirement) return { available: true };
+  return evalRequirement(option.visibilityRequirement, sheet, progress);
+}
+
+export function listFailReasons(option: SoloOption, sheet: CharacterSheet, progress?: SoloProgress): string[] {
+  const state = checkOptionAvailability(option, sheet, progress);
   return state.available || !state.reason ? [] : [state.reason];
 }
 

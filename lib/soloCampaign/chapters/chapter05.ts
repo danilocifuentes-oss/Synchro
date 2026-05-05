@@ -2,52 +2,248 @@ import type { SoloChapter } from "@/lib/soloCampaign/types";
 
 export const chapter05: SoloChapter = {
   id: "chapter05",
-  title: "Santiago en Cenizas · Capítulo 5 · Entre el Neón y la Barricada (linaje del Trono)",
-  description: "Plaza Italia arde; el caos callejero fuerza decisiones entre máscara, hambre y gobierno.",
-  startSceneId: "n5_1",
+  title: "Santiago en Cenizas · Capítulo 5 · Entre el Neón y la Barricada (Logic V3 · Ventrue)",
+  description: "Zona cero en Plaza Italia, trato con Gato y choque directo con una manada del Sabat.",
+  startSceneId: "n5_0",
   scenes: [
+    {
+      id: "n5_0",
+      chapterId: "chapter05",
+      title: "5.0 · La zona cero",
+      text: `Plaza Italia. Noche de disturbios masivos. Humo de barricadas y gas lacrimógeno.
+
+El aire vibra con pánico y adrenalina. El neón de la Torre Telefónica tiñe el humo de un rojo que te resulta familiar.`,
+      contextVariantByState: [
+        {
+          requirement: { type: "flag", flag: "fugitivo_corte", equals: true },
+          text: "Si eres fugitivo, te ocultas bajo capucha: cada bengala parece buscar tu rostro.",
+        },
+        {
+          requirement: { type: "flag", flag: "doble_agente", equals: true },
+          text: "Si eres doble agente, avanzas con seguridad diplomática mientras la traición de Inés te quema el pecho.",
+        },
+      ],
+      options: [
+        {
+          id: "n5_0_callejeo",
+          type: "skill",
+          skill: "callejeo",
+          text: "Localizar el rastro de Gato entre la multitud.",
+          requirement: { type: "skill", skill: "callejeo", minLevel: 1 },
+          nextSceneId: "n5_1",
+          effects: [{ type: "setFlag", flag: "encuentro_gato" }],
+        },
+        {
+          id: "n5_0_presence",
+          type: "discipline",
+          discipline: "presence",
+          disciplineTitle: "Calma impuesta",
+          text: "Imponer calma en un radio pequeño para avanzar.",
+          requirement: { type: "discipline", discipline: "presence", minLevel: 1 },
+          nextSceneId: "n5_1",
+          effects: [{ type: "hungerDelta", delta: 1 }, { type: "setFlag", flag: "rastro_detectado_sabat" }],
+        },
+        {
+          id: "n5_0_feed_wound",
+          type: "dialogue",
+          text: "Intentar alimentarte de un herido del tumulto.",
+          requirement: { type: "flag", flag: "herida_escape", equals: true },
+          nextSceneId: "n5_1",
+          effects: [
+            { type: "healthDamageDelta", delta: 1 },
+            { type: "humanityDelta", delta: -1 },
+            { type: "hungerDelta", delta: -2 },
+            { type: "setFlag", flag: "novel_ch5_feed_wound" },
+          ],
+        },
+        {
+          id: "n5_0_arrastrarse",
+          type: "dialogue",
+          text: "Avanzar a empujones entre el gas, sin ruta ni porte: sangre y barro.",
+          requirement: { type: "none" },
+          nextSceneId: "n5_1",
+          effects: [{ type: "willpowerDelta", delta: -1 }, { type: "setFlag", flag: "plaza_avance_torpe" }],
+        },
+      ],
+    },
     {
       id: "n5_1",
       chapterId: "chapter05",
-      title: "5.1 · Plaza Italia · El eje de la furia",
-      text: `La calle revienta. Te encuentras en la intersección de la Alameda con Vicuña Mackenna. El gas lacrimógeno irrita tu piel muerta mientras miles de humanos sangran adrenalina en la boca del desorden.`,
+      title: "5.1 · El precio de la información",
+      text: `Interior de un edificio ocupado cerca de Derecho UChile.
+
+Gato te mira con desprecio de clase. "El Príncipe quiere volver Santiago un matadero para despertar lo que hay debajo".`,
+      contextVariantByState: [
+        {
+          requirement: {
+            type: "any",
+            requirements: [
+              { type: "flag", flag: "lista_traidores", equals: true },
+              { type: "flag", flag: "lore_cuarentena", equals: true },
+            ],
+          },
+          text: "Cuando mencionas tus hallazgos de la Biblioteca, su actitud cambia: por primera vez te escucha de verdad.",
+        },
+      ],
       options: [
-        { id: "n5_1_mask", type: "dialogue", text: "Mantenerme bajo máscara.", requirement: { type: "none" }, nextSceneId: "n5_2", effects: [{ type: "setFlag", flag: "novel_ch5_mask" }] },
-        { id: "n5_1_presence", type: "discipline", discipline: "presence", disciplineTitle: "Autoridad en el caos", text: "Emitir mando para que la multitud se aparte.", requirement: { type: "discipline", discipline: "presence", minLevel: 1 }, nextSceneId: "n5_2", effects: [{ type: "hungerDelta", delta: 1 }, { type: "setFlag", flag: "novel_ch5_presence_gato" }] },
-        { id: "n5_1_insight", type: "skill", skill: "perspicacia", text: "Analizar la logística del motín.", requirement: { type: "skill", skill: "perspicacia", minLevel: 1 }, nextSceneId: "n5_2", effects: [{ type: "willpowerDelta", delta: 1 }, { type: "setFlag", flag: "novel_ch5_mob_pattern" }] },
-        { id: "n5_1_risky_feed", type: "dialogue", text: "Alimentación de riesgo en callejón.", requirement: { type: "none" }, nextSceneId: "n5_2", effects: [{ type: "humanityDelta", delta: -1 }, { type: "hungerDelta", delta: -1 }, { type: "setFlag", flag: "novel_ch5_risky_feed" }] },
+        {
+          id: "n5_1_persuasion",
+          type: "dialogue",
+          text: "Convencerlo de que ambos tienen el mismo enemigo: Doña Inés.",
+          requirement: { type: "none" },
+          nextSceneId: "n5_2",
+          effects: [{ type: "setFlag", flag: "alianza_anarquista" }],
+        },
+        {
+          id: "n5_1_dominate",
+          type: "discipline",
+          discipline: "dominate",
+          disciplineTitle: "Respuestas ahora",
+          text: "Forzar a Gato a revelar el refugio del Sabat.",
+          requirement: { type: "discipline", discipline: "dominate", minLevel: 1 },
+          nextSceneId: "n5_2",
+          effects: [{ type: "hungerDelta", delta: 1 }, { type: "setFlag", flag: "alerta_sabat" }],
+        },
+        {
+          id: "n5_1_blackmail",
+          type: "dialogue",
+          text: "Mostrar pruebas de que Inés financia rebeldes.",
+          requirement: { type: "flag", flag: "traicion_ines", equals: true },
+          nextSceneId: "n5_2",
+          effects: [{ type: "willpowerDelta", delta: 1 }, { type: "setFlag", flag: "escolta_anarquista" }],
+        },
       ],
     },
     {
       id: "n5_2",
       chapterId: "chapter05",
-      title: "5.2 · El contacto anarquista",
-      text: `Gato te mide con desprecio útil. Dice que el Príncipe te convirtió en chivo expiatorio y que los carniceros del Sabat ya operan con demasiada visibilidad.`,
+      title: "5.2 · El ataque de la manada",
+      text: `Calle Bellavista. El ruido de la plaza queda atrás y el silencio se vuelve mortal.
+
+Tres figuras pálidas del Sabat caen desde balcones. Si dejaste rastro, ya te tenían rodeado.`,
       options: [
-        { id: "n5_2_listen", type: "dialogue", text: "Escuchar su advertencia.", requirement: { type: "none" }, nextSceneId: "n5_3", effects: [{ type: "setFlag", flag: "novel_ch5_met_gato" }] },
-        { id: "n5_2_dominate", type: "discipline", discipline: "dominate", disciplineTitle: "Dame nombres", text: "Forzarlo a ser específico.", requirement: { type: "discipline", discipline: "dominate", minLevel: 1 }, nextSceneId: "n5_3", effects: [{ type: "hungerDelta", delta: 1 }, { type: "setFlag", flag: "novel_ch5_dominate_names" }] },
-        { id: "n5_2_etiquette", type: "skill", skill: "etiqueta", text: "Diplomacia de trinchera.", requirement: { type: "skill", skill: "etiqueta", minLevel: 1 }, nextSceneId: "n5_3", effects: [{ type: "willpowerDelta", delta: 1 }, { type: "setFlag", flag: "novel_ch5_trench_diplomacy" }] },
-        { id: "n5_2_auspex", type: "discipline", discipline: "auspex", disciplineTitle: "Rastrear las alturas", text: "Enfocar la azotea de la Telefónica.", requirement: { type: "discipline", discipline: "auspex", minLevel: 1 }, nextSceneId: "n5_3", effects: [{ type: "setFlag", flag: "novel_ch5_sabbat_roof" }] },
-      ],
-    },
-    {
-      id: "n5_3",
-      chapterId: "chapter05",
-      title: "5.3 · La decisión en el humo",
-      text: `Una estudiante cae asfixiada. Un sabático pálido y deforme se prepara para despedazarla frente a teléfonos encendidos.`,
-      options: [
-        { id: "n5_3_save", type: "dialogue", text: "Intervenir y salvarla.", requirement: { type: "none" }, nextSceneId: "n5_end", effects: [{ type: "humanityDelta", delta: 1 }, { type: "setFlag", flag: "novel_ch5_saved_student" }] },
-        { id: "n5_3_pragmatic", type: "dialogue", text: "No intervenir.", requirement: { type: "none" }, nextSceneId: "n5_end", effects: [{ type: "humanityDelta", delta: -1 }, { type: "setFlag", flag: "novel_ch5_let_burn" }] },
-        { id: "n5_3_presence2", type: "discipline", discipline: "presence", disciplineTitle: "Aterrorizar al agresor", text: "Forzarlo a huir.", requirement: { type: "discipline", discipline: "presence", minLevel: 2 }, nextSceneId: "n5_end", effects: [{ type: "hungerDelta", delta: 1 }, { type: "setFlag", flag: "novel_ch5_presence_fear" }] },
-        { id: "n5_3_stealth", type: "skill", skill: "sigilo", text: "Extracción silenciosa de la joven.", requirement: { type: "skill", skill: "sigilo", minLevel: 1 }, nextSceneId: "n5_end", effects: [{ type: "willpowerDelta", delta: 1 }, { type: "setFlag", flag: "novel_ch5_stealth_extract" }] },
+        {
+          id: "n5_2_potence",
+          type: "discipline",
+          discipline: "potence",
+          disciplineTitle: "Quebrar al alfa",
+          text: "Enfrentar al líder de la manada mientras te rodean.",
+          requirement: { type: "discipline", discipline: "potence", minLevel: 1 },
+          nextSceneId: "n5_end",
+          effects: [
+            { type: "healthDamageDelta", delta: -2 },
+            { type: "hungerDelta", delta: 1 },
+            { type: "setFlag", flag: "chapter05_needs_blood" },
+          ],
+        },
+        {
+          id: "n5_2_majestad",
+          type: "discipline",
+          discipline: "presence",
+          disciplineTitle: "Majestad",
+          text: "Emitir una ola de terror para hacer retroceder a la manada.",
+          requirement: { type: "discipline", discipline: "presence", minLevel: 2 },
+          nextSceneId: "n5_end",
+          effects: [{ type: "hungerDelta", delta: 2 }, { type: "willpowerDelta", delta: -1 }],
+        },
+        {
+          id: "n5_2_escape_cover",
+          type: "skill",
+          skill: "sigilo",
+          text: "Dejar que la escolta de Gato cubra tu retirada.",
+          requirement: {
+            type: "all",
+            requirements: [
+              { type: "skill", skill: "sigilo", minLevel: 1 },
+              { type: "flag", flag: "escolta_anarquista", equals: true },
+            ],
+          },
+          nextSceneId: "n5_end",
+          effects: [{ type: "setFlag", flag: "deuda_con_gato" }],
+        },
+        {
+          id: "n5_2_arrancar",
+          type: "dialogue",
+          text: "Arrancar del cerco a puro instinto, aunque te desgarren.",
+          requirement: { type: "none" },
+          nextSceneId: "n5_end",
+          effects: [
+            { type: "healthDamageDelta", delta: -2 },
+            { type: "hungerDelta", delta: 1 },
+            { type: "setFlag", flag: "chapter05_needs_blood" },
+          ],
+        },
       ],
     },
     {
       id: "n5_end",
       chapterId: "chapter05",
-      title: "5.E · Neón y ceniza",
-      text: `Sales de la zona cero con la certeza de que en Santiago ser Ventrue es una guerra de guerrillas por sostener un orden que tú mismo empiezas a cuestionar.`,
-      options: [{ id: "n5_end_continue", type: "dialogue", text: "Continuar al Capítulo 6", requirement: { type: "none" }, nextSceneId: "n5_end", effects: [{ type: "setFlag", flag: "chapter_pending_chapter06" }] }],
+      title: "5.E · La ciudad que nunca duerme",
+      text: `Cerro Santa Lucía. Desde el mirador, Santiago parece un organismo enfermo.
+
+La hiel, la traición de la Biblioteca y la furia de la plaza encajan en un mismo patrón. Una mujer de lavanda te observa entre los árboles.`,
+      contextVariantByState: [
+        {
+          requirement: { type: "flag", flag: "fugitivo_corte", equals: true },
+          text: "Si eres fugitivo, sabes que no hay retorno posible.",
+        },
+        {
+          requirement: { type: "flag", flag: "doble_agente", equals: true },
+          text: "Si eres doble agente, tu informe al Príncipe será una obra maestra de mentiras.",
+        },
+      ],
+      options: [
+        {
+          id: "n5_end_vina",
+          type: "dialogue",
+          text: "Aceptar la citación a reunión secreta en una viña.",
+          requirement: { type: "flag", flag: "alianza_anarquista", equals: true },
+          nextSceneId: "n5_end",
+          effects: [{ type: "setFlag", flag: "chapter06_route_vina_silencio" }, { type: "setFlag", flag: "chapter_pending_chapter06" }],
+        },
+        {
+          id: "n5_end_blood",
+          type: "dialogue",
+          text: "Buscar sangre pura de inmediato (ruta de sangre).",
+          requirement: {
+            type: "any",
+            requirements: [
+              { type: "flag", flag: "herida_escape", equals: true },
+              { type: "flag", flag: "chapter05_needs_blood", equals: true },
+            ],
+          },
+          nextSceneId: "n5_end",
+          effects: [{ type: "setFlag", flag: "chapter06_route_sangre" }, { type: "setFlag", flag: "chapter_pending_chapter06" }],
+        },
+        {
+          id: "n5_end_thief",
+          type: "dialogue",
+          text: "Prepararte para robar en la mansión del Príncipe (ruta del ladrón).",
+          requirement: { type: "flag", flag: "deuda_con_gato", equals: true },
+          nextSceneId: "n5_end",
+          effects: [{ type: "setFlag", flag: "chapter06_route_ladron" }, { type: "setFlag", flag: "chapter_pending_chapter06" }],
+        },
+        {
+          id: "n5_end_default",
+          type: "dialogue",
+          text: "Continuar al Capítulo 6",
+          requirement: { type: "none" },
+          visibilityRequirement: {
+            type: "not",
+            requirement: {
+              type: "any",
+              requirements: [
+                { type: "flag", flag: "alianza_anarquista", equals: true },
+                { type: "flag", flag: "herida_escape", equals: true },
+                { type: "flag", flag: "chapter05_needs_blood", equals: true },
+                { type: "flag", flag: "deuda_con_gato", equals: true },
+              ],
+            },
+          },
+          nextSceneId: "n5_end",
+          effects: [{ type: "setFlag", flag: "chapter_pending_chapter06" }],
+        },
+      ],
     },
   ],
 };

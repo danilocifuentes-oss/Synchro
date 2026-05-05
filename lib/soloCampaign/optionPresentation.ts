@@ -1,6 +1,6 @@
 import type { CharacterSheet } from "@/lib/character";
-import type { SoloOption } from "./types";
-import { checkOptionAvailability } from "./requirementEngine";
+import type { SoloOption, SoloProgress } from "./types";
+import { checkOptionAvailability, checkOptionVisibility } from "./requirementEngine";
 
 /** Caminos que dependen sólo del Codex: disciplina, habilidad, atributo, clan incompatible. `none` sigue abierto siempre. */
 export function isSoloOptionGatedOnSheet(option: SoloOption): boolean {
@@ -11,10 +11,11 @@ export function isSoloOptionGatedOnSheet(option: SoloOption): boolean {
  * Oculta tiradas/disciplinas u otros requisitos que la ficha no cumple para priorizar opciones jugables y diálogo.
  * Si nada coincide (contenido roto improbable), se muestran todas como antes.
  */
-export function filterSoloOptionsForSheet(options: SoloOption[], sheet: CharacterSheet): SoloOption[] {
+export function filterSoloOptionsForSheet(options: SoloOption[], sheet: CharacterSheet, progress?: SoloProgress): SoloOption[] {
   const filtered = options.filter((option) => {
+    if (!checkOptionVisibility(option, sheet, progress).available) return false;
     if (!isSoloOptionGatedOnSheet(option)) return true;
-    return checkOptionAvailability(option, sheet).available;
+    return checkOptionAvailability(option, sheet, progress).available;
   });
   if (filtered.length === 0) return options;
   return filtered;

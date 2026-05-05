@@ -18,6 +18,8 @@ const BEAST_WORDS = ["CARNE", "CONSUMIR", "SANGRE", "CEDER", "VACÍO", "HUNDIR"]
 type Props = {
   accent: string;
   sheet: CharacterSheet;
+  /** PX de crónica disponibles (campaña solitaria). */
+  chronicleXp?: number;
   /** Amenaza Σ ciudad (0–5) — sincronizada con mesa / AdminConsole. */
   citySigma: number;
   healthFilled: number;
@@ -70,6 +72,7 @@ function generationTag(gen: CharacterSheet["generation"]): string {
 export function SidebarMesa({
   accent,
   sheet,
+  chronicleXp,
   citySigma,
   healthFilled,
   healthMax,
@@ -214,6 +217,21 @@ export function SidebarMesa({
               />
             </div>
           </div>
+
+          {typeof chronicleXp === "number" ? (
+            <div className="space-y-1">
+              <div className="flex justify-between text-[9px] uppercase tracking-widest text-neutral-500">
+                <span>PX_CRÓNICA</span>
+                <span className="tabular-nums text-[color:var(--terminal)]/80">{Math.max(0, Math.floor(chronicleXp))}</span>
+              </div>
+              <div className="h-1 w-full overflow-hidden rounded-full bg-white/10">
+                <div
+                  className="h-full rounded-full bg-[color:var(--terminal)]/70"
+                  style={{ width: `${Math.min(100, (Math.max(0, Math.floor(chronicleXp)) / 40) * 100)}%` }}
+                />
+              </div>
+            </div>
+          ) : null}
         </section>
 
         {/* DISCIPLINAS_CARGADAS */}

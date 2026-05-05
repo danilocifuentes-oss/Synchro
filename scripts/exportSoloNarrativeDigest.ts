@@ -54,6 +54,8 @@ function summarizeOption(option: SoloOption): Record<string, unknown> {
     disciplina_etiqueta: option.disciplineTitle ?? null,
     texto_por_dot_disciplina: option.textByDisciplineLevel ?? null,
     requisito: option.requirement,
+    requisito_visibilidad: option.visibilityRequirement ?? null,
+    pista_desbloqueo: option.unlockHint ?? null,
     siguiente_escena_exito: option.nextSceneId,
     siguiente_escena_fallo: option.nextSceneIdOnFail ?? null,
     siguiente_escena_critico: option.nextSceneIdOnCritical ?? null,
@@ -74,9 +76,43 @@ function summarizeScene(scene: SoloScene): Record<string, unknown> {
     titulo: scene.title,
     narracion: scene.text,
     adjuntos_cuando_bandera_activa: scene.flagAppends ?? [],
+    contexto_por_estado: scene.contextVariantByState ?? [],
     variante_por_clan: scene.clanFlavor ?? null,
     opciones: scene.options.map(summarizeOption),
   };
+}
+
+function buildGraphDiagnostics(chapters: SoloChapter[]): {
+  totalScenes: number;
+  danglingTransitions: { chapterId: string; sceneId: string; optionId: string; target: string }[];
+  selfLoops: { chapterId: string; sceneId: string; optionId: string }[];
+  endingCoverage: Record<string, number>;
+  fatalOutcomes: { chapterId: string; sceneId: string; optionId: string; id: string }[];
+} {
+  const sceneIdsByChapter = new Map<string, Set<string>>();
+  for (const ch of chapters) {
+    sceneIdsByChapter.set(ch.id, new Set(ch.scenes.map((s) => s.id)));
+  }
+  const danglingTransitions: { chapterId: string; sceneId: string; optionId: string; target: string }[] = [];
+  const selfLoops: { chapterId: string; sceneId: string; optionId: string }[] = [];
+  const endingCoverage: Record<string, number> = { endingA: 0, endingB: 0, endingC: 0, endingD: 0 };
+  const fatalOutcomes: { chapterId: string; sceneId: string; optionId: string; id: string }[] = [];
+  for (const ch of chapters) {
+    const ids = sceneIdsByChapter.get(ch.id) ?? new Set<string>();
+    for (const scene of ch.scenes) {
+      for (const option of scene.options) {
+        if (!ids.has(option.nextSceneId) && option.nextSceneId !== scene.id) {
+          danglingTransitions.push({ chapterId: ch.id, sceneId: scene.id, optionId: option.id, target: option.nextSceneId });
+        }
+        if (option.nextSceneId === scene.id) selfLoops.push({ chapterId: ch.id, sceneId: scene.id, optionId: option.id });
+        for (const fx of option.effects ?? []) {
+          if (fx.type === "setEnding") endingCoverage[fx.endingId] = (endingCoverage[fx.endingId] ?? 0) + 1;
+          if (fx.type === "fatalOutcome") fatalOutcomes.push({ chapterId: ch.id, sceneId: scene.id, optionId: option.id, id: fx.id });
+        }
+      }
+    }
+  }
+  return { totalScenes: chapters.reduce((acc, c) => acc + c.scenes.length, 0), danglingTransitions, selfLoops, endingCoverage, fatalOutcomes };
 }
 
 function summarizeChapter(ch: SoloChapter): Record<string, unknown> {
@@ -175,6 +211,7 @@ async function main(): Promise<void> {
       },
     },
     arbol_caps: SOLO_CHAPTERS.map(summarizeChapter),
+    qa_grafo: buildGraphDiagnostics(SOLO_CHAPTERS),
   };
 
   fs.mkdirSync(OUT_DIR, { recursive: true });

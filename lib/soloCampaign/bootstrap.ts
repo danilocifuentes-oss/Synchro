@@ -30,6 +30,10 @@ export function ensureSoloProgress(profileId: string, sheet: CharacterSheet): So
       chronicleExperience: 0,
       chapterId: "chapter01",
       sceneId: startSceneId,
+      activeRoute: "main",
+      stateTags: [],
+      endingId: null,
+      fatalOutcome: null,
       chroniclePreludeSeenVersion: 0,
       chapterContextSeen: {},
       chronicleClanPresentationSeenVersion: 0,
@@ -51,15 +55,19 @@ export function ensureSoloProgress(profileId: string, sheet: CharacterSheet): So
     chronicleExperience: 0,
     chapterId: "chapter01",
     sceneId: startSceneId,
+    activeRoute: "main",
+    stateTags: [],
+    endingId: null,
+    fatalOutcome: null,
     chroniclePreludeSeenVersion: 0,
-      chapterContextSeen: {},
-      chronicleClanPresentationSeenVersion: 0,
-      flags: { clan_intro_seen: false },
-      visitedSceneIds: [startSceneId],
-      soloSceneBackStack: [],
-      decisionHistory: [],
-      updatedAt: Date.now(),
-    };
+    chapterContextSeen: {},
+    chronicleClanPresentationSeenVersion: 0,
+    flags: { clan_intro_seen: false },
+    visitedSceneIds: [startSceneId],
+    soloSceneBackStack: [],
+    decisionHistory: [],
+    updatedAt: Date.now(),
+  };
   saveSoloProgress(base);
   return base;
 }

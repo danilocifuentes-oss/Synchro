@@ -1,12 +1,21 @@
 import type { CharacterSheet, ClanId } from "@/lib/character";
 import type { DisciplineKey } from "@/lib/sereno";
 
+export type SoloRouteId = "main" | "q" | "w" | "e" | "r";
+export type SoloEndingId = "endingA" | "endingB" | "endingC" | "endingD";
+
 export type SoloRequirement =
   | { type: "none" }
   | { type: "clan"; clan: ClanId }
   | { type: "discipline"; discipline: DisciplineKey; minLevel: number }
   | { type: "skill"; skill: string; minLevel: number }
-  | { type: "attribute"; attribute: keyof CharacterSheet["attributes"]; minLevel: number };
+  | { type: "attribute"; attribute: keyof CharacterSheet["attributes"]; minLevel: number }
+  | { type: "flag"; flag: string; equals?: boolean }
+  | { type: "route"; route: SoloRouteId | SoloRouteId[] }
+  | { type: "stateTag"; tag: string }
+  | { type: "any"; requirements: SoloRequirement[] }
+  | { type: "all"; requirements: SoloRequirement[] }
+  | { type: "not"; requirement: SoloRequirement };
 
 export type SoloOptionType = "dialogue" | "discipline" | "skill" | "clan";
 
@@ -21,6 +30,11 @@ export type SoloSceneEffect =
   | { type: "willpowerDelta"; delta: number }
   /** Experiencia de crónica (PX narrativos, acumulados en `SoloProgress.chronicleExperience`). */
   | { type: "experienceDelta"; delta: number }
+  | { type: "setRoute"; route: SoloRouteId }
+  | { type: "addStateTag"; tag: string }
+  | { type: "removeStateTag"; tag: string }
+  | { type: "setEnding"; endingId: SoloEndingId }
+  | { type: "fatalOutcome"; id: string; title: string; body: string }
   | { type: "log"; text: string };
 
 export type SoloOption = {
@@ -38,6 +52,10 @@ export type SoloOption = {
   discipline?: DisciplineKey;
   skill?: string;
   clan?: ClanId;
+  /** Si existe, la opción se muestra sólo cuando se cumpla este requisito. */
+  visibilityRequirement?: SoloRequirement;
+  /** Sugerencia narrativa para rutas/bloqueos futuros. */
+  unlockHint?: string;
   effects?: SoloSceneEffect[];
   effectsOnFail?: SoloSceneEffect[];
   effectsOnCritical?: SoloSceneEffect[];
@@ -57,6 +75,8 @@ export type SoloScene = {
    * Párrafos adicionales (tras `text`) cuando `progress.flags[flag]` ya es true — hooks entre capítulos sin duplicar escenas enteras.
    */
   flagAppends?: readonly { flag: string; text: string }[];
+  /** Variante contextual por estado persistido (rutas y consecuencias acumuladas). */
+  contextVariantByState?: readonly { requirement: SoloRequirement; text: string }[];
   clanFlavor?: Partial<Record<ClanId, string>>;
   options: SoloOption[];
 };
@@ -80,6 +100,10 @@ export type SoloProgress = {
   chronicleExperience: number;
   chapterId: string;
   sceneId: string;
+  activeRoute?: SoloRouteId;
+  stateTags?: string[];
+  endingId?: SoloEndingId | null;
+  fatalOutcome?: { id: string; title: string; body: string } | null;
   /**
    * Última versión del preludio cronista que el jugador descartó con "Comenzar con esta voz".
    * Inferior a `CHRONICLE_PRELUDE_CONTENT_VERSION` ⇒ mostrar cortina de nuevo.
@@ -103,6 +127,7 @@ export type SoloProgress = {
   decisionHistory: {
     sceneId: string;
     optionId: string;
+    routeAtDecision?: SoloRouteId;
     ts: number;
     rollSummary?: string;
     rollPassed?: boolean;
