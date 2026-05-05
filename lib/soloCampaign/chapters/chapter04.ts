@@ -2,7 +2,7 @@ import type { SoloChapter } from "@/lib/soloCampaign/types";
 
 export const chapter04: SoloChapter = {
   id: "chapter04",
-  title: "Santiago en Cenizas · Capítulo 4 · Archivos Desenterrados (Logic V3 · Ventrue)",
+  title: "Santiago en Cenizas · Capítulo 4 · Archivos Desenterrados",
   description: "Biblioteca Nacional, Archivista, emboscada de seda y bifurcación de lealtades.",
   startSceneId: "n4_0",
   scenes: [

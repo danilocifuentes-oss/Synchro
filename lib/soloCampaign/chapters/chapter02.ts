@@ -2,7 +2,7 @@ import type { SoloChapter } from "@/lib/soloCampaign/types";
 
 export const chapter02: SoloChapter = {
   id: "chapter02",
-  title: "Santiago en Cenizas · Capítulo 2 · La Corte de los Espejos Rotos (Logic V3 · Ventrue)",
+  title: "Santiago en Cenizas · Capítulo 2 · La Corte de los Espejos Rotos",
   description: "Merced, Forestal y audiencia subterránea: protocolo, conspiración y bifurcación disidente.",
   startSceneId: "n2_0",
   scenes: [
@@ -10,9 +10,9 @@ export const chapter02: SoloChapter = {
       id: "n2_0",
       chapterId: "chapter02",
       title: "2.0 · El rastro de sándalo y ozono",
-      text: `Calle Merced rumbo al centro. El amanecer está a dos horas; el cielo de Santiago tiene un tono violeta industrial.
+      text: `CONTEXTO: Calle Merced, dirección al centro. El amanecer está a dos horas; el cielo de Santiago tiene un tono violeta industrial.
 
-La sangre del muchacho del Mapocho te devolvió lucidez gélida, pero el aroma del hombre de traje gris —sándalo y ozono— persiste como provocación. En esta ciudad nada es azaroso: o mueves la pieza, o eres la pieza.`,
+NARRACIÓN: El eco de tus pasos sobre el pavimento de Lastarria suena a poder reclamado. La sangre del muchacho del Mapocho te ha devuelto una lucidez gélida, pero el aroma del hombre del traje gris —sándalo y ozono— persiste en el aire como una provocación. Como Ventrue, sabes que en esta ciudad nada es azaroso: o eres el que mueve la pieza, o eres la pieza que están moviendo.`,
       options: [
         {
           id: "n2_0_perspicacia",

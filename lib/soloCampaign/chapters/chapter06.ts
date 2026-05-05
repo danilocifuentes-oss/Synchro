@@ -2,7 +2,7 @@ import type { SoloChapter } from "@/lib/soloCampaign/types";
 
 export const chapter06: SoloChapter = {
   id: "chapter06",
-  title: "Santiago en Cenizas · Capítulo 6 · La Viña del Silencio (Logic V3 · Ventrue)",
+  title: "Santiago en Cenizas · Capítulo 6 · La Viña del Silencio",
   description: "Valle del Maipo, brindis negro, pacto de sombras y bifurcación hacia el corazón de la ciudad.",
   startSceneId: "n6_0",
   scenes: [

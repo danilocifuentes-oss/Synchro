@@ -2,7 +2,7 @@ import type { SoloChapter } from "@/lib/soloCampaign/types";
 
 export const chapter07: SoloChapter = {
   id: "chapter07",
-  title: "Santiago en Cenizas · Capítulo 7 · El Vínculo que Quema (Logic V3 · Ventrue)",
+  title: "Santiago en Cenizas · Capítulo 7 · El Vínculo que Quema",
   description: "Plaza de Armas, descenso al osario y ruptura o usurpación del nexo de sangre.",
   startSceneId: "n7_0",
   scenes: [

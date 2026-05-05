@@ -2,7 +2,7 @@ import type { SoloChapter } from "@/lib/soloCampaign/types";
 
 export const chapter08: SoloChapter = {
   id: "chapter08",
-  title: "Santiago en Cenizas · Capítulo 8 · La Noche de los Cuchillos Largos (Logic V3 · Ventrue)",
+  title: "Santiago en Cenizas · Capítulo 8 · La Noche de los Cuchillos Largos",
   description: "Doña Inés cierra la plaza, duelo en el centro y carrera hacia el pie del Santa Lucía.",
   startSceneId: "n8_0",
   scenes: [

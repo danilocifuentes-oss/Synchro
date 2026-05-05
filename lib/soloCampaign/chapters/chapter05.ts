@@ -2,7 +2,7 @@ import type { SoloChapter } from "@/lib/soloCampaign/types";
 
 export const chapter05: SoloChapter = {
   id: "chapter05",
-  title: "Santiago en Cenizas · Capítulo 5 · Entre el Neón y la Barricada (Logic V3 · Ventrue)",
+  title: "Santiago en Cenizas · Capítulo 5 · Entre el Neón y la Barricada",
   description: "Zona cero en Plaza Italia, trato con Gato y choque directo con una manada del Sabat.",
   startSceneId: "n5_0",
   scenes: [

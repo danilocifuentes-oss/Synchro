@@ -2,7 +2,7 @@ import type { SoloChapter } from "@/lib/soloCampaign/types";
 
 export const chapter03: SoloChapter = {
   id: "chapter03",
-  title: "Santiago en Cenizas · Capítulo 3 · El Rastro de la Hiel (Logic V3 · Ventrue)",
+  title: "Santiago en Cenizas · Capítulo 3 · El Rastro de la Hiel",
   description: "Estación Mapocho, túneles, El Choro y corazón de la hiel con salidas ramificadas.",
   startSceneId: "n3_0",
   scenes: [
