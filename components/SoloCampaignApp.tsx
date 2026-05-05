@@ -11,8 +11,11 @@ import { checkOptionAvailability, listFailReasons, resolveDisciplineTierText } f
 import { filterSoloOptionsForSheet, sortSoloOptionsForDisplay } from "@/lib/soloCampaign/optionPresentation";
 import { loadSheet, normalizeCharacterSheet, saveSheet } from "@/lib/character";
 import { loadSoloProgress, saveSoloProgress } from "@/lib/soloCampaign/progressStore";
-import type { SoloOption, SoloProgress, SoloSceneEffect } from "@/lib/soloCampaign/types";
-import { getChronicleClanPresentation } from "@/lib/soloCampaign/clanPresentationCopy";
+import type { SoloOption, SoloProgress, SoloScene, SoloSceneEffect } from "@/lib/soloCampaign/types";
+import {
+  CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION,
+  getChronicleClanPresentation,
+} from "@/lib/soloCampaign/clanPresentationCopy";
 import {
   CHRONICLE_PRELUDE_COMMON,
   CHRONICLE_PRELUDE_CONTENT_VERSION,
@@ -84,8 +87,20 @@ function clamp(n: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, n));
 }
 
+function resolveSoloSceneBody(scene: SoloScene, flags: Record<string, boolean | undefined>): string {
+  let body = scene.text;
+  for (const row of scene.flagAppends ?? []) {
+    if (flags[row.flag]) body += `\n\n${row.text}`;
+  }
+  return body;
+}
+
 function isChroniclePreludeDismissed(progress: SoloProgress): boolean {
   return (progress.chroniclePreludeSeenVersion ?? 0) >= CHRONICLE_PRELUDE_CONTENT_VERSION;
+}
+
+function isChronicleClanIntroDismissed(progress: SoloProgress): boolean {
+  return (progress.chronicleClanPresentationSeenVersion ?? 0) >= CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION;
 }
 
 function applySceneEffectDraft(base: CharacterSheet, flags: Record<string, boolean>, effect: NonNullable<SoloOption["effects"]>[number]) {
@@ -216,6 +231,7 @@ function SoloCampaignScreen({
   const [lastRollLine, setLastRollLine] = useState<string>("");
   const preludeChannelKeyRef = useRef("");
   const clanChannelKeyRef = useRef("");
+  const chapterAdvanceRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     transitionLockRef.current = false;
@@ -226,8 +242,12 @@ function SoloCampaignScreen({
     if (!scene) return [];
     return sortSoloOptionsForDisplay(filterSoloOptionsForSheet(scene.options, sheet));
   }, [scene, sheet]);
-  const clanIntroGateDone = progress.chapterId !== "chapter01" || progress.flags.clan_intro_seen === true;
+  const clanIntroGateDone = progress.chapterId !== "chapter01" || isChronicleClanIntroDismissed(progress);
   const pendingNextChapter = getPendingNextChapter(progress);
+  const sceneDisplayBody = useMemo(
+    () => (scene ? resolveSoloSceneBody(scene, progress.flags) : ""),
+    [scene, progress.flags],
+  );
   const clanLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
   const preludeStinger =
     CHRONICLE_PRELUDE_MASK_STINGER[sheet.clan] ??
@@ -251,8 +271,8 @@ function SoloCampaignScreen({
   useEffect(() => {
     if (!emitParalelaNarration || embedded) return;
     if (!preludeGateDoneUi) return;
-    if (progress.chapterId !== "chapter01" || progress.flags.clan_intro_seen) return;
-    const key = `${profileId}:clan_intro_echo`;
+    if (progress.chapterId !== "chapter01" || isChronicleClanIntroDismissed(progress)) return;
+    const key = `${profileId}:${CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION}:clan_intro_echo`;
     if (clanChannelKeyRef.current === key) return;
     emitParalelaNarration(clanPresentationText);
     clanChannelKeyRef.current = key;
@@ -261,10 +281,21 @@ function SoloCampaignScreen({
     embedded,
     preludeGateDoneUi,
     progress.chapterId,
-    progress.flags.clan_intro_seen,
+    progress.chronicleClanPresentationSeenVersion,
     profileId,
     clanPresentationText,
   ]);
+
+  useEffect(() => {
+    if (!pendingNextChapter || !scene?.id.endsWith("_end")) return;
+    const id = requestAnimationFrame(() => {
+      chapterAdvanceRef.current?.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
+        block: "nearest",
+      });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [pendingNextChapter, scene?.id, reduceMotion]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -541,7 +572,9 @@ function SoloCampaignScreen({
                 </section>
               ) : null}
 
-              {isChroniclePreludeDismissed(progress) && progress.chapterId === "chapter01" && !progress.flags.clan_intro_seen ? (
+              {isChroniclePreludeDismissed(progress) &&
+              progress.chapterId === "chapter01" &&
+              !isChronicleClanIntroDismissed(progress) ? (
                 <section className="space-y-4 border border-neutral-900 bg-black/45 p-5 sharp-border-inner">
                   <p className={`text-sm leading-relaxed ${CLAN_TONE[sheet.clan] ?? "text-neutral-200"}`}>{clanPresentationText}</p>
                   <button
@@ -549,6 +582,7 @@ function SoloCampaignScreen({
                     onClick={() => {
                       const next = {
                         ...progress,
+                        chronicleClanPresentationSeenVersion: CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION,
                         flags: { ...progress.flags, clan_intro_seen: true },
                         updatedAt: progress.updatedAt + 1,
                       };
@@ -615,7 +649,7 @@ function SoloCampaignScreen({
                       {scene.title}
                     </h2>
                     <div className="solo-book-prose font-serif text-[15px] font-normal leading-[1.82] tracking-[0.015em] text-neutral-200">
-                      <p className="whitespace-pre-line">{scene.text}</p>
+                      <p className="whitespace-pre-line">{sceneDisplayBody}</p>
                     </div>
                     {scene.clanFlavor?.[sheet.clan] ? (
                       <p className={`border-l-2 border-[color:var(--accent-clan)]/35 pl-4 font-serif text-sm italic leading-relaxed ${CLAN_TONE[sheet.clan] ?? "text-neutral-300"}`}>
@@ -675,7 +709,10 @@ function SoloCampaignScreen({
                   </div>
 
                   {pendingNextChapter ? (
-                    <div className="flex flex-wrap gap-2 border-t border-white/[0.04] pt-4">
+                    <div
+                      ref={chapterAdvanceRef}
+                      className="flex flex-wrap gap-2 border-t border-white/[0.04] pt-4 scroll-mt-[min(220px,30vh)]"
+                    >
                       <button
                         type="button"
                         onClick={() => {

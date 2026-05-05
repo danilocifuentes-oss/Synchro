@@ -15,13 +15,11 @@ export type SoloChapterContextBlock = {
  */
 export const SOLO_CHAPTER_CONTEXT_REGISTRY: Partial<Record<string, SoloChapterContextBlock>> = {
   chapter02: {
-    contentVersion: 3,
+    contentVersion: 4,
     label: "Contexto · después del Mapocho",
-    body: `Después del primer Beso en el Mapocho, sigues en pie, pero ya no intacto. El hambre aflojó apenas lo justo para que la culpa vuelva a respirar. En el puente quedó una mirada inmóvil que no parecía humana: alguien te vio nacer en sangre y tomó nota.
+    body: `El hambre ha remitido, pero la paranoia del Ventrue despierta: alimentaste el cuerpo y descuidaste la seguridad. Santiago, desde las barandas del Parque Forestal, parece una red de luces para atrapar insectos; tú ya fuiste catalogado. La figura del puente fue aviso: incluso un heredero del Trono debe rendir cuentas.
 
-Santiago mantiene su máscara de tráfico, humo y rutina, pero para ti la noche cambió de idioma. Ya no caminas como ciudadano: caminas como recurso potencial para quienes gobiernan desde abajo.
-
-La Bestia no duerme; espera. Y una voz, todavía sin nombre, está a punto de citarte al centro de la ciudad.`,
+Santiago mantiene su máscara de tráfico y rutina, pero para ti la noche cambió de idioma. Una voz sin nombre está a punto de citarte —y la etiqueta lo llamará decreto.`,
   },
   chapter03: {
     contentVersion: 3,

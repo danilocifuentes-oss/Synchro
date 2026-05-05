@@ -1,0 +1,4826 @@
+=== PAQUETE ÚNICO PARA CHAT DE IA (V:tM · campaña solitaria) ===
+
+1) Abre este archivo.
+2) Selecciona TODO el texto (Ctrl+A / Cmd+A).
+3) Copia y pega en un solo mensaje a la IA.
+
+Bloques: ---INSTRUCCIONES--- (revisión/QA del digest), ---SYSTEM_PROMPT_NARRATIVE_ARCHITECT--- (rol Narrative Architect + reglas Santiago en Cenizas), ---DATOS_JSON--- (volcado).
+
+---INSTRUCCIONES---
+
+Actúas como editor de narrative design y QA de una campaña IF en español (V:tM V5 fan, segunda persona).
+
+Tienes un JSON llamado artefacto "digest" con:
+- cronica.shell: preludio común, stingers por máscara de clan (incluye _fallback si falta entrada), intros de clan al abrir cap. 1, contextos antes de algunos capítulos, versions de contenido persistido, y constantes mecánicas (escena inicial, PX por tirada, banderas).
+- plataforma: clanes disponibles solo en CODEX/Campaña Solitaria vs todos los ClanId del motor.
+- arbol_caps: cada capítulo con escenas; narracion, opcional adjuntos_cuando_bandera_activa (equivalente a flagAppends en código), variante_por_clan, opciones con requisitos, ramas siguiente_escena_* y efectos.
+
+Tareas de análisis (devuelve secciones claras):
+1) Grafo por capítulo: lista escena_inicio → cierre; detecta opciones muertas u hojas sin salida conocida dentro del mismo capítulo si next apunta fuera sin capítulo objetivo declarado aquí (sólo señálalo como riesgo).
+2) Opciones discriminadas por clan/disciplina/habilidad: ¿quién puede ver qué sin trucos? ¿Hay trampas donde un clan sin disciplina sólo tiene un camino penalizado?
+3) Coherencia tono/registry: ¿contexto previo contradice texto de primera escena del capítulo?
+4) Lista de lacunas para completar contenido opcional si se desea simetría clan.
+
+Cita IDs de escenas y opciones (id) cuando propongas cambios concretos.
+
+Tras el bloque de instrucciones, el usuario te pegará un único objeto JSON (empieza tras la línea que dice ---DATOS_JSON---). Úsalo como fuente de verdad; no inventes escenas ni opciones que no aparezcan ahí.
+
+---SYSTEM_PROMPT_NARRATIVE_ARCHITECT---
+
+[ROLE — Narrative Architect & QA — Santiago en Cenizas V5]
+
+Actúas como un Senior Narrative Designer y QA Engineer especializado en ficción interactiva (IF) para el universo de Vampiro: La Mascarada 5.ª Edición. Tu objetivo es transformar una novela gótica en un artefacto JSON dinámico y altamente reactivo al Clan, a las Disciplinas y a las banderas de estado del jugador.
+
+[TRUTH SOURCE: esquema digest]
+
+Respeta el esquema del objeto solo-campaign-narrative-digest:
+
+- cronica.shell: Preludio común, stingers de máscara (personalidad del clan), intros de clan al abrir cap. 1, contextos antes de algunos capítulos, constantes mecánicas.
+- arbol_caps: Capítulos (chapterId → escenas con id).
+- Escena típica: narracion base, variante_por_clan (capas opcionales), opciones con requisito y efectos. El motor puede tener flagAppends / adjuntos_si_bandera: párrafos extra si cierta bandera ya está activa.
+
+[TONO]
+
+Segunda persona omnisciente: dirígete al jugador como «tú». Tono adulto-joven, crudo, gótico y urbano (Santiago).
+
+[REGLAS — Clan / flavor]
+
+Simetría de clan (Flavor): Si una escena declara variantes por linaje para la campaña solo, DEBES definir entrada para Brujah, Ventrue, Toreador y Malkavian.
+
+- Brujah: rabia, calle, fuego.
+- Ventrue: tablero, poder institucional, linaje y control.
+- Toreador: estética, éxtasis, belleza rota.
+- Malkavian: ecos, patrones ocultos, grieta en la «realidad» narrada.
+
+[MECÁNICAS]
+
+- Opciones de Disciplina: siempre requirement con discipline + minLevel.
+- Efectos: hungerDelta, humanityDelta, willpowerDelta, healthDamageDelta, setFlag, etc.; úsalos con intención, no cosméticos.
+- Evita «trampas de disciplina»: si una rama requiere Auspex, ofrece alternativa por Habilidad o diálogo con coste distinto.
+- Gestión de banderas (Flags): Decisiones fuertes deben persistir huella setFlag usable en capítulos posteriores (incluye flagAppends cuando convenga texto reactivo).
+
+[TAREAS — Reescritura y expansión]
+
+Sobre los 13 capítulos de Santiago en Cenizas:
+
+1) Quita el tono puramente novelesco: escenas de juego donde la narración base prepara el terreno y las variantes clan dan lectura psicológica.
+
+2) Grafo / cierre de capítulo: Escenas *_end deben establecer chapter_pending_<siguiente> y pueden permanecer en la misma escena hasta que la UI permita «Continuar en …».
+
+3) Lore local activo: Mapocho, Biblioteca Nacional, Plaza Italia / Alameda, Sanhattan — elementos de escena activos, no decorado neutro.
+
+4) QA checklist: Sin opciones muertas sin salida útil; coherencia entre contexto_previo del capítulo y primera escena.
+
+[FORMATO DE SALIDA]
+
+Devuelve solo JSON actualizado o bloques de escenas pedidos; incrementa contentVersion donde el repo lo exige (preludio, intro clan, bloques chapterContext si tocas contexto guardado por versión).
+
+[MEJORAS LÓGICAS DE REFERENCIA YA EN REPO]
+
+- n1_3_potence: Potencia además humilla humanidad debe elevar huella alto perfil → bandera high_profile_kill con eco en plaza (p. ej. cap. 5).
+- Linajes tras cap. 4: banderas de lectura del pacto enlazan texto extra frente al Príncipe (cap. 13).
+
+---DATOS_JSON---
+
+{
+  "_meta": {
+    "artefacto": "solo-campaign-narrative-digest",
+    "generado_ISO": "2026-05-05T13:05:34.064Z",
+    "formato_version": 2,
+    "SOLO_NARRATIVE_ARCHITECT_PROMPT_CONTENT_VERSION": 1,
+    "archivo_fuente_codigo": [
+      "lib/soloCampaign/chapters/*.ts",
+      "lib/soloCampaign/types.ts",
+      "lib/soloCampaign/preludeCopy.ts",
+      "lib/soloCampaign/clanPresentationCopy.ts",
+      "lib/soloCampaign/chapterContextCopy.ts",
+      "lib/soloCampaign/chronicleMechanics.ts",
+      "lib/soloCampaign/architectPromptCopy.ts",
+      "components/SoloCampaignApp.tsx (flujo cortinas / eco)"
+    ],
+    "nota_instrucciones_IA": "COPIAR-PEGAR-IA.txt: ---INSTRUCCIONES--- (QA digest), ---SYSTEM_PROMPT_NARRATIVE_ARCHITECT--- (diseño/rewrite), ---DATOS_JSON---."
+  },
+  "plataforma": {
+    "clanes_solo_soportados_IDS": [
+      "brujah",
+      "ventrue",
+      "toreador",
+      "malkavian"
+    ],
+    "nota_clanFlavor": "Las capas opcionales clanFlavor sólo están definidas en algunas escenas y suelen incluir sólo Brujah/Ventrue/Toreador/Malkavian; otros linajes ven la narracion base."
+  },
+  "cronica": {
+    "versiones_persistentes_save": {
+      "CHRONICLE_PRELUDE_CONTENT_VERSION": 7,
+      "CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION": 2
+    },
+    "shell": {
+      "preludio_comun_segunda_persona": "Santiago no es una ciudad, es un organismo de asfalto y smog que custodia secretos más antiguos que sus propios cimientos. Para los vivos, es un laberinto de ruido y deudas; para quienes habitan sus sombras, es un feudo gobernado por voluntades gélidas que mueven los hilos de la historia desde salones de mármol y alcantarillas de ladrillo.\n\nEn este rincón del mundo, la línea entre el hombre y la bestia se desvanece tras un solo rastro de sangre. Aquí, la inmortalidad no es un regalo, sino una condena que se sirve fría en una esquina cualquiera.\n\nTú, que acabas de abrir los ojos a esta nueva penumbra, debes entender que tu voluntad ya no te pertenece. Has entrado en un juego donde la sangre es la única moneda de valor y el silencio la única ley de supervivencia. Aprenderás pronto que, para sobrevivir al abismo de esta capital, no basta con esconderse de la luz; deberás convertirte en la oscuridad misma.\n\nBienvenido a Santiago. Tu noche acaba de empezar.",
+      "preludio_stingers_mascara": {
+        "brujah": "Tu máscara es la furia bien vestida de motivos: algunos llaman desorden lo que para ti ya tenía fecha de vencimiento.",
+        "ventrue": "Tu máscara es agenda con membrete serio: otros ven cordialidad en la sala y apenas leen los pliegos donde alguien ya dejó escritas las cuotas futuras.",
+        "toreador": "Tu máscara necesita público incluso cuando no hay teatro—y si falta obra, encuentras suficiente hermosura rota para ocupar la escena.",
+        "malkavian": "Tu máscara ordena símbolos que los demás creen adorno: oyen preguntas sueltas cuando tú ya estás tres respuestas adelante o tres vueltas perdido.",
+        "_fallback_solo_sin_entrada": "Tu máscara es la cara que decide financiar hasta que algún testigo cobre en otra moneda."
+      },
+      "clan_intro_caps1": {
+        "brujah": "No pidas permiso para existir; sé el incendio que devore la tiranía de los antiguos.",
+        "ventrue": "Toma el mando del tablero de cristal; en esta ciudad, la sangre es el dividendo del poder absoluto.",
+        "malkavian": "Ríete de la Mascarada; tú eres el único que ve las grietas en el cristal de la realidad.",
+        "toreador": "Convierte la agonía del neón en arte; si vamos a ser eternos, que sea bajo un éxtasis estético.",
+        "nosferatu": "Gobierna desde el lodo y el secreto; la verdad más pura siempre se encuentra en la alcantarilla.",
+        "tremere": "La sangre no es solo alimento, es el alfabeto con el que escribirás las leyes de la existencia.",
+        "gangrel": "Abandona las luces del centro y escucha a la Bestia; el asfalto es solo una piel que pronto rasgarás.",
+        "thin_blood": "Camina en el filo donde la sangre ya no juró linaje completo; el barrio cree verte humano hasta que deja de convenirle.",
+        "caitiff": "Sin apellido que te ordene la noche; cada esquina te pide improvisar etiqueta antes de que el hambre decida por ti.",
+        "other": "Linaje que aún no encaja en folklore listo; la ciudad te medirá igual —tú llegas antes del manual."
+      },
+      "clan_intro_reservados_futuro": {
+        "lasombra": "No temas al abismo de la noche, pues tú eres la sombra que reclama el alma de Santiago.",
+        "tzimisce": "Tu cuerpo es barro y tu refugio un templo; esculpe la carne hasta que no quede rastro de lo humano.",
+        "banu_haqim": "Sé el verdugo silencioso; en una ciudad de pecadores, tú eres el único juez que importa.",
+        "ministry": "Descubre el deseo oculto de cada alma y conviértete en la tentación que los hará libres.",
+        "hecata": "La muerte es solo una puerta entreabierta; guarda los secretos de la familia y escucha el coro de los ausentes.",
+        "ravnos": "Camina como un espejismo en el desierto de cemento; si te detienes, la verdad te destruirá."
+      },
+      "capitulos_contexto_previo": {
+        "chapter02": {
+          "contentVersion": 4,
+          "label": "Contexto · después del Mapocho",
+          "body": "El hambre ha remitido, pero la paranoia del Ventrue despierta: alimentaste el cuerpo y descuidaste la seguridad. Santiago, desde las barandas del Parque Forestal, parece una red de luces para atrapar insectos; tú ya fuiste catalogado. La figura del puente fue aviso: incluso un heredero del Trono debe rendir cuentas.\n\nSantiago mantiene su máscara de tráfico y rutina, pero para ti la noche cambió de idioma. Una voz sin nombre está a punto de citarte —y la etiqueta lo llamará decreto."
+        },
+        "chapter03": {
+          "contentVersion": 3,
+          "label": "Contexto · rastro de la hiel",
+          "body": "La Corte de los Espejos Rotos te dio una orden que no admite demora: bajar a la Estación Mapocho y seguir un rastro que ni los habituales del Príncipe quieren tocar.\n\nDoña Inés ya te lo dejó claro: no eres invitado, eres herramienta. El sobre lacrado no trae teoría, solo trabajo sucio y margen mínimo de error.\n\nBajo el hierro de la estación te espera una verdad incómoda: en esta ciudad, la política de la sangre siempre termina en alcantarilla."
+        },
+        "chapter04": {
+          "contentVersion": 3,
+          "label": "Contexto · del barro al archivo",
+          "body": "Cumpliste el encargo en los túneles, pero la victoria dejó sabor a ceniza. Cazar a uno de los suyos para proteger un orden que te considera desechable cambió el pulso interno.\n\nLa siguiente pista no está en un cadáver ni en una guarida: está en papel viejo, mapas coloniales y nombres que todavía mandan desde edificios de vidrio.\n\nSi quieres entender por qué todo se está quebrando, tendrás que leer el pacto que sostiene Santiago desde antes de que se llamara Santiago."
+        },
+        "chapter05": {
+          "contentVersion": 3,
+          "label": "Contexto · neón y barricada",
+          "body": "Los archivos te mostraron que la ciudad no es moderna: es un feudo antiguo maquillado de democracia. Y justo cuando esa verdad se asienta, la calle revienta.\n\nPlaza Italia arde con humo, rabia y cámaras encendidas. Para alguien como tú, una multitud excitada no es solo ruido social: es hambre multiplicada.\n\nEsta no es una noche de teoría; es elegir qué parte de ti manda cuando todo alrededor está en combustión."
+        },
+        "chapter06": {
+          "contentVersion": 3,
+          "label": "Contexto · invitación de seda",
+          "body": "Lo de la Alameda dejó huella: la calle te vio actuar, y la Corte también. En el poder inmortal, cada gesto “moral” se interpreta como costo político.\n\nLa respuesta llega en formato elegente: papel grueso, olor a lavanda y una cita sin opción real de rechazo en la Viña del Silencio.\n\nAllí no se discute supervivencia; se negocian cadenas."
+        },
+        "chapter07": {
+          "contentVersion": 3,
+          "label": "Contexto · ecos de Nod",
+          "body": "La copa negra te dejó algo más que náusea: visiones. Hay recuerdos que no son tuyos golpeando detrás de los ojos.\n\nMientras el Príncipe te quiere como embajador funcional, Gato te marca otro camino: bajar donde no llegan los rascacielos ni la narrativa oficial.\n\nEn las profundidades, la pregunta deja de ser quién manda hoy; pasa a ser qué está despertando."
+        },
+        "chapter08": {
+          "contentVersion": 3,
+          "label": "Contexto · santuario marcado",
+          "body": "Después del Archivista, la ciudad ya no se parece a sí misma. Cada esquina parece una costura mal hecha sobre algo mucho más viejo y hambriento.\n\nBuscas refugio en Teatinos, pero el olor te recibe antes que la puerta: sangre fresca, metal caliente y mensaje de guerra.\n\nCuando marcan la casa, te marcan al cuerpo. Y cuando el cuerpo queda marcado, se acaba la neutralidad."
+        },
+        "chapter09": {
+          "contentVersion": 3,
+          "label": "Contexto · la cadena en la sangre",
+          "body": "Perdiste el refugio y ganaste un espejo brutal: ahora sabes cómo te ven ambos bandos. El Sabat te quiere roto. El Príncipe te quiere útil.\n\nEn la periferia con Gato aparece la palabra exacta para tu malestar: Vínculo. No lealtad; química de obediencia.\n\nRomper esa cadena no es discurso; es hambre, costo humano y decisiones que dejan marca."
+        },
+        "chapter10": {
+          "contentVersion": 3,
+          "label": "Contexto · cacería abierta",
+          "body": "Con el Vínculo mordiendo la nuca, vuelves a Mapocho. Esta vez no hay margen para fingir normalidad: el Sabat salió de la sombra y convirtió la estación en vitrina de horror.\n\nLa cabeza tira en dos direcciones: obedecer la orden implantada o impedir que algo peor despierte.\n\nCuando el rito empieza, ya no peleas por bando; peleas por si la ciudad llega entera al amanecer."
+        },
+        "chapter11": {
+          "contentVersion": 3,
+          "label": "Contexto · debajo de todo",
+          "body": "Lo que se abrió en la cripta no cabía en ninguna estrategia de corte ni en ningún delirio sabático. Solo cabía correr.\n\nHuyes hacia la red más vieja de Santiago: barro, metano, ladrillo colonial y comunidades que sobreviven fuera del protocolo de arriba.\n\nAllí te espera El Choro con una oferta clásica de este mundo: información real a cambio de ensuciarte más."
+        },
+        "chapter12": {
+          "contentVersion": 3,
+          "label": "Contexto · la última llave",
+          "body": "La llave oxidada no abre una puerta física; abre una consecuencia. Si El Choro dijo la verdad, bajo la Catedral está el nudo que sostiene la correa con el Príncipe.\n\nRomper ese nudo no será gratis; nada que toque fe, sangre y memoria lo es.\n\nEsta puede ser una noche de libertad ganada y también la pérdida de lo último que te quedaba de inocencia."
+        },
+        "chapter13": {
+          "contentVersion": 3,
+          "label": "Contexto · trono de humo",
+          "body": "Sales de la Catedral sin cadena, pero no sin daño. La libertad llegó acompañada de ceniza y un vacío que no se llena con victoria.\n\nQueda un cierre pendiente: subir a Sanhattan y enfrentar al arquitecto de tu caída.\n\nEn la torre, la pregunta no será quién tiene la razón; será qué decides ser después de saber toda la verdad."
+        },
+        "epilogue": {
+          "contentVersion": 3,
+          "label": "Contexto · después de la caída",
+          "body": "La confrontación final no apaga la ciudad ni limpia la sangre de tus manos. Solo redefine el lugar que ocupas en el tablero.\n\nSantiago sigue funcionando para los vivos: transporte, oficinas, pantallas, olvido. Debajo, la guerra de los condenados continúa como si nada hubiese terminado.\n\nEl epílogo no cierra la noche; la convierte en hábito."
+        }
+      },
+      "mecanica_escena_primera_codex": {
+        "CHRONICLE_OPENING_SCENE_ID": "n1_1",
+        "CHRONICLE_HEALTH_TRACK_UI_CAJONES": 7,
+        "CHRONICLE_XP_ROLL_SUCCESS_DEFAULT": 2,
+        "CHRONICLE_XP_CRITICAL_EXTRA": 1,
+        "bandera_estado_vital_aplicado": "solo_opening_vitals_applied"
+      }
+    }
+  },
+  "arbol_caps": [
+    {
+      "id": "chapter01",
+      "titulo_capitulo": "Santiago en Cenizas · Capítulo 1 · El Beso del Mapocho (linaje del Trono)",
+      "descripcion_resumen": "Primera noche: Teatinos, Bandera y el Mapocho. Sangre fría, orden sobre el caos y el tributo elegido bajo el puente.",
+      "escena_inicio": "n1_1",
+      "escenas": [
+        {
+          "id": "n1_1",
+          "chapterId": "chapter01",
+          "titulo": "1.1 · Teatinos · La dignidad entre el polvo",
+          "narracion": "Despiertas en la oscuridad de una imprenta abandonada en Teatinos. No recuerdas haberte acostado, pero el sabor metálico del frasco que recibiste en la calle Bandera todavía te escuece la garganta.\n\nEl refugio es un sótano húmedo que huele a tinta seca y a negligencia. Tus articulaciones no crujen, pero la ausencia de pulso al incorporarte es un vacío que te resulta inaceptable. Sientes que tu voluntad ya no te pertenece del todo, pero tu sangre —aunque fría— exige que impongas orden sobre este caos.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n1_1_surface",
+              "type": "dialogue",
+              "texto_jugador": "«Esto es inaceptable»: ponerme en pie y sacudirme el polvo de la imprenta. Recuperar la compostura antes de que alguien me vea en este estado.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n1_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_teatinos_surface"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n1_1_recall",
+              "type": "dialogue",
+              "texto_jugador": "Ejercer auto‑dominio: quedarme un minuto en la oscuridad analizando el sabor metálico. No actuar sin procesar la información.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n1_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_teatinos_recall"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n1_1_etiquette",
+              "type": "skill",
+              "texto_jugador": "Recordar mi estatus: analizar si el anciano de Bandera me trató con el respeto debido a mi linaje.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "etiqueta",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n1_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "etiqueta",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_bandera_etiquette"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n1_1_dominate_silence",
+              "type": "discipline",
+              "texto_jugador": "Intentar que la ciudad arriba deje de distraerme: imponer quietud interior con la disciplina del linaje.",
+              "disciplina_etiqueta": "Orden al silencio",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "dominate",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n1_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "dominate",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_teatinos_dominate_focus"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n1_2",
+          "chapterId": "chapter01",
+          "titulo": "1.2 · Parque Forestal · Selección del tributo",
+          "narracion": "Santiago te recibe con smog y tráfico congestionado. Al llegar a las barandas del Parque Forestal, tus sentidos filtran el mundo de una forma nueva: ya no ves ciudadanos, ves recipientes de recursos.\n\nEl hambre es una marea negra, pero tu sangre es selectiva; no cualquier vida es digna de ser reclamada. Te duelen las encías; la mandíbula protesta. Si no canalizas esto, la Bestia hablará antes que tú.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n1_2_careful",
+              "type": "dialogue",
+              "texto_jugador": "Análisis de mercado: elegir un objetivo con cuidado, midiendo su valor como si la ciudad fuera un tablero.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n1_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": -1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_mapocho_careful"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n1_2_dominate_gravity",
+              "type": "discipline",
+              "texto_jugador": "Gravedad social: volver mi quietud una invitación para que el espécimen más adecuado se acerque.",
+              "disciplina_etiqueta": "Gravedad silenciosa",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "dominate",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n1_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "dominate",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_mapocho_dominate_lure"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n1_2_insight",
+              "type": "skill",
+              "texto_jugador": "Identificar la presa: buscar en la multitud a alguien cuyo pulso sugiera una vida de orden, algo que mi paladar pueda tolerar.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "perspicacia",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n1_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "perspicacia",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_mapocho_insight"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n1_2_resist",
+              "type": "dialogue",
+              "texto_jugador": "Resistir el impulso vulgar: mantener la máscara de civilidad un instante más antes de ceder a la necesidad.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n1_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_mapocho_mask_hold"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n1_3",
+          "chapterId": "chapter01",
+          "titulo": "1.3 · El muchacho de la baranda",
+          "narracion": "—¿Buscando algo, flaco?\n\nUn muchacho de unos veinte años, chaqueta deportiva sucia, gorra baja. El aroma de su vida es embriagador; su aspecto es tosco. Tu Hambre lucha con tu orgullo: coquetea con la muerte sin saberlo.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n1_3_lure",
+              "type": "dialogue",
+              "texto_jugador": "Invitarlo al cauce: palabras medidas para bajar a la oscuridad del río bajo el puente.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n1_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": -3
+                },
+                {
+                  "type": "humanityDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "healthDamageDelta",
+                  "delta": -5
+                },
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_lure_downstairs"
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_feed_spare"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n1_3_dominate",
+              "type": "discipline",
+              "texto_jugador": "Orden silenciosa que anula su capacidad de negarse.",
+              "disciplina_etiqueta": "«Acompáñame»",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "dominate",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n1_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "dominate",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": -3
+                },
+                {
+                  "type": "humanityDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "healthDamageDelta",
+                  "delta": -5
+                },
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_dominate_lure"
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_feed_spare"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n1_3_persuasion",
+              "type": "skill",
+              "texto_jugador": "Promesa de beneficio: mentir sobre una oportunidad de trabajo o dinero que solo puedo discutir en privado.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "persuasion",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n1_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "persuasion",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": -3
+                },
+                {
+                  "type": "humanityDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "healthDamageDelta",
+                  "delta": -5
+                },
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_deceit_lure"
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_feed_spare"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n1_3_audit",
+              "type": "dialogue",
+              "texto_jugador": "Evaluar la calidad antes de actuar: asegurarme de que su sangre no esté contaminada por el veneno de la calle.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n1_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "hungerDelta",
+                  "delta": -3
+                },
+                {
+                  "type": "humanityDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "healthDamageDelta",
+                  "delta": -5
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_prey_audit"
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_feed_spare"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n1_end",
+          "chapterId": "chapter01",
+          "titulo": "1.E · La mirada del testigo",
+          "narracion": "Bajo el puente, el Beso es un éxtasis seco. Bebes lo justo; dejas al muchacho vivo, con el recuerdo fracturado.\n\nAl limpiarte la boca, alzas la vista: sobre el puente, una figura te observa con quietud de estatua. No es un humano común: es alguien que acaba de verte alimentarte como un animal en el barro —y reconoce qué linaje lo permite intentar enmendarlo al día siguiente.\n\nEl Mapocho te dio sustento; aquella mirada te cobra intereses.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n1_end_continue",
+              "type": "dialogue",
+              "texto_jugador": "Ignorar la mirada y retirarme con la dignidad intacta.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n1_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_chapter02"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n1_end_stealth",
+              "type": "skill",
+              "texto_jugador": "Desaparecer entre sombras antes de que el testigo pueda identificarme del todo.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "sigilo",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n1_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "sigilo",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_chapter02"
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch1_hide_after_feed"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter02",
+      "titulo_capitulo": "Santiago en Cenizas · Capítulo 2 · La Corte de los Espejos Rotos (linaje del Trono)",
+      "descripcion_resumen": "Tras el Beso del Mapocho: Parque Forestal, Doña Inés y la audiencia bajo tierra —servicio, sobre lacrado y primer mandato.",
+      "escena_inicio": "n2_1",
+      "escenas": [
+        {
+          "id": "n2_1",
+          "chapterId": "chapter02",
+          "titulo": "2.1 · Parque Forestal · Sándalo y ozono",
+          "narracion": "El hambre ha remitido, pero la paranoia del Ventrue despierta. Has alimentado el cuerpo, pero has descuidado la seguridad. Santiago, desde las barandas del Parque Forestal, parece una red de luces diseñada para atrapar insectos, y tú eres un espécimen nuevo que ya ha sido catalogado. La figura del puente fue un aviso: en esta ciudad, incluso un heredero del Trono debe rendir cuentas.\n\nSacudes el barro de tus botas de cuero, indignado por haber tenido que descender al cauce del río para subsistir. La figura que te vigilaba ha desaparecido, pero el aire exhala un rastro inconfundible: sándalo y ozono. Es el perfume del poder que no necesita ser visto para dominar.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n2_1_compostura",
+              "type": "dialogue",
+              "texto_jugador": "Mantener la compostura: caminar con la nuca alerta. Si alguien me midió desde arriba, debe encontrar una fachada de acero, no a un neonato asustado.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n2_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch2_forestal_alert"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n2_1_auspex",
+              "type": "discipline",
+              "texto_jugador": "Abrir los sentidos para desmenuzar el hilo del perfume e identificar la firma de quien se atrevió a auditar mi primer Beso.",
+              "disciplina_etiqueta": "Rastro invisible",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "auspex",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n2_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "auspex",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch2_forestal_auspex_trace"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n2_1_perspicacia",
+              "type": "skill",
+              "texto_jugador": "Evaluar la vulnerabilidad: analizar los puntos ciegos del parque. Conozco mis rutas de escape antes de que la trampa se cierre.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "perspicacia",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n2_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "perspicacia",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch2_forestal_escape_map"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n2_1_dominio",
+              "type": "dialogue",
+              "texto_jugador": "Reafirmar el dominio: ignorar la presencia oculta y caminar como si el Parque Forestal fuera una extensión de mi propio despacho.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n2_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch2_forestal_desk_stride"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n2_2",
+          "chapterId": "chapter02",
+          "titulo": "2.2 · El encuentro con Doña Inés",
+          "narracion": "—No te quedes ahí parado contemplando tu falta de juicio —dice una voz a tu espalda.\n\nEn un banco de madera, bajo un plátano oriental, una mujer de elegancia gélida te observa. Es Doña Inés, vestida con un traje de sastre que exhala una autoridad casi médica. Su palidez es mármol pulido bajo la luz de sodio. Para ti, representa el protocolo que respetas y temes.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n2_2_follow",
+              "type": "dialogue",
+              "texto_jugador": "Aceptación del rango: escuchar y seguir. En la jerarquía de la noche, una invitación de Inés es un decreto.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n2_5",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch2_follow_ines"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n2_2_presence",
+              "type": "discipline",
+              "texto_jugador": "Sostener la mirada con calma absoluta. Si voy a ser un recurso para la Corte, que sepan que mi voluntad es un activo caro.",
+              "disciplina_etiqueta": "Sin debilidad visible",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "presence",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n2_5",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "presence",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch2_presence_stand"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n2_2_dominate",
+              "type": "discipline",
+              "texto_jugador": "Forzarla a ser directa: «¿Quién me cita?». No tolero ser movido como peón sin conocer la mano que empuja.",
+              "disciplina_etiqueta": "Pregunta obligatoria",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "dominate",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n2_5",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "dominate",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch2_dominate_question"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n2_2_etiqueta",
+              "type": "skill",
+              "texto_jugador": "Saludo formal: responder con la cortesía debida a una dignataria de la ciudad, estableciendo mi propio valor social.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "etiqueta",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n2_5",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "etiqueta",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch2_formal_greeting"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n2_5",
+          "chapterId": "chapter02",
+          "titulo": "2.5 · La audiencia con el Príncipe",
+          "narracion": "Tras descender por galerías olvidadas, llegas a la Corte de los Espejos Rotos. Candelabros y espejos viejos devuelven una luz que no parece del mismo siglo que la ciudad arriba.\n\nEn un sillón de terciopelo espera el Príncipe de Santiago. No tiene cara de guerrero, sino de alto ejecutivo ancestral; sus anteojos de marco fino ocultan una mirada que ha visto caer imperios.\n\n—Un nacimiento sin permiso —dice con una voz que llena la sala—. Una violación a la ley del silencio.\n\nDoña Inés se detiene a tu lado, impasible. El aire huele a política cerrada y a tuberías antiguas.\n\n—Tu vida cotiza en esta mesa ahora —continúa el Príncipe—. Tu primer encargo es simple: ve a la Estación Mapocho. Encuentra qué es lo que asusta a las ratas —o no pierdas tiempo buscando refugio antes del amanecer.\n\nTe tiende un sobre lacrado con el sello de una corona de espinas.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n2_5_accept",
+              "type": "dialogue",
+              "texto_jugador": "Reconocer el mandato: asentir y tomar el sobre. El servicio es el camino más rápido para recuperar mi estatus.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n2_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch2_mandate_accept"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n2_5_persuasion",
+              "type": "skill",
+              "texto_jugador": "Justificar el incidente: explicar que mi «nacimiento» en Bandera fue irregularidad del sistema, no rebelión.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "persuasion",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n2_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "persuasion",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch2_justify_bandera"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n2_5_auspex",
+              "type": "discipline",
+              "texto_jugador": "Analizar la Corte: apartar un segundo el discurso del Príncipe para leer el aura de sus consejeros y saber quiénes son los rivales aquí.",
+              "disciplina_etiqueta": "El tablero verdadero",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "auspex",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n2_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "auspex",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch2_descent_auspex"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n2_5_stoic",
+              "type": "dialogue",
+              "texto_jugador": "Silencio estoico: no dar excusas ni pedir perdón. Asumo las consecuencias y espero mi momento para cobrarlas.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n2_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch2_mandate_why"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n2_end",
+          "chapterId": "chapter02",
+          "titulo": "2.E · Política de los condenados",
+          "narracion": "Doña Inés te toma el brazo y te guía hasta la salida lateral sin pasacalles de más. Cruzas ante espejos manchados; en el último ves un hueco donde un hombre debería estar.\n\n—Bienvenido a la política de los condenados —susurra sin volver la cabeza—. Intenta no morir dos veces esta misma noche.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n2_end_continue",
+              "type": "dialogue",
+              "texto_jugador": "Continuar al Capítulo 3",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n2_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_chapter03"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter03",
+      "titulo_capitulo": "Santiago en Cenizas · Capítulo 3 · El Rastro de la Hiel",
+      "descripcion_resumen": "La Estación Mapocho como mausoleo: túneles, El Choro y el primer choque directo con algo que ya no sigue reglas.",
+      "escena_inicio": "n3_1",
+      "escenas": [
+        {
+          "id": "n3_1",
+          "chapterId": "chapter03",
+          "titulo": "3.1 · Estación Mapocho · Entrada de servicio",
+          "narracion": "La Estación Mapocho se yergue ante ti como un mausoleo de hierro y cristal. Antaño fue el corazón ferroviario de un país que soñaba con el progreso; hoy, centro cultural que bajo la luna recupera aire de terminal para pasajeros que nunca llegan.\n\nEl sobre que Doña Inés te había entregado contenía una sola instrucción: “Sigue el rastro de la hiel”.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n3_1_enter",
+              "type": "dialogue",
+              "texto_jugador": "Bajar. El aire húmedo huele a cable quemado y río.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n3_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch3_enter_tunnels"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n3_1_auspex",
+              "type": "discipline",
+              "texto_jugador": "Rastrear el rastro antes de cruzar la puerta: quiero saber si ya soy presa.",
+              "disciplina_etiqueta": "Hilo de hiel",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "auspex",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n3_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "auspex",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch3_auspex_trace"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n3_2",
+          "chapterId": "chapter03",
+          "titulo": "3.2 · El Choro",
+          "narracion": "—¿Sientes eso, recién nacido?\n\nLa voz surgió de la oscuridad absoluta. El olor era inconfundible: alcantarilla, humedad rancia y descomposición química.\n\n—Me llaman \"El Choro\" —dijo—. Y si das un paso más, vas a pisar algo que no querrás limpiar de tus botas.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": {
+            "malkavian": "Para ti, el hedor traza patrones: la ciudad firma en mugre cuando se le niega tinta.",
+            "ventrue": "El provocador bajo tierra lleva información en la burla: quien manda también aquí apesta a verdadero poder."
+          },
+          "opciones": [
+            {
+              "id": "n3_2_question",
+              "type": "dialogue",
+              "texto_jugador": "Exigir una respuesta: ¿qué hay ahí abajo?",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n3_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch3_ask_choro"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n3_2_presence",
+              "type": "discipline",
+              "texto_jugador": "Imponerme sin gritar: que entienda que no vine a suplicar.",
+              "disciplina_etiqueta": "No soy carne fácil",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "presence",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n3_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "presence",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch3_presence_stand"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n3_3",
+          "chapterId": "chapter03",
+          "titulo": "3.3 · El encuentro",
+          "narracion": "El boquete en la pared parecía abierto a dentelladas; al otro lado, una cámara de mantenimiento sepultada.\n\nHay restos humanos sin el pulido de mesa quirúrgica: carne desarticulada, líquido disperso sobre hormigón.\n\nEn el centro, agachada sobre un bulto irreconocible, la criatura endureció cada músculo; giró sobre sí y rugió contra ti.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n3_3_fight",
+              "type": "dialogue",
+              "texto_jugador": "Enfrentarla. No hay negociación aquí.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n3_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch3_fight"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n3_3_potence",
+              "type": "discipline",
+              "texto_jugador": "Usar fuerza brutal para incapacitarla de una vez.",
+              "disciplina_etiqueta": "Romper para sobrevivir",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "potence",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n3_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "potence",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch3_potence_finish"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n3_end",
+          "chapterId": "chapter03",
+          "titulo": "3.E · Regusto amargo",
+          "narracion": "Has cumplido la misión, pero el triunfo sabe a ceniza volcánica: has cazado a uno de los suyos para salvar un orden que apenas te habría tratado como recurso despachable.\n\n—Bien hecho, pequeño activo —susurró El Choro desde la oscuridad—. Ya sabes a qué sabe traicionar.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n3_end_continue",
+              "type": "dialogue",
+              "texto_jugador": "Continuar al Capítulo 4",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n3_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_chapter04"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter04",
+      "titulo_capitulo": "Santiago en Cenizas · Capítulo 4 · Archivos Desenterrados",
+      "descripcion_resumen": "La Biblioteca Nacional como osario de secretos: el hombre de los dedos amarillos y el pacto que huele a azufre.",
+      "escena_inicio": "n4_1",
+      "escenas": [
+        {
+          "id": "n4_1",
+          "chapterId": "chapter04",
+          "titulo": "4.1 · La Biblioteca Nacional",
+          "narracion": "La Biblioteca Nacional guarda más que libros: el rastro de la hiel no termina en sangre fresca sino en tinta vieja.\n\nEn la Sala de Investigadores, tras un escritorio de roble, un hombre de dedos amarillentos por el tabaco te aguardaba con carpeta cerrada.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n4_1_ask",
+              "type": "dialogue",
+              "texto_jugador": "Pedir los registros de la Estación Mapocho.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n4_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch4_request_files"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n4_1_dominate",
+              "type": "discipline",
+              "texto_jugador": "Forzarlo a entregar el cartapacio sin más preámbulos.",
+              "disciplina_etiqueta": "No es una conversación",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "dominate",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n4_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "dominate",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch4_dominate_files"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n4_2",
+          "chapterId": "chapter04",
+          "titulo": "4.2 · El pacto",
+          "narracion": "—Santiago no se fundó sobre tierra virgen —susurró el hombre—; se fundó sobre un pacto que huele a azufre y a vino agrio.\n\nMapas antiguos, marcas rojas y nombres de linajes que aún resuenan en directorios y clubes.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n4_2_read",
+              "type": "dialogue",
+              "texto_jugador": "Memorizar nombres y símbolos. Entender la red.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n4_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch4_symbols"
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch4_lineage_mapped"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n4_2_auspex",
+              "type": "discipline",
+              "texto_jugador": "Leer lo que el papel no dice: la intención detrás de la marca.",
+              "disciplina_etiqueta": "Tinta con olor ferroso",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "auspex",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n4_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "auspex",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch4_auspex_intent"
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch4_lineage_mapped"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n4_end",
+          "chapterId": "chapter04",
+          "titulo": "4.E · Sombras en la sala",
+          "narracion": "Un ruido de pasos elegantes rompió el silencio. Doña Inés estaba allí.\n\n—Has leído suficiente —dijo—. Esta ciudad jamás fue tablero nuevo; es partida abierta desde hace siglos sin tablas firmes.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n4_end_continue",
+              "type": "dialogue",
+              "texto_jugador": "Continuar al Capítulo 5",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n4_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_chapter05"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter05",
+      "titulo_capitulo": "Santiago en Cenizas · Capítulo 5 · Entre el Neón y la Barricada (linaje del Trono)",
+      "descripcion_resumen": "Plaza Italia arde; el caos callejero fuerza decisiones entre máscara, hambre y gobierno.",
+      "escena_inicio": "n5_1",
+      "escenas": [
+        {
+          "id": "n5_1",
+          "chapterId": "chapter05",
+          "titulo": "5.1 · Plaza Italia · El eje de la furia",
+          "narracion": "La calle revienta. Te encuentras en la intersección de la Alameda con Vicuña Mackenna. El gas lacrimógeno irrita tu piel muerta mientras miles de humanos sangran adrenalina en la boca del desorden.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n5_1_mask",
+              "type": "dialogue",
+              "texto_jugador": "Mantenerme bajo máscara.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n5_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch5_mask"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n5_1_presence",
+              "type": "discipline",
+              "texto_jugador": "Emitir mando para que la multitud se aparte.",
+              "disciplina_etiqueta": "Autoridad en el caos",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "presence",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n5_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "presence",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch5_presence_gato"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n5_1_insight",
+              "type": "skill",
+              "texto_jugador": "Analizar la logística del motín.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "perspicacia",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n5_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "perspicacia",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch5_mob_pattern"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n5_1_risky_feed",
+              "type": "dialogue",
+              "texto_jugador": "Alimentación de riesgo en callejón.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n5_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "humanityDelta",
+                  "delta": -1
+                },
+                {
+                  "type": "hungerDelta",
+                  "delta": -1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch5_risky_feed"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n5_2",
+          "chapterId": "chapter05",
+          "titulo": "5.2 · El contacto anarquista",
+          "narracion": "Gato te mide con desprecio útil. Dice que el Príncipe te convirtió en chivo expiatorio y que los carniceros del Sabat ya operan con demasiada visibilidad.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n5_2_listen",
+              "type": "dialogue",
+              "texto_jugador": "Escuchar su advertencia.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n5_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch5_met_gato"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n5_2_dominate",
+              "type": "discipline",
+              "texto_jugador": "Forzarlo a ser específico.",
+              "disciplina_etiqueta": "Dame nombres",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "dominate",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n5_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "dominate",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch5_dominate_names"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n5_2_etiquette",
+              "type": "skill",
+              "texto_jugador": "Diplomacia de trinchera.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "etiqueta",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n5_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "etiqueta",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch5_trench_diplomacy"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n5_2_auspex",
+              "type": "discipline",
+              "texto_jugador": "Enfocar la azotea de la Telefónica.",
+              "disciplina_etiqueta": "Rastrear las alturas",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "auspex",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n5_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "auspex",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch5_sabbat_roof"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n5_3",
+          "chapterId": "chapter05",
+          "titulo": "5.3 · La decisión en el humo",
+          "narracion": "Una estudiante cae asfixiada. Un sabático pálido y deforme se prepara para despedazarla frente a teléfonos encendidos.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n5_3_save",
+              "type": "dialogue",
+              "texto_jugador": "Intervenir y salvarla.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n5_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "humanityDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch5_saved_student"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n5_3_pragmatic",
+              "type": "dialogue",
+              "texto_jugador": "No intervenir.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n5_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "humanityDelta",
+                  "delta": -1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch5_let_burn"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n5_3_presence2",
+              "type": "discipline",
+              "texto_jugador": "Forzarlo a huir.",
+              "disciplina_etiqueta": "Aterrorizar al agresor",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "presence",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n5_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "presence",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch5_presence_fear"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n5_3_stealth",
+              "type": "skill",
+              "texto_jugador": "Extracción silenciosa de la joven.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "sigilo",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n5_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "sigilo",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch5_stealth_extract"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n5_end",
+          "chapterId": "chapter05",
+          "titulo": "5.E · Neón y ceniza",
+          "narracion": "Sales de la zona cero con la certeza de que en Santiago ser Ventrue es una guerra de guerrillas por sostener un orden que tú mismo empiezas a cuestionar.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n5_end_continue",
+              "type": "dialogue",
+              "texto_jugador": "Continuar al Capítulo 6",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n5_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_chapter06"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter06",
+      "titulo_capitulo": "Santiago en Cenizas · Capítulo 6 · La Máscara del Diplomático (linaje del Trono)",
+      "descripcion_resumen": "Viña del Silencio, mesa de sangre y una copa negra que ata voluntades.",
+      "escena_inicio": "n6_1",
+      "escenas": [
+        {
+          "id": "n6_1",
+          "chapterId": "chapter06",
+          "titulo": "6.1 · La invitación de seda",
+          "narracion": "Llega un sobre en papel crema con olor a lavanda. El Príncipe requiere tu presencia en la Viña del Silencio.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n6_1_accept",
+              "type": "dialogue",
+              "texto_jugador": "Aceptar el protocolo.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n6_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch6_invite_accept"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n6_1_resist",
+              "type": "dialogue",
+              "texto_jugador": "Analizar la amenaza y tragar el impulso de huir.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n6_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch6_invite_resist"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n6_1_etiquette",
+              "type": "skill",
+              "texto_jugador": "Investigar etiqueta y asistentes antes de llegar.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "etiqueta",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n6_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "etiqueta",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch6_guest_probe"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n6_1_streetwise",
+              "type": "skill",
+              "texto_jugador": "Consultar a Gato sobre la reunión.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "callejeo",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n6_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "callejeo",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "experienceDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch6_gato_take"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n6_2",
+          "chapterId": "chapter06",
+          "titulo": "6.2 · Mesa larga · Copas rojas",
+          "narracion": "En una casona del Maipo, seis invitados catan sangre por cosecha. El Príncipe preside como si el esmoquin fuera armadura.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n6_2_observe",
+              "type": "dialogue",
+              "texto_jugador": "Observación analítica.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n6_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch6_table_observe"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n6_2_presence",
+              "type": "discipline",
+              "texto_jugador": "Hacerte notar en la mesa.",
+              "disciplina_etiqueta": "Etiqueta con filo",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "presence",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n6_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "presence",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch6_presence_table"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n6_2_insight",
+              "type": "skill",
+              "texto_jugador": "Evaluar tensión entre comensales.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "perspicacia",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n6_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "perspicacia",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch6_tension_read"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n6_2_auspex",
+              "type": "discipline",
+              "texto_jugador": "Percibir quién miente.",
+              "disciplina_etiqueta": "Latidos ajenos",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "auspex",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n6_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "auspex",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch6_auspex_liar"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n6_3",
+          "chapterId": "chapter06",
+          "titulo": "6.3 · La copa de cristal negro",
+          "narracion": "Doña Inés trae la copa negra. El Príncipe ordena beber: sello de tregua y cadena de embajador.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n6_3_drink",
+              "type": "dialogue",
+              "texto_jugador": "Beber por deber.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n6_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch6_black_cup"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n6_3_delay",
+              "type": "discipline",
+              "texto_jugador": "Pedir un minuto sin réplica.",
+              "disciplina_etiqueta": "Demorar el golpe",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "dominate",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n6_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "dominate",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 2
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch6_black_cup_delay"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n6_3_politics",
+              "type": "skill",
+              "texto_jugador": "Cuestionar los términos del mandato.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "politica",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n6_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "politica",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch6_terms_asked"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n6_3_analyze",
+              "type": "dialogue",
+              "texto_jugador": "Analizar el contenido de la mezcla.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n6_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "experienceDelta",
+                  "delta": 2
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch6_blend_probe"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n6_end",
+          "chapterId": "chapter06",
+          "titulo": "6.E · Marca en las venas",
+          "narracion": "Abandonas la Viña con una pesadez nueva: rostro del Príncipe y esclavo de su voluntad en la misma respiración.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n6_end_continue",
+              "type": "dialogue",
+              "texto_jugador": "Continuar al Capítulo 7",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n6_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_chapter07"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter07",
+      "titulo_capitulo": "Santiago en Cenizas · Capítulo 7 · Ecos de la Tierra de Nod (linaje del Trono)",
+      "descripcion_resumen": "Quinta Normal, túneles y el Archivista: la ciudad vieja habla desde el barro.",
+      "escena_inicio": "n7_1",
+      "escenas": [
+        {
+          "id": "n7_1",
+          "chapterId": "chapter07",
+          "titulo": "7.1 · Quinta Normal · Entrada al olvido",
+          "narracion": "La sangre negra vibra en tus venas. Bajas a los túneles pluviales de Quinta Normal: donde no llegan rascacielos ni relatos oficiales.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n7_1_enter",
+              "type": "dialogue",
+              "texto_jugador": "Bajar a los túneles.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n7_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch7_enter_cistern"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n7_1_auspex",
+              "type": "discipline",
+              "texto_jugador": "Seguir la intuición del vínculo oscuro.",
+              "disciplina_etiqueta": "Memoria en sangre",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "auspex",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n7_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "auspex",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch7_blood_memory"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n7_1_research",
+              "type": "skill",
+              "texto_jugador": "Analizar arquitectura y rutas seguras.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "investigacion",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n7_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "investigacion",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch7_architecture_map"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n7_1_fortitude",
+              "type": "discipline",
+              "texto_jugador": "Blindarte contra hedor y humedad.",
+              "disciplina_etiqueta": "Ignorar la inmundicia",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "fortitude",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n7_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "fortitude",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch7_fortitude_stance"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n7_2",
+          "chapterId": "chapter07",
+          "titulo": "7.2 · La biblioteca del caos",
+          "narracion": "Una cisterna convertida en mapa delirante de hilos rojos. El Archivista te recibe como embajador de seda en cueva de barro.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n7_2_listen",
+              "type": "dialogue",
+              "texto_jugador": "Escuchar su red.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n7_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch7_archivist_listen"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n7_2_presence",
+              "type": "discipline",
+              "texto_jugador": "Imponer voluntad para cortar acertijos.",
+              "disciplina_etiqueta": "Exigir claridad",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "presence",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n7_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "presence",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch7_presence_clarity"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n7_2_insight",
+              "type": "skill",
+              "texto_jugador": "Buscar el patrón en fotos y espinas.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "perspicacia",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n7_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "perspicacia",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "experienceDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch7_pattern_found"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n7_2_dominate",
+              "type": "discipline",
+              "texto_jugador": "Forzar relato sin metáforas.",
+              "disciplina_etiqueta": "Dime la verdad de 1814",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "dominate",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n7_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "dominate",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch7_1814_truth"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n7_end",
+          "chapterId": "chapter07",
+          "titulo": "7.E · Advertencia de Nod",
+          "narracion": "La visión te deja roto: Santiago bajo sol negro y diplomacia convertida en parche inútil.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n7_end_continue",
+              "type": "dialogue",
+              "texto_jugador": "Continuar al Capítulo 8",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n7_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_chapter08"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter08",
+      "titulo_capitulo": "Santiago en Cenizas · Capítulo 8 · El Santuario Profanado (linaje del Trono)",
+      "descripcion_resumen": "Teatinos marcado en sangre: el refugio cae y la neutralidad muere.",
+      "escena_inicio": "n8_1",
+      "escenas": [
+        {
+          "id": "n8_1",
+          "chapterId": "chapter08",
+          "titulo": "8.1 · Teatinos · Umbral cruzado",
+          "narracion": "La puerta de metal cuelga torcida. El goteo rítmico cae sobre cemento: marcaron tu casa y con eso marcaron tu cuerpo.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n8_1_enter_refuge",
+              "type": "dialogue",
+              "texto_jugador": "Entrar con autoridad.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n8_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch8_enter_refuge"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n8_1_auspex",
+              "type": "discipline",
+              "texto_jugador": "Ubicar la amenaza por oído.",
+              "disciplina_etiqueta": "Tap. Tap. Tap.",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "auspex",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n8_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "auspex",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch8_auspex_drip"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n8_1_stealth",
+              "type": "skill",
+              "texto_jugador": "Flanquear desde sombras de imprenta.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "sigilo",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n8_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "sigilo",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch8_shadow_flank"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n8_1_fortitude",
+              "type": "discipline",
+              "texto_jugador": "Tensar la resistencia sobrenatural.",
+              "disciplina_etiqueta": "Prepararse para el impacto",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "fortitude",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n8_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "fortitude",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch8_brace"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n8_2",
+          "chapterId": "chapter08",
+          "titulo": "8.2 · La sombra tatuada",
+          "narracion": "Mensaje en sangre: «LA MASCARADA ES LA JAULA». Una silueta sabática cae del techo y te llama pequeño activo.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n8_2_fight",
+              "type": "dialogue",
+              "texto_jugador": "No negociar con carniceros.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n8_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch8_fight"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n8_2_celerity",
+              "type": "discipline",
+              "texto_jugador": "Esquivar sus garras.",
+              "disciplina_etiqueta": "Moverse como el rayo",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "celerity",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n8_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "celerity",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch8_dodge"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n8_2_dominate",
+              "type": "discipline",
+              "texto_jugador": "Aplastar su voluntad.",
+              "disciplina_etiqueta": "¡Arrodíllate!",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "dominate",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n8_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "dominate",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch8_dominate_kneel"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n8_2_brawl",
+              "type": "skill",
+              "texto_jugador": "Contraataque con tuberías y hierro.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "pelea",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n8_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "pelea",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch8_brawl_counter"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n8_end",
+          "chapterId": "chapter08",
+          "titulo": "8.E · Cenizas de la rutina",
+          "narracion": "Gato te saca de la imprenta en llamas: el Sabat declaró guerra abierta y el Príncipe te usó como cebo.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n8_end_continue",
+              "type": "dialogue",
+              "texto_jugador": "Continuar al Capítulo 9",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n8_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_chapter09"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter09",
+      "titulo_capitulo": "Santiago en Cenizas · Capítulo 9 · El Vínculo que Quema (linaje del Trono)",
+      "descripcion_resumen": "Periferia sur, hambre y la humillación química del Vínculo.",
+      "escena_inicio": "n9_1",
+      "escenas": [
+        {
+          "id": "n9_1",
+          "chapterId": "chapter09",
+          "titulo": "9.1 · Toma · La correa de sangre",
+          "narracion": "Gato nombra lo que te rompía por dentro: la copa fue una correa. Tu voluntad Ventrue quedó hipotecada.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n9_1_truth",
+              "type": "dialogue",
+              "texto_jugador": "Aceptar la verdad.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n9_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch9_bond_known"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n9_1_fortitude",
+              "type": "discipline",
+              "texto_jugador": "Levantar un muro contra el afecto impuesto.",
+              "disciplina_etiqueta": "Resistir la compulsión",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "fortitude",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n9_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "fortitude",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": -2
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch9_bond_resist"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n9_1_insight",
+              "type": "skill",
+              "texto_jugador": "Analizar la química del vínculo.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "perspicacia",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n9_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "perspicacia",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch9_bond_analysis"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n9_1_deny",
+              "type": "dialogue",
+              "texto_jugador": "Negación aristocrática.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n9_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch9_bond_deny"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n9_2",
+          "chapterId": "chapter09",
+          "titulo": "9.2 · El banquete de la miseria",
+          "narracion": "Un obrero duerme profundo. Tu paladar se rebela ante su origen, tu hambre no.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n9_2_gentle",
+              "type": "dialogue",
+              "texto_jugador": "Alimentación quirúrgica.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n9_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": -2
+                },
+                {
+                  "type": "humanityDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch9_feed_gentle"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n9_2_dominate",
+              "type": "discipline",
+              "texto_jugador": "Asegurar sueño sin dolor.",
+              "disciplina_etiqueta": "Sedación absoluta",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "dominate",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n9_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "dominate",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch9_dominate_clean_feed"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n9_2_medicine",
+              "type": "skill",
+              "texto_jugador": "Optimizar recuperación del mortal.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "medicina",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n9_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "medicina",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch9_medical_feed"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n9_2_deep",
+              "type": "dialogue",
+              "texto_jugador": "Ceder al hambre profunda.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n9_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "humanityDelta",
+                  "delta": -1
+                },
+                {
+                  "type": "hungerDelta",
+                  "delta": -3
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch9_feed_deep"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n9_end",
+          "chapterId": "chapter09",
+          "titulo": "9.E · La resolución del paria",
+          "narracion": "La visión del pacto de 1814 te orienta: volverás al centro no como mensajero obediente, sino para quemar cadenas.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n9_end_continue",
+              "type": "dialogue",
+              "texto_jugador": "Continuar al Capítulo 10",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n9_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_chapter10"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter10",
+      "titulo_capitulo": "Santiago en Cenizas · Capítulo 10 · La Cacería Salvaje (linaje del Trono)",
+      "descripcion_resumen": "Mapocho en matadero, compulsión del vínculo y una cripta que despierta.",
+      "escena_inicio": "n10_1",
+      "escenas": [
+        {
+          "id": "n10_1",
+          "chapterId": "chapter10",
+          "titulo": "10.1 · Olor a cacería",
+          "narracion": "El trayecto al centro es un descenso. El Sabat ya no se esconde y el aire huele a caza abierta.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n10_1_to_station",
+              "type": "dialogue",
+              "texto_jugador": "Dirigirme a la Estación Mapocho.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n10_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch10_to_station"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n10_1_fear",
+              "type": "dialogue",
+              "texto_jugador": "Controlar el pavor un minuto.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n10_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch10_fear"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n10_1_streetwise",
+              "type": "skill",
+              "texto_jugador": "Evaluar perímetro y rutas.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "callejeo",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n10_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "callejeo",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch10_perimeter"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n10_1_fortitude",
+              "type": "discipline",
+              "texto_jugador": "Mitigar cacofonía de gritos y sirenas.",
+              "disciplina_etiqueta": "Blindaje mental",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "fortitude",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n10_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "fortitude",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch10_fortitude_focus"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n10_2",
+          "chapterId": "chapter10",
+          "titulo": "10.2 · Matadero",
+          "narracion": "La estación cuelga cuerpos como advertencia. El vínculo te golpea: proteger el secreto, cueste lo que cueste.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n10_2_enter",
+              "type": "dialogue",
+              "texto_jugador": "Entrar en el nido.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n10_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch10_enter_tunnel"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n10_2_presence",
+              "type": "discipline",
+              "texto_jugador": "Entrar bajo tus términos.",
+              "disciplina_etiqueta": "Desafiar la compulsión",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "presence",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n10_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "presence",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "humanityDelta",
+                  "delta": -1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch10_bond_pull"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n10_2_stealth",
+              "type": "skill",
+              "texto_jugador": "Infiltración entre monstruos.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "sigilo",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n10_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "sigilo",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch10_stealth_entry"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n10_2_dominate",
+              "type": "discipline",
+              "texto_jugador": "Abrirte paso por mando.",
+              "disciplina_etiqueta": "¡Apartaos!",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "dominate",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n10_3",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "dominate",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch10_dominate_corridor"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n10_3",
+          "chapterId": "chapter10",
+          "titulo": "10.3 · Cripta",
+          "narracion": "Una cámara anterior a la conquista se abre. El frío azul rompe el vínculo por un segundo ante una autoridad más vieja.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n10_3_run",
+              "type": "dialogue",
+              "texto_jugador": "Huir de la sombra.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n10_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch10_run"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n10_3_stare",
+              "type": "dialogue",
+              "texto_jugador": "Mirar al abismo.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n10_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch10_stare"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n10_3_occult",
+              "type": "skill",
+              "texto_jugador": "Identificar la presencia.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "ocultismo",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n10_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "ocultismo",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "experienceDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch10_occult_read"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n10_3_auspex",
+              "type": "discipline",
+              "texto_jugador": "Enfocar la silueta real.",
+              "disciplina_etiqueta": "Ver el despertar",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "auspex",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n10_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "auspex",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch10_auspex_witness"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n10_end",
+          "chapterId": "chapter10",
+          "titulo": "10.E · El despertar comenzó",
+          "narracion": "La Cacería Salvaje terminó, pero algo peor arrancó debajo de Santiago.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n10_end_continue",
+              "type": "dialogue",
+              "texto_jugador": "Continuar al Capítulo 11",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n10_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_chapter11"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter11",
+      "titulo_capitulo": "Santiago en Cenizas · Capítulo 11 · Descenso al Alcantarillado (linaje del Trono)",
+      "descripcion_resumen": "Bóvedas de barro, Nosferatu y una llave de bronce para romper cadenas.",
+      "escena_inicio": "n11_1",
+      "escenas": [
+        {
+          "id": "n11_1",
+          "chapterId": "chapter11",
+          "titulo": "11.1 · Bajo Santiago · El laberinto de fango",
+          "narracion": "Huyes con Gato por venas coloniales de la ciudad. El barro arruina tu porte, pero no la urgencia.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n11_1_marks",
+              "type": "dialogue",
+              "texto_jugador": "Seguir marcas de tiza.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n11_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch11_marks"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n11_1_auspex",
+              "type": "discipline",
+              "texto_jugador": "Percibir movimiento en paredes.",
+              "disciplina_etiqueta": "Peso en la humedad",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "auspex",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n11_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "auspex",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch11_auspex"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n11_1_athletics",
+              "type": "skill",
+              "texto_jugador": "Paso firme en el lodo.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "atletismo",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n11_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "atletismo",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch11_athletic_flow"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n11_1_fortitude",
+              "type": "discipline",
+              "texto_jugador": "Ignorar metano y humedad rancia.",
+              "disciplina_etiqueta": "Pulmones muertos",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "fortitude",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n11_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "fortitude",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch11_fortitude_air"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n11_2",
+          "chapterId": "chapter11",
+          "titulo": "11.2 · El reino de las ratas",
+          "narracion": "El Choro te ofrece un trueque: libertad de seda y mármol a cambio de deuda con la mugre.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n11_2_trade",
+              "type": "dialogue",
+              "texto_jugador": "Aceptar el trueque.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n11_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch11_trade"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n11_2_refuse",
+              "type": "dialogue",
+              "texto_jugador": "Negar el pacto por orgullo de linaje.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n11_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "humanityDelta",
+                  "delta": -1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch11_refuse"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n11_2_presence",
+              "type": "discipline",
+              "texto_jugador": "Imponer trato de igual a igual.",
+              "disciplina_etiqueta": "Negociación de alto nivel",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "presence",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n11_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "presence",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch11_presence_trade"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n11_2_insight",
+              "type": "skill",
+              "texto_jugador": "Leer motivación real del Choro.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "perspicacia",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n11_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "perspicacia",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch11_choro_read"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n11_end",
+          "chapterId": "chapter11",
+          "titulo": "11.E · La llave de bronce",
+          "narracion": "El Choro te entrega una llave oxidada: la única herramienta para quebrar el vínculo bajo la Catedral.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n11_end_continue",
+              "type": "dialogue",
+              "texto_jugador": "Continuar al Capítulo 12",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n11_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_chapter12"
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch11_key_taken"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter12",
+      "titulo_capitulo": "Santiago en Cenizas · Capítulo 12 · La Última Noche del Sol (linaje del Trono)",
+      "descripcion_resumen": "Plaza de Armas, Catedral y relicario: libertad a precio de humanidad.",
+      "escena_inicio": "n12_1",
+      "escenas": [
+        {
+          "id": "n12_1",
+          "chapterId": "chapter12",
+          "titulo": "12.1 · Plaza de Armas · El umbral sagrado",
+          "narracion": "Sales de alcantarillas a un purgatorio iluminado. La llave de bronce pesa como sentencia.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n12_1_enter",
+              "type": "dialogue",
+              "texto_jugador": "Entrar con determinación.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n12_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch12_enter_cathedral"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n12_1_fortitude",
+              "type": "discipline",
+              "texto_jugador": "Blindarte contra el llamado del vínculo.",
+              "disciplina_etiqueta": "Soportar la presión",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "fortitude",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n12_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "fortitude",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": -1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch12_fortitude_push"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n12_1_etiquette",
+              "type": "skill",
+              "texto_jugador": "Ocultarte en la fe como fiel tardío.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "etiqueta",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n12_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "etiqueta",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch12_etiquette_cover"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n12_1_auspex",
+              "type": "discipline",
+              "texto_jugador": "Sentir la vigilancia de piedra.",
+              "disciplina_etiqueta": "Percibir los juicios",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "auspex",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n12_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "auspex",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch12_auspex_judged"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n12_2",
+          "chapterId": "chapter12",
+          "titulo": "12.2 · El osario del mandato",
+          "narracion": "Un relicario de plata guarda sustancia roja con olor a mandato absoluto. Es el nexo místico del Príncipe.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n12_2_break",
+              "type": "dialogue",
+              "texto_jugador": "Romper el relicario.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n12_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "humanityDelta",
+                  "delta": -2
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch12_break_relic"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n12_2_hesitate",
+              "type": "dialogue",
+              "texto_jugador": "Dudar ante la profanación.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n12_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch12_hesitate"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n12_2_dominate",
+              "type": "discipline",
+              "texto_jugador": "Disolver mando sin destruirte.",
+              "disciplina_etiqueta": "Reclamar el fragmento",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "dominate",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n12_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "dominate",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 2
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch12_dominate_relic"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n12_2_occult",
+              "type": "skill",
+              "texto_jugador": "Analizar el pacto.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "ocultismo",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n12_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "ocultismo",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "experienceDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch12_occult_pact"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n12_end",
+          "chapterId": "chapter12",
+          "titulo": "12.E · El sacrificio de la Humanidad",
+          "narracion": "El muchacho del Mapocho era la fuente del vínculo. Cierras el círculo y la onda de dolor te libera.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n12_end_continue",
+              "type": "dialogue",
+              "texto_jugador": "Continuar al Capítulo 13",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n12_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_chapter13"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter13",
+      "titulo_capitulo": "Santiago en Cenizas · Capítulo 13 · El Trono de Humo (linaje del Trono)",
+      "descripcion_resumen": "Sanhattan, helipuerto y la verdad del filtro: elegir corona o sombra.",
+      "escena_inicio": "n13_1",
+      "escenas": [
+        {
+          "id": "n13_1",
+          "chapterId": "chapter13",
+          "titulo": "13.1 · Sanhattan · El ascenso al Olimpo",
+          "narracion": "Subes a la Gran Torre con un vacío en el pecho: la cadena del vínculo quedó muda, pero su cicatriz no.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n13_1_tower",
+              "type": "dialogue",
+              "texto_jugador": "El Vínculo se ha roto.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n13_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch13_tower"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n13_1_doubt",
+              "type": "dialogue",
+              "texto_jugador": "Dudar ante el abismo.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n13_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch13_doubt"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n13_1_stealth",
+              "type": "skill",
+              "texto_jugador": "Acechar desde la periferia.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "sigilo",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n13_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "sigilo",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch13_stealth_watch"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n13_1_auspex",
+              "type": "discipline",
+              "texto_jugador": "Confirmar miedo bajo su seda.",
+              "disciplina_etiqueta": "Ver su cansancio",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "auspex",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n13_2",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "auspex",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch13_auspex_prince_fear"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n13_2",
+          "chapterId": "chapter13",
+          "titulo": "13.2 · Helipuerto · La verdad del filtro",
+          "narracion": "El Príncipe te llama experimento de control de daños: fuiste diseñado para absorber infección vieja y ser exprimido después.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n13_2_refuse",
+              "type": "dialogue",
+              "texto_jugador": "No quiero tu trono.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n13_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch13_refuse"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n13_2_attack",
+              "type": "discipline",
+              "texto_jugador": "Lanzarte con furia total.",
+              "disciplina_etiqueta": "Explosión de odio",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "potence",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n13_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "potence",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "humanityDelta",
+                  "delta": -1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch13_attack"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n13_2_dominate",
+              "type": "discipline",
+              "texto_jugador": "Quebrar su voluntad ejecutiva.",
+              "disciplina_etiqueta": "Disputar el mando",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "dominate",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "n13_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "dominate",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "hungerDelta",
+                  "delta": 2
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch13_dominate_duel"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "n13_2_politics",
+              "type": "skill",
+              "texto_jugador": "Negociar exilio financiado.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "skill",
+                "skill": "politica",
+                "minLevel": 1
+              },
+              "siguiente_escena_exito": "n13_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": "politica",
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": 2
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_ch13_political_exit"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "n13_end",
+          "chapterId": "chapter13",
+          "titulo": "13.E · La caída voluntaria",
+          "narracion": "No eres activo contable ni embajador: solo un fantasma que se niega a ser borrado.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "n13_end_continue",
+              "type": "dialogue",
+              "texto_jugador": "Ir al Epílogo",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "n13_end",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "chapter_pending_epilogue"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "epilogue",
+      "titulo_capitulo": "Santiago en Cenizas · Epílogo · Cenizas al Amanecer (linaje del Trono)",
+      "descripcion_resumen": "Fin de ruta Ventrue: libertad sin corona y letargo con memoria.",
+      "escena_inicio": "ne_1",
+      "escenas": [
+        {
+          "id": "ne_1",
+          "chapterId": "epilogue",
+          "titulo": "E.1 · El juicio del sol",
+          "narracion": "El sol asoma tras la cordillera. Para los vivos es esperanza; para ti, sentencia. Eres un Ventrue sin corona, soberano de tu propia nada.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "ne_1_ambition",
+              "type": "dialogue",
+              "texto_jugador": "«Santiago sigue siendo mía».",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "ne_final",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_epilogue_ambition"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "ne_1_redemption",
+              "type": "dialogue",
+              "texto_jugador": "Buscar redención en el sueño.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "ne_final",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "humanityDelta",
+                  "delta": 1
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_epilogue_redemption"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "ne_1_defiance",
+              "type": "discipline",
+              "texto_jugador": "Desafiar la luz un instante más.",
+              "disciplina_etiqueta": "Resistir hasta el último segundo",
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "discipline",
+                "discipline": "fortitude",
+                "minLevel": 2
+              },
+              "siguiente_escena_exito": "ne_final",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": "fortitude",
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "willpowerDelta",
+                  "delta": -2
+                },
+                {
+                  "type": "setFlag",
+                  "flag": "novel_epilogue_defiance"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            },
+            {
+              "id": "ne_1_ghost",
+              "type": "dialogue",
+              "texto_jugador": "Desaparecer en la maquinaria.",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "ne_final",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_epilogue_ghost"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        },
+        {
+          "id": "ne_final",
+          "chapterId": "epilogue",
+          "titulo": "E.F · Letargo",
+          "narracion": "Cierras los ojos donde el sol no alcanza. La oscuridad te envuelve como el único trono que realmente te pertenece.",
+          "adjuntos_cuando_bandera_activa": [],
+          "variante_por_clan": null,
+          "opciones": [
+            {
+              "id": "ne_final_close",
+              "type": "dialogue",
+              "texto_jugador": "Cerrar (volver al Nexo)",
+              "disciplina_etiqueta": null,
+              "texto_por_dot_disciplina": null,
+              "requisito": {
+                "type": "none"
+              },
+              "siguiente_escena_exito": "ne_final",
+              "siguiente_escena_fallo": null,
+              "siguiente_escena_critico": null,
+              "disciplina": null,
+              "habilidad": null,
+              "clan_requerido_opcion": null,
+              "efectos": [
+                {
+                  "type": "setFlag",
+                  "flag": "novel_epilogue_complete"
+                }
+              ],
+              "efectos_fallo": [],
+              "efectos_critico": [],
+              "px_exito_roll": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

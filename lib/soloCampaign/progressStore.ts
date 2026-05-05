@@ -15,6 +15,12 @@ function normalizeChroniclePreludeSeenVersion(progress: SoloProgress): number {
   return progress.flags?.chronicle_curtain_seen === true ? 1 : 0;
 }
 
+function normalizeChronicleClanPresentationSeenVersion(progress: SoloProgress): number {
+  const stored = progress.chronicleClanPresentationSeenVersion;
+  if (typeof stored === "number" && Number.isFinite(stored) && stored >= 0) return stored;
+  return progress.flags?.clan_intro_seen === true ? 1 : 0;
+}
+
 function keyForProfileClan(profileId: string, clan: string): string {
   return `${SOLO_PROGRESS_PREFIX}${profileId}::${clan}`;
 }
@@ -57,8 +63,19 @@ export function loadSoloProgress(profileId: string, clan: string): SoloProgress 
       updatedAt: typeof parsed.updatedAt === "number" ? parsed.updatedAt : Date.now(),
     };
     merged.chroniclePreludeSeenVersion = normalizeChroniclePreludeSeenVersion(merged);
+    merged.chronicleClanPresentationSeenVersion = normalizeChronicleClanPresentationSeenVersion(merged);
+    const beforeLineage = merged.flags.novel_ch4_lineage_mapped === true;
+    if (merged.flags.novel_ch4_symbols === true || merged.flags.novel_ch4_auspex_intent === true) {
+      merged.flags.novel_ch4_lineage_mapped = true;
+    }
+    if (beforeLineage !== (merged.flags.novel_ch4_lineage_mapped === true)) {
+      queueMicrotask(() => saveSoloProgress(merged));
+    }
     /** Reescribe save si venía sólo del boolean legacy (`chronicle_curtain_seen`) sin número. */
     if (parsed.chroniclePreludeSeenVersion === undefined) {
+      queueMicrotask(() => saveSoloProgress(merged));
+    }
+    if (parsed.chronicleClanPresentationSeenVersion === undefined) {
       queueMicrotask(() => saveSoloProgress(merged));
     }
     return merged;

@@ -46,3 +46,6 @@ next-env.d.ts
 
 # orquestación Nexo en disco local (solo si NEXO_ORCH_DISK=1)
 /.data/
+
+# Volcado narrativo reproducible (`npm run solo:narrative-digest`)
+/content/solo-campaign/narrative-digest.json

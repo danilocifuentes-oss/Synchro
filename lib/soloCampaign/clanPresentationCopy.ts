@@ -1,30 +1,49 @@
 import type { ClanId } from "@/lib/character";
 
 /**
- * Presentación diegética al abrir la crónica (hilo paralelo), en segunda persona.
- * Calibre tonal al preludio común: densidad urbana, amenaza elegida, sin manual.
+ * Subir cuando cambie el texto de la intro de clan; saves con versión menor vuelven a ver la pantalla en cap. 1.
+ * La migración marca como `1` a quien tenía sólo `clan_intro_seen: true` (texto anterior), así `1 < 2` fuerza una pasada nueva.
+ */
+export const CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION = 2;
+
+/**
+ * Presentación diegética al abrir la crónica (cap. 1), en segunda persona.
+ * Una frase corta por clan de ficha. Clanes fuera del selector vigente viven en
+ * `CHRONICLE_CLAN_PRESENTATIONS_RESERVED` hasta que amplíemos `ClanId`.
  */
 export const CHRONICLE_CLAN_PRESENTATIONS: Record<ClanId, string> = {
-  brujah: `No te confundan las calles con un escenario pobre: aquí la rabia tiene nombre de barrio y deuda judicial. Naciste de noche en un codo de Teatinos, pero lo que despierta en ti no es geografía: es la certeza de que el orden mintió primero. Santiago te ofrece indiferencia; tú respondes con pulso alto y mandíbula lista. Cada farola es tribunal barato; cada vereda, promesa incumplida. No te piden elegancia: te piden traducir la injusticia en movimiento antes de que la Bestia lo haga por ti y deje factura sangrienta. La ciudad te mira como quien reconoce a un pariente incómodo: te teme porque todavía crees que el mundo debería ser de otra manera —y eso, en la noche, es casi un arma.`,
+  brujah: `No pidas permiso para existir; sé el incendio que devore la tiranía de los antiguos.`,
 
-  ventrue: `Otros confunden poder con estruendo; tú sabes que el poder huele a ascensor recién pulido, a tinta en contrato y a silencio que firma antes que la boca. Tu sangre no te grita en la calle: te ordena despachos interiores donde la derrota se llama “replantear objetivos”. Santiago, con su mezcla heroicamente vulgar de neón y deuda, es mina y cantera a la vez: extraes lealtades lentas, vomitas riesgos calculados. No vienes a suplicar entrada a la corte invisible: ya caminas dentro de ella cada vez que mantienes la voz baja y el gesto intacto mientras el hambre aprieta. Eres el tipo de monstruo que entiende que la eternidad se administra por agenda —y que la ciudad, al final, cobra hasta el aire que respiras.`,
+  ventrue: `Toma el mando del tablero de cristal; en esta ciudad, la sangre es el dividendo del poder absoluto.`,
 
-  malkavian: `Para muchos el ruido es fondo; para ti es texto que aún no encontró su editor. Las grietas del mundo te susurran en coro desfasado: un semáforo tarde, una risa que viene de donde no hay nadie, un noticiero que repite la misma tragedia con reparto nuevo. No es “paranoia de manual”: es que la ciudad ensaya varias verdades a la vez y tú eres quien oye el ensayo. Aprenderás a moverte entre ecos sin volverte del todo loco —o quizás es tarde y eso ya no importa— porque en cada esquina hay una pista mal cortada que nadie más recoge. Santiago no te pide cordura; te pide que no rompas el plato antes de que sirvan el segundo acto.`,
+  malkavian: `Ríete de la Mascarada; tú eres el único que ve las grietas en el cristal de la realidad.`,
 
-  toreador: `La ciudad se ofrece como vitrina barata de luces frías; tú la recibes como escenario que puede herir. No hay escena neutra: cada reflejo en vidrio decide si te alaba o te condena, y ya no tienes la piel gruesa del mortal que pasa de largo. Santiago te enseña el precio exacto de la belleza gastada: el neón que enferma, el grafito que fue amor de joven, la gente que cree que lo estético no mata. Te queda claro que cada mirada es cuchillo embotado: incluso cuando ganas, pagas un poco de humanidad por el simple acto de elegir qué fragmento del mundo conservar. Aquí el arte y la catástrofe comparten butaca; tú eres el público de primera fila que aplaude hasta sangrar.`,
+  toreador: `Convierte la agonía del neón en arte; si vamos a ser eternos, que sea bajo un éxtasis estético.`,
 
-  nosferatu: `Tú no entras por la puerta principal: entras por el olor a humedad, por la rejilla que miente menos que el mapa, por el cable que alguien juró que ya estaba muerto. La ciudad te lee como infranqueable hasta que demuestras que el subsuelo también tiene memoria. Santiago te enseña rutas que el ojo limpio niega con vergüenza: conductos, sombras de servicio, firmas de pisadas repetidas. No te piden glamour; te piden supervivencia con inteligencia de rata noble. Cada rumor útil es moneda; cada testigo incómodo, deuda.`,
+  nosferatu: `Gobierna desde el lodo y el secreto; la verdad más pura siempre se encuentra en la alcantarilla.`,
 
-  tremere: `En la fachada risueña tú ya buscas el diagrama: sellos, simetrías, sangre como licencia y precio al mismo tiempo. La noche no es misterio romántico; es laboratorio sucio donde la ciudad condensa pactos invisibles. Santiago te ofrece capas de papel y capas de miedo; aprendes a leer ambas sin mancharte las manos del todo —aunque siempre quede rastro en los dedos. No te confundas: cada poder deja costura en el aire, y alguien más busca las tuyas antes de que tú encuentres las suyas.`,
+  tremere: `La sangre no es solo alimento, es el alfabeto con el que escribirás las leyes de la existencia.`,
 
-  gangrel: `El asfalto no es filosofía: es hábitat. Tú llevas el olor a piel mojada, cordillera lejana como testigo frío, instinto que no pide permiso. Santiago te enseña fronteras que no están en el GPS: charcos que delimitan manada, viento que anuncia caza o trampa, neumáticos lentos que avisan depredadores coyunturales. La Bestia no es metáfora bonita: es brújula si no la sueltas, cadena si la dejas morder primero.`,
+  gangrel: `Abandona las luces del centro y escucha a la Bestia; el asfalto es solo una piel que pronto rasgarás.`,
 
-  thin_blood: `Tu sangre no firma contrato claro: eres glitch en la herencia, mezcla que el barrio lee primero como humano hasta que deja de convenir. Santiago te ofrece supersticiones importadas y apps de vecinos con la misma sed de testigo. Aprendes en el margen entre protocolo y rumor, midiendo cuándo teatralizar el miedo y cuándo romperlo. No hay red noble que te ampare: cada paso es improvisación con hambre encima.`,
+  thin_blood: `Camina en el filo donde la sangre ya no juró linaje completo; el barrio cree verte humano hasta que deja de convenirle.`,
 
-  caitiff: `Sin apellido inmortal que ordene el relato, cada esquina es pregunta abierta. Tú improvisas etiqueta en tiempo real con dolor pragmático: lo que otros heredan, tú lo construyes con microscopio de supervivencia. La ciudad no te regala arquetipo; te cobra ambigüedad como deuda. Identidad nueva, grieta social: inventas coherencia donde otros pagan cortesía ancestral gratis.`,
+  caitiff: `Sin apellido que te ordene la noche; cada esquina te pide improvisar etiqueta antes de que el hambre decida por ti.`,
 
-  other: `Linaje singular o mal etiquetado: la plantilla cortés aún está vacía y la ciudad ya anotó tu nombre con tinta distinta. Tú obligas a la noche a leerte sin folklore listo; cada mirada es pentest social. Santiago no te da manual: te da espejo incompleto y hambre sin protocolo fino. Aprendes en la frontera entre lo que eres y lo que la calle decide que debieras ser.`,
+  other: `Linaje que aún no encaja en folklore listo; la ciudad te medirá igual —tú llegas antes del manual.`,
 };
+
+/** Clanes fuera de plataforma; mismas líneas autor. Enlazar a `ClanId` cuando existan en ficha/CODEX. */
+export const CHRONICLE_CLAN_PRESENTATIONS_RESERVED = {
+  lasombra: `No temas al abismo de la noche, pues tú eres la sombra que reclama el alma de Santiago.`,
+  tzimisce: `Tu cuerpo es barro y tu refugio un templo; esculpe la carne hasta que no quede rastro de lo humano.`,
+  banu_haqim: `Sé el verdugo silencioso; en una ciudad de pecadores, tú eres el único juez que importa.`,
+  ministry: `Descubre el deseo oculto de cada alma y conviértete en la tentación que los hará libres.`,
+  hecata: `La muerte es solo una puerta entreabierta; guarda los secretos de la familia y escucha el coro de los ausentes.`,
+  ravnos: `Camina como un espejismo en el desierto de cemento; si te detienes, la verdad te destruirá.`,
+} as const;
+
+export type ReservedClanPresentationId = keyof typeof CHRONICLE_CLAN_PRESENTATIONS_RESERVED;
 
 export function getChronicleClanPresentation(clan: ClanId): string {
   return CHRONICLE_CLAN_PRESENTATIONS[clan] ?? CHRONICLE_CLAN_PRESENTATIONS.other;

@@ -50,7 +50,10 @@ Mapas antiguos, marcas rojas y nombres de linajes que aún resuenan en directori
           text: "Memorizar nombres y símbolos. Entender la red.",
           requirement: { type: "none" },
           nextSceneId: "n4_end",
-          effects: [{ type: "setFlag", flag: "novel_ch4_symbols" }],
+          effects: [
+            { type: "setFlag", flag: "novel_ch4_symbols" },
+            { type: "setFlag", flag: "novel_ch4_lineage_mapped" },
+          ],
         },
         {
           id: "n4_2_auspex",
@@ -60,7 +63,10 @@ Mapas antiguos, marcas rojas y nombres de linajes que aún resuenan en directori
           text: "Leer lo que el papel no dice: la intención detrás de la marca.",
           requirement: { type: "discipline", discipline: "auspex", minLevel: 1 },
           nextSceneId: "n4_end",
-          effects: [{ type: "setFlag", flag: "novel_ch4_auspex_intent" }],
+          effects: [
+            { type: "setFlag", flag: "novel_ch4_auspex_intent" },
+            { type: "setFlag", flag: "novel_ch4_lineage_mapped" },
+          ],
         },
       ],
     },

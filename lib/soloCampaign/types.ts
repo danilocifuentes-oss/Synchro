@@ -53,6 +53,10 @@ export type SoloScene = {
   chapterId: string;
   title: string;
   text: string;
+  /**
+   * Párrafos adicionales (tras `text`) cuando `progress.flags[flag]` ya es true — hooks entre capítulos sin duplicar escenas enteras.
+   */
+  flagAppends?: readonly { flag: string; text: string }[];
   clanFlavor?: Partial<Record<ClanId, string>>;
   options: SoloOption[];
 };
@@ -81,6 +85,11 @@ export type SoloProgress = {
    * Inferior a `CHRONICLE_PRELUDE_CONTENT_VERSION` ⇒ mostrar cortina de nuevo.
    */
   chroniclePreludeSeenVersion?: number;
+  /**
+   * Última versión de la intro de linaje (tras el preludio) que el jugador cerró en cap. 1.
+   * Inferior a `CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION` ⇒ mostrar intro de nuevo.
+   */
+  chronicleClanPresentationSeenVersion?: number;
   /**
    * Por capítulo que define contexto (`SOLO_CHAPTER_CONTEXT_REGISTRY`): última versión de texto ya vista.
    */
