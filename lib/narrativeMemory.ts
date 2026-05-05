@@ -30,6 +30,9 @@ const SUMMARY_KEY = "cronista-narrative-summary-v1";
 const ROLLING_BY_STRAND_KEY = "cronista-rolling-by-strand-v1";
 /** Una vez: borra resúmenes legacy del motor narrativo simulado (no se vuelve a mostrar en Nexo). */
 const NEXO_PURGE_LEGACY_ROLLING = "cronista-nexo-purge-legacy-rolling-v1";
+/** Los bundles de perfil reinyectaban `rollingByStrand` en localStorage al hidratar; reescribir JSON en disco. */
+const NEXO_STRIP_ROLLING_IN_BUNDLES = "cronista-nexo-strip-rolling-in-bundles-v1";
+const PROFILE_BUNDLE_PREFIX = "cronista-profile-bundle-v1::";
 const ACTIVE_STRAND_KEY = "cronista-active-strand-v1";
 const MJ_KEY = "cronista-mj-directives-v1";
 const IDEAS_KEY = "cronista-ideas-repo-v1";
@@ -148,6 +151,24 @@ export function loadRollingByStrand(): RollingByStrand {
       localStorage.setItem(NEXO_PURGE_LEGACY_ROLLING, "1");
       wipeLocalRollingState();
       clearPendingSynapticDisruption();
+    }
+    if (!localStorage.getItem(NEXO_STRIP_ROLLING_IN_BUNDLES)) {
+      localStorage.setItem(NEXO_STRIP_ROLLING_IN_BUNDLES, "1");
+      try {
+        for (let i = localStorage.length - 1; i >= 0; i -= 1) {
+          const k = localStorage.key(i);
+          if (!k?.startsWith(PROFILE_BUNDLE_PREFIX)) continue;
+          const raw = localStorage.getItem(k);
+          if (!raw) continue;
+          const p = JSON.parse(raw) as Record<string, unknown>;
+          if (p.version !== 1) continue;
+          p.rollingByStrand = { principal: "", paralela: "", vivo: "" };
+          delete p.rollingSummary;
+          localStorage.setItem(k, JSON.stringify(p));
+        }
+      } catch {
+        /* ignore */
+      }
     }
     const raw = localStorage.getItem(ROLLING_BY_STRAND_KEY);
     if (!raw) {

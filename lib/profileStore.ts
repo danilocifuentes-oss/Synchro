@@ -31,7 +31,6 @@ import {
 } from "@/lib/sessionMeta";
 import {
   defaultRollingByStrand,
-  normalizeRollingByStrand,
   normalizeStrand,
   type NarrativeStrand,
   type RollingByStrand,
@@ -120,16 +119,8 @@ export function loadBundle(id: string): ProfileBundle | null {
       meta,
       xpLog: Array.isArray(p.xpLog) ? p.xpLog : [],
       narrativeLog: Array.isArray(p.narrativeLog) ? p.narrativeLog : [],
-      rollingByStrand: ((): RollingByStrand => {
-        const raw = p as Record<string, unknown>;
-        if (raw.rollingByStrand && typeof raw.rollingByStrand === "object") {
-          return normalizeRollingByStrand(raw.rollingByStrand);
-        }
-        const leg = typeof raw.rollingSummary === "string" ? raw.rollingSummary : "";
-        const base = defaultRollingByStrand();
-        base.principal = leg ? leg.slice(0, 2000) : "";
-        return base;
-      })(),
+      /** Ya no persistimos eco del narrador IA en bundles (causaba reaparición tras deploy). */
+      rollingByStrand: defaultRollingByStrand(),
       narrativeStrand: normalizeStrand((p as { narrativeStrand?: unknown }).narrativeStrand),
       mjDirectives: Array.isArray(p.mjDirectives) ? p.mjDirectives : [],
       ideasRepository:
@@ -199,7 +190,7 @@ export function hydrateGlobalsFromBundle(bundle: ProfileBundle): void {
   saveMeta(bundle.meta);
   saveXpLog(bundle.xpLog);
   saveNarrativeLog(bundle.narrativeLog);
-  saveRollingByStrand(bundle.rollingByStrand);
+  saveRollingByStrand(defaultRollingByStrand());
   saveActiveStrand(bundle.narrativeStrand);
   saveMjDirectives(bundle.mjDirectives);
 
