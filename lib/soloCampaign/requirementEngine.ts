@@ -86,6 +86,36 @@ export function listFailReasons(option: SoloOption, sheet: CharacterSheet, progr
   return state.available || !state.reason ? [] : [state.reason];
 }
 
+/** Bloqueo visible: ficha (disciplina/habilidad/atributo/clan), no rama de historia. */
+function isSheetConstraintFailureReason(reason: string | undefined): boolean {
+  if (!reason) return false;
+  if (reason.startsWith("Sólo para ")) return true;
+  return /\s\d+\/\d+\.$/u.test(reason);
+}
+
+/** Opción inactiva por bifurcación / banderas / ruta: no se muestra como botón gris. */
+function isStoryRouteFailureReason(reason: string | undefined): boolean {
+  if (!reason || isSheetConstraintFailureReason(reason)) return false;
+  return (
+    reason === "Condición excluyente activa." ||
+    reason === "Ninguna condición alternativa cumplida." ||
+    reason.startsWith("Bandera ") ||
+    reason.startsWith("Ruta ") ||
+    reason.startsWith("Estado ")
+  );
+}
+
+/**
+ * Ocultar opción en la crónica libro: no cumple visibilidad o la rama narrativa no aplica.
+ * Los candados por ficha siguen visibles (con el motivo mecánico).
+ */
+export function soloOptionHiddenFromPlayer(option: SoloOption, sheet: CharacterSheet, progress?: SoloProgress): boolean {
+  if (!checkOptionVisibility(option, sheet, progress).available) return true;
+  const { available, reason } = checkOptionAvailability(option, sheet, progress);
+  if (available) return false;
+  return isStoryRouteFailureReason(reason);
+}
+
 export function resolveDisciplineTierText(option: SoloOption, sheet: CharacterSheet): string {
   if (!option.discipline || !option.textByDisciplineLevel) return option.text;
   const current = Number(sheet.disciplines?.[option.discipline] ?? 0);

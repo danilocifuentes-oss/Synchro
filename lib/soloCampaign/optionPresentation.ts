@@ -1,6 +1,6 @@
 import type { CharacterSheet } from "@/lib/character";
 import type { SoloOption, SoloProgress } from "./types";
-import { checkOptionAvailability, checkOptionVisibility } from "./requirementEngine";
+import { checkOptionAvailability, checkOptionVisibility, soloOptionHiddenFromPlayer } from "./requirementEngine";
 
 /** Caminos que dependen sólo del Codex: disciplina, habilidad, atributo, clan incompatible. `none` sigue abierto siempre. */
 export function isSoloOptionGatedOnSheet(option: SoloOption): boolean {
@@ -19,6 +19,21 @@ export function filterSoloOptionsForSheet(options: SoloOption[], sheet: Characte
   });
   if (filtered.length === 0) return options;
   return filtered;
+}
+
+/** Opciones que el jugador puede ver en el libro Nexo (sin ramas inalcanzables por historia). */
+export function listPlayerVisibleSoloOptions(
+  options: SoloOption[],
+  sheet: CharacterSheet,
+  progress?: SoloProgress,
+): SoloOption[] {
+  const sorted = sortSoloOptionsForDisplay(options);
+  const filtered = sorted.filter((o) => !soloOptionHiddenFromPlayer(o, sheet, progress));
+  if (filtered.length > 0) return filtered;
+
+  /* Contenido raro / regresión de requisitos: no dejar pantalla sin elecciones. */
+  const visOnly = sorted.filter((o) => checkOptionVisibility(o, sheet, progress).available);
+  return visOnly.length > 0 ? visOnly : sorted;
 }
 
 /** Diálogo sin requisitos primero; luego estable por id. */

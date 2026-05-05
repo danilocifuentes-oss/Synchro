@@ -35,6 +35,43 @@ function stripLeadingOpcionBanner(block: string): string {
   return block.replace(/^OPCIÓN\s+[A-Z0-9.]+\s*(?:\[[^\]]+\])?\s*:\s*/im, "").trim();
 }
 
+/**
+ * Quita encabezados de ruta para dev/IA (“Salida — RUTA…”, “Camino estándar…”, líneas sólo con condiciones).
+ */
+export function stripDeveloperRoutingFromPlayerOption(text: string): string {
+  const original = text.replace(/\r/g, "\n").trim();
+  if (!original) return "";
+
+  const devHeadingLine = (rawLine: string): boolean => {
+    const L = rawLine.trim();
+    if (!L) return true;
+    if (/^salida\s*[—–\-]/i.test(L)) return true;
+    if (/^salida\s*:\s*/i.test(L)) return true;
+    if (/^camino\s+estándar\b/i.test(L) || /^camino\s+estandar\b/i.test(L)) return true;
+    if (/^cierre\b.*\b(forzado|forzosa|forzoso)\b/i.test(L)) return true;
+    if (
+      /^\([^)]*(?:prioridad|beso_|rastro_|info_|setflag|setFlag|ruta\s+del\b|cap[ií]tulo\b|escena\b)[^)]*\)\s*\.?\s*$/i.test(L)
+    )
+      return true;
+    return false;
+  };
+
+  const lines = original.split("\n");
+  while (lines.length > 0 && devHeadingLine(lines[0] ?? "")) {
+    lines.shift();
+  }
+
+  let joined = lines.join("\n").trim();
+
+  joined = joined.replace(
+    /^([^\n]+?)\s*\([^)]*(?:prioridad|si\s+[^)]*_|ruta\b|cap[ií]tulo\b|setflag\b)[^)]*\)\s*[.…]?\s*/iu,
+    "$1",
+  );
+
+  const out = joined.trim();
+  return out || original;
+}
+
 /** Texto después de CONSECUENCIA: hasta antes de RESULTADO: (bloque IA, línea aparte habitual). */
 function extractIaConsequence(raw: string): string | null {
   const m = /\n\s*CONSECUENCIA\s*:\s*([\s\S]*?)(?=\n\s*RESULTADO\s*:|$)/i.exec(raw);
@@ -86,7 +123,8 @@ export function parseOptionIaPanels(fullText: string): ParsedOptionPanels {
     if (inline?.index !== undefined) cut = inline.index;
   }
 
-  const promptBody = stripLeadingOpcionBanner(raw.slice(0, cut).trim()).trim();
+  let promptBody = stripLeadingOpcionBanner(raw.slice(0, cut).trim()).trim();
+  promptBody = stripDeveloperRoutingFromPlayerOption(promptBody);
   const consequence = extractIaConsequence(raw);
 
   return { promptBody, consequence };

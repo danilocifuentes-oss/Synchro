@@ -8,6 +8,7 @@ import { disciplineLabel } from "@/lib/sereno";
 import { ensureSoloProgress, isSoloSupportedClan } from "@/lib/soloCampaign/bootstrap";
 import { getSoloChapter, getSoloScene } from "@/lib/soloCampaign/chapters";
 import { checkOptionAvailability, listFailReasons } from "@/lib/soloCampaign/requirementEngine";
+import { listPlayerVisibleSoloOptions } from "@/lib/soloCampaign/optionPresentation";
 import { loadSheet, normalizeCharacterSheet, saveSheet } from "@/lib/character";
 import { loadSoloProgress, saveSoloProgress } from "@/lib/soloCampaign/progressStore";
 import type { SoloEndingId, SoloOption, SoloProgress, SoloRouteId, SoloSceneEffect } from "@/lib/soloCampaign/types";
@@ -335,9 +336,9 @@ function SoloCampaignScreen({
   const scene = useMemo(() => getSoloScene(progress.chapterId, progress.sceneId), [progress.chapterId, progress.sceneId]);
   const displayedOptions = useMemo(() => {
     if (!scene) return [];
-    return scene.options;
-  }, [scene]);
-  const missingOptionCount = Math.max(0, 4 - displayedOptions.length);
+    return listPlayerVisibleSoloOptions(scene.options, sheet, progress);
+  }, [scene, sheet, progress]);
+  const missingOptionCount = Math.max(0, 4 - (scene?.options?.length ?? 0));
   const pendingNextChapter = getPendingNextChapter(progress);
   const scenePanels = useMemo(
     () => (scene ? parseSceneIaPanels(scene.text) : { context: null as string | null, narration: "" }),
