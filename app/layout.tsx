@@ -38,7 +38,12 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-full font-sans bg-[var(--void)] text-neutral-200">{children}</body>
+      <body
+        className="min-h-full font-sans bg-[var(--void)] text-neutral-200"
+        data-git-sha={process.env.VERCEL_GIT_COMMIT_SHA ?? "local"}
+      >
+        {children}
+      </body>
     </html>
   );
 }

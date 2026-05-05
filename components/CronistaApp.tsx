@@ -1143,7 +1143,7 @@ function CronistaAppInner() {
         </div>
       </header>
 
-      {isNarrator ? (
+      {isNarrator && remoteCampaignStore ? (
         <CampaignSyncBar
           value={campaignSync}
           onChange={(next) => {
