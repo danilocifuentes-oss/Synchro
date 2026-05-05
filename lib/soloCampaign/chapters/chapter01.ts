@@ -2,8 +2,8 @@ import type { SoloChapter } from "@/lib/soloCampaign/types";
 
 export const chapter01: SoloChapter = {
   id: "chapter01",
-  title: "Santiago en Cenizas · Capítulo 1 · El Beso del Mapocho (Logic V3 · Ventrue)",
-  description: "Despertar, umbral, ruta de riesgo y convergencia en el puente con bifurcación temprana.",
+  title: "Santiago en Cenizas · Capítulo 1 · El Beso del Mapocho",
+  description: "Despertar en la imprenta, primer umbral en Teatinos y decisión de ruta bajo presión.",
   startSceneId: "n1_0",
   scenes: [
     {
@@ -31,7 +31,7 @@ Tu linaje Ventrue se rebela ante la inmundicia; un Rey no debería despertar en 
         {
           id: "n1_0_instinto",
           type: "dialogue",
-          text: "El ardor en la garganta exige salir de inmediato.",
+          text: "El ardor en la garganta te exige salir de inmediato.",
           requirement: { type: "none" },
           nextSceneId: "n1_2",
           effects: [{ type: "hungerDelta", delta: 1 }],
@@ -41,7 +41,7 @@ Tu linaje Ventrue se rebela ante la inmundicia; un Rey no debería despertar en 
           type: "discipline",
           discipline: "fortitude",
           disciplineTitle: "Protocolo de linaje",
-          text: "Forzar a tu mente a recordar el protocolo de emergencia de la Corte.",
+          text: "Forzar a tu mente a recordar el protocolo de tu linaje.",
           requirement: { type: "discipline", discipline: "fortitude", minLevel: 1 },
           nextSceneId: "n1_1",
           effects: [
@@ -52,7 +52,7 @@ Tu linaje Ventrue se rebela ante la inmundicia; un Rey no debería despertar en 
         {
           id: "n1_0_negacion",
           type: "dialogue",
-          text: "Quedarte inmóvil esperando despertar de esta pesadilla.",
+          text: "Quedarte inmóvil esperando que el amanecer te despierte de esta pesadilla.",
           requirement: { type: "none" },
           nextSceneId: "n1_0",
           effects: [
@@ -60,7 +60,7 @@ Tu linaje Ventrue se rebela ante la inmundicia; un Rey no debería despertar en 
               type: "fatalOutcome",
               id: "fd_teatinos_sun",
               title: "Cenizas en Teatinos",
-              body: "La luz entra por la claraboya. No era despertar: era fuego. La noche termina antes de empezar.",
+              body: "Pasan los minutos. El frío se vuelve absoluto. Un rayo de luz blanca se filtra por la claraboya superior, y no trae alivio: trae fuego.",
             },
           ],
         },

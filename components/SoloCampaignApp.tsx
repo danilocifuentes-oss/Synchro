@@ -7,20 +7,10 @@ import { CLAN_OPTIONS } from "@/lib/character";
 import { disciplineLabel } from "@/lib/sereno";
 import { ensureSoloProgress, isSoloSupportedClan } from "@/lib/soloCampaign/bootstrap";
 import { getSoloChapter, getSoloScene } from "@/lib/soloCampaign/chapters";
-import { checkOptionAvailability, listFailReasons, resolveDisciplineTierText } from "@/lib/soloCampaign/requirementEngine";
-import { filterSoloOptionsForSheet, sortSoloOptionsForDisplay } from "@/lib/soloCampaign/optionPresentation";
+import { checkOptionAvailability, listFailReasons } from "@/lib/soloCampaign/requirementEngine";
 import { loadSheet, normalizeCharacterSheet, saveSheet } from "@/lib/character";
 import { loadSoloProgress, saveSoloProgress } from "@/lib/soloCampaign/progressStore";
-import type { SoloOption, SoloProgress, SoloScene, SoloSceneEffect } from "@/lib/soloCampaign/types";
-import {
-  CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION,
-  getChronicleClanPresentation,
-} from "@/lib/soloCampaign/clanPresentationCopy";
-import {
-  CHRONICLE_PRELUDE_COMMON,
-  CHRONICLE_PRELUDE_CONTENT_VERSION,
-  CHRONICLE_PRELUDE_MASK_STINGER,
-} from "@/lib/soloCampaign/preludeCopy";
+import type { SoloOption, SoloProgress, SoloSceneEffect } from "@/lib/soloCampaign/types";
 import { getPendingNextChapter } from "@/lib/soloCampaign/soloProgressSelectors";
 import { syncActiveBundleFromGlobals } from "@/lib/profileStore";
 import { TechnicalHud } from "@/components/TechnicalHud";
@@ -85,41 +75,6 @@ type Props = {
 
 function clamp(n: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, n));
-}
-
-function resolveSoloSceneBody(
-  scene: SoloScene,
-  flags: Record<string, boolean | undefined>,
-  sheet: CharacterSheet,
-  progress: SoloProgress,
-): string {
-  let body = scene.text;
-  for (const row of scene.flagAppends ?? []) {
-    if (flags[row.flag]) body += `\n\n${row.text}`;
-  }
-  for (const row of scene.contextVariantByState ?? []) {
-    const ok = checkOptionAvailability(
-      {
-        id: "__ctx__",
-        type: "dialogue",
-        text: "",
-        requirement: row.requirement,
-        nextSceneId: scene.id,
-      },
-      sheet,
-      progress,
-    ).available;
-    if (ok) body += `\n\n${row.text}`;
-  }
-  return body;
-}
-
-function isChroniclePreludeDismissed(progress: SoloProgress): boolean {
-  return (progress.chroniclePreludeSeenVersion ?? 0) >= CHRONICLE_PRELUDE_CONTENT_VERSION;
-}
-
-function isChronicleClanIntroDismissed(progress: SoloProgress): boolean {
-  return (progress.chronicleClanPresentationSeenVersion ?? 0) >= CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION;
 }
 
 function applySceneEffectDraft(base: CharacterSheet, flags: Record<string, boolean>, effect: NonNullable<SoloOption["effects"]>[number]) {
@@ -248,8 +203,6 @@ function SoloCampaignScreen({
   const transitionLockRef = useRef(false);
   const reduceMotion = useReducedMotion();
   const [lastRollLine, setLastRollLine] = useState<string>("");
-  const preludeChannelKeyRef = useRef("");
-  const clanChannelKeyRef = useRef("");
   const chapterAdvanceRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -259,51 +212,13 @@ function SoloCampaignScreen({
   const scene = useMemo(() => getSoloScene(progress.chapterId, progress.sceneId), [progress.chapterId, progress.sceneId]);
   const displayedOptions = useMemo(() => {
     if (!scene) return [];
-    return sortSoloOptionsForDisplay(filterSoloOptionsForSheet(scene.options, sheet, progress));
-  }, [scene, sheet, progress]);
-  const clanIntroGateDone = progress.chapterId !== "chapter01" || isChronicleClanIntroDismissed(progress);
+    return scene.options;
+  }, [scene]);
+  const missingOptionCount = Math.max(0, 4 - displayedOptions.length);
   const pendingNextChapter = getPendingNextChapter(progress);
-  const sceneDisplayBody = useMemo(
-    () => (scene ? resolveSoloSceneBody(scene, progress.flags, sheet, progress) : ""),
-    [scene, progress.flags, sheet, progress],
-  );
+  const sceneDisplayBody = useMemo(() => (scene ? scene.text : ""), [scene]);
   const clanLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
-  const preludeStinger =
-    CHRONICLE_PRELUDE_MASK_STINGER[sheet.clan] ??
-    "Tu máscara es la cara que decide financiar hasta que algún testigo cobre en otra moneda.";
-
-  const clanPresentationText = getChronicleClanPresentation(sheet.clan);
-
-  const preludeGateDoneUi = isChroniclePreludeDismissed(progress);
   const openingVitalsApplied = Boolean(progress.flags[SOLO_FLAG_OPENING_VITALS]);
-
-  /** Incrustado en el Nexo: el preludio vive solo en este panel, no en el stream global. */
-  useEffect(() => {
-    if (!emitParalelaNarration || embedded) return;
-    if (preludeGateDoneUi) return;
-    const key = `${profileId}:${CHRONICLE_PRELUDE_CONTENT_VERSION}:prelude`;
-    if (preludeChannelKeyRef.current === key) return;
-    emitParalelaNarration(`${CHRONICLE_PRELUDE_COMMON}\n\n${preludeStinger}`.trim());
-    preludeChannelKeyRef.current = key;
-  }, [emitParalelaNarration, embedded, preludeGateDoneUi, profileId, preludeStinger]);
-
-  useEffect(() => {
-    if (!emitParalelaNarration || embedded) return;
-    if (!preludeGateDoneUi) return;
-    if (progress.chapterId !== "chapter01" || isChronicleClanIntroDismissed(progress)) return;
-    const key = `${profileId}:${CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION}:clan_intro_echo`;
-    if (clanChannelKeyRef.current === key) return;
-    emitParalelaNarration(clanPresentationText);
-    clanChannelKeyRef.current = key;
-  }, [
-    emitParalelaNarration,
-    embedded,
-    preludeGateDoneUi,
-    progress.chapterId,
-    progress.chronicleClanPresentationSeenVersion,
-    profileId,
-    clanPresentationText,
-  ]);
 
   useEffect(() => {
     if (!pendingNextChapter || !scene?.id.endsWith("_end")) return;
@@ -318,7 +233,7 @@ function SoloCampaignScreen({
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const canNarrative = preludeGateDoneUi && clanIntroGateDone && scene?.id === CHRONICLE_OPENING_SCENE_ID;
+    const canNarrative = scene?.id === CHRONICLE_OPENING_SCENE_ID;
     if (!canNarrative || openingVitalsApplied) return;
     const latest = loadSoloProgress(profileId, sheet.clan);
     if (!latest) return;
@@ -335,7 +250,7 @@ function SoloCampaignScreen({
       updatedAt: latest.updatedAt + 1,
     };
     patchProgress(progFlag);
-  }, [preludeGateDoneUi, clanIntroGateDone, scene?.id, openingVitalsApplied, profileId, sheet.clan, patchProgress, onSheetSynced]);
+  }, [scene?.id, openingVitalsApplied, profileId, sheet.clan, patchProgress, onSheetSynced]);
 
   const applyOption = (option: SoloOption) => {
     if (transitionLockRef.current) return;
@@ -510,7 +425,6 @@ function SoloCampaignScreen({
 
   const sceneHeadingId = `solo-scene-title-${scene.id.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
   const hudFilled = CHRONICLE_HEALTH_TRACK_UI - Math.min(sheet.healthDamage, CHRONICLE_HEALTH_TRACK_UI);
-  const mainGameplay = isChroniclePreludeDismissed(progress) && clanIntroGateDone;
   const fatalOutcome = progress.fatalOutcome ?? null;
   const endingId = progress.endingId ?? null;
 
@@ -576,64 +490,7 @@ function SoloCampaignScreen({
         className="relative flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-hidden"
         aria-label="Historia y opciones"
       >
-        {!mainGameplay ? (
-          <div
-            className={`min-h-0 flex-1 overflow-y-auto ${embedded ? "px-3 py-3 sm:px-4" : "px-4 py-5 sm:px-8"}`}
-          >
-            <div className="mx-auto max-w-2xl space-y-6">
-              {!embedded ? (
-                <p className="font-sans text-[10px] uppercase tracking-[0.22em] text-neutral-600">{chapter.title}</p>
-              ) : null}
-
-              {!isChroniclePreludeDismissed(progress) ? (
-                <section className="space-y-4 border border-[var(--terminal)]/25 bg-black/55 p-5 sharp-border-inner">
-                  <>
-                    <p className="whitespace-pre-line text-sm leading-relaxed text-neutral-300">{CHRONICLE_PRELUDE_COMMON}</p>
-                    <p className={`text-sm leading-relaxed italic ${CLAN_TONE[sheet.clan] ?? "text-neutral-200"}`}>{preludeStinger}</p>
-                  </>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = {
-                        ...progress,
-                        chroniclePreludeSeenVersion: CHRONICLE_PRELUDE_CONTENT_VERSION,
-                        flags: { ...progress.flags, chronicle_curtain_seen: true },
-                        updatedAt: progress.updatedAt + 1,
-                      };
-                      patchProgress(next);
-                    }}
-                    className="border border-[var(--terminal)]/40 bg-neutral-950/80 px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-[var(--terminal)]"
-                  >
-                    Continuar
-                  </button>
-                </section>
-              ) : null}
-
-              {isChroniclePreludeDismissed(progress) &&
-              progress.chapterId === "chapter01" &&
-              !isChronicleClanIntroDismissed(progress) ? (
-                <section className="space-y-4 border border-neutral-900 bg-black/45 p-5 sharp-border-inner">
-                  <p className={`text-sm leading-relaxed ${CLAN_TONE[sheet.clan] ?? "text-neutral-200"}`}>{clanPresentationText}</p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = {
-                        ...progress,
-                        chronicleClanPresentationSeenVersion: CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION,
-                        flags: { ...progress.flags, clan_intro_seen: true },
-                        updatedAt: progress.updatedAt + 1,
-                      };
-                      patchProgress(next);
-                    }}
-                    className="border border-[var(--terminal)]/40 bg-neutral-950/80 px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-[var(--terminal)]"
-                  >
-                    Continuar
-                  </button>
-                </section>
-              ) : null}
-            </div>
-          </div>
-        ) : fatalOutcome ? (
+        {fatalOutcome ? (
           <div className={`min-h-0 flex-1 overflow-y-auto ${embedded ? "px-3 py-3 sm:px-4" : "px-4 py-5 sm:px-8"}`}>
             <section className="mx-auto max-w-2xl space-y-4 border border-red-900/50 bg-black/55 p-6 sharp-border-inner">
               <p className="font-sans text-[10px] uppercase tracking-[0.22em] text-red-300">Muerte definitiva · {fatalOutcome.id}</p>
@@ -705,11 +562,6 @@ function SoloCampaignScreen({
                     <div className="solo-book-prose font-serif text-[15px] font-normal leading-[1.82] tracking-[0.015em] text-neutral-200">
                       <p className="whitespace-pre-line">{sceneDisplayBody}</p>
                     </div>
-                    {scene.clanFlavor?.[sheet.clan] ? (
-                      <p className={`border-l-2 border-[color:var(--accent-clan)]/35 pl-4 font-serif text-sm italic leading-relaxed ${CLAN_TONE[sheet.clan] ?? "text-neutral-300"}`}>
-                        {scene.clanFlavor[sheet.clan]}
-                      </p>
-                    ) : null}
                   </section>
                 </div>
               </div>
@@ -721,10 +573,15 @@ function SoloCampaignScreen({
                   ) : null}
 
                   <div className="space-y-2.5">
+                    {missingOptionCount > 0 ? (
+                      <p className="border border-amber-900/50 bg-amber-950/25 px-3 py-2 text-[11px] text-amber-200">
+                        Faltan {missingOptionCount} opciones para cumplir el mínimo de 4 en esta escena ({scene.id}).
+                      </p>
+                    ) : null}
                     {displayedOptions.map((option) => {
                       const state = checkOptionAvailability(option, sheet, progress);
                       const fail = listFailReasons(option, sheet, progress);
-                      const optionText = resolveDisciplineTierText(option, sheet);
+                      const optionText = option.text;
                       const typeLine = OPTION_TYPE_LABEL[option.type];
                       const choiceLabel =
                         option.type === "dialogue"
@@ -786,10 +643,12 @@ function SoloCampaignScreen({
                           }
                           const backSnap = { chapterId: progress.chapterId, sceneId: progress.sceneId };
                           const prevStack = progress.soloSceneBackStack ?? [];
+                          const consumedFlag = `chapter_pending_${target}`;
                           const next: SoloProgress = {
                             ...progress,
                             chapterId: target,
                             sceneId: targetStart,
+                            flags: { ...progress.flags, [consumedFlag]: false },
                             visitedSceneIds: Array.from(new Set([...(progress.visitedSceneIds ?? []), targetStart])),
                             soloSceneBackStack: [...prevStack, backSnap].slice(-SOLO_BACK_STACK_LIMIT),
                             updatedAt: progress.updatedAt + 1,

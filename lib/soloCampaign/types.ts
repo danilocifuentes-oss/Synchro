@@ -104,19 +104,11 @@ export type SoloProgress = {
   stateTags?: string[];
   endingId?: SoloEndingId | null;
   fatalOutcome?: { id: string; title: string; body: string } | null;
-  /**
-   * Última versión del preludio cronista que el jugador descartó con "Comenzar con esta voz".
-   * Inferior a `CHRONICLE_PRELUDE_CONTENT_VERSION` ⇒ mostrar cortina de nuevo.
-   */
+  /** Campo legado; reservado para migraciones de progreso. */
   chroniclePreludeSeenVersion?: number;
-  /**
-   * Última versión de la intro de linaje (tras el preludio) que el jugador cerró en cap. 1.
-   * Inferior a `CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION` ⇒ mostrar intro de nuevo.
-   */
+  /** Campo legado; reservado para migraciones de progreso. */
   chronicleClanPresentationSeenVersion?: number;
-  /**
-   * Por capítulo que define contexto (`SOLO_CHAPTER_CONTEXT_REGISTRY`): última versión de texto ya vista.
-   */
+  /** Campo legado; reservado para migraciones de progreso. */
   chapterContextSeen?: Record<string, number>;
   flags: Record<string, boolean>;
   visitedSceneIds: string[];

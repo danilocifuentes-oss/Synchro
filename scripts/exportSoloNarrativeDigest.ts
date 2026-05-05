@@ -12,15 +12,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import type { ClanId } from "@/lib/character";
 import { SOLO_SUPPORTED_CLANS } from "@/lib/soloCampaign/bootstrap";
-import {
-  CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION,
-  CHRONICLE_CLAN_PRESENTATIONS,
-  CHRONICLE_CLAN_PRESENTATIONS_RESERVED,
-} from "@/lib/soloCampaign/clanPresentationCopy";
-import type { SoloChapterContextBlock } from "@/lib/soloCampaign/chapterContextCopy";
-import { SOLO_CHAPTER_CONTEXT_REGISTRY } from "@/lib/soloCampaign/chapterContextCopy";
 import {
   CHRONICLE_HEALTH_TRACK_UI,
   CHRONICLE_OPENING_SCENE_ID,
@@ -30,11 +22,6 @@ import {
 } from "@/lib/soloCampaign/chronicleMechanics";
 import { SOLO_CHAPTERS } from "@/lib/soloCampaign/chapters";
 import type { SoloChapter, SoloOption, SoloScene } from "@/lib/soloCampaign/types";
-import {
-  CHRONICLE_PRELUDE_COMMON,
-  CHRONICLE_PRELUDE_CONTENT_VERSION,
-  CHRONICLE_PRELUDE_MASK_STINGER,
-} from "@/lib/soloCampaign/preludeCopy";
 import {
   SOLO_NARRATIVE_ARCHITECT_PROMPT_CONTENT_VERSION,
   SOLO_NARRATIVE_ARCHITECT_SYSTEM_PROMPT_ES,
@@ -125,15 +112,6 @@ function summarizeChapter(ch: SoloChapter): Record<string, unknown> {
   };
 }
 
-/** Mapa efectivo clan → texto máscara (rellena sólo huecos conocidos si se quiere tabla completa). */
-function preludeStingersFilled(): Partial<Record<ClanId, string>> & { _fallback_solo_sin_entrada?: string } {
-  const fallback =
-    "Tu máscara es la cara que decide financiar hasta que algún testigo cobre en otra moneda.";
-  return {
-    ...CHRONICLE_PRELUDE_MASK_STINGER,
-    _fallback_solo_sin_entrada: fallback,
-  };
-}
 
 const PROMPT_ANALISIS_ES = `Actúas como editor de narrative design y QA de una campaña IF en español (V:tM V5 fan, segunda persona).
 
@@ -152,19 +130,6 @@ Cita IDs de escenas y opciones (id) cuando propongas cambios concretos.
 
 Tras el bloque de instrucciones, el usuario te pegará un único objeto JSON (empieza tras la línea que dice ---DATOS_JSON---). Úsalo como fuente de verdad; no inventes escenas ni opciones que no aparezcan ahí.`;
 
-function summarizeChapterContexts(): Record<
-  string,
-  { contentVersion: number; label: string; body: string }
-> {
-  const out: Record<string, { contentVersion: number; label: string; body: string }> = {};
-  for (const [k, v] of Object.entries(SOLO_CHAPTER_CONTEXT_REGISTRY)) {
-    const b = v as SoloChapterContextBlock | undefined;
-    if (!b) continue;
-    out[k] = { contentVersion: b.contentVersion, label: b.label, body: b.body };
-  }
-  return out;
-}
-
 async function main(): Promise<void> {
   const digest = {
     _meta: {
@@ -175,12 +140,9 @@ async function main(): Promise<void> {
       archivo_fuente_codigo: [
         "lib/soloCampaign/chapters/*.ts",
         "lib/soloCampaign/types.ts",
-        "lib/soloCampaign/preludeCopy.ts",
-        "lib/soloCampaign/clanPresentationCopy.ts",
-        "lib/soloCampaign/chapterContextCopy.ts",
         "lib/soloCampaign/chronicleMechanics.ts",
         "lib/soloCampaign/architectPromptCopy.ts",
-        "components/SoloCampaignApp.tsx (flujo cortinas / eco)",
+        "components/SoloCampaignApp.tsx",
       ],
       nota_instrucciones_IA:
         "COPIAR-PEGAR-IA.txt: ---INSTRUCCIONES--- (QA digest), ---SYSTEM_PROMPT_NARRATIVE_ARCHITECT--- (diseño/rewrite), ---DATOS_JSON---.",
@@ -191,16 +153,7 @@ async function main(): Promise<void> {
         "Las capas opcionales clanFlavor sólo están definidas en algunas escenas y suelen incluir sólo Brujah/Ventrue/Toreador/Malkavian; otros linajes ven la narracion base.",
     },
     cronica: {
-      versiones_persistentes_save: {
-        CHRONICLE_PRELUDE_CONTENT_VERSION,
-        CHRONICLE_CLAN_PRESENTATION_CONTENT_VERSION,
-      },
       shell: {
-        preludio_comun_segunda_persona: CHRONICLE_PRELUDE_COMMON,
-        preludio_stingers_mascara: preludeStingersFilled(),
-        clan_intro_caps1: CHRONICLE_CLAN_PRESENTATIONS,
-        clan_intro_reservados_futuro: CHRONICLE_CLAN_PRESENTATIONS_RESERVED,
-        capitulos_contexto_previo: summarizeChapterContexts(),
         mecanica_escena_primera_codex: {
           CHRONICLE_OPENING_SCENE_ID,
           CHRONICLE_HEALTH_TRACK_UI_CAJONES: CHRONICLE_HEALTH_TRACK_UI,
