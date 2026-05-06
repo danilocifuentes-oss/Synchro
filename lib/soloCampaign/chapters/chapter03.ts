@@ -267,7 +267,7 @@ RESULTADO: humanityDelta: -1 | setFlag: sabotaje_exitoso | IR A [ESCENA 3.END]`,
           type: "dialogue",
           text: `OPCIÓN D [RIESGO - INSTINTO]: Si tienes setFlag: resistencia_toxica, consumir una parte de la Hiel para entender su poder.
 
-PUENTE: Un impulso oscuro te domina. Como Ventrue, buscas el control absoluto, incluso del veneno. Llevas el fluido a tus labios. Sabor a ceniza, relámpagos y una memoria ajena de un Santiago ardiendo en el pasado inunda tu mente.
+PUENTE: Un impulso oscuro te domina. Buscas control absoluto, incluso sobre el veneno. Llevas el fluido a tus labios. Sabor a ceniza, relámpagos y una memoria ajena de un Santiago ardiendo en el pasado inunda tu mente.
 
 CONSECUENCIA: Tu sangre se altera permanentemente. Ganas una percepción distorsionada de la realidad que te permite ver rastros de Hiel en otros vástagos, pero tu Bestia se vuelve mucho más difícil de controlar.
 
@@ -292,11 +292,11 @@ NARRACIÓN: Sales de las entrañas de la tierra justo cuando los camiones de rep
 
 De las sombras del Mercado emerge de nuevo Doña Inés. Te observa con una mirada escrutadora buscando manchas de Hiel en el paño de tu traje. «Has cumplido», dice en un tono cortante. «Pero lo que has encontrado requiere una investigación más profunda. Hay una deuda pendiente en los libros de la ciudad. Debemos ir a la Biblioteca Nacional antes de que el sol reclame las calles».
 
-BIFURCACIÓN DE SALIDA (LÓGICA PARA CAPÍTULO 4)
-Si liberaste a la prisionera (marca_de_la_hiel): debes decidir si la entregas a la Corte o la escondes mientras te diriges al centro — ruta Archivista.
-Si sellaste el nexo (nexo_sellado): tu estatus con el Príncipe sube, facilitando el acceso a los archivos prohibidos — ruta política.
-Si consumiste la Hiel (sangre_corrupta): Inés nota algo extraño en tus ojos; el trayecto a la Biblioteca será una prueba de voluntad para no atacar a tu propia escolta — ruta del renegado.
-Si sabotaje_exitoso (sin las anteriores): continúas hacia la Biblioteca con un informe más frío y una carga moral distinta.`,
+No hay regreso neutral desde Mapocho.  
+Si liberaste a la prisionera, tendrás que decidir qué verdad entregas y cuál ocultas.  
+Si sellaste el nexo, el Palacio te abrirá puertas por eficacia, no por afecto.  
+Si bebiste Hiel, cada paso hacia la Biblioteca será también una prueba contra tu propia Bestia.  
+Y si solo saboteaste y saliste con vida, cargarás un informe limpio en papel y sucio en conciencia.`,
       contextVariantByState: [
         {
           requirement: { type: "flag", flag: "marca_de_la_hiel", equals: true },

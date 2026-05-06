@@ -1,16 +1,16 @@
 import type { CharacterSheet, ClanId } from "@/lib/character";
-import { chapter01 } from "@/lib/soloCampaign/chapters/chapter01";
+import { getChronicleDefinition, resolveChronicleChapterEntrySceneId } from "@/lib/soloCampaign/chronicleRegistry";
 import { loadSoloProgress, saveSoloProgress } from "@/lib/soloCampaign/progressStore";
 import type { SoloProgress } from "@/lib/soloCampaign/types";
 
-export const SOLO_SUPPORTED_CLANS: ClanId[] = ["brujah", "ventrue", "toreador", "malkavian"];
+export const SOLO_SUPPORTED_CLANS: ClanId[] = getChronicleDefinition().supportedClans;
 
 export function isSoloSupportedClan(clan: ClanId): boolean {
   return SOLO_SUPPORTED_CLANS.includes(clan);
 }
 
 function startSceneForClan(): string {
-  return chapter01.startSceneId;
+  return resolveChronicleChapterEntrySceneId(getChronicleDefinition().startChapterId) ?? "n1_0";
 }
 
 /** Garantiza un `SoloProgress` persistido para perfil + clan (usado al montar el Nexo en SOL). */
@@ -30,7 +30,7 @@ export function ensureSoloProgress(profileId: string, sheet: CharacterSheet): So
       reputation: 0,
       chronicleExperience: 0,
       fragmentation: 0,
-      chapterId: "chapter01",
+      chapterId: getChronicleDefinition().startChapterId,
       sceneId: startSceneId,
       activeRoute: "main",
       stateTags: [],
@@ -56,7 +56,7 @@ export function ensureSoloProgress(profileId: string, sheet: CharacterSheet): So
     reputation: 0,
     chronicleExperience: 0,
     fragmentation: 0,
-    chapterId: "chapter01",
+    chapterId: getChronicleDefinition().startChapterId,
     sceneId: startSceneId,
     activeRoute: "main",
     stateTags: [],

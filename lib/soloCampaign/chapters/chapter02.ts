@@ -145,6 +145,21 @@ RESULTADO: humanityDelta: -1 | setFlag: perfil_peligroso | IR A [ESCENA 2.1]`,
           nextSceneId: "n2_1",
           effects: [{ type: "humanityDelta", delta: -1 }, { type: "setFlag", flag: "perfil_peligroso" }],
         },
+        {
+          id: "n2_0_famenatural",
+          type: "dialogue",
+          text: `OPCIÓN E [RIESGO - INSTINTO]: Si tu primera caza fue un arrebato salvaje, llegar a la verja con el rastro del depredador aún en los ojos.
+
+PUENTE: No finges compostura de salón: mantienes el paso firme y la mirada demasiado quieta. Los ghouls de entrada intercambian una seña; no les cabe duda de que eres «animal» hasta que Inés apriete el protocolo.
+
+CONSECUENCIA: La Torre te cataloga como perfil volátil por hambre recién domada, no por insolencia declamada.
+
+RESULTADO: setFlag: reputacion_animal | IR A [ESCENA 2.1]`,
+          requirement: { type: "flag", flag: "caza_violenta", equals: true },
+          visibilityRequirement: { type: "not", requirement: { type: "flag", flag: "rastro_fuerza_bruta", equals: true } },
+          nextSceneId: "n2_1",
+          effects: [{ type: "setFlag", flag: "reputacion_animal" }],
+        },
       ],
     },
     {

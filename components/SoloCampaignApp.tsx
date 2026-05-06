@@ -9,8 +9,7 @@ import { ensureSoloProgress, isSoloSupportedClan } from "@/lib/soloCampaign/boot
 import {
   getSoloChapter,
   getSoloScene,
-  resolveChapter08EntrySceneId,
-  resolveChapter09EntrySceneId,
+  resolveChapterEntrySceneId,
 } from "@/lib/soloCampaign/chapters";
 import { checkOptionAvailability, listFailReasons, resolveSoloScenePlayerText } from "@/lib/soloCampaign/requirementEngine";
 import { listPlayerVisibleSoloOptions } from "@/lib/soloCampaign/optionPresentation";
@@ -362,6 +361,7 @@ function SoloCampaignScreen({
     return listPlayerVisibleSoloOptions(scene.options, sheet, progress);
   }, [scene, sheet, progress]);
   const pendingNextChapter = getPendingNextChapter(progress);
+  const collapseEndOptions = Boolean(pendingNextChapter && scene?.id.endsWith("_end"));
   const scenePanels = useMemo(() => {
     if (!scene) return { context: null as string | null, narration: "" };
     const raw = resolveSoloScenePlayerText(scene, sheet, progress);
@@ -705,8 +705,9 @@ function SoloCampaignScreen({
                     <p className="text-center font-sans text-[11px] leading-relaxed text-neutral-400">{lastRollLine}</p>
                   ) : null}
 
-                  <div className="space-y-2.5">
-                    {displayedOptions.map((option) => {
+                  {!collapseEndOptions ? (
+                    <div className="space-y-2.5">
+                      {displayedOptions.map((option) => {
                       const parsedOpt = parseOptionIaPanels(option.text);
 
                       const state = checkOptionAvailability(option, sheet, progress);
@@ -768,8 +769,15 @@ function SoloCampaignScreen({
                           ) : null}
                         </button>
                       );
-                    })}
-                  </div>
+                      })}
+                    </div>
+                  ) : (
+                    <div className="rounded-sm border border-white/[0.06] bg-black/25 px-4 py-3">
+                      <p className="text-[11px] leading-relaxed text-neutral-400">
+                        Ruta cerrada para esta escena. Usa el avance de capítulo para continuar la crónica.
+                      </p>
+                    </div>
+                  )}
 
                   {endingId ? (
                     <div className="border-t border-white/[0.04] pt-4">
@@ -789,12 +797,7 @@ function SoloCampaignScreen({
                           transitionLockRef.current = true;
                           const target = pendingNextChapter;
                           const targetChapter = getSoloChapter(target);
-                          const targetStart =
-                            target === "chapter08"
-                              ? resolveChapter08EntrySceneId(progress.flags)
-                              : target === "chapter09"
-                                ? resolveChapter09EntrySceneId(progress.flags)
-                                : (targetChapter?.startSceneId ?? null);
+                          const targetStart = resolveChapterEntrySceneId(target, progress.flags) ?? targetChapter?.startSceneId ?? null;
                           if (!targetChapter || !targetStart) {
                             transitionLockRef.current = false;
                             return;

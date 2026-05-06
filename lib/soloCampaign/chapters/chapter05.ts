@@ -330,7 +330,11 @@ CONSECUENCIA: Tu llegada es declaración de independencia o de guerra ceremonial
 RESULTADO: willpowerDelta: +1 | setFlag: desafio_abierto_corte | IR A [ESCENA 5.END]`,
           requirement: { type: "discipline", discipline: "presence", minLevel: 1 },
           nextSceneId: "n5_end",
-          effects: [{ type: "willpowerDelta", delta: 1 }, { type: "setFlag", flag: "desafio_abierto_corte" }],
+          effects: [
+            { type: "willpowerDelta", delta: 1 },
+            { type: "setFlag", flag: "desafio_abierto_corte" },
+            { type: "setFlag", flag: "guerra_abierta_principe" },
+          ],
         },
         {
           id: "n5_2_metro_catacumbas",
@@ -379,12 +383,12 @@ NARRACIÓN: Estás frente al objetivo declarado. La Catedral no es sólo arquite
 
 Un viento frío raspa la piedra y levanta hojas muertas contra la luz de faroles. La Guardia de la Torre bloquea puertas principales; el aire vibra con la misma electricidad púrpura que conociste bajo Mapocho. El Acto II termina en este umbral: al cruzarlo dejas de figurar como peón y pasas a nombre propio en el Tratado… o a otra línea de víctimas de 1814.
 
-BIFURCACIÓN LÓGICA PARA EL CAPÍTULO 6
-Verdad: lore del Ancla / primogénito + aliado del Senescal o rastro del Traje Gris → asalto decidido al vínculo interior.
-Ambición: guerra_abierta_principe declarada antes → toma frontal simbólica del ancla en plaza.
-Superviviente: aproximación sigilosa desde interludio u otra ruta limpia (escape_limpio_5) → medir ritual y sombras antes del movimiento mayor.
-Entrada catacumbas: bandera entrada_por_catacumbas → el capítulo puede abrir desde galería técnica bajo plaza.
-Desafío abierto: bandera desafio_abierto_corte → la primera escena en ancla enfatiza el cruce verbal o tenso con Doña Inés.`,
+No cruzarás esta puerta de la misma manera según lo que ya cargues encima.  
+Si dominas la verdad del Ancla y tienes un aliado en la sombra, irás directo al corazón del vínculo.  
+Si declaraste guerra abierta, la plaza te pedirá sostener ese desafío con acero y nombre propio.  
+Si llegaste como superviviente, primero medirás respiraciones, rutas y ángulos antes de tocar el ritual.  
+Y si ya abriste la vía subterránea, la piedra te tragará por catacumbas antes de cualquier ceremonia pública.  
+Todo converge aquí: fe, sangre y memoria.`,
       contextVariantByState: [
         {
           requirement: { type: "flag", flag: "secreto_del_primogenito", equals: true },
@@ -519,7 +523,7 @@ RESULTADO: chapter06_ruta_superviviente_ancla | chapter_pending_chapter06`,
         {
           id: "n5_end_default",
           type: "dialogue",
-          text: "Capítulo 6 genérico: la crónica abre siguiente hito sin ancla etiquetado todavía en banderas nuevas.",
+          text: "Ruta principal: avanzar al Capítulo 6 por el carril de supervivencia, leyendo terreno antes de comprometer corona.",
           requirement: { type: "none" },
           visibilityRequirement: {
             type: "all",
@@ -568,7 +572,10 @@ RESULTADO: chapter06_ruta_superviviente_ancla | chapter_pending_chapter06`,
             ],
           },
           nextSceneId: "n5_end",
-          effects: [{ type: "setFlag", flag: "chapter_pending_chapter06" }],
+          effects: [
+            { type: "setFlag", flag: "chapter06_ruta_superviviente_ancla" },
+            { type: "setFlag", flag: "chapter_pending_chapter06" },
+          ],
         },
       ],
     },

@@ -500,9 +500,9 @@ RESULTADO: hungerDelta: -5 | humanityDelta: -3 | setFlag: diablerista_ancestral 
 
 NARRACIÓN: El acto ya se consumó. Los cimientos de la soberanía de Santiago han cambiado para siempre. El edificio sobre ti gime mientras el sistema místico que lo sostenía se desintegra. Escapas de la cripta justo antes de que el suelo se trague el altar mayor. En la Plaza de Armas, el aire de la noche es frío y ya no huele a Hiel. A lo lejos, el Palacio Bruna empieza a arder: el vacío de poder desata una guerra civil entre los vástagos de la capital.
 
-BIFURCACIÓN LÓGICA PARA EL ACTO FINAL (CAPÍTULO 7)
-Ruta de la Verdad (vinculo_destruido o ancla_muerta): reunir clanes para el asalto final al palacio en llamas → Santiago en llamas.
-Ruta del Poder (usurpador_del_vinculo o diablerista_ancestral): defender tu nuevo trono contra el Príncipe y los leales que sobrevivan → Ascenso del tirano.`,
+Desde aquí la crónica sólo admite dos pulsos:  
+si rompiste la cadena, tocará reunir fuerzas para sobrevivir al incendio político de Santiago;  
+si tomaste el vínculo para ti, tocará defender un trono recién nacido contra todo lo que aún lo niega.`,
       contextVariantByState: [
         {
           requirement: { type: "flag", flag: "vinculo_destruido", equals: true },
@@ -586,7 +586,9 @@ Ruta del Poder (usurpador_del_vinculo o diablerista_ancestral): defender tu nuev
       title: "6.1 · El brindis negro",
       text: `Comedor principal. Una mesa larga con una sola jarra de cristal negro al centro.
 
-El Príncipe alza la voz: "Santiago necesita unidad, y la unidad requiere un sacrificio compartido". Elena te ofrece la copa.`,
+Elena, mayordoma mayor de la Viña del Silencio y mano ceremonial del Príncipe en esta ruta, sostiene la copa con una calma que no admite discusión.
+
+El Príncipe alza la voz: "Santiago necesita unidad, y la unidad requiere un sacrificio compartido". Elena te ofrece el borde del pacto.`,
       contextVariantByState: [
         {
           requirement: { type: "flag", flag: "traicion_ines", equals: true },

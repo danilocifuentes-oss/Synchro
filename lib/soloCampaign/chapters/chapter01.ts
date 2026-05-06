@@ -15,7 +15,7 @@ export const chapter01: SoloChapter = {
 
 NARRACIÓN: El despertar no es un proceso, es una ruptura. Tus ojos se abren a una oscuridad absoluta que, tras unos segundos de estática visual, comienza a definirse en tonos de gris ceniza. Te encuentras sobre un palé de madera astillada; el roce de tu traje de seda contra la superficie rústica es una bofetada a tu sensibilidad aristocrática. El aire huele a tinta de periódico seca de hace décadas y a ese rastro metálico punzante que tu nueva naturaleza identifica con una claridad eléctrica: sangre vieja, derramada y fría.
 
-En tu garganta persiste un incendio químico, el residuo del frasco que un anciano te entregó en la calle Bandera antes de que el mundo se borrara en un fundido a negro. Como Ventrue, el caos de este sótano es una ofensa personal. Un soberano no debería despertar entre prensas oxidadas y moho. El hambre es una aguja que cose tus entrañas, un rugido sordo que exige ser callado, pero tu orgullo exige primero una estructura: ¿quién te ha puesto en esta situación y qué ha sido de tu linaje?`,
+En tu garganta persiste un incendio químico, el residuo del frasco que un anciano te entregó en la calle Bandera antes de que el mundo se borrara en un fundido a negro. El caos de este sótano te resulta una ofensa íntima, aunque todavía no puedas nombrar del todo por qué. Un soberano no debería despertar entre prensas oxidadas y moho. El hambre es una aguja que cose tus entrañas, un rugido sordo que exige ser callado, pero tu orgullo exige primero una estructura: ¿quién te ha puesto en esta situación y qué ha sido de tu linaje?`,
       options: [
         {
           id: "n1_0_fortaleza",
@@ -53,7 +53,7 @@ RESULTADO: setFlag: sello_viña_caida | IR A [ESCENA 1.1]`,
           type: "dialogue",
           text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Incorporarte con dignidad y buscar la salida hacia la calle para recuperar el control del territorio.
 
-PUENTE: Te pones en pie, ajustas los puños de tu camisa y te limpias el polvo de la chaqueta con un gesto automático. No importa la inmundicia del lugar; un Ventrue siempre es el centro de gravedad de la habitación. Subes los peldaños de madera, que crujen bajo tu peso muerto, buscando la salida hacia la calle Teatinos para evaluar la situación desde el asfalto.
+PUENTE: Te pones en pie, ajustas los puños de tu camisa y te limpias el polvo de la chaqueta con un gesto automático. No importa la inmundicia del lugar; te niegas a ceder el centro de gravedad de la habitación. Subes los peldaños de madera, que crujen bajo tu peso muerto, buscando la salida hacia la calle Teatinos para evaluar la situación desde el asfalto.
 
 CONSECUENCIA: Sales a la superficie con rapidez. No tienes pistas internas, pero tu compostura mental está intacta para enfrentar lo que sea que aguarde en la noche de Santiago.
 
@@ -161,7 +161,7 @@ RESULTADO: humanityDelta: -1 | setFlag: rastro_sangre_teatinos | IR A [BLOQUE 2 
       title: "[ESCENA 1.2]: EL TRAYECTO HACIA EL RÍO",
       text: `CONTEXTO: Eje calle Teatinos hacia el norte, cruzando la zona de los ministerios y el Mercado Central. 03:15 AM.
 
-NARRACIÓN: Dejas atrás la imprenta, caminando con la determinación que solo un Ventrue puede fingir cuando su mundo se desmorona. A medida que avanzas hacia el norte, el centro cívico de Santiago se vuelve más sombrío; las luces de vapor de sodio proyectan un tono enfermizo sobre las fachadas de granito. La adrenalina del despertar se disipa, dejando paso a una necesidad física que nunca sentiste como mortal: el Hambre. No es un vacío en el estómago, es una vibración en tus encías y una visión de túnel que transforma el color de los semáforos en el tono del plasma.
+NARRACIÓN: Dejas atrás la imprenta, caminando con una determinación que parece más vieja que esta noche. A medida que avanzas hacia el norte, el centro cívico de Santiago se vuelve más sombrío; las luces de vapor de sodio proyectan un tono enfermizo sobre las fachadas de granito. La adrenalina del despertar se disipa, dejando paso a una necesidad física que nunca sentiste como mortal: el Hambre. No es un vacío en el estómago, es una vibración en tus encías y una visión de túnel que transforma el color de los semáforos en el tono del plasma.
 
 Al llegar a las inmediaciones del Mercado Central, el aire se vuelve más húmedo. El río Mapocho exhala un aliento de barro, metal y ciudad. Ves el Puente de los Carros, una estructura de hierro donde las sombras son lo suficientemente largas para ocultar un pecado. Allí, una figura solitaria fuma apoyada en la baranda, ignorando que se ha convertido en el centro del mundo para un depredador que necesita «calidad» para restaurar su linaje.`,
       options: [
@@ -235,7 +235,7 @@ RESULTADO: hungerDelta: +1 | setFlag: caza_violenta | IR A [ESCENA 1.3]`,
       title: "[ESCENA 1.3]: EL BANQUETE DEL RÍO",
       text: `CONTEXTO: El Puente de los Carros, sobre el cauce del Mapocho. 03:25 AM.
 
-NARRACIÓN: El joven se gira al notar tu proximidad, pero ya es tarde. El Hambre toma el mando absoluto. Como Ventrue, incluso este acto primario de supervivencia debe ser una lección de dominio. Sus ojos reflejan la luz de la calle y, por un instante, tu propia imagen: un monstruo vestido de gala.`,
+NARRACIÓN: El joven se gira al notar tu proximidad, pero ya es tarde. El Hambre toma el mando absoluto. Incluso este acto primario de supervivencia se te impone como una lección de dominio. Sus ojos reflejan la luz de la calle y, por un instante, tu propia imagen: un monstruo vestido de gala.`,
       flagAppends: [
         {
           flag: "presa_perfecta",

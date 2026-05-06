@@ -268,7 +268,7 @@ RESULTADO: healthDamageDelta: -1 | setFlag: principe_capturado | IR A [BLOQUE 2]
 
 NARRACIÓN: La planta está al borde del colapso. El Hombre del Traje Gris da un paso al frente, ajustándose los gemelos de plata mientras sus operativos alinean armas sobre tu pecho. No parece inmutarse; para él esto es un contratiempo logístico.
 
-«El Príncipe era un romántico, Embajador. Creía que la Hiel era un secreto místico. Para nosotros, es el petróleo del siglo XXI», dice con una frialdad que gana sombra frente a tu propia disciplina Ventrue.
+«El Príncipe era un romántico, Embajador. Creía que la Hiel era un secreto místico. Para nosotros, es el petróleo del siglo XXI», dice con una frialdad que intenta imponerse incluso sobre tu disciplina.
 
 El Sastre te ofrece trato final: entregar al Príncipe y sumarte al consejo de administración de la nueva Viña, o quedarte para que la montaña te entierre.`,
       contextVariantByState: [
@@ -587,7 +587,9 @@ Inés ataca con una gracia imposible. El mundo se reduce al acero, el ozono y la
       title: "8.2 · El cielo de Santiago arde",
       text: `La cima del Santa Lucía estalla en fuego fatuo azul y verde. Un terremoto abre grietas en el centro.
 
-Gato aparece en una moto ensangrentado: "Es ahora o nunca. La ciudad se está hundiendo".`,
+De entre humo y sirenas emerge Gato, operador anarquista del cordón y deudor incómodo de media ciudad: llega en una moto ensangrentada con la mirada rota por la urgencia.
+
+"Es ahora o nunca. La ciudad se está hundiendo".`,
       contextVariantByState: [
         {
           requirement: { type: "flag", flag: "cura_encontrada", equals: true },
@@ -656,6 +658,14 @@ Arriba, en el Castillo Hidalgo, la silueta del Príncipe ya no parece humana: re
           type: "dialogue",
           text: "Infiltrarte por los pasajes secretos del cerro.",
           requirement: { type: "flag", flag: "asalto_solitario", equals: true },
+          visibilityRequirement: {
+            type: "all",
+            requirements: [
+              { type: "flag", flag: "asalto_solitario", equals: true },
+              { type: "not", requirement: { type: "flag", flag: "gran_alianza", equals: true } },
+              { type: "not", requirement: { type: "flag", flag: "ines_esclava", equals: true } },
+            ],
+          },
           nextSceneId: "n8_end",
           effects: [{ type: "setFlag", flag: "chapter09_route_asesino" }, { type: "setFlag", flag: "chapter_pending_chapter09" }],
         },
@@ -664,13 +674,20 @@ Arriba, en el Castillo Hidalgo, la silueta del Príncipe ya no parece humana: re
           type: "dialogue",
           text: "Usar a Inés como escudo y arma contra el Príncipe.",
           requirement: { type: "flag", flag: "ines_esclava", equals: true },
+          visibilityRequirement: {
+            type: "all",
+            requirements: [
+              { type: "flag", flag: "ines_esclava", equals: true },
+              { type: "not", requirement: { type: "flag", flag: "gran_alianza", equals: true } },
+            ],
+          },
           nextSceneId: "n8_end",
           effects: [{ type: "setFlag", flag: "chapter09_route_venganza_seda" }, { type: "setFlag", flag: "chapter_pending_chapter09" }],
         },
         {
           id: "n8_end_default",
           type: "dialogue",
-          text: "Continuar al Capítulo 9",
+          text: "Ruta principal: continuar al Capítulo 9 por el ascenso directo, sin ventaja táctica especial.",
           requirement: { type: "none" },
           visibilityRequirement: {
             type: "not",

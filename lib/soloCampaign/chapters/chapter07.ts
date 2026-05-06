@@ -425,7 +425,9 @@ NARRACIÓN: Llegas arriba. El viento de la madrugada azota tu rostro y trae el o
 
 De las sombras de la cúpula emerge una figura que no es el Príncipe sino el Hombre del Traje Gris. Te observa con una sonrisa gélida: «El Príncipe ya no está en el tablero, Embajador. Era solo el jardinero. Ahora los verdaderos dueños de la Viña vienen a reclamar la cosecha».
 
-A lo lejos, hacia la cordillera, una luz púrpura tiñe los cerros: el Capítulo 7 cierra la caída de la Corte local y abre una amenaza a escala nacional.`,
+A lo lejos, hacia la cordillera, una luz púrpura tiñe los cerros. Si vienes por el arco nuevo, reconoces la ruta de extracción hacia montaña; si vienes por carril legado, entiendes que la guerra de plaza era apenas el primer telón.
+
+El Capítulo 7 cierra la caída de la Corte local y abre una amenaza a escala nacional.`,
       contextVariantByState: [
         {
           requirement: { type: "flag", flag: "rastro_hacia_la_azotea", equals: true },
@@ -461,6 +463,7 @@ A lo lejos, hacia la cordillera, una luz púrpura tiñe los cerros: el Capítulo
             requirements: [
               reqArcoPalacioPostAncla,
               { type: "flag", flag: "suministros_reales_capturados", equals: true },
+              { type: "not", requirement: { type: "flag", flag: "mapas_de_la_cordillera", equals: true } },
             ],
           },
           nextSceneId: "n7_end_arc",
@@ -479,6 +482,8 @@ A lo lejos, hacia la cordillera, una luz púrpura tiñe los cerros: el Capítulo
             requirements: [
               reqArcoPalacioPostAncla,
               { type: "flag", flag: "alianza_ines_final", equals: true },
+              { type: "not", requirement: { type: "flag", flag: "mapas_de_la_cordillera", equals: true } },
+              { type: "not", requirement: { type: "flag", flag: "suministros_reales_capturados", equals: true } },
             ],
           },
           nextSceneId: "n7_end_arc",
@@ -526,7 +531,7 @@ A lo lejos, hacia la cordillera, una luz púrpura tiñe los cerros: el Capítulo
         {
           id: "n7_end_arc_cap8_fallback",
           type: "dialogue",
-          text: "Continuar — el siguiente capítulo queda marcado hasta que definamos ramas finas para tu rastro.",
+          text: "Ruta principal: seguir al Capítulo 8 por rastro urbano estándar, sin inteligencia adicional de montaña.",
           requirement: { type: "none" },
           visibilityRequirement: reqArcoSinBifurcacion72,
           nextSceneId: "n7_end_arc",

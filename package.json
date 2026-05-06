@@ -11,7 +11,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "solo:narrative-digest": "tsx scripts/exportSoloNarrativeDigest.ts"
+    "solo:narrative-digest": "tsx scripts/exportSoloNarrativeDigest.ts",
+    "solo:validate": "tsx scripts/validateSoloChronicle.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

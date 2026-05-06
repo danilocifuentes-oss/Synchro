@@ -1,29 +1,21 @@
 import type { SoloChapter, SoloScene } from "@/lib/soloCampaign/types";
-import { chapter01 } from "./chapter01";
-import { chapter02 } from "./chapter02";
-import { chapter03 } from "./chapter03";
-import { chapter04 } from "./chapter04";
-import { chapter05 } from "./chapter05";
-import { chapter06 } from "./chapter06";
-import { chapter07 } from "./chapter07";
-import { chapter08, resolveChapter08EntrySceneId } from "./chapter08";
-import { chapter09, resolveChapter09EntrySceneId } from "./chapter09";
-import { soloEpilogue } from "./epilogue";
+import { getChronicleDefinition, resolveChronicleChapterEntrySceneId } from "@/lib/soloCampaign/chronicleRegistry";
 
-export const SOLO_CHAPTERS: SoloChapter[] = [
-  chapter01,
-  chapter02,
-  chapter03,
-  chapter04,
-  chapter05,
-  chapter06,
-  chapter07,
-  chapter08,
-  chapter09,
-  soloEpilogue,
-];
+export const SOLO_CHAPTERS: SoloChapter[] = getChronicleDefinition().chapters;
 
-export { resolveChapter08EntrySceneId, resolveChapter09EntrySceneId };
+export function resolveChapterEntrySceneId(chapterId: string, flags?: Record<string, boolean>): string | null {
+  return resolveChronicleChapterEntrySceneId(chapterId, flags);
+}
+
+/** Compat API (legacy): conservar para no romper llamadas existentes. */
+export function resolveChapter08EntrySceneId(flags?: Record<string, boolean>): string {
+  return resolveChronicleChapterEntrySceneId("chapter08", flags) ?? "n8_0";
+}
+
+/** Compat API (legacy): conservar para no romper llamadas existentes. */
+export function resolveChapter09EntrySceneId(flags?: Record<string, boolean>): string {
+  return resolveChronicleChapterEntrySceneId("chapter09", flags) ?? "n9_0";
+}
 
 export function getSoloChapter(chapterId: string): SoloChapter | null {
   return SOLO_CHAPTERS.find((c) => c.id === chapterId) ?? null;
