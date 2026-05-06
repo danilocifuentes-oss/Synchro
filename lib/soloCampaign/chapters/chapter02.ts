@@ -138,11 +138,11 @@ RESULTADO: setFlag: etiqueta_validada | IR A [ESCENA 2.1]`,
         {
           id: "n2_0_estandar",
           type: "dialogue",
-          text: `OPCIÓN C — sin etiqueta entrenada: [Verja · compostura mínima]: Esperar el anillo de Inés sin coreografía de salón, sólo presencia sobria.
+          text: `OPCIÓN C — sin etiqueta entrenada: [Verja]: Detenerte en la verja y dejar que Inés abra el protocolo mientras tú mantienes compostura mínima: manos quietas, voz baja, sin provocar ni adular.
 
-PUENTE: No finjas linaje que no dominas; tampoco retes con la mirada. El arco se abre por el sello ajeno, no por tu título.
+PUENTE: No exhibes el virtuosismo de quien dominó Etiqueta; tampoco desafías al personal. Dejas que el anillo y el nombre del Príncipe hablen por ti.
 
-CONSECUENCIA: Entras sin el sello de «sujeto estable»; nadie te festeja, pero el umbral cede.
+CONSECUENCIA: Entrada aceptada sin el refuerzo de confianza que da la etiqueta fina; los ghouls no te abren paso de rodillas, pero el umbral cede.
 
 RESULTADO: (Avance estándar) | IR A [ESCENA 2.1]`,
           requirement: { type: "none" },
@@ -261,7 +261,7 @@ RESULTADO: willpowerDelta: -1 | setFlag: advertencia_a_ines | IR A [BLOQUE 2]`,
 
 NARRACIÓN: Las hojas de la puerta pesan; el aire del salón se ordena solo para él. No hay trono: hay luz tenue, alfombra que absuelve el paso y un hombre de espaldas contando luces más allá del follaje. La habitación aprieta el pecho como si filtrara el oxígeno a placer—es el hábito de quien acostumbró a la ciudad a arrodillarse antes que tú nacieras de nuevo.
 
-«Santiago es un cuerpo que exige equilibrio», dice sin volverse. «Y bajo Mapocho hay un nexo de infección que ya mancha la Mascarada y la sangre de los que juramos esta casa. Irás a la estación. Hallarás el origen de la Hiel y lo cerrarás». Sobre el mármol: un sobre lacrado y una daga de plata con runas que hieren la mirada.`,
+«Santiago es un cuerpo que exige equilibrio», dice sin volverse. «Y bajo el río Mapocho hay un nexo de infección que ya mancha la Mascarada y la sangre de los que juramos esta casa. Irás a la estación. Hallarás el origen de la Hiel y lo cerrarás». Sobre el mármol: un sobre lacrado y una daga de plata con runas que hieren la mirada.`,
       options: [
         {
           id: "n2_2_dominate",
@@ -297,11 +297,11 @@ RESULTADO: setFlag: sospecha_principe | IR A [ESCENA 2.3]`,
         {
           id: "n2_2_dialogo_oficial",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: [Salón · juramento cortés]: Aceptar con la fórmula que el palacio entiende—orden, lealtad, resultado.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: [Salón]: Aceptar el encargo con formula de lealtad—«consideradlo en marcha»—y tomar sobre y daga como emblemas del mandato.
 
-PUENTE: «Lo que esta ciudad necesita como orden, lo ejecuto», con voz baja y mano firme. Cierras los dedos sobre lacre y plata; el metal enfría la palma como recordatorio.
+PUENTE: «Vuestro deseo es el orden de esta ciudad», respondes con la mesura que el salón premia. Tomas lacre y filo frío; la plata marca la palma y no perdona titubeos.
 
-CONSECUENCIA: La Torre te registra como agente: placa, protocolo de garaje si tu ficha lo tolera, margen de calle que un invitado no recibe.
+CONSECUENCIA: La administración de la Torre en el Palacio Bruna te ficha como agente: credencial visible, acceso al estacionamiento de casa cuando tu evaluación lo permite, y trato de operativo que un invitado de paso no recibe.
 
 RESULTADO: setFlag: agente_oficial | IR A [ESCENA 2.3]`,
           requirement: { type: "none" },
@@ -330,26 +330,51 @@ RESULTADO: willpowerDelta: -1 | setFlag: secreto_del_sastre | IR A [ESCENA 2.3]`
     {
       id: "n2_3",
       chapterId: "chapter02",
-      title: "[ESCENA 2.3]: LA SALIDA AL PARQUE FORESTAL",
+      title: "[ESCENA 2.3]: JARDÍN, GARAJE Y BRIEFING",
       text: `CONTEXTO: Jardines traseros del Palacio Bruna. 04:15 AM.
 
-NARRACIÓN: Sales del salón con el sobre en el bolsillo. Inés te guía por un pasillo lateral que desemboca en el jardín trasero; el golpe del aire frío del Parque Forestal viene de frente con olor a humedad y tierra pisada. Más allá de los setos, las luces de la ciudad perforan la bruma como agujas.
-
-Hasta la Estación Mapocho el camino natural es éste: atravesar el parque y seguir el eje del río hacia poniente, ganando cada manzana sobre la negrura aceitosa del Mapocho. Nadie te va a depositar en la puerta: hay que elegir cómo moverse antes de que el tiempo se encoja.`,
+NARRACIÓN: Sales del salón con el sobre en el bolsillo y la daga donde corresponda. Inés te lleva por un pasillo lateral que huele a cera vieja y a cableado de seguridad; al abrirse la puerta, el jardín te golpea con frío, humedad y el rumor lejano del tráfico. Más allá de los setos, las luces de la ciudad perforan la bruma; aún estás en suelo del palacio, pero el aire ya es de calle.`,
       contextVariantByState: [
         {
           requirement: reqAgenteVehiculoTorre,
-          text: `En el garaje lateral ya espera un sedán oscuro matrícula de la Torre. Inés te entrega el manojo: «Llévalo al cordón frente al centro cultural y al paralelo del río; cuando termine la noche devuelves llaves al garaje o me las devuelves a mí y yo cierro la cuenta». El motor enciende bajo, casi manso.
+          text: `Inés no te manda solo a la verja: un corredor de servicio baja hasta un garaje anexo donde el olor a aceite y hormigón reemplaza al incienso del salón. Ahí espera un sedán oscuro con calco discreto de la Torre del Palacio Bruna; un ghoul de garaje mantiene el motor en ralentí sin mirarte a los ojos.
+
+Inés te coloca en la palma el llavero—metal frío, medalla grabada con el sello de Bruna y tres llaves que identifican puerta, ignición y maletero. «Sube por Costanera o como te indique el callejero, pero el cordón de parada es frente al centro cultural y el paralelo del río; al terminar la noche, devuelve esto al garaje o tráemelo a mí y yo cierro la cuenta con ellos». El volante queda a un paso; todavía no has pisado acera.
 
 ${N2_3_BRIEFING_INES_RIBERA}`,
         },
         {
           requirement: { type: "not", requirement: reqAgenteVehiculoTorre },
-          text: `Esta noche no hay coche a tu nombre en el protocolo del palacio: o no firmaste como agente con placa, o tu evaluación en portería cerró el garaje. Inés no dramatiza: marca con el dedo una línea entre los árboles hacia el cordón del parque y el rumor del río, como cerrar un mapa mental del encargo que acabas de aceptar bajo el techo del Príncipe.
+          text: `Esta noche no hay vehículo a tu nombre: o no quedaste fichado como agente con logística de garaje, o portería y evaluación cortaron el acceso. Inés no dramatiza: desde el borde del jardín, donde el seto se abre hacia la verja del parque, te marca con el dedo el arco que sigue el encargo—Forestal, luego el eje del río hacia poniente—hasta que la estación se dibuje en hierro y vidrio.
 
 ${N2_3_BRIEFING_INES_RIBERA}`,
         },
       ],
+      options: [
+        {
+          id: "n2_3_avance_mapocho",
+          type: "dialogue",
+          text: `OPCIÓN T [Transición]: [Hacia el trayecto]: Salir del perímetro del palacio y enfrentar el tramo urbano hasta la Estación Mapocho—con llaves en mano o sólo a pie, según te tocó.
+
+PUENTE: Cruzas la línea donde el mármol y el protocolo ceden al asfalto; el encargo pesa en el bolsillo y las palabras de Inés en la oreja.
+
+CONSECUENCIA: Lo de adentro quedó cerrado; lo de afuera exige decidir cómo recorrer la ciudad antes del alba.
+
+RESULTADO: IR a [ESCENA 2.3.1 · Elección de ruta]`,
+          requirement: { type: "none" },
+          nextSceneId: "n2_3b",
+        },
+      ],
+    },
+    {
+      id: "n2_3b",
+      chapterId: "chapter02",
+      title: "[ESCENA 2.3.1]: HACIA LA ESTACIÓN MAPOCHO",
+      text: `CONTEXTO: Callejón y cordón del Parque Forestal; primera bocanada de ciudad sin manto de salón. 04:20 AM.
+
+NARRACIÓN: Desde aquí hasta la Estación Mapocho el recorrido que todo mortal haría en taxi tú lo debes ganar a sangre y criterio: internar el Forestal donde los árboles rompen la línea de tiro de las cámaras, seguir el eje del río Mapocho hacia poniente, ir manzana a manzana sobre un agua que en esta hora huele a petróleo y a algo violeta que no debería estar en superficie. Nadie te deposita en la puerta como estrella invitada; quien te espera abajo del andén no va a preguntar si llegaste en sedán o en zapatos gastados—sólo si trajiste resultado.
+
+Elige cómo cubrir ese tramo según tu ficha, tu equipo y lo que la noche te dejó sobre los hombros.`,
       options: [
         {
           id: "n2_3_parque_volatile_callejeo",
