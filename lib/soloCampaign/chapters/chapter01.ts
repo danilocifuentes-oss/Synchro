@@ -13,9 +13,28 @@ export const chapter01: SoloChapter = {
       title: "[ESCENA 1.0]: EL DESPERTAR EN LA IMPRENTA",
       text: `CONTEXTO: Sótano de una vieja imprenta en calle Teatinos. 02:45 AM. El aire está estancado, pesado por el olor a solventes químicos y el frío de la piedra subterránea.
 
-NARRACIÓN: El despertar no es un proceso, es una ruptura. Tus ojos se abren a una oscuridad absoluta que, tras unos segundos de estática visual, comienza a definirse en tonos de gris ceniza. Te encuentras sobre un palé de madera astillada; el roce de tu traje de seda contra la superficie rústica es una bofetada a tu sensibilidad aristocrática. El aire huele a tinta de periódico seca de hace décadas y a ese rastro metálico punzante que tu nueva naturaleza identifica con una claridad eléctrica: sangre vieja, derramada y fría.
+NARRACIÓN: El despertar no es un proceso, es una ruptura. Tus ojos se abren a una oscuridad absoluta que, tras unos segundos de estática visual, comienza a definirse en tonos de gris ceniza. Te encuentras sobre un palé de madera astillada; el roce de tu traje de seda contra la superficie rústica es una bofetada a tu sensibilidad aristocrática. El aire huele a tinta de periódico seca de hace décadas y a ese rastro metálico punzante que tu nueva naturaleza identifica con una claridad eléctrica: sangre vieja, derramada y fría.`,
+      options: [
+        {
+          id: "n1_0_intro_continue",
+          type: "dialogue",
+          text: `PASO [IMPRENTA]: Dejar que el cuerpo te diga quién ha vuelto.
 
-En tu garganta persiste un incendio químico, el residuo del frasco que un anciano te entregó en la calle Bandera antes de que el mundo se borrara en un fundido a negro. El caos de este sótano te resulta una ofensa íntima, aunque todavía no puedas nombrar del todo por qué. Un soberano no debería despertar entre prensas oxidadas y moho. El hambre es una aguja que cose tus entrañas, un rugido sordo que exige ser callado, pero tu orgullo exige primero una estructura: ¿quién te ha puesto en esta situación y qué ha sido de tu linaje?`,
+PUENTE: Tratas de respirar y no llega oxígeno como antes: el pecho absorbe sólo frío que no llena pulmón, pero igual lo repites una y otra vez en silencio, como quien marca el compás antes de dirigir una sala vacía. Apoyas la palma en el palé, te impulsas a sentarte; los dedos encuentran tinta pegada entre las astillas y papel húmedo de humedad. El sótano deja de ser un manchón gris para volverse detalle por detalle —prensa a la derecha, cajones amontonados, un hilo largo que gotea de un depósito alto— hasta que algo más viejo que el miedo te obliga a sentir primero la quemadura seca detrás del paladar, y después el entrechocar lejano de tus dientes cuando aprietas mandíbula sin quererlo.
+
+CONSECUENCIA: Ya no sólo ves el sótano: lo habitas desde el nuevo costo de tener boca y garganta que arden cuando la memoria intenta encajar con la última cara que juraste recordar antes del negro absoluto.
+
+RESULTADO: IR A [ESCENA 1.0.1]`,
+          requirement: { type: "none" },
+          nextSceneId: "n1_0_1",
+        },
+      ],
+    },
+    {
+      id: "n1_0_1",
+      chapterId: "chapter01",
+      title: "[ESCENA 1.0.1]: EL PESO DEL DESPERTAR",
+      text: `En tu garganta persiste un incendio químico, el residuo del frasco que un anciano te entregó en la calle Bandera antes de que el mundo se borrara en un fundido a negro. El caos de este sótano te resulta una ofensa íntima, aunque todavía no puedas nombrar del todo por qué. Un soberano no debería despertar entre prensas oxidadas y moho. El hambre es una aguja que cose tus entrañas, un rugido sordo que exige ser callado, pero tu orgullo exige primero una estructura: ¿quién te ha puesto en esta situación y qué ha sido de tu linaje?`,
       options: [
         {
           id: "n1_0_fortaleza",
