@@ -314,7 +314,7 @@ CONSECUENCIA: Quien observa desde la Torre no recibe foto clara antes de tiempo.
 RESULTADO: setFlag: aproximacion_sigilosa_plaza | IR A [ESCENA 5.END]`,
           requirement: { type: "skill", skill: "callejeo", minLevel: 1 },
           nextSceneId: "n5_end",
-          effects: [{ type: "setFlag", flag: "aproximacion_sigilosa_plaza" }],
+          effects: [{ type: "setFlag", flag: "aproximacion_sigilosa_plaza" }, { type: "setFlag", flag: "escape_limpio_5" }],
         },
         {
           id: "n5_2_presencia_calle",
@@ -353,7 +353,7 @@ RESULTADO: hungerDelta: +1 | setFlag: entrada_por_catacumbas | IR A [ESCENA 5.EN
 
 PUENTE: Mides cada cruce con instinto puro: no tienes plan de pasaje ni mapa de catacumba. Llegas con la misma nerviosura que cualquier mortal apurado, pero tu sombra pesa distinto bajo el neón.
 
-CONSECUENCIA: No ganás ventaja táctica clara; tampoco firmás manifiesto abierto como con Presencia.
+CONSECUENCIA: No ganas ventaja táctica clara; tampoco firmas un manifiesto abierto como con Presencia.
 
 RESULTADO: (sin bandera de aproximación prioritaria) | IR A [ESCENA 5.END]`,
           requirement: { type: "none" },

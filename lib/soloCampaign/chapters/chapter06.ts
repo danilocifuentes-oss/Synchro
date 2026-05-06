@@ -709,7 +709,11 @@ Elena abre la puerta: "El tiempo de los secretos terminó. Ahora empieza el tiem
           text: "Buscar a Gato para una alianza desesperada.",
           requirement: { type: "flag", flag: "traicion_principe_vista", equals: true },
           nextSceneId: "n6_v_fin",
-          effects: [{ type: "setFlag", flag: "chapter07_route_rebelde" }, { type: "setFlag", flag: "chapter_pending_chapter07" }],
+          effects: [
+            { type: "setFlag", flag: "deuda_con_gato" },
+            { type: "setFlag", flag: "chapter07_route_rebelde" },
+            { type: "setFlag", flag: "chapter_pending_chapter07" },
+          ],
         },
         {
           id: "n6_v_fin_ch7_escape",
