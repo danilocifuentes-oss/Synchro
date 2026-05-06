@@ -1,5 +1,7 @@
 import type { CharacterSheet } from "@/lib/character";
+import { soloChapterHeadlineForClan } from "@/lib/soloCampaign/chronicleMechanics";
 import { getSoloChapter, getSoloScene } from "@/lib/soloCampaign/chapters";
+import { resolveSoloScenePlayerText } from "@/lib/soloCampaign/requirementEngine";
 import { parseOptionIaPanels, parseSceneIaPanels } from "@/lib/soloCampaign/soloIaPresentation";
 import { loadSoloProgress } from "@/lib/soloCampaign/progressStore";
 
@@ -28,8 +30,9 @@ export function buildSoloNexoDigest(profileId: string, sheet: CharacterSheet): S
 
   const chapter = getSoloChapter(prog.chapterId);
   const scene = getSoloScene(prog.chapterId, prog.sceneId);
-  const parsedScene = parseSceneIaPanels(scene?.text ?? "");
-  const sceneLead = parsedScene.narration.trim() || (scene?.text ?? "").trim();
+  const resolved = scene ? resolveSoloScenePlayerText(scene, sheet, prog) : "";
+  const parsedScene = parseSceneIaPanels(resolved);
+  const sceneLead = parsedScene.narration.trim() || resolved.trim();
 
   const echoLines: string[] = [];
   for (const d of prog.decisionHistory.slice(-5)) {
@@ -38,7 +41,7 @@ export function buildSoloNexoDigest(profileId: string, sheet: CharacterSheet): S
   }
 
   return {
-    chapterTitle: chapter?.title ?? prog.chapterId,
+    chapterTitle: soloChapterHeadlineForClan(chapter?.title ?? prog.chapterId, sheet.clan),
     sceneTitle: scene?.title ?? prog.sceneId,
     sceneLead,
     echoLines: echoLines.slice(-4),

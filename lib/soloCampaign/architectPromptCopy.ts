@@ -29,7 +29,7 @@ Simetría de clan (Flavor): Si una escena declara variantes por linaje para la c
 [MECÁNICAS]
 
 - Opciones de Disciplina: siempre requirement con discipline + minLevel.
-- Efectos: hungerDelta, humanityDelta, willpowerDelta, healthDamageDelta, setFlag, etc.; úsalos con intención, no cosméticos.
+- Efectos: hungerDelta, humanityDelta, willpowerDelta, healthDamageDelta, fragmentationDelta (Malkavian), setFlag, etc.; úsalos con intención, no cosméticos.
 - Evita «trampas de disciplina»: si una rama requiere Auspex, ofrece alternativa por Habilidad o diálogo con coste distinto.
 - Gestión de banderas (Flags): Decisiones fuertes deben persistir huella setFlag usable en capítulos posteriores (incluye flagAppends cuando convenga texto reactivo).
 

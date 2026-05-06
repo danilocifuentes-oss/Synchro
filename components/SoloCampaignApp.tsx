@@ -31,6 +31,7 @@ import {
   CHRONICLE_XP_CRITICAL_EXTRA,
   CHRONICLE_XP_ROLL_SUCCESS_DEFAULT,
   SOLO_FLAG_OPENING_VITALS,
+  soloChapterHeadlineForClan,
 } from "@/lib/soloCampaign/chronicleMechanics";
 import { applyPreRollResourceCost, soloOptionUsesDice } from "@/lib/soloCampaign/rollResourceCost";
 
@@ -54,6 +55,7 @@ function partitionExperienceEffects(branchEffects: SoloSceneEffect[]): { sheetFx
   const sheetFx: SoloSceneEffect[] = [];
   for (const e of branchEffects) {
     if (e.type === "experienceDelta") xpFromNarrative += e.delta;
+    else if (e.type === "fragmentationDelta") continue;
     else sheetFx.push(e);
   }
   return { sheetFx, xpFromNarrative };
@@ -104,6 +106,7 @@ type SoloCommitDraft = {
   nextEndingId: SoloEndingId | null;
   nextFatalOutcome: SoloProgress["fatalOutcome"];
   nextSceneId: string;
+  nextFragmentation: number;
 };
 
 /** Resuelve mecánica y banderas sin persistir (segundo clic aplica efectos visibles). */
@@ -185,6 +188,12 @@ function buildSoloCommitDraft(option: SoloOption, sheet: CharacterSheet, progres
     if (effect.type === "fatalOutcome") nextFatalOutcome = { id: effect.id, title: effect.title, body: effect.body };
   }
 
+  let fragDelta = 0;
+  for (const effect of branchEffects) {
+    if (effect.type === "fragmentationDelta") fragDelta += effect.delta;
+  }
+  const nextFragmentation = clamp((progress.fragmentation ?? 0) + fragDelta, 0, 10);
+
   return {
     option,
     sheetBeforeDecision: sheet,
@@ -202,6 +211,7 @@ function buildSoloCommitDraft(option: SoloOption, sheet: CharacterSheet, progres
     nextEndingId,
     nextFatalOutcome,
     nextSceneId,
+    nextFragmentation,
   };
 }
 
@@ -358,6 +368,7 @@ function SoloCampaignScreen({
     return parseSceneIaPanels(raw);
   }, [scene, sheet, progress]);
   const clanLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
+  const chapterHeadline = chapter ? soloChapterHeadlineForClan(chapter.title, sheet.clan) : "";
   const openingVitalsApplied = Boolean(progress.flags[SOLO_FLAG_OPENING_VITALS]);
 
   useEffect(() => {
@@ -424,6 +435,7 @@ function SoloCampaignScreen({
         playerName: sheet.name?.trim() || progress.playerName,
         clan: sheet.clan,
         humanity: nextSheet.humanity,
+        fragmentation: draft.nextFragmentation,
         chronicleExperience: Math.max(0, (progress.chronicleExperience ?? 0) + chronicleXpThisChoice),
         reputation: progress.reputation + draft.reputationGain,
         sceneId: draft.nextSceneId,
@@ -553,6 +565,14 @@ function SoloCampaignScreen({
               <span className="text-neutral-200">{sheet.name || "Sin nombre"}</span>
               <span className="text-neutral-600"> · </span>
               <span className={CLAN_TONE[sheet.clan] ?? "text-neutral-300"}>{clanLabel}</span>
+              {sheet.clan === "malkavian" ? (
+                <>
+                  <span className="text-neutral-600"> · </span>
+                  <span className="text-cyan-800/90" title="Fragmentación (crónica Malkavian)">
+                    Frag {progress.fragmentation ?? 0}/10
+                  </span>
+                </>
+              ) : null}
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-1">
@@ -653,7 +673,7 @@ function SoloCampaignScreen({
               >
                 <div className="solo-book-page mx-auto max-w-2xl space-y-6 rounded-sm border border-white/[0.07] bg-[linear-gradient(165deg,rgba(18,17,16,0.97)_0%,rgba(8,8,10,0.99)_40%,rgba(5,5,6,1)_100%)] px-5 py-6 shadow-[inset_10px_0_24px_-14px_rgba(255,255,255,0.06),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-8 sm:py-8">
                   <p className="border-b border-white/[0.06] pb-3 font-sans text-[10px] uppercase tracking-[0.28em] text-neutral-500">
-                    <span className="text-neutral-400">{chapter.title}</span>
+                    <span className="text-neutral-400">{chapterHeadline}</span>
                     <span className="mx-2 text-neutral-700">·</span>
                     <span style={{ color: "var(--accent-clan, #a3a3a3)" }}>{scene.title}</span>
                   </p>

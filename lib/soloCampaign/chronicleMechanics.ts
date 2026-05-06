@@ -1,4 +1,4 @@
-import type { CharacterSheet } from "@/lib/character";
+import type { CharacterSheet, ClanId } from "@/lib/character";
 
 /** Pantalla CODEX Nexo muestra hasta 7 cajones de integridad (coherente con CharacterStatusPanel). */
 export const CHRONICLE_HEALTH_TRACK_UI = 7 as const;
@@ -19,6 +19,12 @@ export const CHRONICLE_XP_CRITICAL_EXTRA = 1;
  * Primera escena: integridad mínima (1/7 en HUD), presión vitae / hambruna en 1, leve merma de voluntad.
  * “Puntos de sangre” en UI del Nexo se leen como Presión Vitae (Hambre 0–5); aquí 1 = escala baja.
  */
+/** Título de capítulo en biblioteca: Ventrue por defecto; piel Malkavian en SOL. */
+export function soloChapterHeadlineForClan(title: string, clan: ClanId): string {
+  if (clan !== "malkavian") return title;
+  return title.replace(/\bVENTRUE\b/g, "MALKAVIAN").replace(/\bVentrue\b/g, "Malkavian");
+}
+
 export function applyOpeningChronicleVitals(sheet: CharacterSheet): CharacterSheet {
   const maxH = CHRONICLE_HEALTH_TRACK_UI;
   return {

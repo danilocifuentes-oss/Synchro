@@ -1,0 +1,1036 @@
+SANTIAGO EN CENIZAS · CRÓNICA MALKAVIAN (V3.1)
+CAPÍTULO 1: EL RUIDO DE LAS ESTRELLAS SORDAS (BLOQUE 1/2)
+[ESCENA 1.0]: EL DESPERTAR EN EL CORAZÓN DE LA MÁQUINA
+CONTEXTO: Sótano de una vieja imprenta en calle Teatinos. 02:45 AM. El olor a tinta fresca se mezcla con el sonido de voces que no están allí.
+
+NARRACIÓN: El despertar no es una ruptura, es un reajuste de sintonía. Tus ojos se abren y el techo de la imprenta no es solo cemento; es una red de grietas que parecen latir al ritmo de tu corazón muerto. Te encuentras sobre un palé de madera, pero jurarías que las astillas están susurrando chismes sobre el siglo pasado. El aire está cargado de un polvo plateado que solo tú ves: los restos de los pensamientos de quienes trabajaron aquí.
+
+Tu boca sabe a cobre y a un secreto que olvidaste al morir. En tu mente, la Red de la Locura (la Cobweb) vibra con una nota discordante. Alguien ha tirado de un hilo en Santiago y el eco te ha despertado a ti. Como Malkavian, no buscas el orden, buscas el patrón oculto en el caos.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Escuchar las vibraciones de las máquinas de imprenta para "leer" lo último que se imprimió.
+
+PUENTE: Pones tu mano sobre la rotativa fría. Los engranajes te cuentan una historia de tinta y miedo. Visualizas la última página: un titular sobre "Desapariciones en la Estación Mapocho" y una fe de erratas que se repite obsesivamente: La Hiel es el nombre del olvido.
+
+CONSECUENCIA: Obtienes información profética temprana. Sabes que el peligro tiene un nombre antes que cualquier otro clan.
+
+RESULTADO: willpowerDelta: +1 | setFlag: profecia_la_hiel | IR A [ESCENA 1.1]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Proyectar tu confusión interna sobre las sombras del sótano para ver qué formas adoptan.
+
+PUENTE: Dejas que tu fragmentación fluya hacia afuera. Las sombras en las esquinas se retuercen hasta formar la silueta de un hombre con un traje gris que sostiene una tijera gigante. Entiendes que alguien está cortando los hilos del destino de la ciudad.
+
+CONSECUENCIA: Identificas visualmente al antagonista (El Sastre) mediante un arquetipo mental. Ganas un bono de perspicacia al encontrarlo físicamente.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: vision_del_sastre | IR A [ESCENA 1.1]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Seguir el rastro de una risa infantil que resuena hacia la salida.
+
+PUENTE: No hay niños en una imprenta a las tres de la mañana, pero tus oídos no mienten. Sigues el sonido de una carcajada cristalina que sube por los peldaños de madera. Cada paso que das, el mundo se vuelve un poco más nítido y un poco más aterrador.
+
+CONSECUENCIA: Sales a la superficie con una curiosidad infantil que enmascara tu depredación. Mantienes tu Humanidad alta por ahora.
+
+RESULTADO: (Avance estándar) | IR A [ESCENA 1.1]
+
+[ESCENA 1.1]: EL ESPANTAJOS DE TEATINOS
+CONTEXTO: Calle Teatinos, exterior de la imprenta. El alumbrado público parpadea con un código Morse que solo tú pareces entender.
+
+NARRACIÓN: Santiago se despliega ante ti como un libro de pop-up mal pegado. A pocos metros, tras un contenedor de basura, hay un hombre. Para un Ventrue, sería un vigilante. Para ti, es un puzle incompleto. Sus colores están "desafinados" y el sonido de su radio llega a tus oídos como un graznido de cuervo. Se toca el pecho, nervioso, ocultando un dispositivo que emite ondas de miedo de color amarillo pálido.
+
+OPCIÓN A [DISCIPLINA: DEMENCIA]: Susurrarle al viento para que el vigilante escuche sus propios pecados.
+
+PUENTE: No te acercas. Solo soplas en su dirección, enviando un fragmento de tu propia paranoia. El hombre empieza a rascarse los brazos frenéticamente, gritando sobre "ojos en el cielo" y "el agua púrpura". Lanza la radio al suelo y huye hacia la Alameda.
+
+CONSECUENCIA: El vigilante queda incapacitado mentalmente. Recoges la radio, que ahora emite una voz estática que dice tu nombre real.
+
+RESULTADO: hungerDelta: +1 | setFlag: radio_con_voz_propia | IR A [BLOQUE 2]
+
+OPCIÓN B [HABILIDAD: PERSPICACIA]: Acercarte y preguntarle por qué su sombra tiene una forma diferente a la suya.
+
+PUENTE: Te paras frente a él con una sonrisa demasiado amplia. "Tu sombra se está escapando, ¿sabes?", dices señalando el asfalto. El hombre se aterra, no por tus palabras, sino por la verdad que hay en tus ojos. En su confusión, balbucea que "el señor de la viña" le ordenó mirar el sótano.
+
+CONSECUENCIA: Obtienes el nombre de la facción enemiga de forma críptica. El hombre te entrega una tarjeta con un dibujo de una uva negra antes de salir corriendo.
+
+RESULTADO: setFlag: tarjeta_uva_negra | IR A [BLOQUE 2]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Arrebatarle la radio y obligarlo a decir la "palabra del día".
+
+PUENTE: Te mueves con una brusquedad espasmódica. Le quitas el dispositivo y le sujetas de la solapa. "¿Cuál es el color del ruido?", exiges. El hombre, llorando de terror, grita: "¡Púrpura! ¡Dijo que el ruido es púrpura!".
+
+CONSECUENCIA: Confirmas la asociación visual de la Hiel con el sonido/color púrpura. El vigilante queda marcado por el encuentro.
+
+RESULTADO: setFlag: concepto_ruido_purpura | IR A [BLOQUE 2]
+
+OPCIÓN D [RIESGO - VIOLENCIA]: Beber de él porque sus latidos suenan como tambores de guerra que te molestan.
+
+PUENTE: El ruido de su corazón es demasiado fuerte para la paz de la noche. Te lanzas sobre él para silenciar ese tambor. La sangre tiene un sabor amargo, a café barato y ansiedad, pero logra calmar las voces en tu cabeza por un instante.
+
+CONSECUENCIA: Silencias al testigo permanentemente. El silencio que queda es absoluto, pero sientes que la Red de la Locura vibra con una nota de reproche.
+
+RESULTADO: hungerDelta: -1 | humanityDelta: -1 | setFlag: silencio_sangriento | IR A [BLOQUE 2]
+
+CAPÍTULO 1: EL RUIDO DE LAS ESTRELLAS SORDAS (BLOQUE 2/2)
+[ESCENA 1.2]: EL LABERINTO DE ESPEJOS URBANOS
+CONTEXTO: Eje calle Teatinos hacia el Norte, pasando por el Mercado Central. 03:15 AM.
+NARRACIÓN: El asfalto de Santiago se vuelve líquido bajo tus pies. Las luces de los semáforos no solo regulan el tráfico; parecen ojos de insectos gigantes que parpadean en un código secreto. Caminas hacia el río, atraído por un magnetismo que se siente como un hilo de seda tirando de tu columna vertebral. Al pasar por el Mercado Central, los olores de la ciudad (pescado, hollín, ozono) se convierten en formas geométricas que flotan a tu alrededor.
+
+Llegas al Puente de los Carros. El Mapocho ruge abajo, pero no escuchas agua; escuchas el murmullo de miles de conversaciones perdidas que el río ha arrastrado desde la cordillera. En la baranda, hay un joven. No ves a una persona, ves un reloj biológico que late con una luz roja y cálida. Sus pensamientos gotean sobre el pavimento como miel invisible. El Hambre ya no es un deseo, es una disonancia cognitiva que solo se resuelve con el rojo.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Leer el aura del joven para ver si su "melodía" es compatible con tu fragmentación.
+
+PUENTE: Te enfocas en sus colores. Su aura es de un azul melancólico con chispas de ansiedad plateada. Es una frecuencia perfecta para tu mente fracturada. Si bebes de él, los susurros en tu cabeza se convertirán en una sinfonía coherente, al menos por unos minutos.
+
+CONSECUENCIA: La alimentación será eufórica. Obtendrás una visión clara sobre tu próximo paso, eliminando la confusión del despertar.
+
+RESULTADO: willpowerDelta: +1 | setFlag: alimentacion_sinfónica | IR A [ESCENA 1.3]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Proyectar un "espejismo de compañía" para que el joven te invite a acercarte.
+
+PUENTE: No necesitas esconderte. Haces que el joven vea en ti a un viejo amigo o a alguien que necesita consuelo. Él sonríe y te hace un gesto para que compartas su rincón en el puente. "Pareces haber visto un fantasma", te dice, sin saber que el fantasma es quien le sonríe de vuelta.
+
+CONSECUENCIA: Te acercas sin violencia. El joven se entrega voluntariamente a un trance que facilita la succión sin resistencia.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: invitado_al_beso | IR A [ESCENA 1.3]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Aparecer de repente en su campo de visión y preguntarle "¿A qué hora se apaga el río?".
+
+PUENTE: Te materializas a su lado. El joven se sobresalta, dejando caer su cigarrillo al agua. Tu pregunta lo deja descolocado, abriendo una brecha en su realidad que aprovechas para acortar la distancia. Mientras él intenta procesar tu lógica, tú ya estás contando los latidos de su yugular.
+
+CONSECUENCIA: Generas un estado de confusión que inmoviliza a la presa por unos segundos vitales.
+
+RESULTADO: setFlag: brecha_de_realidad | IR A [ESCENA 1.3]
+
+[ESCENA 1.3]: EL BESO DE LAS MARIPOSAS DE VIDRIO
+CONTEXTO: Baranda del río Mapocho. El agua turbia refleja las luces de la ciudad como diamantes rotos.
+NARRACIÓN: El momento de la verdad. El Hambre es un rugido que apaga todas las demás voces de la Red. Sujetas al joven y el mundo exterior se desvanece; solo quedáis tú, él y el flujo de la vida que está a punto de cambiar de manos.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Beber mientras "ves" sus recuerdos fluir hacia tu mente.
+
+PUENTE: Al clavar tus colmillos, no solo recibes sangre. Recibes imágenes: una madre sonriendo, una carta de despedida, el sabor de la lluvia en el Parque Forestal. Te conviertes en el guardián de su historia mientras vacías su cuerpo.
+
+CONSECUENCIA: Sacias tu sed y ganas información sobre la vida cotidiana de Santiago que podrías usar como disfraz social.
+
+RESULTADO: hungerDelta: -2 | setFlag: ladron_de_memorias | IR A [ESCENA 1.END]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Dejar que la víctima experimente un éxtasis terrorífico mientras bebes.
+
+PUENTE: Inyectas tu locura en su torrente sanguíneo. El joven no siente dolor, siente que está volando sobre los Andes mientras su piel se convierte en cristal. Beber de él es como beber de un sueño febril que te deja vibrando de energía errática.
+
+CONSECUENCIA: Recuperas sangre rápidamente, pero tu nivel de fragmentación aumenta, haciendo que las visiones sean más intensas.
+
+RESULTADO: hungerDelta: -2 | fragmentationDelta: +1 | IR A [ESCENA 1.END]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Una alimentación rápida y funcional para acallar a la Bestia.
+
+PUENTE: No hay poesía, solo necesidad. Muerdes, tragas y sueltas. El joven cae al suelo del puente, vivo pero vacío de voluntad. Te limpias la boca con el dorso de la mano, sintiendo cómo el calor regresa a tus extremidades muertas.
+
+CONSECUENCIA: Alimentación eficiente. No dejas rastro místico, solo un humano confundido que pensará que se desmayó por el frío.
+
+RESULTADO: hungerDelta: -2 | IR A [ESCENA 1.END]
+
+[ESCENA 1.END]: EL ENCUENTRO CON LA MUJER DE PORCELANA
+CONTEXTO: Final del puente, calle Balmaceda. 03:30 AM.
+NARRACIÓN: Te separas de la presa. La Red de la Locura se estabiliza por un momento, permitiéndote ver a la figura que espera bajo el farol. Es Doña Inés. Para tus ojos, ella no es solo una mujer; es una muñeca de porcelana rellena de sombras antiguas. Su voz llega a ti con el eco de una campana de plata rompiéndose.
+
+"Has terminado de jugar con la comida, pequeño profeta", dice ella. Su aura es un muro de orden frío que te molesta los sentidos. "El Príncipe ha tenido un sueño inquieto y tú eres el único que puede interpretarlo. Camina. El Palacio Bruna está llamando a tus piezas del rompecabezas".
+
+[ESCENA 2.0]: EL UMBRAL DE LA JAULA DE ORO
+CONTEXTO: Entrada principal del Palacio Bruna. 03:50 AM. El edificio neoclásico se alza como un mausoleo iluminado por focos que parecen proyectar sombras vivas.
+
+NARRACIÓN: Al llegar a la verja de hierro forjado, los guardias de la Torre —seres grises con ojos cansados de ver lo que no deberían— se tensan. No ven a un invitado; ven una anomalía, un fallo en el sistema de seguridad. Sientes sus miedos como pequeñas agujas amarillas clavándose en tu piel. Uno de ellos aprieta su arma, pero Inés levanta una mano enguantada.
+
+"Es el invitado del Príncipe", dice ella, y su voz suena como el cierre de una cerradura. "Abran. El tiempo no corre igual para él que para nosotros".
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Leer las "huellas de dolor" que los visitantes anteriores dejaron en el pomo de la puerta.
+
+PUENTE: Antes de que el guardia abra, te adelantas. Tocas el frío metal de la entrada. Una descarga de imágenes te golpea: manos sudorosas, dedos temblorosos, el rastro de alguien que entró aquí pidiendo clemencia y salió siendo solo ceniza en el viento. Detectas un rastro reciente de Hiel... alguien con la infección entró hace menos de una hora.
+
+CONSECUENCIA: Sabes que la Corte ya ha sido infiltrada por el veneno que viste en el río. Tu paranoia se vuelve una herramienta de supervivencia.
+
+RESULTADO: willpowerDelta: +1 | setFlag: rastro_hiel_palacio | IR A [ESCENA 2.1]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Hacer que los guardias vean sus propios rostros reflejados en el aire, deformados por la culpa.
+
+PUENTE: Les dedicas una sonrisa que no llega a tus ojos. Dejas que tu fragmentación gotee sobre ellos. Los centinelas parpadean, aterrorizados al ver cómo el aire frente a ellos se convierte en un espejo roto donde sus caras se pudren y se recomponen. Retroceden dos pasos, abriendo la verja con una urgencia febril.
+
+CONSECUENCIA: Has quebrado su disciplina. La seguridad del palacio estará en alerta baja contra ti porque los guardias temen incluso mirarte.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: guardias_aterrados | IR A [ESCENA 2.1]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ETIQUETA]: Hacer una reverencia exagerada a una estatua vacía en el jardín.
+
+PUENTE: Ignoras a los vivos. Te inclinas profundamente ante un pedestal donde no hay nada, saludando a un "marqués" que solo existe en el ángulo muerto de tu ojo izquierdo. Inés suspira, pero los guardias relajan la guardia, clasificándote como un "loco inofensivo". Es el disfraz perfecto.
+
+CONSECUENCIA: Entras sin ser considerado una amenaza física. Ganas libertad de movimiento en el vestíbulo.
+
+RESULTADO: setFlag: bufon_de_la_corte | IR A [ESCENA 2.1]
+
+[ESCENA 2.1]: EL VESTÍBULO DE LOS ECORES PERDIDOS
+CONTEXTO: Gran hall de entrada del Palacio Bruna. El mármol blanco brilla bajo las lámparas de cristal de Bohemia.
+
+NARRACIÓN: El interior del palacio huele a cera de abejas, historia estancada y sangre filtrada. Los espejos de las paredes no te devuelven tu imagen, sino la de una versión de ti que aún respira, o quizá la de quien serás dentro de cien años. Inés se detiene frente a la gran escalinata.
+
+"El Príncipe te recibirá en el Salón Dorado", susurra. "Recuerda: sus oídos son muchos, pero su paciencia es poca. No dejes que tus voces hablen más alto que tu lealtad".
+
+De repente, la Red de la Locura vibra. Escuchas un llanto que proviene de las paredes, una frecuencia que solo un Malkavian podría detectar. No es un fantasma; es un mensaje atrapado en la arquitectura.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Pegar el oído a una de las columnas de mármol para descifrar el llanto.
+
+PUENTE: El frío del mármol contra tu sien te revela la verdad. El llanto es un código. «El Ancla se está soltando... el agua púrpura es el sudor del traidor». Alguien dentro del círculo íntimo del Príncipe está rezumando Hiel.
+
+CONSECUENCIA: Tienes una ventaja política inmensa. Puedes identificar al traidor por el "sonido" de su sangre cuando entres al salón.
+
+RESULTADO: setFlag: secreto_del_ancla | IR A [BLOQUE 2]
+
+OPCIÓN B [HABILIDAD: PERSPICACIA]: Observar el patrón de las grietas en el techo para predecir el futuro de la reunión.
+
+PUENTE: Te dejas caer de espaldas sobre el mármol, mirando hacia arriba. Para Inés, estás teniendo un ataque; para ti, las grietas del fresco del techo son líneas de un mapa. Predicen una caída, una corona rota y una mancha púrpura que lo cubrirá todo. La reunión con el Príncipe terminará en un estallido de violencia o en una revelación traumática.
+
+CONSECUENCIA: Ganas un bono de reflejos para la siguiente escena. No te pillarán por sorpresa.
+
+RESULTADO: setFlag: premonicion_caida | IR A [BLOQUE 2]
+
+OPCIÓN C [RIESGO - INSTINTO]: Si tienes setFlag: radio_con_voz_propia, dejar que la radio emita estática para interrumpir el silencio del Palacio.
+
+PUENTE: Sacas la radio del vigilante. El ruido blanco corta la elegancia del vestíbulo como una sierra eléctrica. La voz entre la estática empieza a recitar los pecados de los Vástagos que están arriba, en el salón. Inés palidece y te arrebata el aparato, pero el daño ya está hecho: las paredes han dejado de susurrar por el miedo.
+
+CONSECUENCIA: Has roto la etiqueta de la Corte. El Príncipe te recibirá con hostilidad, pero también con un respeto nacido del temor a lo que sabes.
+
+RESULTADO: humanityDelta: -1 | setFlag: ruptura_del_silencio | IR A [BLOQUE 2]
+
+CLAN: MALKAVIAN | CAPÍTULO 2: LA CORTE DE LOS ESPEJOS ROTOS (BLOQUE 2/2)
+[ESCENA 2.2]: LA AUDIENCIA DEL REY DE CRISTAL
+CONTEXTO: Gran Salón Dorado del Palacio Bruna. El techo está cubierto de frescos que parecen retorcerse bajo tu mirada. El Príncipe te espera junto a un ventanal.
+
+NARRACIÓN: Las puertas dobles se abren con un suspiro de madera que suena a juicio final. El Salón Dorado no es dorado para ti; es de un amarillo bilioso, el color de la envidia vieja y los secretos podridos. El Príncipe de Santiago está de pie, una silueta negra contra el resplandor de las luces de la ciudad. A medida que te acercas, su Majestad te golpea como una onda de radio a máximo volumen, intentando forzar tu mente a arrodillarse. Pero tú ves las grietas en su corona: hilos púrpuras de Hiel que se enredan en sus tobillos como marionetas de sangre.
+
+"El oráculo llega con los pies manchados de barro del río", dice el Príncipe, y su voz crea ondas en el aire que solo tú puedes ver. "Dime, fragmento de espejo: ¿qué viste en el Mapocho que ha hecho que mis cimientos tiemblen? ¿Es una infección o es una profecía?". Sobre una mesa de mármol, una daga de plata vibra en una frecuencia que te hace sangrar los oídos.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Ignorar sus palabras y señalar directamente la mancha de Hiel invisible que infecta su sombra.
+
+PUENTE: No respondes. Te arrodillas y señalas el suelo, donde la sombra del Príncipe parece tener vida propia, retorciéndose con un brillo violáceo. "El rey tiene parásitos en su sombra", susurras. El salón queda en un silencio sepulcral. El Príncipe palidece; sabe que has visto lo que él intenta ocultar con su voluntad.
+
+CONSECUENCIA: El Príncipe te teme. Te entrega la misión no como un favor, sino para alejarte de su presencia antes de que reveles más verdades.
+
+RESULTADO: willpowerDelta: +1 | setFlag: vision_de_la_sombra_real | IR A [ESCENA 2.3]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Compartir un "chiste" de la Red de la Locura para ver si el Príncipe aún es capaz de sentir miedo.
+
+PUENTE: "Había una vez una ciudad que se olvidó de que era una tumba...", comienzas a reír, una risa que suena como cristales rotos. Proyectas una imagen mental del Palacio Bruna hundiéndose en un mar de sangre púrpura. El Príncipe retrocede un paso, su máscara de hierro se agrieta por un segundo de puro terror místico.
+
+CONSECUENCIA: Has desestabilizado la autoridad del Príncipe. La Guardia de la Torre te vigilará con pánico, pero has ganado una libertad errática dentro del palacio.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: burla_al_principe | IR A [ESCENA 2.3]
+
+OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Aceptar la daga de plata y prometer que "limpiarás los ruidos" de la estación.
+
+PUENTE: Tomas la daga. El metal está tan frío que quema. "El río canta canciones desafinadas, mi señor. Iré a cortarles la lengua", dices con una reverencia que es casi una burla. El Príncipe asiente, aliviado de que aceptes el rol de ejecutor sin hacer demasiadas preguntas incómodas.
+
+CONSECUENCIA: Obtienes el respaldo oficial de la Camarilla. Ganas un salvoconducto que los ghouls de la ciudad respetarán (al menos de día).
+
+RESULTADO: setFlag: agente_de_la_torre | IR A [ESCENA 2.3]
+
+[ESCENA 2.3]: EL PASILLO DE LAS VOCES TEJIDAS
+CONTEXTO: Jardines traseros del Palacio Bruna, salida hacia el Parque Forestal. 04:15 AM.
+
+NARRACIÓN: Sales del calor asfixiante del salón al aire gélido de la noche de Santiago. Inés te escolta hacia una pequeña puerta de hierro en la verja del parque. Para ti, los árboles del Parque Forestal no son plantas; son antenas que captan la estática del miedo de la ciudad. El trayecto hacia la Estación Mapocho se dibuja en tu mente como una línea de fuego púrpura sobre el mapa de la realidad. Inés te entrega un sobre con instrucciones, pero el papel parece arder con una luz que solo tú ves: son palabras ocultas escritas con la sangre de alguien que murió hace siglos.
+
+"El camino es peligroso para alguien que ve demasiado", advierte Inés. "No te pierdas en tus propios laberintos antes de llegar a la estación".
+
+OPCIÓN A [HABILIDAD: CALLEJEO]: Seguir el "olor de los pensamientos" a través del Parque Forestal.
+
+PUENTE: Te internas en el parque, saltando sobre las raíces que parecen dedos que intentan agarrarte. Te guías por los ecos de las conversaciones de los vagabundos y los fantasmas de los amantes que pasaron por aquí. Es una ruta rápida, pero los ruidos del parque intentan colonizar tu mente.
+
+CONSECUENCIA: Llegas a la Estación Mapocho antes que nadie, pero tu mente está al borde de una crisis de fragmentación.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: ruta_del_eco | IR A [CAPÍTULO 3]
+
+OPCIÓN B [HABILIDAD: SIGILO]: Caminar por la ribera del río Mapocho, escuchando lo que el agua "arrastra".
+
+PUENTE: Bajas a la zona de tierra y piedras junto al cauce. El río te cuenta secretos de la montaña. Sigues el flujo del agua púrpura hacia el norte, oculto por la bruma y el hedor a ciudad. Las sombras del puente te saludan como viejas amigas.
+
+CONSECUENCIA: Descubres que el agua no solo está infectada, sino que está "buscando" algo en la estación. Ganas una pista mística.
+
+RESULTADO: setFlag: secreto_del_rio_mapocho | IR A [CAPÍTULO 3]
+
+OPCIÓN C [RIESGO - INSTINTO]: Si tienes setFlag: secreto_del_ancla, buscar el "punto de fuga" en la arquitectura del palacio antes de salir.
+
+PUENTE: Te detienes en la última esquina del jardín. Miras hacia atrás y ves cómo las líneas del Palacio Bruna convergen en un punto que no debería existir. Alguien ha enterrado algo bajo el edificio, un "Ancla" gemela a la de la estación. Ahora entiendes por qué el Príncipe tiembla.
+
+CONSECUENCIA: Tienes una visión global de la conspiración. Sabes que Santiago es una red de sacrificios.
+
+RESULTADO: willpowerDelta: -1 | setFlag: vision_de_la_red | IR A [CAPÍTULO 3]
+
+CLAN: MALKAVIAN | CAPÍTULO 3: EL ECO DE LA HIEL (BLOQUE 1/2)
+[ESCENA 3.0]: LOS ANDENES DEL TIEMPO DOBLADO
+CONTEXTO: Explanada de la Estación Mapocho. 04:30 AM. La estructura de hierro gime bajo un viento que no existe.
+
+NARRACIÓN: La Estación Mapocho no se alza frente a ti como un edificio, sino como una ballena varada de metal y vidrio que todavía intenta respirar. Para tus ojos, las vigas de acero están cubiertas de una herrumbre emocional: el rastro de miles de adioses de personas que ya no existen. Si vienes por la ruta_del_eco, el aire vibra con una nota sostenida que te hace castañear los dientes. Si vienes por el secreto_del_rio_mapocho, ves que la neblina que emana del suelo es de un color púrpura tan brillante que parece herir la realidad misma.
+
+La llave de bronce que te dio el Príncipe se siente caliente en tu mano, como si tuviera fiebre. Al introducirla en la cerradura de la puerta lateral, no escuchas un mecanismo, escuchas un secreto que se rompe. El interior de la estación es una catedral de eco donde las sombras bailan al ritmo de la Hiel, que aquí gotea desde el techo como saliva de un dios hambriento.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Seguir los "rastros de color" que las pisadas dejaron en el aire del vestíbulo.
+
+PUENTE: Te tapas los oídos para silenciar el estruendo del silencio y te enfocas en la vista. El suelo está negro, pero en el aire flotan cintas de luz: el rastro de los hombres de traje (la Guardia de la Torre) y un rastro mucho más antiguo y sucio que huele a alcantarilla y miedo (El Choro). Sigues las cintas púrpuras que te llevan directamente hacia las taquillas abandonadas.
+
+CONSECUENCIA: Encuentras el rastro exacto del sabotaje sin pisar las trampas físicas.
+
+RESULTADO: willpowerDelta: +1 | setFlag: rastro_luminoso_detectado | IR A [ESCENA 3.1]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Hablar con los ecos de la estación para que te revelen dónde se esconde "el que no tiene cara".
+
+PUENTE: Te sientas en el suelo manchado de hiel y empiezas a tararear una canción de cuna desafinada. Las sombras de las columnas se alargan y te señalan con dedos de oscuridad hacia el sótano. Una voz que sale de un altavoz roto susurra: "El Choro tiene hambre de espejos, pequeño profeta".
+
+CONSECUENCIA: Sabes la ubicación del Nosferatu antes de que él intente emboscarlo. La Red de la Locura te protege.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: aviso_de_las_sombras | IR A [ESCENA 3.1]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Usar la daga de plata como un diapasón para encontrar el foco de la disonancia.
+
+PUENTE: Golpeas suavemente la daga contra una columna de hierro. El metal vibra, y tú sigues esa vibración como si fuera un hilo invisible. Caminas por los andenes vacíos, esquivando charcos de agua púrpura que intentan susurrarte tu propio nombre. Te detienes justo sobre la trampilla de mantenimiento, donde el ruido es ensordecedor.
+
+CONSECUENCIA: Llegas al punto de entrada del subsuelo con una determinación maníaca.
+
+RESULTADO: setFlag: buscador_de_vibraciones | IR A [ESCENA 3.1]
+
+[ESCENA 3.1]: EL BANQUETE DE LAS RATAS SABIAS
+CONTEXTO: Sótano de la estación, junto a las tuberías de desagüe que conectan con el río. El ambiente es una neblina púrpura que distorsiona las distancias.
+
+NARRACIÓN: El descenso es como entrar en la garganta de la ciudad. El olor a Hiel es aquí una sinestesia: sabe a ceniza y suena a metal raspando hueso. De una tubería que rezuma un lodo brillante, emerge El Choro. Para un Ventrue, es un monstruo; para ti, es un mosaico de carne y basura que intenta desesperadamente no desmoronarse. Su aura es un torbellino de color ocre y verde bilis.
+
+"Un pajarito ha caído en el nido de las ratas", sisea el Nosferatu. Sus ojos no están alineados, pero ambos ven la fractura en tu mente. "Hueles a palacio y a locura fresca. ¿Vienes a traer el orden o vienes a que te enseñe cómo se ve el mundo cuando le arrancas la piel?".
+
+OPCIÓN A [DISCIPLINA: DEMENCIA]: Compartir un fragmento de tu visión con El Choro para que vea la "verdad" de la Hiel.
+
+PUENTE: Agarras su mano deforme y dejas que la Red de la Locura se desborde hacia él. El Nosferatu se desploma, gritando mientras ve cómo el río Mapocho se convierte en una serpiente púrpura que devora Santiago. "¡Para! ¡Ya lo veo! ¡Está en todas partes!", solloza, ahora totalmente sumiso a tu presencia.
+
+CONSECUENCIA: Has quebrado al Nosferatu. Te servirá como un perro fiel, pero su mente ha quedado marcada para siempre por tu oscuridad.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: choro_quebrado | IR A [BLOQUE 2]
+
+OPCIÓN B [HABILIDAD: PERSUASIÓN]: Ofrecerle un "secreto que no existe" a cambio de su guía.
+
+PUENTE: "El Príncipe tiene un espejo donde tú todavía eres hermoso, Choro", susurras al oído. "Ayúdame a encontrar el corazón de este ruido y te diré dónde lo guarda". El Nosferatu duda, su aura se vuelve de un tono rosa esperanza patético. El engaño es cruel, pero efectivo.
+
+CONSECUENCIA: El Choro te guía por los túneles más rápidos, creyendo que hay una cura para su maldición.
+
+RESULTADO: humanityDelta: -1 | setFlag: alianza_de_mentiras | IR A [BLOQUE 2]
+
+OPCIÓN C [RIESGO - INSTINTO]: Si tienes setFlag: vision_de_la_red, señalar la mancha de Hiel en su pecho y preguntarle: "¿Desde cuándo el río vive dentro de ti?".
+
+PUENTE: No muestras miedo. Señalas una pústula en su cuello que palpita con luz violácea. El Choro retrocede, asustado de que un extraño haya notado su infección. "No es mi culpa... el agua me habló...", balbucea, revelando que la Hiel tiene voluntad propia.
+
+CONSECUENCIA: Obtienes información crítica: la Hiel infecta por contacto y por "escucha".
+
+RESULTADO: setFlag: hiel_consciente | IR A [BLOQUE 2]
+
+CLAN: MALKAVIAN | CAPÍTULO 3: EL ECO DE LA HIEL (BLOQUE 2/2)
+[ESCENA 3.2]: EL ÚTERO DE LA DISONANCIA
+CONTEXTO: Cámara de filtración bajo el lecho del río. El sonido del agua sobre el techo de ladrillo suena como un tambor sordo.
+
+NARRACIÓN: El Choro te guía (o tú flotas por la inercia del destino) hasta una estancia donde la arquitectura colonial se ha rendido ante algo orgánico. Las paredes sudan un aceite púrpura que brilla con la intensidad de una estrella moribunda. En el centro, suspendida sobre una piscina de lodo vibrante, hay una mujer. Pero tú no ves a una Vástago; ves una herida abierta en el tiempo. De sus muñecas brotan cables de cobre que no extraen sangre, sino que inyectan ruido.
+
+La Hiel aquí no es un líquido, es un coro de voces que gritan el nombre del Príncipe al unísono. Si tienes setFlag: hiel_consciente, comprendes que la mujer es un transceptor: ella está "radiando" la locura al resto de la ciudad. El aire es tan denso que tus ojos empiezan a lagrimear un fluido violáceo.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Sintonizar tu mente con la de la mujer para "beber" el origen del ruido.
+
+PUENTE: Te acercas al borde de la piscina y cierras los ojos. No tocas su cuerpo, tocas su mente. Una explosión de imágenes te golpea: una biblioteca ardiendo, un contrato firmado con ceniza y el rostro del Príncipe llorando lágrimas de mercurio. Entiendes que ella no es una víctima al azar; es un recordatorio de un pecado cometido en 1814.
+
+CONSECUENCIA: Obtienes la clave de la trama ("El Archivista") antes que nadie, pero la sobrecarga casi fríe tus sinapsis.
+
+RESULTADO: willpowerDelta: -2 | setFlag: vision_del_pecado_original | IR A [ESCENA 3.END]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Susurrarle a la Hiel un "secreto más oscuro" para confundir la señal.
+
+PUENTE: Te inclinas sobre el agua púrpura y cuentas un chiste que solo los muertos entienden. Tu locura choca contra la locura de la Hiel. El fluido empieza a burbujear violentamente, cambiando de color a un verde enfermizo. La mujer en las cadenas abre los ojos y sonríe: por un momento, el ruido se ha vuelto música.
+
+CONSECUENCIA: Saboteas la señal de la Hiel en todo el sector norte. Los Vástagos de la zona recuperan la lucidez momentáneamente, pero tú te vuelves el foco de atención de la "mente colmena".
+
+RESULTADO: fragmentationDelta: +1 | setFlag: interferencia_malkavian | IR A [ESCENA 3.END]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Cortar los cables de cobre con la daga de plata para silenciar el transceptor.
+
+PUENTE: No puedes soportar el estruendo. Con un movimiento errático, tajas los cables. La plata bendecida chispea al contacto con la Hiel. La mujer cae al lodo con un suspiro que suena como mil espejos rompiéndose. El silencio que sigue es tan pesado que te duelen los huesos.
+
+CONSECUENCIA: Detienes el brote local, pero la mujer entra en un letargo del que quizás nunca despierte. Has destruido la "antena", pero el emisor sigue vivo.
+
+RESULTADO: humanityDelta: -1 | setFlag: silencio_forzado | IR A [ESCENA 3.END]
+
+[ESCENA 3.END]: EL REGRESO AL MUNDO DE LOS SORDOS
+CONTEXTO: Salida lateral de la Estación Mapocho, frente al Mercado Central. 05:45 AM. El cielo tiene el color de un hematoma.
+
+NARRACIÓN: Sales a la superficie y Santiago te golpea con su normalidad insultante. El tráfico de los camiones de feria suena a latas vacías comparado con el coro que acabas de dejar atrás. Si tienes setFlag: interferencia_malkavian, notas que las palomas de la plaza se mueven en patrones circulares, siguiendo tu rastro. Si tienes setFlag: vision_del_pecado_original, cada edificio del centro te parece ahora una lápida con un nombre escrito.
+
+Doña Inés aparece entre la bruma del río, su aura de porcelana intacta, aunque detectas una grieta minúscula cerca de sus ojos. "Has vuelto del laberinto", dice, y su voz suena distante, como si hablara desde el fondo de un pozo. "Pero hueles a algo que no debería existir. El Príncipe exige que traduzcas lo que has visto. Hay un hombre en la Biblioteca Nacional que guarda los diccionarios para lo que tú hablas. Muévete, antes de que el sol nos borre a todos".
+
+BIFURCACIÓN DE LÓGICA:
+
+Si tienes vision_del_pecado_original: Sabes que Inés te está ocultando algo sobre el "Archivista".
+
+Si tienes interferencia_malkavian: Los ghouls de la zona te miran con un miedo sagrado; sienten la "frecuencia" que emites.
+
+Si tienes silencio_forzado: El mundo te parece vacío y gris; necesitas encontrar un nuevo "sonido" pronto.
+
+CLAN: MALKAVIAN | CAPÍTULO 4: ARCHIVOS DESENTERRADOS (BLOQUE 1/2)
+[ESCENA 4.0]: EL PASEO DE LOS HILOS INVISIBLES
+CONTEXTO: Eje Calle Bandera hacia la Alameda. 05:55 AM. El cielo es un lienzo de ceniza y luz eléctrica.
+
+NARRACIÓN: El trayecto hacia la Biblioteca Nacional es una caminata sobre el filo de una navaja. Para tus ojos, la calle Bandera se ha convertido en un telar gigante: hilos de colores neón conectan los ojos de los transeúntes con los edificios gubernamentales. Si tienes setFlag: interferencia_malkavian, los cables de alta tensión sobre tu cabeza zumban una melodía que solo tú puedes bailar. Inés se desvanece en la esquina de Moneda, su silueta de porcelana confundiéndose con el humo de un puesto de café. "Busca al que guarda los diccionarios", fue su último susurro, pero tú sabes que lo que buscas es al hombre que vive dentro de los libros.
+
+Llegas a la Biblioteca Nacional. El edificio no es piedra; es un enorme bloque de papel prensado que contiene los gritos de dos siglos. Las estatuas de mármol de la entrada parecen estar a punto de estornudar polvo de historia. El sol amenaza con asomar tras el Cerro Santa Lucía, y su luz se siente como un martillo de fuego preparándose para golpear tu cráneo.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Leer el "aura del edificio" para encontrar la entrada que menos "grita".
+
+PUENTE: Te tapas los ojos y dejas que tus pies sigan el silencio. El edificio tiene una "herida" en el costado: una puerta de servicio en calle Mac-Iver que emite un tono gris sordo y tranquilo. Te deslizas por ella mientras el guardia de turno parpadea, convencido de que solo ha pasado una ráfaga de viento frío.
+
+CONSECUENCIA: Entras sin ser detectado por los sensores de seguridad, moviéndote por los puntos ciegos de la realidad.
+
+RESULTADO: willpowerDelta: +1 | setFlag: entrada_fantasma | IR A [ESCENA 4.1]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Convencer al guardia de que él es, en realidad, un personaje de un libro que tú estás escribiendo.
+
+PUENTE: Te acercas al hombre de la entrada con una sonrisa compasiva. "No te muevas, la tinta aún no se ha secado en tu capítulo", le dices mientras le tocas la frente. El guardia se queda paralizado, atrapado en una ficción donde él es un caballero de papel. Pasas a su lado mientras él empieza a recitar diálogos en un idioma que no conoce.
+
+CONSECUENCIA: Has creado una distracción psicótica. El guardia no podrá dar una descripción coherente de ti, pero la seguridad del edificio detectará su estado mental alterado.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: guardia_ficcionado | IR A [ESCENA 4.1]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Seguir el rastro del "olor a tinta vieja" hacia el subsuelo.
+
+PUENTE: No necesitas puertas. Te guías por el olfato, pero no buscas sangre; buscas el aroma de la celulosa descomponiéndose. Te deslizas por un montacargas abierto, descendiendo hacia las tripas del edificio donde la luz del sol nunca ha llegado. Las sombras aquí son más densas y saben a regaliz.
+
+CONSECUENCIA: Llegas al departamento de incunables rápidamente, pero te ensucias con la "memoria" del edificio, lo que te hace más visible para los habitantes del sótano.
+
+RESULTADO: setFlag: rastro_de_celulosa | IR A [ESCENA 4.1]
+
+[ESCENA 4.1]: EL COLECCIONISTA DE SILENCIOS
+CONTEXTO: Oficina de Manuscritos, Subsuelo de la Biblioteca. El aire está tan estancado que parece sólido.
+
+NARRACIÓN: En el centro de una habitación amurallada por libros que parecen observar con lomos de cuero, está El Archivista. Para ti, no es un anciano; es una pila de hojas sueltas unidas por un hilo de voluntad. Sus ojos son tinteros vacíos y su voz suena como el paso de una página seca. Sobre su escritorio, el Tratado de 1814 brilla con una luz púrpura que hace juego con la Hiel que viste en la estación.
+
+"Has venido a buscar el significado del ruido", dice el Archivista sin mover los labios. "Pero en Santiago, la verdad no se escribe con tinta, sino con la sangre que el Príncipe ha decidido olvidar. El Tratado no es un libro, es una jaula".
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Tocar el Tratado para ver la "sangre original" de quienes lo firmaron.
+
+PUENTE: Pones tus dedos sobre el lacre rojo. El mundo desaparece. Ves a hombres con uniformes coloniales y ojos vacíos firmando el papel mientras una sombra gigante (la Fuente) les dicta las condiciones. Sientes el dolor de la traición original. El Tratado es un contrato de arrendamiento de la ciudad a cambio de un poder podrido.
+
+CONSECUENCIA: Comprendes la naturaleza del "Ancla". Ganas la capacidad de ver las "cadenas de sangre" que atan a los Vástagos de Santiago al Príncipe.
+
+RESULTADO: willpowerDelta: -1 | setFlag: vision_de_las_cadenas | IR A [BLOQUE 2]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Pedirle al Archivista que te deje leer "el capítulo que todavía no se ha escrito".
+
+PUENTE: "¿Por qué leer el pasado cuando el futuro está gritando en los márgenes?", preguntas con una risa nerviosa. El Archivista se estremece y te muestra una página en blanco que, bajo tu mirada fragmentada, se llena de dibujos de la Catedral Metropolitana colapsando bajo un mar de hiel.
+
+CONSECUENCIA: Obtienes una premonición exacta del final de la crónica. Sabes que la Catedral es el siguiente nexo.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: premonicion_catedral | IR A [BLOQUE 2]
+
+OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Preguntar por el "diccionario" de la Hiel y su relación con el Príncipe.
+
+PUENTE: "El Príncipe tiene un nombre para cada gota de agua en el río, pero ha olvidado el nombre del seductor que se lo vendió", dices mientras ojeas los estantes. El Archivista suspira y te entrega un mapa antiguo: "El Príncipe es solo el cobrador de una deuda que no puede pagar. Busca el origen en la Plaza de Armas".
+
+CONSECUENCIA: Obtienes la ubicación del objetivo final y confirmas que el Príncipe es un prisionero de su propio poder.
+
+RESULTADO: setFlag: mapa_del_cobrador | IR A [BLOQUE 2]
+
+OPCIÓN D [RIESGO - INSTINTO]: Si tienes setFlag: vision_del_pecado_original, acusar al Archivista de ser un fantasma del Príncipe.
+
+PUENTE: "Tú no eres real, eres solo un eco que el Príncipe dejó aquí para vigilar sus mentiras", gritas mientras golpeas la mesa. El Archivista se desvanece por un segundo, revelando un esqueleto de alambre y pergamino. Tu acusación fractura la ilusión del sótano, revelando una salida secreta que lleva hacia los túneles del Metro.
+
+CONSECUENCIA: Rompes la defensa mística del lugar. Puedes escapar rápido, pero has alertado a la "Red" del Palacio Bruna de que sabes demasiado.
+
+RESULTADO: humanityDelta: -1 | setFlag: archivista_fracturado | IR A [BLOQUE 2]
+
+CLAN: MALKAVIAN | CAPÍTULO 4: ARCHIVOS DESENTERRADOS (BLOQUE 2/2)
+[ESCENA 4.2]: EL FESTÍN DE LAS POLILLAS DE PLOMO
+CONTEXTO: Pasillos de la Hemeroteca y Salón de Lectura. La luz roja de emergencia convierte las estanterías en un bosque de venas abiertas.
+
+NARRACIÓN: El silencio de la Biblioteca se rompe con un sonido que para ti es un estallido de confeti negro: el cristal de la claraboya estallando. No son hombres los que descienden, son manchas de tinta táctica. Los ghouls de la Corte caen desde el techo, sus auras son de un gris militar, planas y sin música, moviéndose con la precisión de un reloj que quiere dar las doce para siempre. Si tienes setFlag: entrada_fantasma, escuchas el roce de sus guantes contra el metal antes de que toquen el suelo. Si tienes setFlag: archivista_fracturado, las estanterías empiezan a sangrar polvo de papel, ocultándote en una tormenta de celulosa.
+
+Inés no está aquí para salvarte; ella es la mano que soltó a los perros. Los operativos levantan sus armas con silenciadores que suenan como suspiros de alivio. Debes huir antes de que el sol, que ya araña los vitrales superiores con dedos de fuego, te convierta en un poema de cenizas.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Encontrar el "camino de los colores" entre el fuego cruzado.
+
+PUENTE: No miras los cañones de las armas, miras las trayectorias de las balas como hilos dorados que cortan el aire. Te mueves en un baile espasmódico, pasando entre los proyectiles como si fueras una interferencia en la cinta de la realidad. Llegas a la puerta de mármol de la Alameda mientras los guardias disparan al lugar donde estabas hace un segundo.
+
+CONSECUENCIA: Sales ileso y con la mente vibrando en una frecuencia de supervivencia pura.
+
+RESULTADO: willpowerDelta: +1 | setFlag: huida_cinetica | IR A [ESCENA 4.END]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Infectar los sistemas de ventilación con una "idea que muerde".
+
+PUENTE: Te acercas a una rejilla y susurras un secreto que hace que el aire se vuelva denso y verde. Los ghouls inhalan tu locura y empiezan a ver que los libros de los estantes son bocas que intentan devorarlos. El caos es total: los soldados de la Corte disparan a las sombras y a las paredes mientras tú caminas tranquilamente hacia la salida, tarareando una canción sin letra.
+
+CONSECUENCIA: Has dejado un rastro de psicosis masiva en la Biblioteca. La Camarilla tendrá que limpiar mucho más que sangre esta noche.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: epidemia_mental_biblioteca | IR A [ESCENA 4.END]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Saltar al montacargas y dejar que la gravedad elija tu destino.
+
+PUENTE: Te lanzas al hueco oscuro del montacargas manual. Los cables chirrían como una orquesta de grillos metálicos. Caes en el sótano más profundo, donde las ratas tienen ojos que brillan con el mismo púrpura que la Hiel. Corres por un túnel de servicio que huele a tierra vieja hasta que emerges en un callejón de calle Mac-Iver.
+
+CONSECUENCIA: Escapas del equipo de asalto, pero has perdido el rastro del Archivista. El sol te quema un poco la nuca al salir.
+
+RESULTADO: healthDamageDelta: -1 | setFlag: escape_por_las_tripas | IR A [ESCENA 4.END]
+
+[ESCENA 4.END]: EL REFUGIO DE LOS SUEÑOS ROTOS
+CONTEXTO: Barrio Lastarria / Cerro Santa Lucía. 06:15 AM. La luz solar es un aullido blanco que lo cubre todo.
+
+NARRACIÓN: El sol de Santiago es una guillotina de luz. Corres por Lastarria, donde los edificios de estilo europeo parecen estar derritiéndose ante tus ojos. Si tienes setFlag: huida_cinetica, tus pasos no dejan huellas, pero el calor del alba te persigue como un perro rabioso. Necesitas entrar en la tierra, en el cemento, en cualquier lugar donde el "ojo de fuego" no pueda verte.
+
+Emerge frente a ti un edificio con una puerta roja que late como un corazón. Es el piso franco que la Red te prometió. Te deslizas dentro justo cuando el primer rayo de sol real golpea el pomo de la puerta con la fuerza de una bala de plata. El letargo te reclama, pero no es un sueño; es una película de cine mudo donde el Príncipe, el Archivista y la mujer de la estación bailan alrededor de una Catedral que sangra.
+
+BIFURCACIÓN DE LÓGICA PARA EL CAPÍTULO 5:
+
+Si tienes vision_de_las_cadenas: Tu sueño te revela quién es el siguiente eslabón débil en la jerarquía del Príncipe.
+
+Si tienes premonicion_catedral: Despertarás con una dirección grabada en tus párpados: Plaza de Armas, sótano 4.
+
+Si tienes epidemia_mental_biblioteca: La Red de la Locura está tan agitada que no podrás descansar bien; despertarás con hambre, pero con un poder de Demencia aumentado.
+
+CLAN: MALKAVIAN | CAPÍTULO 5: SANGRE Y TIERRA (BLOQUE 1/2)
+[ESCENA 5.0]: EL HUNDIMIENTO EN EL AMBAR NEGRO
+CONTEXTO: Refugio en el Barrio Lastarria. Un apartamento donde los libros se apilan hasta el techo y el reloj de pared marca las horas hacia atrás. 06:45 AM.
+
+NARRACIÓN: El amanecer no es una salida de sol, es el cierre de una herida. Te desplomas en el rincón más oscuro del refugio, donde el ruido de la ciudad se convierte en un zumbido de abejas de cristal. Si vienes con setFlag: huida_cinetica, tus nervios todavía chispean con la electricidad de la persecución. Si tienes setFlag: epidemia_mental_biblioteca, la Red de la Locura está tan tensa que escuchas los sueños de los vecinos a través de las paredes como si fueran programas de radio mal sintonizados.
+
+El letargo te succiona. No duermes; te conviertes en parte del mobiliario. Tu piel se enfría hasta imitar la madera y tus pensamientos se ralentizan hasta que cada latido de la Bestia ocurre una vez cada siglo. En este estado de suspensión, las piezas del rompecabezas de Santiago empiezan a flotar: el Archivista, el Príncipe y esa mancha púrpura de la Hiel que ahora parece tener tu propio rostro.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Dejar que tu consciencia flote por la "Cobweb" para espiar los susurros de otros Malkavian durante el día.
+
+PUENTE: Mientras tu cuerpo es un cadáver de piedra, tu mente viaja por los hilos invisibles de la Red. Escuchas a una Malkavian en el Hospital Psiquiátrico gritar sobre "el parto de la Catedral" y a otro en el cementerio riendo porque "el Príncipe ha perdido la llave del sótano".
+
+CONSECUENCIA: Obtienes una ventaja estratégica masiva. Sabes que el Príncipe está perdiendo el control de sus propios ghouls antes de despertar.
+
+RESULTADO: willpowerDelta: +1 | setFlag: red_activa_dia | IR A [ESCENA 5.1]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Intentar "limpiar" tu propia mente usando la Hiel que inhalaste en la estación como borrador.
+
+PUENTE: Te sumerges en el veneno púrpura de tu propia sangre. Usas la infección como un ácido para quemar los recuerdos innecesarios y las voces que te distraen. Es un proceso doloroso que te hace retorcerte en el suelo del refugio mientras duermes, pero al final, solo queda una nota pura y cristalina: la ubicación exacta del nido en la Plaza de Armas.
+
+CONSECUENCIA: Reduces tu fragmentación, ganando lucidez para el acto final, pero el precio es una cicatriz en tu esencia.
+
+RESULTADO: fragmentationDelta: -1 | setFlag: lucidez_dolorosa | IR A [ESCENA 5.1]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Simplemente hundirte en el silencio, dejando que la Bestia se alimente de tus miedos.
+
+PUENTE: No luchas. Te dejas ir. El sueño es un pozo sin fondo donde las imágenes de la Biblioteca se hunden lentamente. Desapareces de la realidad por completo, convirtiéndote en un vacío que ni siquiera el sol puede encontrar.
+
+CONSECUENCIA: Despiertas físicamente recuperado, pero la Bestia se siente más hambrienta que nunca al no haber sido "entretenida" con visiones.
+
+RESULTADO: healthDamageDelta: +1 | hungerDelta: +1 | IR A [ESCENA 5.1]
+
+[ESCENA 5.1]: EL DESPERTAR DEL VIDRIO EMPAÑADO
+CONTEXTO: El refugio. 08:30 PM. La oscuridad de Santiago se siente como una sábana mojada sobre tus hombros.
+
+NARRACIÓN: Abres los ojos y la habitación ha cambiado de geometría. Las sombras son más largas y el aire tiene un sabor metálico. El Hambre es un clavo al rojo vivo en tu garganta. Al levantarte, notas que en la mesa de centro hay algo que no debería estar ahí: un cuervo disecado que sostiene en su pico un sobre de papel gris humo. El pájaro parece observarte con ojos de vidrio que tienen el mismo brillo que el Hombre del Traje Gris.
+
+Si tienes setFlag: red_activa_dia, sabes que el mensajero entró a las 03:00 PM, moviéndose con un silencio que ni siquiera los muebles notaron. Si tienes setFlag: lucidez_dolorosa, ves que el sobre emite una frecuencia de radio que dice constantemente: "Elige tu corona o elige tu tumba".
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: "Escuchar" el rastro de la mano que dejó el cuervo.
+
+PUENTE: Tocas las plumas del pájaro. Sientes el frío de una oficina refrigerada, el olor a sándalo y el sonido de una trituradora de papel. La mano que dejó esto no era humana, pero tampoco era un Vástago común. Era algo sintético, algo que pertenece a la "Viña del Silencio".
+
+CONSECUENCIA: Identificas que el Sastre (Traje Gris) tiene acceso a tu refugio. Ya no estás seguro en ninguna parte, pero conoces su "textura" táctica.
+
+RESULTADO: setFlag: rastro_del_sastre | IR A [BLOQUE 2]
+
+OPCIÓN B [HABILIDAD: PERSPICACIA]: Abrir el sobre y buscar el "patrón oculto" en el mensaje.
+
+PUENTE: Dentro no hay una carta, sino un conjunto de recortes de periódicos de diferentes épocas. Al unirlos sobre el suelo, forman el plano de la Catedral Metropolitana, pero las líneas de los cimientos coinciden con el sistema circulatorio humano. La Catedral es el corazón de Santiago, y alguien está a punto de provocarle un infarto.
+
+CONSECUENCIA: Obtienes una ruta de infiltración directa por las criptas que nadie más conoce.
+
+RESULTADO: setFlag: mapa_del_corazon | IR A [BLOQUE 2]
+
+OPCIÓN C [RIESGO - INSTINTO]: Si tienes setFlag: vision_de_las_cadenas, usar el cuervo como un fetiche para "ver" a través de los ojos de los pájaros de la ciudad.
+
+PUENTE: Arrancas un ojo de vidrio al cuervo y lo tragas. Tu visión estalla. Durante un segundo, ves Santiago desde arriba, a través de los ojos de miles de palomas y zorzales. Ves el Palacio Bruna rodeado de niebla púrpura y ves un convoy de camiones grises dirigiéndose a la Plaza de Armas.
+
+CONSECUENCIA: Conoces el movimiento de tropas del enemigo en tiempo real.
+
+RESULTADO: humanityDelta: -1 | setFlag: ojos_de_la_ciudad | IR A [BLOQUE 2]
+
+CLAN: MALKAVIAN | CAPÍTULO 5: SANGRE Y TIERRA (BLOQUE 2/2)
+[ESCENA 5.2]: LA DANZA DE LAS CALLES CIEGAS
+CONTEXTO: Exterior del refugio en Lastarria. Calle Villavicencio. 09:30 PM. El cielo de Santiago parece una herida que no deja de supurar luces de neón.
+
+NARRACIÓN: El mundo nocturno ha vuelto, pero Santiago ya no suena igual. Para ti, el ruido del tráfico es un lamento de ballenas metálicas y los rostros de los mortales que caminan hacia los bares de Lastarria son máscaras de cera que se derriten bajo el smog. Te diriges hacia el corazón de la ciudad, la Plaza de Armas, pero el camino se siente como el interior de un organismo vivo. Si tienes setFlag: ojos_de_la_ciudad, ves las corrientes de aire como hilos púrpuras que convergen en las cúpulas de la Catedral.
+
+Al pasar cerca del Palacio Bruna, la Red de la Locura emite un chasquido seco. El edificio neoclásico está rodeado de un aura de color estroncio, el color del pánico contenido. Ves a Doña Inés en la distancia, pero para ti ella es una estatua de hielo que se quiebra desde adentro. La ciudad está conteniendo el aliento antes de que el "corazón de piedra" (la Catedral) empiece a latir de nuevo.
+
+OPCIÓN A [HABILIDAD: SIGILO / DEMENCIA]: Caminar "entre los segundos" para evitar las patrullas de la Torre que bloquean el centro.
+
+PUENTE: No intentas esconderte tras las paredes; te escondes tras la falta de atención de los demás. Te mueves con un ritmo que desafía la lógica, apareciendo solo cuando los guardias parpadean. Para ellos, eres una mancha en el rabillo del ojo, una interferencia en su aburrida realidad. Llegas al borde de la Plaza de Armas sin que una sola cámara o pupila logre retener tu imagen.
+
+CONSECUENCIA: Infiltración perfecta. La Corte no sabe que estás cerca del centro de la infección.
+
+RESULTADO: setFlag: espectro_en_la_plaza | IR A [ESCENA 5.END]
+
+OPCIÓN B [DISCIPLINA: AUSPEX]: Seguir la "línea de sangre" que conecta al cuervo disecado con su amo.
+
+PUENTE: Te dejas guiar por el rastro de sándalo y ozono que aún flota en tus sentidos. El rastro no va por las calles, sino que cruza a través de los portales y las iglesias menores del centro. Sigues el aroma hasta un respiradero de alcantarilla frente al Museo Histórico Nacional, donde el sonido de un teclado de ordenador se mezcla con el goteo de agua infectada.
+
+CONSECUENCIA: Encuentras el acceso técnico que el Hombre del Traje Gris ha estado usando para monitorizar el subsuelo.
+
+RESULTADO: willpowerDelta: +1 | setFlag: acceso_tecnico_sastre | IR A [ESCENA 5.END]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Cruzar la Plaza de Armas gritando "la verdad" a los transeúntes para crear una distracción de ruido.
+
+PUENTE: "¡El agua tiene memoria y nos odia! ¡La Catedral tiene hambre!", gritas a los predicadores y a los turistas. Tu locura se vuelve contagiosa; la gente empieza a mirarse con desconfianza, el ambiente se tensa y los guardias de la Torre se distraen intentando dispersar a los curiosos. En medio del pequeño disturbio que has provocado, te deslizas hacia la entrada principal del templo.
+
+CONSECUENCIA: Entras a la Catedral en medio del caos, pero tu "música" ha alertado a la Hiel de que el profeta ha llegado.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: profeta_del_disturbio | IR A [ESCENA 5.END]
+
+[ESCENA 5.END]: LA BOCA DE LA MONTAÑA DE PIEDRA
+CONTEXTO: Fachada de la Catedral Metropolitana. 11:45 PM. El edificio respira una neblina violeta que solo los muertos y los locos pueden ver.
+
+NARRACIÓN: Estás frente al gigante. La Catedral no es una iglesia; es una boca abierta esperando a que entres para masticar tus pensamientos. Si tienes setFlag: mapa_del_corazon, ves que las grietas en el muro de sillar no son desgaste, son instrucciones de entrada escritas en un lenguaje de sombras. La Plaza de Armas está extrañamente silenciosa ahora; los músicos callejeros se han ido, sustituidos por un zumbido eléctrico que parece provenir de los cimientos mismos de la ciudad.
+
+Sientes el Tratado de 1814 vibrando en el aire. No es un papel, es una cadena que va desde aquí hasta el Palacio Bruna, y tú estás sobre el eslabón principal. Al cruzar el umbral, la Red de la Locura se vuelve un grito sordo. El Acto 2 termina con el primer paso que das sobre el mármol frío del nártex, donde el olor a incienso es devorado por el aroma dulzón de la Hiel madura.
+
+BIFURCACIÓN LÓGICA PARA EL CAPÍTULO 6:
+
+Si tienes acceso_tecnico_sastre: Comenzarás el capítulo 6 saboteando los sistemas de monitorización del enemigo.
+
+Si tienes espectro_en_la_plaza: Tendrás la oportunidad de presenciar el ritual del Príncipe sin ser detectado.
+
+Si tienes profeta_del_disturbio: La Catedral reaccionará a tu presencia; las estatuas y las sombras intentarán expulsarte activamente.
+
+CLAN: MALKAVIAN | CAPÍTULO 6: EL NODO DE LA CATEDRAL (BLOQUE 1/2)
+[ESCENA 6.0]: EL SISTEMA NERVIOSO DE DIOS
+CONTEXTO: Nártex y naves laterales de la Catedral Metropolitana. 01:15 AM. La oscuridad está "pixelada" con puntos de luz púrpura.
+
+NARRACIÓN: Al cruzar el umbral, la Catedral deja de ser arquitectura para convertirse en una caja torácica colosal. El aire no se mueve, late. Si tienes setFlag: espectro_en_la_plaza, te deslizas como una interferencia en el video entre las sombras de las confesionarios, viendo cómo las sombras de los guardias de la Torre se desprenden de sus cuerpos y caminan por el techo. Si tienes setFlag: profeta_del_disturbio, los santos de madera en los altares laterales giran sus rostros hacia ti, sus ojos de vidrio llorando una Hiel espesa que suena como estática de radio al caer al suelo.
+
+Ves el flujo de la energía: cables de cobre místico corren por las molduras neoclásicas, inyectando un fluido violeta directamente en las venas del mármol. En el Altar Mayor, el Príncipe está arrodillado, pero no reza; está conectado. Hilos de sangre brillante salen de su nuca y se pierden en el abismo de la cripta. La Red de la Locura te advierte: el Príncipe no está al mando, es solo el procesador central de una máquina que le queda grande.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Escuchar la "música de las esferas" para encontrar el fallo en el ritual del Príncipe.
+
+PUENTE: Cierras los ojos y dejas que tus oídos se expandan hasta los cimientos. El ritual es una melodía circular, pero hay una nota que chirría, un semitono de dolor que proviene de una de las columnas de la izquierda. Alguien ha colocado un "parásito místico" —un dispositivo del Traje Gris— que está robando la energía del Príncipe mientras él cree que controla la ciudad.
+
+CONSECUENCIA: Sabes que el Príncipe está siendo saboteado en tiempo real. Puedes usar ese "ruido" para sobrecargar el sistema.
+
+RESULTADO: willpowerDelta: +1 | setFlag: parasito_detectado | IR A [ESCENA 6.1]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Susurrarle a las sombras del Príncipe que ellas son las que deberían gobernar.
+
+PUENTE: Envías un pensamiento fragmentado hacia la silueta del Príncipe. Sus sombras se agitan, se vuelven feroces y empiezan a morder sus propios pies. El Príncipe gime, perdiendo el control del flujo de Hiel por un segundo. Los guardias de la Torre se confunden, viendo visiones de monstruos entre los bancos de la iglesia. El caos te abre un camino directo hacia la cripta.
+
+CONSECUENCIA: Has fracturado el control místico del Príncipe sobre el lugar. La seguridad colapsa en un mar de visiones compartidas.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: sombras_rebeldes | IR A [ESCENA 6.1]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Si tienes acceso_tecnico_sastre, usar la terminal oculta en el coro para hackear la "realidad" de la Catedral.
+
+PUENTE: Subes por las escaleras de caracol hacia el coro alto. Encuentras la terminal que el Traje Gris instaló tras un cuadro de San Miguel. Tus dedos no teclean código, teclean conceptos. Cambias "Orden" por "Entropía". Abajo, las luces de la Catedral empiezan a parpadear en un patrón epiléptico y las puertas de bronce de la cripta se abren con un estruendo de metal herido.
+
+CONSECUENCIA: Has tomado el control de la infraestructura técnica del enemigo.
+
+RESULTADO: setFlag: control_infraestructura | IR A [ESCENA 6.1]
+
+[ESCENA 6.1]: EL DESCENSO AL ECO PRIMORDIAL
+CONTEXTO: La entrada a la Cripta Arzobispal. El aire huele a ozono, tierra mojada y una fragancia floral podrida.
+
+NARRACIÓN: El camino hacia abajo es una espiral hacia la locura pura. Las escaleras de piedra parecen peldaños de piano que emiten una nota grave con cada paso. Doña Inés está allí, protegiendo el umbral. Para ti, ella no es una guerrera, es un reloj de arena a punto de romperse. Su espada de plata emite una luz blanca que te hiere los ojos, cortando la neblina púrpura que te rodea.
+
+"No deberías estar aquí, pequeño espejo", dice ella, y su voz suena como si miles de personas hablaran a la vez. "Este secreto es demasiado pesado para una mente que ya tiene grietas. Si bajas, no habrá Red que te recoja cuando caigas".
+
+OPCIÓN A [DISCIPLINA: AUSPEX / PERSUASIÓN]: Decirle a Inés el secreto que su propia sangre le está ocultando.
+
+PUENTE: "Tus venas están cantando una canción de traición, Inés. El Príncipe ya te ha vendido al Sastre", susurras, señalando el rastro de Hiel que empieza a manchar su aura de porcelana. Ella baja la espada por un segundo, la duda reflejada en sus ojos como un cristal roto. Ese segundo de debilidad es todo lo que necesitas para deslizarte a su lado hacia la oscuridad.
+
+CONSECUENCIA: Inés ya no es una enemiga activa; la has dejado cuestionando su propia existencia.
+
+RESULTADO: setFlag: ines_en_duda | IR A [BLOQUE 2]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Hacer que Inés vea que la Catedral ya se ha derrumbado y que ella está flotando en el vacío.
+
+PUENTE: Proyectas una visión absoluta de fin del mundo. Inés suelta su espada y se agarra a una columna inexistente, gritando mientras sus sentidos le dicen que el suelo ha desaparecido. Pasas a su lado mientras ella intenta no caer en un abismo que solo existe en su mente.
+
+CONSECUENCIA: Has incapacitado a la guardia más poderosa del Príncipe, pero tu propia mente se siente "deshilachada" por el esfuerzo.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: ines_caida_vacio | IR A [BLOQUE 2]
+
+OPCIÓN C [RIESGO - INSTINTO]: Si tienes setFlag: vision_de_las_cadenas, cortar físicamente el "hilo" que une a Inés con la voluntad del Príncipe.
+
+PUENTE: Ves el hilo de plata que sale del corazón de Inés hacia el Altar Mayor. Usas la daga de plata para "tajar" el aire, no a ella. El hilo se rompe con un sonido de cuerda de violín estallando. Inés cae de rodillas, libre del Vínculo por primera vez en siglos, pero catatónica por el choque de recuperar su libre albedrío de golpe.
+
+CONSECUENCIA: Has liberado a un peón clave, pero has alertado al "Dueño de las Cadenas" de tu presencia exacta.
+
+RESULTADO: humanityDelta: -1 | setFlag: ines_liberada | IR A [BLOQUE 2]
+
+CLAN: MALKAVIAN | CAPÍTULO 6: EL NODO DE LA CATEDRAL (BLOQUE 2/2)
+[ESCENA 6.2]: LA CÁMARA DEL LATIDO PÚRPURA
+CONTEXTO: Cámara secreta bajo la Cripta Arzobispal. Las paredes de piedra han sido sustituidas por una red de capilares de cobre y carne translúcida que pulsan con Hiel.
+
+NARRACIÓN: El descenso termina en el estómago de Santiago. Aquí el silencio no existe; hay un zumbido eléctrico que te hace sentir que tus dientes son de cristal. En el centro, dentro de un sarcófago que parece una crisálida de vidrio y cables, yace la Vástago Primigenia. Para tus ojos, ella no es un cuerpo; es una fuente de estática pura, una estación de radio que lleva transmitiendo agonía desde 1814. Su sangre fluye por los tubos de cobre, alimentando la red que mantiene a la ciudad dormida y bajo control.
+
+El Príncipe está allí, con las manos sumergidas en el fluido violáceo, intentando remendar una realidad que se le escapa. Al verte, su rostro se descompone. No ve a un loco; ve el espejo que le muestra su propio fracaso. "¡Tú no puedes entenderlo!", grita, y su voz suena como el eco de un túnel derrumbándose. "¡Si ella despierta, el ruido nos devorará a todos! ¡Santiago necesita este silencio!".
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Sintonizar la "frecuencia de libertad" de la Primigenia para que su grito rompa el sarcófago.
+
+PUENTE: No usas la fuerza, usas la armonía. Empiezas a cantar en la misma nota que emite el corazón de la mujer atrapada. La resonancia aumenta hasta que el cristal del sarcófago estalla en mil pedazos de luz. El Vínculo de Sangre de toda la ciudad se rompe con un sonido de cristales rotos en las mentes de cada Vástago en Santiago.
+
+CONSECUENCIA: Liberas el Ancla y provocas un apagón místico en la ciudad. El Príncipe queda ciego ante la Red, pero la explosión psíquica te deja al borde del letargo.
+
+RESULTADO: willpowerDelta: -2 | setFlag: grito_de_libertad | IR A [ESCENA 6.END]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Infectar la red de cobre con una "paradoja" para que el sistema se devore a sí mismo.
+
+PUENTE: Tocas los cables de cobre y les susurras que el Príncipe es, en realidad, el intruso. La Hiel cambia de dirección. El fluido púrpura empieza a fluir hacia atrás, drenando la energía del Príncipe y alimentando a la mujer en el cristal. El Palacio Bruna, al otro lado de la ciudad, empieza a emitir un humo violeta.
+
+CONSECUENCIA: Conviertes la red del Príncipe en su propia trampa. Ganas el control del "ruido", pero tu mente queda ligada a la máquina.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: virus_mental_red | IR A [ESCENA 6.END]
+
+OPCIÓN C [RIESGO - INSTINTO]: Si tienes setFlag: hiel_consciente, fundirte con el fluido para convertirte en el nuevo "traductor" del Ancla.
+
+PUENTE: Te lanzas a la piscina de Hiel. No te ahogas; te conectas. Tu consciencia se expande por todos los tubos de Santiago. Ves a través de los ojos de las ratas, de los ghouls y del propio Príncipe. Te conviertes en el sistema operativo de la ciudad. El Príncipe cae de rodillas, comprendiendo que ahora tú eres el dueño del mensaje.
+
+CONSECUENCIA: Evolucionas hacia algo más que un Malkavian, pero pierdes tu conexión con la humanidad de forma drástica.
+
+RESULTADO: humanityDelta: -2 | setFlag: avatar_de_la_hiel | IR A [ESCENA 6.END]
+
+[ESCENA 6.END]: LA SINFONÍA DEL DERRUMBE
+CONTEXTO: Salida de la Cripta hacia la Plaza de Armas. 02:45 AM. Los cimientos de la Catedral gimen bajo una presión invisible.
+
+NARRACIÓN: El acto ha terminado, pero el eco apenas comienza. Sales de la cripta mientras las baldosas de mármol del altar mayor estallan hacia arriba, empujadas por una presión geológica de sangre y Hiel. Si tienes setFlag: grito_de_libertad, ves a los guardias de la plaza deambulando como sonámbulos que acaban de despertar en un mundo extraño. Si eres el setFlag: avatar_de_la_hiel, cada luz de la plaza parpadea al ritmo de tus pensamientos.
+
+El aire en la Plaza de Armas es ahora de un color eléctrico. A lo lejos, el Palacio Bruna brilla con un incendio que no es de fuego, sino de energía mística colapsando. Has roto el juguete del Príncipe, pero ahora el "Dueño de la Viña" (el Traje Gris) sabe exactamente quién ha saboteado su cosecha. El Acto 2 se cierra con el sonido de Santiago despertando de un sueño de doscientos años... y el grito no es de alegría, es de hambre pura.
+
+BIFURCACIÓN LÓGICA PARA EL ACTO FINAL (CAP 7):
+
+Ruta del Despertar (grito_de_libertad): La ciudad es un caos de Vástagos sin dueño. Debes guiarlos o sobrevivir a ellos.
+
+Ruta de la Transmisión (virus_mental_red o avatar): Eres el nuevo emisor. El Traje Gris vendrá por tu "frecuencia".
+
+Si Inés sobrevivió (ines_liberada): Ella te espera en la salida, con una mirada que ya no es de porcelana, sino de alguien que busca venganza contra el destino.
+
+CLAN: MALKAVIAN | CAPÍTULO 7: EL DIES IRAE (BLOQUE 1/2)
+[ESCENA 7.0]: EL APOCALIPSIS DE LOS SENTIDOS
+CONTEXTO: Plaza de Armas, exterior de la Catedral. 03:30 AM. El aire se ha vuelto una sopa espesa de partículas de memoria y estática púrpura.
+
+NARRACIÓN: Sales de la Catedral y el mundo ya no tiene bordes. La Plaza de Armas se ha convertido en un cuadro expresionista pintado con sangre y neón. Para tus ojos, los edificios de los portales parecen estirarse hacia el cielo como dedos que suplican perdón. Si tienes el setFlag: grito_de_libertad, escuchas el sonido de miles de cadenas invisibles rompiéndose al mismo tiempo; un estruendo psíquico que hace que los pájaros caigan muertos del aire. Si eres el setFlag: avatar_de_la_hiel, ves que cada persona y cada Vástago en la plaza tiene un cable de luz violeta que sale de su pecho y se conecta directamente a tus dedos.
+
+El orden de la Camarilla se ha disuelto. Los ghouls de la Torre corren en círculos, disparando a fantasmas que solo tú puedes ver, mientras los Vástagos liberados del Vínculo se abrazan o se desgarran la garganta en un frenesí de lucidez repentina. Santiago está teniendo una convulsión cerebral, y tú eres el cirujano que sostiene el bisturí de plata.
+
+OPCIÓN A [DISCIPLINA: DEMENCIA]: Organizar el caos en una "Orquesta de Locura" para marchar hacia el Palacio Bruna.
+
+PUENTE: Te subes a la fuente de la plaza y empiezas a dirigir un aire invisible. Tu locura se expande como una onda de radio, sincronizando los delirios de todos los presentes. "¡La música viene del Palacio! ¡Vamos a apagar el ruido!", gritas. Los Vástagos y ghouls desorientados se unen a tu marcha, moviéndose como una marea de sombras rítmicas que devora todo a su paso hacia calle Merced.
+
+CONSECUENCIA: Lideras una horda de mentes fracturadas. Tu avance es imparable, pero el ruido en tu cabeza se vuelve ensordecedor.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: horda_del_delirio | IR A [ESCENA 7.1]
+
+OPCIÓN B [DISCIPLINA: AUSPEX]: Buscar los "agujeros de silencio" para moverte sin ser detectado por la tormenta psíquica.
+
+PUENTE: No te unes al grito; buscas las grietas entre los sonidos. Ves zonas de la plaza donde la realidad todavía es sólida y gris. Te deslizas por esos huecos, moviéndote como una sombra que el destino ha olvidado. Cruzas el centro mientras los demás se matan, viendo cómo los hilos de la Hiel intentan agarrarte sin éxito.
+
+CONSECUENCIA: Llegas al Parque Forestal sin un rasguño, manteniendo tu mente intacta para el encuentro final.
+
+RESULTADO: willpowerDelta: +1 | setFlag: paso_silencioso_caos | IR A [ESCENA 7.1]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Seguir el rastro de la "sangre de porcelana" de Inés a través de la carnicería.
+
+PUENTE: Si Inés huyó, su aura ha dejado un rastro de escamas de cristal blanco en el aire. Sigues ese rastro con una curiosidad maníaca, saltando sobre cuerpos y escombros. La sigues no por lealtad, sino porque ella es la única pieza del puzle que todavía tiene una forma que puedes reconocer en medio de este borrón púrpura.
+
+CONSECUENCIA: Encuentras a Inés antes de que llegue al palacio, pero te ves envuelto en escaramuzas laterales con los restos de la Guardia.
+
+RESULTADO: healthDamageDelta: -1 | setFlag: rastro_de_cristal_seguido | IR A [ESCENA 7.1]
+
+[ESCENA 7.1]: EL INCENDIO DE LAS IDEAS
+CONTEXTO: Esquina de calle Merced con el Parque Forestal. El Palacio Bruna arde en la distancia, pero las llamas son de un naranja que sabe a metal amargo.
+
+NARRACIÓN: El Palacio Bruna es ahora una pira funeraria para el viejo orden. Pero para ti, el fuego no quema la piedra; está quemando los recuerdos almacenados en el edificio. Ves hojas de papel volando por el aire que contienen susurros de 1814, convirtiéndose en ceniza antes de que puedas leerlas. Si tienes el setFlag: horda_del_delirio, tu masa de seguidores empieza a rodear la verja de hierro, golpeándola con un ritmo que hace que la estructura de hormigón vibre como un diapasón.
+
+En el umbral del parque, donde la luz del incendio choca con la sombra de los plátanos orientales, aparece una figura. No es un hombre, es una ausencia de luz con forma humana. El Hombre del Traje Gris te observa desde el epicentro del desastre. Su aura es un vacío absoluto, un agujero negro que absorbe toda tu estática.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Intentar ver "dentro" del vacío del Sastre para descubrir quién lo maneja.
+
+PUENTE: Te arrancas la venda de la realidad y miras fijamente al centro de su pecho. No hay órganos, no hay sangre; hay un cable de fibra óptica mística que se pierde en las nubes, subiendo hacia la cordillera. Él no es una persona, es una extensión remota de algo mucho más grande que duerme en el hielo.
+
+CONSECUENCIA: Descubres que el enemigo final no está en Santiago, sino en los Andes. El Sastre es solo un dedo de una mano gigante.
+
+RESULTADO: willpowerDelta: +1 | setFlag: vision_del_titulatero | IR A [BLOQUE 2]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Lanzar una "bomba de contradicción" al vacío del Sastre para forzarlo a existir.
+
+PUENTE: Le gritas una verdad que es mentira, un pensamiento tan circular que la lógica del Sastre no puede procesarlo. "¡Tú eres el sueño de un hombre que ya murió!", aúllas. El vacío del Traje Gris empieza a parpadear. Por un segundo, ves su verdadero rostro: una máscara de carne sintética y ojos de mercurio que lloran aceite.
+
+CONSECUENCIA: Has dañado su proyección en esta realidad. El Sastre retrocede, su forma volviéndose inestable y borrosa.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: sastre_desestabilizado | IR A [BLOQUE 2]
+
+OPCIÓN C [RIESGO - INSTINTO]: Si tienes setFlag: ines_liberada, pedirle que use su "claridad de porcelana" para cortar la sombra del Sastre.
+
+PUENTE: "¡Inés! ¡Corta los hilos del que no está aquí!", ordenas. Ella, libre del Príncipe pero aún vinculada a ti, arremete con su espada de plata. El acero blanco corta la oscuridad del Sastre como si fuera tela real. Se escucha un chirrido electrónico que hace que los cristales de las ventanas cercanas estallen.
+
+CONSECUENCIA: Obligas al Sastre a retirarse físicamente hacia el interior del Palacio en llamas. Tienes el camino libre para entrar.
+
+RESULTADO: setFlag: tajo_de_plata_final | IR A [BLOQUE 2]
+
+CLAN: MALKAVIAN | CAPÍTULO 7: EL DIES IRAE (BLOQUE 2/2)
+[ESCENA 7.2]: EL PALACIO DE LOS PENSAMIENTOS INCINERADOS
+CONTEXTO: Pasillos internos del Palacio Bruna. El aire es una mezcla de humo acre y el olor a ozono de los recuerdos que se queman.
+
+NARRACIÓN: El Palacio Bruna ya no es un edificio; es un cerebro en llamas. Para tus ojos, las molduras de yeso se están derritiendo como cera, y los cuadros de los antiguos Príncipes en las paredes están gritando mientras el fuego consume sus bastidores. Si entraste con la horda_del_delirio, el palacio está lleno de ecos de risas maníacas y disparos que suenan como aplausos. Si vienes por el paso_silencioso_caos, el edificio parece una tumba sumergida en un océano de estática púrpura.
+
+Ves el rastro del Príncipe. No son pisadas; es un rastro de Hiel que gotea desde el techo, formando un camino de gotas brillantes que te susurran: "Hacia arriba, pequeño espejo, donde el aire es más delgado y las mentiras más puras". La estructura gime, y a través de las grietas de las paredes ves los cables de cobre que conectaban este lugar con la Catedral, ahora chisporroteando con una energía que sabe a bilis.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Leer las "cenizas de los secretos" para saber qué intentaba ocultar el Príncipe antes de huir.
+
+PUENTE: Te arrodillas ante un montón de documentos quemándose. No usas tus manos, usas tu mente para recomponer los fragmentos de papel que flotan en el aire. Las cenizas te cuentan una historia de explotación glacial: el Príncipe no era el dueño de la Hiel, era el distribuidor local de una corporación que vive en los Andes. Ves un mapa de la cordillera grabado en el humo.
+
+CONSECUENCIA: Obtienes la ubicación exacta de la planta de bombeo en la montaña. El misterio local se vuelve una conspiración de escala mayor.
+
+RESULTADO: willpowerDelta: +1 | setFlag: mapas_de_la_cordillera | IR A [ESCENA 7.END]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Hacer que el incendio "recuerde" a sus víctimas para que las llamas bloqueen a los perseguidores del Sastre.
+
+PUENTE: Le hablas al fuego. "Tú no eres calor, eres el hambre de los olvidados", susurras. El incendio cambia de color a un violeta intenso y las llamas adoptan formas de manos que surgen del suelo, agarrando a los operativos del Traje Gris que intentan flanquearte. El Palacio se convierte en una trampa viva para cualquiera que no tenga la "frecuencia" adecuada.
+
+CONSECUENCIA: Limpias el camino hacia la azotea, dejando a los enemigos atrapados en una pesadilla pirotécnica.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: fuego_aliado_malkavian | IR A [ESCENA 7.END]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Saquear los "viales de memoria" del laboratorio privado del Príncipe.
+
+PUENTE: Te desvías hacia una habitación oculta tras una estantería de libros falsos. Encuentras estantes llenos de frascos que contienen sangre pulsante. Cada vial tiene una etiqueta con una emoción: Miedo (1920), Euforia (1973), Desesperación (2024). Bebes de uno al azar y el mundo estalla en mil colores nuevos, dándote la fuerza necesaria para atravesar las vigas que caen.
+
+CONSECUENCIA: Restauras tus energías, pero la mezcla de memorias ajenas hace que tu identidad se tambalee por un momento.
+
+RESULTADO: hungerDelta: -3 | setFlag: memorias_embotelladas | IR A [ESCENA 7.END]
+
+[ESCENA 7.END]: EL CIELO DE LOS DOSCIENTOS AÑOS
+CONTEXTO: Azotea del Palacio Bruna. 04:30 AM. Santiago arde abajo, pero hacia el este, la Cordillera de los Andes brilla con una aurora púrpura.
+
+NARRACIÓN: Llegas a la cima del edificio. El viento aquí arriba no sopla, aúlla en una frecuencia que solo un Malkavian puede entender como un réquiem. Ves el helicóptero del Traje Gris alejándose, pero no lleva al Príncipe; lleva cajas que vibran con una luz interna. El Príncipe de Santiago está sentado en el borde de la cornisa, observando cómo su ciudad se convierte en un mapa de incendios. Para ti, él ya no es un rey; es un anciano de ceniza que se está desmoronando.
+
+"Las voces tenían razón, ¿verdad?", murmura el Príncipe sin mirarte. "El contrato ha expirado. El Sastre ha venido a cobrar la garantía y la garantía es Santiago entera". Señala hacia los cerros, donde el resplandor púrpura es ahora una columna que conecta la tierra con las estrellas. "La Fuente Madre ha despertado en el glaciar. Ya no hay silencio que nos proteja".
+
+El Acto 2 termina con el Palacio Bruna colapsando bajo tus pies mientras la Red de la Locura te muestra la imagen de un Glaciar Negro que empieza a latir como un corazón de hielo.
+
+BIFURCACIÓN LÓGICA PARA EL CAPÍTULO 8:
+
+Si tienes mapas_de_la_cordillera: Tienes la ruta hacia el "corazón de la montaña".
+
+Si tienes memorias_embotelladas: Escuchas las voces de los antiguos que te guían por instinto hacia la fuente.
+
+Si el Sastre fue herido (sastre_desestabilizado): Su rastro de estática en el aire es una línea recta que puedes seguir hasta su base secreta.
+
+CLAN: MALKAVIAN | CAPÍTULO 8: EL ALIENTO DE LOS ANDES (BLOQUE 1/2)
+[ESCENA 8.0]: EL ÉXODO HACIA LA RAÍZ DEL FRÍO
+CONTEXTO: Ascenso por la ruta G-25 hacia el Cajón del Maipo. 05:00 AM. La ciudad es una mancha de luz agonizante en el espejo retrovisor.
+
+NARRACIÓN: El viaje hacia la montaña no es un trayecto por el pavimento, sino un ascenso por las venas de la tierra. A medida que subes hacia las cumbres, el aire se vuelve más delgado, pero la Red de la Locura vibra con una pureza aterradora. Para tus ojos, las laderas de los cerros no son roca; son caras gigantescas de antiguos que duermen, cuya respiración mineral crea la neblina que envuelve tu vehículo. Si vienes con las memorias_embotelladas, escuchas un coro de mil gargantas que te indican qué curvas del camino están "rotas" en la realidad.
+
+La Hiel aquí arriba ya no es un contaminante; es la atmósfera misma. El resplandor púrpura en el horizonte es tan intenso que puedes oír su color: un zumbido de violín eléctrico que parece estar pelando las capas de tu consciencia. El Sastre y su "Viña" han dejado de ser corporativos para convertirse en parásitos que intentan drenar la sangre de un dios geológico.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Sintonizar tu mente con el "latido del granito" para evitar las emboscadas invisibles.
+
+PUENTE: Cierras los ojos mientras conduces (o dejas que la inercia te lleve). Sientes las vibraciones de los francotiradores del Traje Gris apostados en los riscos. No ves sus rifles, ves sus intenciones como líneas de color rojo sangre que cruzan la carretera. Maniobras el coche con movimientos espasmódicos, esquivando las balas que todavía no han sido disparadas.
+
+CONSECUENCIA: Atraviesas el perímetro defensivo sin que un solo proyectil toque el metal. Tu mente está tan sincronizada con el entorno que empiezas a hablar en el lenguaje de las piedras.
+
+RESULTADO: willpowerDelta: +1 | setFlag: camino_de_la_intuicion | IR A [ESCENA 8.1]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Proyectar una "niebla de olvido" para que los drones de vigilancia vean solo un paisaje vacío.
+
+PUENTE: Abres las ventanas y dejas que tu fragmentación se escape como un humo gris. Los sensores térmicos y las cámaras de los drones que sobrevuelan el Cajón del Maipo se confunden; para ellos, tu vehículo es solo un grupo de árboles moviéndose o un error en el software de reconocimiento. Pasas bajo sus luces de búsqueda como un fantasma en una cinta de video borrada.
+
+CONSECUENCIA: Infiltración total. Llegas a la central hidroeléctrica sin alertar a la seguridad central, pero el esfuerzo hace que olvides tu propio nombre por unos instantes.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: velo_de_la_locura | IR A [ESCENA 8.1]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Seguir las "mariposas de ceniza" que salen del escape del helicóptero del Sastre.
+
+PUENTE: El rastro de estática que dejó el enemigo es una estela de mariposas negras y brillantes que solo tú ves. Aceleras por la ruta, siguiendo el rastro místico de la tecnología rota. La velocidad te embriaga y el coche parece querer despegar de la carretera para unirse al vuelo de las sombras.
+
+CONSECUENCIA: Llegas rápido y con una energía maníaca, pero los guardias de la entrada te ven venir a kilómetros de distancia.
+
+RESULTADO: healthDamageDelta: -1 | setFlag: llegada_estruendosa | IR A [ESCENA 8.1]
+
+[ESCENA 8.1]: LA CATEDRAL DE LAS TURBINAS
+CONTEXTO: Antigua Central Hidroeléctrica en San José de Maipo. Las turbinas gimen con el peso de la Hiel líquida que fluye desde el glaciar.
+
+NARRACIÓN: La central es una máquina de tortura mística. Enormes tuberías de acero bajan desde las cumbres, transportando un fluido púrpura que hace que el edificio entero vibre en una nota de agonía. Para ti, las turbinas no generan electricidad; están triturando los sueños de la Fuente Madre para convertirlos en energía comercializable. Ves a los técnicos con trajes aislantes, pero sus auras están "apagadas", como si el Sastre les hubiera robado el alma para que pudieran trabajar aquí sin volverse locos.
+
+En el centro del complejo, conectado a una red de electrodos, está el Príncipe (o sus restos). Está siendo usado como un filtro biológico para estabilizar la Hiel. El Hombre del Traje Gris supervisa la operación desde una pasarela de vidrio, analizando flujos de datos que para ti parecen una cascada de números sangrientos.
+
+OPCIÓN A [DISCIPLINA: AUSPEX]: Encontrar el "punto de ruptura" en la frecuencia de las turbinas para provocar una disonancia.
+
+PUENTE: Te concentras en el zumbido ensordecedor. Detectas el momento exacto en que todas las máquinas coinciden en una sola nota. Golpeas un tubo de distribución con la palma de tu mano, inyectando un fragmento de tu propia disonancia mental. El metal empieza a cantar un lamento desgarrador y los tanques de Hiel se agrietan, liberando una marea violeta que inunda la sala.
+
+CONSECUENCIA: Sabotaje interno masivo. El Sastre pierde el control de la presión y los técnicos huyen ante el estallido de energía psíquica.
+
+RESULTADO: setFlag: sabotaje_frecuencia_maipo | IR A [BLOQUE 2]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Susurrarle a la Hiel que está en las tuberías para que reconozca a sus "verdaderos dueños".
+
+PUENTE: Te arrodillas y pegas tu frente al acero frío de una tubería maestra. "Ellos te encierran, pero yo te entiendo", susurras. La Hiel responde. El fluido dentro de los tubos empieza a golpear las paredes metálicas con el ritmo de un corazón furioso. Las válvulas estallan y el líquido púrpura busca activamente a los guardias, envolviéndolos en capullos de estática hirviente.
+
+CONSECUENCIA: Conviertes el entorno en un arma aliada. El Sastre queda aislado en su pasarela mientras su "producto" se vuelve contra él.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: rebelion_del_fluido | IR A [BLOQUE 2]
+
+OPCIÓN C [RIESGO - INSTINTO]: Si tienes vision_del_titulatero, atacar directamente la conexión del Sastre con la "cima".
+
+PUENTE: No miras al Sastre, miras el cable de luz invisible que sale de su nuca hacia el techo. Usas la daga de plata para "tajar" el aire sobre él. El cable se deshilacha, y por un momento, el Sastre se tambalea, su rostro sintético perdiendo la forma y revelando un vacío absoluto debajo. "¡Error de sistema!", grita con una voz que suena a mil módems rompiéndose.
+
+CONSECUENCIA: Debilitas la proyección del enemigo final, pero atraes toda la artillería de los drones hacia tu posición.
+
+RESULTADO: healthDamageDelta: -1 | setFlag: conexion_sastre_dañada | IR A [BLOQUE 2]
+
+CLAN: MALKAVIAN | CAPÍTULO 8: EL ALIENTO DE LOS ANDES (BLOQUE 2/2)
+[ESCENA 8.2]: EL DIÁLOGO DE LAS SOMBRAS INDUSTRIALES
+CONTEXTO: Sala de control de la Central Maipo. El cristal reforzado vibra con una frecuencia que hace que tus ojos vean el espectro del miedo.
+
+NARRACIÓN: La planta de procesamiento es ahora una herida abierta en la montaña. Si lograste la rebelion_del_fluido, el suelo está cubierto de una capa de Hiel de diez centímetros que refleja tus propios pensamientos como si fueran diapositivas. El Hombre del Traje Gris desciende de la pasarela. Para tus ojos, no está caminando; su imagen se "teletransporta" cuadro a cuadro, como un fallo en la cinta de la realidad. Su aura es un código de barras estático que intenta escanear tu locura para clasificarla como un error de inventario.
+
+"Santiago era un experimento de contención, pequeño profeta", dice, y su voz suena como el roce de dos placas de metal. "El Príncipe guardaba el secreto en una botella; nosotros lo queremos en la red de suministro global. No puedes detener una inundación tapando un grifo". Detrás de él, el Glaciar Negro ruge a través de las cámaras de monitoreo, una masa de hielo antiguo que parece un cerebro congelado del tamaño de una ciudad.
+
+OPCIÓN A [DISCIPLINA: DEMENCIA]: Inyectar el "Virus del Significado" en los servidores del Sastre.
+
+PUENTE: Te conectas a la consola central, pero no usas tus dedos. Dejas que las voces de la Red de la Locura fluyan a través de los cables. "Aquí no hay datos, solo sueños rotos", susurras. Las pantallas del Sastre empiezan a mostrar recuerdos de tu infancia, poemas de amor de muertos y el sonido de la lluvia en 1814. El sistema logístico de la Viña del Silencio colapsa al intentar procesar algo que no tiene precio ni medida.
+
+CONSECUENCIA: Destruyes la capacidad del Sastre para exportar la Hiel. El enemigo queda cegado, pero la sobrecarga hace que la central empiece a desintegrarse físicamente.
+
+RESULTADO: fragmentationDelta: +1 | setFlag: colapso_logistico_purpura | IR A [ESCENA 8.END]
+
+OPCIÓN B [DISCIPLINA: AUSPEX]: Cantar la "nota de libertad" para que la Hiel dentro del Príncipe lo devore.
+
+PUENTE: Te enfocas en el Príncipe, que sigue conectado a las máquinas. Ves los hilos que lo atan al Sastre. Empiezas a tararear una melodía que resuena con la sangre más antigua. La Hiel dentro del Príncipe reconoce su origen y se expande violentamente, convirtiendo al antiguo soberano en una granada de estática pura. La explosión no es de fuego, sino de silencio, borrando a los guardias cercanos de la existencia.
+
+CONSECUENCIA: Eliminas el "filtro" del Sastre. La Hiel pura del glaciar inunda la planta sin control, obligando a todos a huir hacia las alturas para no ser disueltos.
+
+RESULTADO: willpowerDelta: -1 | setFlag: sacrificio_del_rey_ceniza | IR A [ESCENA 8.END]
+
+OPCIÓN C [RIESGO - INSTINTO]: Si tienes memorias_embotelladas, lanzar los viales al núcleo de la turbina para crear un "tornado de tiempo".
+
+PUENTE: Rompes los frascos de memorias robadas contra el eje de la turbina principal. El miedo de 1920 y la euforia de 1973 se mezclan con la energía de la central. Se crea un vórtice de eventos pasados que congela el tiempo en la sala. Ves al Sastre atrapado en un bucle eterno de un segundo, mientras tú caminas por el ojo del huracán hacia la salida que lleva al glaciar.
+
+CONSECUENCIA: Ganas una ventaja temporal absoluta, pero la fractura en la realidad te deja marcado: ahora ves el presente y el pasado al mismo tiempo.
+
+RESULTADO: humanityDelta: -1 | setFlag: vision_temporal_fracturada | IR A [ESCENA 8.END]
+
+[ESCENA 8.END]: EL UMBRAL DEL CERO ABSOLUTO
+CONTEXTO: Cresta superior del Cajón del Maipo, frente a la boca del Glaciar Negro. 06:15 AM.
+
+NARRACIÓN: La central ha quedado atrás, un faro de luces púrpuras que parpadean en la garganta de la montaña. Estás a cinco mil metros de altura. Aquí, el aire no se respira, se muerde. Frente a ti, el Glaciar Negro se alza como una muralla de obsidiana translúcida. Dentro del hielo, ves formas que parecen barcos coloniales, carruajes y miles de cuerpos suspendidos en una danza eterna. Es el archivo real de Chile, escrito en agua congelada.
+
+Si tienes la vision_temporal_fracturada, ves que el glaciar no es solo hielo, es un reloj de arena que está a punto de dar la vuelta. El Sastre (o lo que queda de su proyección) huye hacia el interior de una grieta que brilla con una luz de neón violáceo. El sol está a punto de salir tras los picos, pero la sombra del glaciar es tan densa que crea una noche artificial perpetua.
+
+BIFURCACIÓN LÓGICA PARA EL CAPÍTULO FINAL (CAP 9):
+
+Si el Príncipe murió (sacrificio_del_rey_ceniza): No hay nadie que reclame el trono de Santiago; la Fuente Madre es tuya para ser consumida o liberada. -> Capítulo 9: El Trono de Hielo.
+
+Si el Sastre huyó con datos (colapso_logistico_purpura): Debes entrar al corazón del glaciar para borrar la "copia de seguridad" de tu especie. -> Capítulo 9: El Nuevo Amanecer Púrpura.
+
+Si tienes fragmentationDelta mayor a 5: El glaciar te reconoce como su voz. No vas a luchar, vas a regresar. -> Capítulo 9: La Ascensión de la Hiel.
+
+CLAN: MALKAVIAN | CAPÍTULO 9: EL TRONO DE HIELO (BLOQUE 1/2)
+[ESCENA 9.0]: EL DESCENSO AL NERVIO DEL MUNDO
+CONTEXTO: Interior del Glaciar Negro. Una catedral de hielo negro que vibra con una luz púrpura profunda. 06:30 AM.
+
+NARRACIÓN: Entrar en el glaciar no es caminar, es ser ingerido por una memoria geológica. Las paredes de hielo no son lisas; están grabadas con los rostros de todos los que han muerto en Santiago desde su fundación, susurrando sus nombres en una frecuencia que hace que tus colmillos vibren. Si tienes la vision_temporal_fracturada, ves a los conquistadores españoles de 1541 caminando junto a los oficinistas de 2024, todos atrapados en el ámbar helado de la Hiel.
+
+En el centro de la bóveda, suspendida en una crisálida de estática pura, se encuentra la Fuente Madre. Para tus ojos Malkavian, ella es una telaraña cósmica, el origen de la Red de la Locura en este rincón del mundo. El Hombre del Traje Gris está allí, pero ya no es un hombre; es una cáscara vacía conectada a servidores de cristal que intentan "descargar" la consciencia del glaciar. El aire está tan cargado de electricidad mística que tu pelo se eriza y el sabor a ozono es casi asfixiante.
+
+OPCIÓN A [DISCIPLINA: DEMENCIA]: Sobrecargar la "Red de la Fuente" con toda la locura acumulada en tu viaje.
+
+PUENTE: Te conectas físicamente a la crisálida, dejando que cada visión, cada grito y cada fragmento de tu mente rota fluya hacia la Fuente Madre. "¡Si quieres ruido, aquí tienes la sinfonía entera!", aúllas. El hielo empieza a agrietarse con el sonido de un trueno. La tecnología del Sastre estalla en una lluvia de chispas mientras el glaciar intenta procesar la paradoja de tu existencia.
+
+CONSECUENCIA: Destruyes el equipo de extracción del enemigo y despiertas a la Fuente, pero el choque te deja al borde de la disolución total.
+
+RESULTADO: fragmentationDelta: +2 | setFlag: despertar_violento | IR A [ESCENA 9.1]
+
+OPCIÓN B [DISCIPLINA: AUSPEX]: Cantar la "frecuencia de cuna" para volver a dormir a la Fuente antes de que el Sastre la controle.
+
+PUENTE: Te sientas en el suelo de hielo y empiezas a tararear una melodía que aprendiste de los ecos de la Catedral. Es una nota de silencio absoluto, un vacío que absorbe el ruido. El brillo púrpura del glaciar empieza a atenuarse, volviéndose un azul profundo y tranquilo. Los servidores del Sastre muestran "Error: Señal Perdida" mientras la Fuente se retrae hacia el corazón de la montaña.
+
+CONSECUENCIA: Salvas a la Fuente de ser industrializada, pero te vuelves el nuevo "Ancla" que debe quedarse aquí para mantener el sueño.
+
+RESULTADO: willpowerDelta: -1 | setFlag: el_nuevo_guardian | IR A [ESCENA 9.1]
+
+OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Usar la daga de plata para "cortar" los cables de realidad del Sastre.
+
+PUENTE: Te mueves con una rapidez antinatural, tando tajos al aire donde ves los hilos de datos del Sastre. Cada corte emite un sonido de cristal rompiéndose. La proyección del Hombre del Traje Gris empieza a parpadear y desvanecerse, revelando que su base de operaciones está en realidad a miles de kilómetros de distancia. Estás luchando contra una sombra, y la plata es el único lenguaje que entiende.
+
+CONSECUENCIA: Desconectas al Sastre de la Fuente, pero la energía acumulada busca un nuevo recipiente y ese recipiente eres tú.
+
+RESULTADO: healthDamageDelta: -1 | setFlag: sastre_desconectado | IR A [ESCENA 9.1]
+
+[ESCENA 9.1]: EL COLAPSO DE LA GRAN CÚPULA
+CONTEXTO: El núcleo del glaciar empieza a desintegrarse. Trozos de hielo del tamaño de casas caen desde el techo de la bóveda.
+
+NARRACIÓN: La realidad se está deshilachando. Si tienes el despertar_violento, la Hiel líquida está brotando del suelo como géiseres púrpuras, inundando la cámara. El Sastre, en un último esfuerzo de su hardware agonizante, activa una carga de demolición térmica: prefiere destruir la Fuente antes de perder el monopolio.
+
+Ves el tiempo doblarse. Por un lado, el sol está saliendo sobre los Andes, amenazando con convertirte en ceniza a través de las grietas del hielo. Por otro lado, la Fuente Madre te ofrece su mano —una mano hecha de luz violácea y susurros— invitándote a fundirte con ella para siempre.
+
+OPCIÓN A [HABILIDAD: ACCIÓN / REFLEJOS]: Correr hacia el detonador para lanzarlo al abismo antes de que estalle.
+
+PUENTE: Esquivas los carámbanos que caen, moviéndote en un zig-zag maníaco. Agarras el dispositivo térmico, que quema con el calor de mil soles. Lo lanzas hacia la grieta más profunda del glaciar, justo cuando la cuenta atrás llega a cero. La explosión ocurre en las profundidades, haciendo que la montaña entera se estremezca, pero salvando la cámara principal.
+
+CONSECUENCIA: Detienes la destrucción física del glaciar, pero la onda de choque te lanza contra las paredes de hielo, hiriéndote gravemente.
+
+RESULTADO: healthDamageDelta: -2 | setFlag: detonador_descartado | IR A [BLOQUE 2]
+
+OPCIÓN B [DISCIPLINA: DEMENCIA]: Convencer a la explosión de que "ya ocurrió hace mil años".
+
+PUENTE: Te paras frente al detonador y le hablas con la autoridad de quien ha visto el fin del tiempo. "Llegas tarde, el fuego ya es ceniza", sentencias. La lógica del detonador se quiebra; el dispositivo emite un chasquido inofensivo y se convierte en un montón de arena gris. Has hackeado la causalidad misma, pero tu mente se siente como un espejo hecho añicos.
+
+CONSECUENCIA: Neutralizas la amenaza tecnológica con pura voluntad Malkavian, pero tu nivel de fragmentación alcanza su límite.
+
+RESULTADO: fragmentationDelta: +2 | setFlag: causalidad_rota | IR A [BLOQUE 2]
+
+OPCIÓN C [RIESGO - INSTINTO]: Si tienes avatar_de_la_hiel, absorber la explosión dentro de tu propio cuerpo.
+
+PUENTE: Te lanzas sobre el detonador y abres tu boca, dejando que la energía térmica entre en ti. Tu sangre de Hiel neutraliza el fuego con su frío eterno. Te conviertes en una estatua de cristal incandescente por unos segundos, antes de expulsar el calor en un suspiro de vapor púrpura que llena toda la caverna.
+
+CONSECUENCIA: Salvas el nexo, pero tu forma física empieza a desvanecerse para convertirse en pura energía.
+
+RESULTADO: humanityDelta: -2 | setFlag: cuerpo_de_energia | IR A [BLOQUE 2]
+
+CLAN: MALKAVIAN | CAPÍTULO 9: EL TRONO DE HIELO (BLOQUE 2/2)
+[ESCENA 9.2]: EL DESPERTAR DEL OJO VIOLETA
+CONTEXTO: El epicentro del Glaciar Negro. La realidad se ha vuelto líquida y el tiempo ha dejado de ser una línea para convertirse en un círculo que se estrecha. 06:55 AM.
+
+NARRACIÓN: El silencio que sigue al conflicto es más ruidoso que cualquier explosión. Estás frente a la Fuente Madre. Ya no hay servidores, ni cables, ni trajes grises. Solo quedas tú y la entidad que ha soñado a Santiago durante siglos. Si tienes setFlag: el_nuevo_guardian, el hielo a tu alrededor se vuelve cálido y acogedor, como un útero de cristal. Si tienes setFlag: causalidad_rota, ves que el techo del glaciar ha desaparecido, revelando un cielo de estrellas que parpadean en un código Morse que solo tú puedes leer: es la historia de tu clan escrita en el cosmos.
+
+El sol está a punto de asomar por el filo de los Andes. Su luz es una lanza de fuego que amenaza con purificar el glaciar y a ti con él. La Red de la Locura se expande hasta el infinito; sientes cada pensamiento de cada habitante de Santiago, cada miedo, cada deseo. Tienes el poder de sintonizar la ciudad en una sola frecuencia. El final no es una decisión, es la última pincelada en tu cuadro de locura.
+
+OPCIÓN A [RUTA DEL SACRIFICIO - EL ECO ETERNO]: Fundirte con la Fuente para limpiar la Hiel y convertirte en el nuevo "Silencio" de la montaña.
+
+PUENTE: No huyes del sol. Te abrazas a la crisálida de la Fuente y dejas que tu consciencia se disuelva en el hielo. Usas tu propia fragmentación como un filtro para absorber toda la corrupción de Santiago. La Hiel púrpura se vuelve blanca y pura, fluyendo de regreso a la tierra. Tu cuerpo se convierte en una estatua de diamante en el corazón del glaciar, enviando una onda de paz y olvido a todos los Vástagos de la capital.
+
+CONSECUENCIA: Santiago despierta de la pesadilla sin recordar la Hiel. Eres el mártir invisible, la nota de silencio que permite que la música de la ciudad continúe sin interferencias.
+
+RESULTADO: FINAL 1: EL SUEÑO DE DIAMANTE | setFlag: final_sacrificio_malk
+
+OPCIÓN B [RUTA DEL PODER - EL DIOS DE LA ESTÁTICA]: Reclamar la Fuente y emitir tu propia locura como la nueva ley de Santiago.
+
+PUENTE: "Yo no soy el espejo, yo soy la luz que lo rompe", susurras. Te sientas en el trono de hielo y tomas el control de la transmisión. En lugar de limpiar la Hiel, la sintonizas con tu propia mente. Cada Vástago en Santiago empieza a ver el mundo como tú lo ves: un laberinto de colores, voces y verdades fracturadas. Has convertido la ciudad en tu propio manicomio personal donde tú eres el único cuerdo.
+
+CONSECUENCIA: Te conviertes en una deidad mística. Santiago se vuelve una ciudad de locos y visionarios bajo tu mando eterno desde las sombras del glaciar.
+
+RESULTADO: FINAL 2: EL ARQUITECTO DEL DELIRIO | setFlag: final_dominacion_malk
+
+OPCIÓN C [RUTA DEL CAOS - EL FINAL DE LA FUNCIÓN]: Dejar que la Fuente estalle y que el "Ruido" devore la realidad.
+
+PUENTE: Miras al sol y te ríes. "La obra ha sido aburrida, es hora de bajar el telón", dices mientras rompes el último sello místico. El Glaciar Negro estalla en una supernova de información pura y estática. El concepto de "vampiro", "humano" y "secreto" se disuelve. La Gehena no es fuego, es el fin del significado. Santiago se convierte en una mancha púrpura en el mapa de la existencia.
+
+CONSECUENCIA: Has provocado el colapso de la Mascarada a nivel global. El mundo entero escucha ahora el ruido de las estrellas sordas. Eres el heraldo del fin de los tiempos.
+
+RESULTADO: FINAL 3: EL SOLISTA DEL APOCALIPSIS | setFlag: final_caos_malk
+
+[ESCENA FINAL]: EPÍLOGO
+CONTEXTO: El alba sobre Santiago. 07:15 AM.
+
+NARRACIÓN: La luz del sol finalmente toca el valle de Santiago. Si lograste sobrevivir en alguna forma, ves la ciudad desde las alturas. Los edificios del centro, la Catedral y el Palacio Bruna parecen juguetes de plástico bajo la inmensidad de la cordillera. La Hiel se ha ido, o quizá ahora es tan parte de la realidad que nadie nota la diferencia.
+
+Un viento frío sopla desde el sur, cargado de partículas de cristal. Te ajustas el cuello de la chaqueta, o dejas que el viento disperse tus cenizas, o simplemente sigues tarareando esa canción que nunca tuvo letra. Santiago sigue ahí, pero tú sabes que debajo de sus calles, en el eco de sus túneles y en el brillo de sus luces, siempre quedará un fragmento de tu espejo roto.
+
+FIN DE LA CRÓNICA: MALKAVIAN - SANTIAGO EN CENIZAS.
+

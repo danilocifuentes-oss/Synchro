@@ -32,6 +32,8 @@ export type SoloSceneEffect =
   | { type: "willpowerDelta"; delta: number }
   /** Experiencia de crónica (PX narrativos, acumulados en `SoloProgress.chronicleExperience`). */
   | { type: "experienceDelta"; delta: number }
+  /** Narrativa Malkavian / estrés cognitivo (0–10 en progreso). No modifica la ficha Codex. */
+  | { type: "fragmentationDelta"; delta: number }
   | { type: "setRoute"; route: SoloRouteId }
   | { type: "addStateTag"; tag: string }
   | { type: "removeStateTag"; tag: string }
@@ -105,6 +107,8 @@ export type SoloProgress = {
   reputation: number;
   /** Experiencia ganada en campaña solitaria (tiradas, hitos); independiente del pool de compra del Codex. */
   chronicleExperience: number;
+  /** Fragmentación narrativa (crónica Malkavian); opcional. */
+  fragmentation?: number;
   chapterId: string;
   sceneId: string;
   activeRoute?: SoloRouteId;

@@ -1,5 +1,6 @@
 import type { CharacterSheet } from "@/lib/character";
 import { disciplineLabel } from "@/lib/sereno";
+import { MALKAVIAN_NARRATION_BY_SCENE_ID } from "@/lib/soloCampaign/chapters/malkavian/malkavianNarrationOverride.generated";
 import type { SoloOption, SoloProgress, SoloRequirement, SoloScene } from "./types";
 
 export type RequirementResult = {
@@ -142,7 +143,9 @@ export function resolveSoloScenePlayerText(scene: SoloScene, sheet: CharacterShe
       if (evalRequirement(row.requirement, sheet, progress).available) leadIns.push(row.text);
     }
   }
-  let text = scene.text.trim();
+  const malkBody =
+    sheet.clan === "malkavian" ? MALKAVIAN_NARRATION_BY_SCENE_ID[scene.id] : undefined;
+  let text = (malkBody ?? scene.text).trim();
   if (leadIns.length) text = `${leadIns.join("\n\n")}\n\n${text}`;
 
   const inserts: string[] = [];

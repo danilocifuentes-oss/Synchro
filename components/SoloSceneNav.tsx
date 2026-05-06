@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { soloChapterHeadlineForClan } from "@/lib/soloCampaign/chronicleMechanics";
 import { getSoloChapter } from "@/lib/soloCampaign/chapters";
 import { useSoloCampaign } from "@/context/SoloCampaignContext";
 
@@ -8,13 +9,14 @@ import { useSoloCampaign } from "@/context/SoloCampaignContext";
 export function SoloSceneNav() {
   const { progress, jumpToScene } = useSoloCampaign();
   const chapter = useMemo(() => getSoloChapter(progress.chapterId), [progress.chapterId]);
+  const headline = chapter ? soloChapterHeadlineForClan(chapter.title, progress.clan) : "";
   if (!chapter?.scenes.length) return null;
 
   return (
     <section className="space-y-2 border-t border-white/[0.06] pt-3" aria-label="Navegación de escenas">
       <p className="text-[9px] uppercase tracking-[0.22em] text-neutral-600">Escenas · capítulo</p>
-      <p className="truncate font-sans text-[10px] leading-snug text-neutral-500" title={chapter.title}>
-        {chapter.title}
+      <p className="truncate font-sans text-[10px] leading-snug text-neutral-500" title={headline}>
+        {headline}
       </p>
       <label className="sr-only" htmlFor="solo-scene-jump">
         Ir a escena
