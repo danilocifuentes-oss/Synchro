@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useReducer, type ReactNode } from "react";
-import { getSoloChapter } from "@/lib/soloCampaign/chapters";
+import { getSoloChapter, SOLO_CHAPTERS } from "@/lib/soloCampaign/chapters";
 import { saveSoloProgress } from "@/lib/soloCampaign/progressStore";
 import type { SoloProgress } from "@/lib/soloCampaign/types";
 
@@ -29,15 +29,27 @@ function reducer(state: CombinedState, action: Action): CombinedState {
       return { progress: action.progress, transitionSlide: action.slide };
     case "jumpToScene": {
       const prev = state.progress;
-      const ch = getSoloChapter(prev.chapterId);
-      if (!ch?.scenes.some((s) => s.id === action.sceneId)) return state;
+      const currentChapter = getSoloChapter(prev.chapterId);
+      if (!currentChapter) return state;
+      const targetChapter = SOLO_CHAPTERS.find((c) => c.scenes.some((s) => s.id === action.sceneId)) ?? null;
+      if (!targetChapter) return state;
       if (prev.sceneId === action.sceneId) return state;
-      const oldIdx = ch.scenes.findIndex((s) => s.id === prev.sceneId);
-      const newIdx = ch.scenes.findIndex((s) => s.id === action.sceneId);
-      const slide: SoloSceneSlideDirection =
-        oldIdx >= 0 && newIdx >= 0 ? (newIdx > oldIdx ? 1 : newIdx < oldIdx ? -1 : 1) : 1;
+      const currentChapterIdx = SOLO_CHAPTERS.findIndex((c) => c.id === currentChapter.id);
+      const targetChapterIdx = SOLO_CHAPTERS.findIndex((c) => c.id === targetChapter.id);
+      const oldIdxInCurrent = currentChapter.scenes.findIndex((s) => s.id === prev.sceneId);
+      const newIdxInTarget = targetChapter.scenes.findIndex((s) => s.id === action.sceneId);
+      const slide: SoloSceneSlideDirection = (() => {
+        if (currentChapter.id !== targetChapter.id) {
+          if (targetChapterIdx > currentChapterIdx) return 1;
+          if (targetChapterIdx < currentChapterIdx) return -1;
+          return 1;
+        }
+        if (oldIdxInCurrent >= 0 && newIdxInTarget >= 0) return newIdxInTarget > oldIdxInCurrent ? 1 : -1;
+        return 1;
+      })();
       const next: SoloProgress = {
         ...prev,
+        chapterId: targetChapter.id,
         sceneId: action.sceneId,
         updatedAt: Date.now(),
         visitedSceneIds: Array.from(new Set([...(prev.visitedSceneIds ?? []), action.sceneId])),

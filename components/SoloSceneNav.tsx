@@ -1,15 +1,13 @@
 "use client";
 
 import { useMemo } from "react";
-import { soloChapterHeadlineForClan } from "@/lib/soloCampaign/chronicleMechanics";
-import { getSoloChapter } from "@/lib/soloCampaign/chapters";
+import { getSoloChapter, SOLO_CHAPTERS } from "@/lib/soloCampaign/chapters";
 import { useSoloCampaign } from "@/context/SoloCampaignContext";
 
 /** Lista el capítulo actual y permite saltar de escena (ediciones / QA de texto). */
 export function SoloSceneNav() {
   const { progress, jumpToScene } = useSoloCampaign();
   const chapter = useMemo(() => getSoloChapter(progress.chapterId), [progress.chapterId]);
-  const headline = chapter ? soloChapterHeadlineForClan(chapter.title, progress.clan) : "";
   if (!chapter?.scenes.length) return null;
   const maxPlayedIdx = Math.max(
     0,
@@ -21,13 +19,38 @@ export function SoloSceneNav() {
   const allowedScenes = chapter.scenes.slice(0, Math.max(maxPlayedIdx + 1, currentIdx + 1));
   const canGoPrev = currentIdx > 0;
   const canGoNext = currentIdx >= 0 && currentIdx < allowedScenes.length - 1;
+  const chapterOrder = useMemo(
+    () => new Map(SOLO_CHAPTERS.map((c, idx) => [c.id, idx])),
+    [],
+  );
+  const currentChapterOrder = chapterOrder.get(progress.chapterId) ?? -1;
+  const jumpOptions = useMemo(() => {
+    return SOLO_CHAPTERS.flatMap((chap) => {
+      const chapOrder = chapterOrder.get(chap.id) ?? -1;
+      if (chapOrder < 0 || chapOrder > currentChapterOrder) return [];
+      const chapterStartIdx = chap.scenes.findIndex((s) => s.id === chap.startSceneId);
+      const maxVisitedIdx = Math.max(
+        -1,
+        ...chap.scenes
+          .map((s, idx) => ((progress.visitedSceneIds ?? []).includes(s.id) ? idx : -1))
+          .filter((idx) => idx >= 0),
+      );
+      const currentSceneIdx = chap.id === progress.chapterId
+        ? chap.scenes.findIndex((s) => s.id === progress.sceneId)
+        : -1;
+      const guaranteedStartIdx = chapOrder < currentChapterOrder ? Math.max(chapterStartIdx, 0) : -1;
+      const maxAllowedIdx = Math.max(maxVisitedIdx, currentSceneIdx, guaranteedStartIdx);
+      if (maxAllowedIdx < 0) return [];
+      return chap.scenes.slice(0, maxAllowedIdx + 1).map((s) => ({
+        chapterId: chap.id,
+        chapterTitle: chap.title,
+        scene: s,
+      }));
+    });
+  }, [chapterOrder, currentChapterOrder, progress.chapterId, progress.sceneId, progress.visitedSceneIds]);
 
   return (
     <section className="space-y-2 border-t border-white/[0.06] pt-3" aria-label="Navegación de escenas">
-      <p className="text-[9px] uppercase tracking-[0.22em] text-neutral-600">Escenas · capítulo</p>
-      <p className="truncate font-sans text-[10px] leading-snug text-neutral-500" title={headline}>
-        {headline}
-      </p>
       <div className="grid grid-cols-2 gap-2">
         <button
           type="button"
@@ -61,14 +84,14 @@ export function SoloSceneNav() {
         onChange={(e) => jumpToScene(e.target.value)}
         className="w-full max-w-full rounded border border-white/[0.12] bg-black/60 py-2 pl-2 pr-8 font-mono text-[10px] uppercase tracking-wide text-neutral-200 outline-none focus:border-[color:var(--terminal)]/45"
       >
-        {allowedScenes.map((s) => (
-          <option key={s.id} value={s.id}>
-            {s.title}
+        {jumpOptions.map(({ chapterId, chapterTitle, scene }) => (
+          <option key={scene.id} value={scene.id}>
+            [{chapterId.replace("chapter", "Cap. ")}] {scene.title || chapterTitle}
           </option>
         ))}
       </select>
       <p className="text-[7px] leading-snug text-neutral-600">
-        Navegación acotada entre primera y última escena ya jugadas.
+        Puedes saltar entre escenas ya jugadas, incluso de capítulos previos.
       </p>
     </section>
   );

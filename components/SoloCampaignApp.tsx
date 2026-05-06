@@ -32,6 +32,7 @@ import {
   SOLO_FLAG_OPENING_VITALS,
   soloChapterHeadlineForClan,
 } from "@/lib/soloCampaign/chronicleMechanics";
+import { getChronicleDefinition } from "@/lib/soloCampaign/chronicleRegistry";
 import { applyPreRollResourceCost, soloOptionUsesDice } from "@/lib/soloCampaign/rollResourceCost";
 
 const SOLO_BACK_STACK_LIMIT = 120;
@@ -42,6 +43,16 @@ function pendingChapterButtonLabel(chapterId: string): string {
   if (m) return `Capítulo ${Number(m[1])}`;
   if (chapterId === "epilogue") return "Epílogo";
   return chapterId.replace(/_/g, " ");
+}
+
+function compactChapterRibbon(rawTitle: string, chapterId: string): string {
+  const chronicleName = getChronicleDefinition().title;
+  const chapterFromId = /^chapter0*(\d+)$/i.exec(chapterId)?.[1] ?? "?";
+  const parsed = /CAP[ÍI]TULO\s+(\d+)\s*:\s*([^·]+)/i.exec(rawTitle);
+  if (!parsed) return `${chronicleName} · Capítulo ${chapterFromId}`;
+  const chapterNumber = parsed[1];
+  const chapterName = parsed[2].replace(/\s*\([^)]*\)\s*$/g, "").trim();
+  return `${chronicleName} · Capítulo ${chapterNumber} · ${chapterName}`;
 }
 
 function sumReputationDeltas(list: SoloOption["effects"]): number {
@@ -369,6 +380,7 @@ function SoloCampaignScreen({
   }, [scene, sheet, progress]);
   const clanLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
   const chapterHeadline = chapter ? soloChapterHeadlineForClan(chapter.title, sheet.clan) : "";
+  const chapterRibbon = chapter ? compactChapterRibbon(chapterHeadline, chapter.id) : "";
   const openingVitalsApplied = Boolean(progress.flags[SOLO_FLAG_OPENING_VITALS]);
 
   useEffect(() => {
@@ -718,9 +730,7 @@ function SoloCampaignScreen({
               >
                 <div className="solo-book-page mx-auto max-w-3xl space-y-5 rounded-sm border border-white/[0.07] bg-[linear-gradient(165deg,rgba(18,17,16,0.97)_0%,rgba(8,8,10,0.99)_40%,rgba(5,5,6,1)_100%)] px-4 py-5 shadow-[inset_10px_0_24px_-14px_rgba(255,255,255,0.06),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-6 sm:py-6 lg:px-8 lg:py-8">
                   <p className="border-b border-white/[0.06] pb-3 font-sans text-[10px] uppercase tracking-[0.28em] text-neutral-500">
-                    <span className="text-neutral-400">{chapterHeadline}</span>
-                    <span className="mx-2 text-neutral-700">·</span>
-                    <span style={{ color: "var(--accent-clan, #a3a3a3)" }}>{scene.title}</span>
+                    <span className="text-neutral-400">{chapterRibbon}</span>
                   </p>
                   <section className="space-y-5" aria-labelledby={sceneHeadingId}>
                     <h2 id={sceneHeadingId} className="sr-only">
@@ -731,7 +741,6 @@ function SoloCampaignScreen({
                         aria-label="Contexto de escena"
                         className="rounded-sm border border-white/[0.08] bg-black/35 px-4 py-3 font-sans text-[12px] leading-relaxed tracking-wide text-neutral-400"
                       >
-                        <p className="mb-1 font-mono text-[9px] uppercase tracking-[0.24em] text-neutral-500">Contexto</p>
                         <p className="whitespace-pre-line text-neutral-300">{scenePanels.context.trim()}</p>
                       </div>
                     ) : null}

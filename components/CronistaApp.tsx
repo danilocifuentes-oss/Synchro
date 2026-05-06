@@ -915,7 +915,7 @@ function CronistaAppInner() {
 
             {nexoCenterColumn}
 
-            <aside className="hidden min-h-0 shrink-0 self-stretch border-l border-white/[0.06] bg-[linear-gradient(180deg,#060607,#0a0a0d)] 2xl:flex 2xl:w-[min(18vw,20rem)] 2xl:max-w-sm 2xl:flex-col 2xl:overflow-hidden">
+            <aside className="hidden min-h-0 shrink-0 self-stretch border-l border-white/[0.06] bg-[linear-gradient(180deg,#060607,#0a0a0d)] xl:flex xl:w-[min(24vw,18rem)] xl:max-w-xs xl:flex-col xl:overflow-hidden 2xl:w-[min(18vw,20rem)] 2xl:max-w-sm">
               <div className="border-b border-white/[0.05] px-5 py-4 font-sans text-[10px] font-light uppercase tracking-[0.35em] text-neutral-500">
                 Eco
               </div>
