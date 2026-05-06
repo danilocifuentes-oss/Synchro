@@ -14,38 +14,48 @@ type Props = {
  */
 export function NexoWrapper({ children }: Props) {
   const reduceMotion = useReducedMotion();
-  const [booting, setBooting] = useState(() => {
-    if (typeof window === "undefined") return false;
-    if (reduceMotion) return false;
-    try {
-      return !sessionStorage.getItem(BOOT_KEY);
-    } catch {
-      return true;
-    }
-  });
+  const [phase, setPhase] = useState<"pending" | "boot" | "app">("pending");
 
   useEffect(() => {
-    if (reduceMotion) return;
-    if (!booting) return;
+    if (reduceMotion) {
+      setPhase("app");
+      return;
+    }
+
+    let shouldBoot = true;
+    try {
+      shouldBoot = !sessionStorage.getItem(BOOT_KEY);
+    } catch {
+      shouldBoot = true;
+    }
+
+    if (!shouldBoot) {
+      setPhase("app");
+      return;
+    }
+
+    setPhase("boot");
     const t = window.setTimeout(() => {
-      setBooting(false);
+      setPhase("app");
       try {
         sessionStorage.setItem(BOOT_KEY, "1");
       } catch {
         /* ignore */
       }
     }, 2000);
+
     return () => window.clearTimeout(t);
-  }, [booting, reduceMotion]);
+  }, [reduceMotion]);
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-void text-neutral-200">
       <div className="necro-ambient-bg" aria-hidden />
-      <div className="necro-noise-film" aria-hidden />
-      <div className="crt-sublime-overlay" aria-hidden />
 
+      {phase === "pending" ? (
+        <div className="relative z-10 min-h-screen">{children}</div>
+      ) : (
       <AnimatePresence mode="wait">
-        {booting ? (
+        {phase === "boot" ? (
           <motion.div
             key="boot"
             initial={{ opacity: 1 }}
@@ -66,7 +76,7 @@ export function NexoWrapper({ children }: Props) {
         ) : (
           <motion.div
             key="app"
-            initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, ease: "easeOut" }}
             className="relative z-10 min-h-screen"
@@ -75,6 +85,7 @@ export function NexoWrapper({ children }: Props) {
           </motion.div>
         )}
       </AnimatePresence>
+      )}
     </div>
   );
 }

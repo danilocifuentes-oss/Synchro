@@ -130,7 +130,6 @@ function CronistaAppInner() {
     typeof window === "undefined" ? false : loadMeta().sheetLocked,
   );
   const [logs, setLogs] = useState<NarrativeLogEntry[]>(() => []);
-  const [beastPulse, setBeastPulse] = useState(false);
   const [nexoLlmReady, setNexoLlmReady] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
   const [inquisitionThreat, setInquisitionThreat] = useState(2);
@@ -408,12 +407,6 @@ function CronistaAppInner() {
     return () => window.clearInterval(id);
   }, [phase]);
 
-  useEffect(() => {
-    if (!beastPulse) return;
-    const t = window.setTimeout(() => setBeastPulse(false), 14000);
-    return () => window.clearTimeout(t);
-  }, [beastPulse]);
-
   const handleSheetMutation = useCallback(
     (next: CharacterSheet, logLine?: string) => {
       saveSheet(next);
@@ -505,7 +498,6 @@ function CronistaAppInner() {
         ? { suggestions: part.suggestions.slice(0, 8) }
         : {}),
       ...(part.rollPrompt ? { rollPrompt: part.rollPrompt } : {}),
-      ...(part.sigmaGlitch ? { sigmaGlitch: true } : {}),
       ...(part.beastTone ? { beastTone: true } : {}),
     };
     setLogs((prev) => {
@@ -565,15 +557,7 @@ function CronistaAppInner() {
     appendXpLog(`[CLOCK_CONFIG]:Δ=${clamped}m`);
   };
 
-  const ravenousVisual = sheet.hunger >= 5 || beastPulse;
-  const hungerVeil = sheet.hunger >= 4 && sheet.hunger < 5 && !beastPulse;
-  const mainFrameClass = [
-    "flex min-h-screen flex-col bg-black crt-wrap",
-    hungerVeil ? "hunger-veil" : "",
-    ravenousVisual ? "ravenous-frame" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const mainFrameClass = "flex min-h-screen flex-col bg-black";
 
   const goToLogin = () => {
     persistActiveProfile();
@@ -746,8 +730,8 @@ function CronistaAppInner() {
         }}
       />
 
-      <header className="flex shrink-0 flex-col gap-3 border-b border-[#1a1a1e] bg-[#050506] px-4 py-4 font-sans text-[10px] text-neutral-500 sm:gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:px-6">
-        <div className="min-w-0 flex-1 space-y-1.5 lg:hidden">
+      <header className="flex shrink-0 flex-col gap-3 border-b border-[#1a1a1e] bg-[#050506] px-3 py-3 font-sans text-[10px] text-neutral-500 sm:px-4 sm:py-4 sm:gap-4 xl:flex-row xl:items-center xl:justify-between xl:gap-6 xl:px-6">
+        <div className="min-w-0 flex-1 space-y-1.5 xl:hidden">
           <p className="text-[11px] font-light tracking-[0.32em] text-neutral-300">Codex V · ciudad</p>
           <p className="truncate text-[13px] font-medium tracking-tight text-neutral-100">
             <span style={{ color: accent }}>{sheet.name?.trim() || "Sin nombre"}</span>
@@ -775,7 +759,7 @@ function CronistaAppInner() {
             </span>
           ) : null}
         </div>
-        <div className="hidden w-full flex-wrap items-center justify-between gap-3 border-t border-white/[0.04] pt-3 sm:gap-4 lg:w-auto lg:border-t-0 lg:pt-0">
+        <div className="flex w-full flex-wrap items-center justify-between gap-2.5 border-t border-white/[0.04] pt-3 sm:gap-3 xl:w-auto xl:border-t-0 xl:pt-0">
           <TechnicalHud
             healthFilled={healthHudFilled}
             healthMax={HEALTH_MAX_UI}
@@ -784,28 +768,28 @@ function CronistaAppInner() {
             hideMetagameFooter
             className="xl:hidden"
           />
-          <div className="flex flex-wrap gap-2 sm:ml-auto lg:ml-0">
+          <div className="flex flex-wrap gap-2 sm:ml-auto">
             <button
               type="button"
               onClick={() => {
                 persistActiveProfile();
                 navigateToPhase("chargen");
               }}
-              className="border border-white/10 bg-black/40 px-3 py-2 text-[9px] uppercase tracking-[0.14em] text-neutral-300 hover:border-[color:var(--accent-clan)]/40 xl:hidden"
+              className="border border-white/10 bg-black/40 px-3 py-2 text-[9px] uppercase tracking-[0.14em] text-neutral-300 hover:border-[color:var(--accent-clan)]/40"
             >
               CODEX
             </button>
             <button
               type="button"
               onClick={goToProfileHub}
-              className="border border-white/[0.06] px-3 py-2 text-[9px] uppercase tracking-[0.12em] text-neutral-500 hover:border-neutral-700 hover:text-neutral-300 xl:hidden"
+              className="border border-white/[0.06] px-3 py-2 text-[9px] uppercase tracking-[0.12em] text-neutral-500 hover:border-neutral-700 hover:text-neutral-300"
             >
               CRIPTA
             </button>
             <button
               type="button"
               onClick={goToLogin}
-              className="border border-[var(--blood)]/35 px-3 py-2 text-[9px] uppercase tracking-[0.16em] text-[var(--blood)] hover:bg-[var(--blood)]/10 xl:hidden"
+              className="border border-[var(--blood)]/35 px-3 py-2 text-[9px] uppercase tracking-[0.16em] text-[var(--blood)] hover:bg-[var(--blood)]/10"
             >
               Salir
             </button>
@@ -831,7 +815,7 @@ function CronistaAppInner() {
           isSoloSupportedClan(sheet.clan);
 
         const nexoCenterColumn = (
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-hidden px-3 py-3 sm:px-4 sm:py-4 lg:gap-5 lg:px-5 lg:py-5 xl:px-6">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 overflow-hidden px-3 py-3 sm:px-4 sm:py-4 xl:gap-5 xl:px-6 xl:py-5">
             <NexoChannelPanel
               accent={accent}
               activeStrand={activeStrand}
@@ -892,7 +876,7 @@ function CronistaAppInner() {
                 )
               ) : null}
             </NexoChannelPanel>
-            <details className="lg:hidden rounded-xl border border-white/[0.06] bg-black/35 px-4 py-3">
+            <details className="xl:hidden rounded-xl border border-white/[0.06] bg-black/35 px-4 py-3">
               <summary className="cursor-pointer text-[10px] uppercase tracking-[0.2em] text-neutral-500">
                 Eco del mundo
               </summary>
@@ -904,7 +888,7 @@ function CronistaAppInner() {
         );
 
         const threeColumns = (
-          <div className="flex min-h-0 flex-1 flex-col lg:flex-row lg:items-stretch">
+          <div className="flex min-h-0 flex-1 flex-col xl:flex-row xl:items-stretch">
           {(() => {
             const pid = getActiveProfileId();
             const prog = pid && isSoloSupportedClan(sheet.clan) ? loadSoloProgress(pid, sheet.clan) : null;
@@ -931,7 +915,7 @@ function CronistaAppInner() {
 
             {nexoCenterColumn}
 
-            <aside className="hidden min-h-0 shrink-0 self-stretch border-l border-white/[0.06] bg-[linear-gradient(180deg,#060607,#0a0a0d)] xl:flex xl:w-[min(18vw,20rem)] xl:max-w-sm xl:flex-col xl:overflow-hidden">
+            <aside className="hidden min-h-0 shrink-0 self-stretch border-l border-white/[0.06] bg-[linear-gradient(180deg,#060607,#0a0a0d)] 2xl:flex 2xl:w-[min(18vw,20rem)] 2xl:max-w-sm 2xl:flex-col 2xl:overflow-hidden">
               <div className="border-b border-white/[0.05] px-5 py-4 font-sans text-[10px] font-light uppercase tracking-[0.35em] text-neutral-500">
                 Eco
               </div>

@@ -51,16 +51,16 @@ export function NexoChannelPanel({
       aria-label="Canal Nexo"
     >
       <header
-        className="shrink-0 space-y-2 border-b border-[#222] px-4 py-2.5 font-mono text-[9px] uppercase tracking-[0.32em]"
+        className="shrink-0 space-y-2 border-b border-[#222] px-3 py-2.5 font-mono text-[9px] uppercase tracking-[0.28em] sm:px-4 sm:tracking-[0.32em]"
         style={{ color: accent }}
       >
         <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
           {showTechnicalAnchors ? (
-            <span className="gothic-title text-[10px] font-medium normal-case tracking-tight text-neutral-400">
+            <span className="gothic-title text-[10px] font-medium normal-case tracking-tight text-neutral-400 sm:text-[11px]">
               {"//_STREAM · CRÓNICA"}
             </span>
           ) : identityHint ? (
-            <span className="max-w-[min(100%,28rem)] truncate font-sans text-[11px] font-normal normal-case tracking-tight text-neutral-400">
+            <span className="max-w-[min(100%,28rem)] truncate font-sans text-[11px] font-normal normal-case tracking-tight text-neutral-400 sm:text-[12px]">
               {identityHint}
             </span>
           ) : (
@@ -69,7 +69,7 @@ export function NexoChannelPanel({
         </div>
         {glyphContext ? (
           showTechnicalAnchors ? (
-            <div className="flex items-center gap-2 font-mono text-[8px] font-normal normal-case tracking-wide text-neutral-500">
+            <div className="flex items-center gap-2 font-mono text-[9px] font-normal normal-case tracking-wide text-neutral-500">
               <NexusLibrary.Inquisicion sigma={glyphContext.inquisitionThreat} className="h-4 w-4" />
               <span>
                 Amenaza σ {glyphContext.inquisitionThreat} · Hambre {glyphContext.hunger}
@@ -81,7 +81,7 @@ export function NexoChannelPanel({
             </div>
           )
         ) : null}
-        <div className="flex flex-wrap gap-1.5 normal-case tracking-normal">
+        <div className="flex flex-wrap gap-1.5 normal-case tracking-normal sm:gap-2">
           {NARRATIVE_STRANDS.map((s) => {
             const on = s === activeStrand;
             return (
@@ -90,7 +90,7 @@ export function NexoChannelPanel({
                 type="button"
                 aria-label={STRAND_LABEL[s]}
                 onClick={() => onStrandChange(s)}
-                className={`rounded border px-2 py-1 text-[8px] font-mono transition-colors ${
+                className={`rounded border px-2 py-1.5 text-[9px] font-mono transition-colors sm:px-2.5 sm:py-1 sm:text-[8px] ${
                   on ? "text-neutral-100" : "border-[#2a2a2a] text-neutral-500 hover:border-neutral-600 hover:text-neutral-300"
                 }`}
                 style={

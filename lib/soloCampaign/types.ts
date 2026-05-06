@@ -126,6 +126,10 @@ export type SoloProgress = {
    * Pila temporal (QA): posición antes de cada avance manual de escena, para poder retroceder.
    */
   soloSceneBackStack?: { chapterId: string; sceneId: string }[];
+  /**
+   * Pila complementaria para rehacer navegación tras retroceder.
+   */
+  soloSceneForwardStack?: { chapterId: string; sceneId: string }[];
   decisionHistory: {
     sceneId: string;
     optionId: string;

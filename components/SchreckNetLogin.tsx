@@ -53,7 +53,7 @@ export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center bg-[#050505] p-6 text-neutral-300 crt-wrap techno-grid font-mono">
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-[#050505] p-6 text-neutral-300 techno-grid font-mono">
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}

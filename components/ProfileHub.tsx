@@ -34,7 +34,7 @@ export function ProfileHub({
   const visible = allPlayer.filter((p) => (activeProfileId ? p.id !== activeProfileId : true));
   const onlyActiveHidden = activeProfileId && allPlayer.length > 0 && visible.length === 0;
   return (
-    <div className="relative flex min-h-screen flex-col bg-[#050505] px-4 py-10 font-mono text-neutral-300 crt-wrap techno-grid">
+    <div className="relative flex min-h-screen flex-col bg-[#050505] px-4 py-10 font-mono text-neutral-300 techno-grid">
       <div className="mx-auto w-full max-w-lg space-y-8">
         <header className="space-y-4 border-b border-[#161616] pb-6">
           <p className="text-[10px] uppercase tracking-[0.35em] text-[var(--terminal)]/90">SCHRECK_NET</p>

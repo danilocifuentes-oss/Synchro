@@ -24,7 +24,7 @@ export function NexoChronicleDigest({
 }: Props) {
   if (soloDigest) {
     return (
-      <div className="space-y-5 px-5 py-6 font-sans text-[13px] leading-relaxed tracking-[0.01em]">
+      <div className="space-y-4 px-4 py-5 font-sans text-[13px] leading-relaxed tracking-[0.01em] sm:space-y-5 sm:px-5 sm:py-6">
         <div className="space-y-2 border-b border-white/[0.06] pb-4">
           <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-neutral-500">Eco de la crónica activa</p>
           <p className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">{soloDigest.chapterTitle}</p>
@@ -40,7 +40,7 @@ export function NexoChronicleDigest({
               {soloDigest.echoLines.map((line, i) => (
                 <li
                   key={`${i}-${line.slice(0, 24)}`}
-                  className="border-l border-[color:var(--terminal)]/35 pl-3 text-[12px] leading-snug text-neutral-400"
+                  className="border-l border-[color:var(--terminal)]/35 pl-3 text-[12px] leading-snug text-neutral-400 sm:text-[13px]"
                 >
                   {line}
                 </li>
@@ -60,7 +60,7 @@ export function NexoChronicleDigest({
     chronicle.foundations.trim();
 
   return (
-    <div className="space-y-6 px-5 py-6 font-sans text-[13px] leading-relaxed tracking-[0.01em]">
+    <div className="space-y-5 px-4 py-5 font-sans text-[13px] leading-relaxed tracking-[0.01em] sm:space-y-6 sm:px-5 sm:py-6">
       <div className="space-y-1 border-b border-white/[0.06] pb-4">
         <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-neutral-600">Ciudad esta noche</p>
         <p className="text-neutral-300">

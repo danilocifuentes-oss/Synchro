@@ -11,10 +11,6 @@ import {
   type DisciplineKey,
 } from "@/lib/sereno";
 
-type BeastLabelKey = "identity" | "hunger" | "integrity" | "disciplines";
-
-const BEAST_WORDS = ["CARNE", "CONSUMIR", "SANGRE", "CEDER", "VACÍO", "HUNDIR"] as const;
-
 type Props = {
   accent: string;
   sheet: CharacterSheet;
@@ -85,7 +81,6 @@ export function SidebarMesa({
   const reduceMotion = useReducedMotion();
   const prevHealth = useRef(healthFilled);
   const [damageShake, setDamageShake] = useState(false);
-  const [beastFlash, setBeastFlash] = useState<{ key: BeastLabelKey; word: string } | null>(null);
 
   const h = Math.max(0, Math.min(5, hunger));
   const hf = Math.max(0, Math.min(healthMax, healthFilled));
@@ -103,37 +98,9 @@ export function SidebarMesa({
     prevHealth.current = healthFilled;
   }, [healthFilled, reduceMotion]);
 
-  const beastClearRef = useRef<number | undefined>(undefined);
-  useEffect(() => {
-    if (h < 5 || reduceMotion) {
-      setBeastFlash(null);
-      return;
-    }
-    const id = window.setInterval(() => {
-      const keys: BeastLabelKey[] = ["identity", "hunger", "integrity", "disciplines"];
-      const key = keys[Math.floor(Math.random() * keys.length)]!;
-      const word = BEAST_WORDS[Math.floor(Math.random() * BEAST_WORDS.length)]!;
-      setBeastFlash({ key, word });
-      if (beastClearRef.current !== undefined) window.clearTimeout(beastClearRef.current);
-      beastClearRef.current = window.setTimeout(() => {
-        beastClearRef.current = undefined;
-        setBeastFlash(null);
-      }, 75 + Math.random() * 100);
-    }, 1600);
-    return () => {
-      window.clearInterval(id);
-      if (beastClearRef.current !== undefined) window.clearTimeout(beastClearRef.current);
-    };
-  }, [h, reduceMotion]);
-
-  function labelFor(key: BeastLabelKey, normal: string): string {
-    if (beastFlash?.key === key) return beastFlash.word;
-    return normal;
-  }
-
   return (
     <aside
-      className="sticky top-0 hidden min-h-0 w-[min(16rem,100%)] shrink-0 flex-col border-r border-white/[0.06] bg-void bg-[linear-gradient(180deg,rgba(5,5,5,0.97),rgba(12,12,16,0.98))] font-mono lg:flex lg:max-h-none"
+      className="sticky top-0 hidden min-h-0 w-[min(14rem,100%)] shrink-0 flex-col border-r border-white/[0.06] bg-void bg-[linear-gradient(180deg,rgba(5,5,5,0.97),rgba(12,12,16,0.98))] font-mono xl:flex xl:max-h-none 2xl:w-[min(16rem,100%)]"
       aria-label="Terminal mesa SchreckNet"
     >
       <div
@@ -141,13 +108,9 @@ export function SidebarMesa({
       >
         {/* IDENTIDAD · CODEX */}
         <section className="space-y-2">
-          <div
-            className={`flex items-center gap-2 text-[color:var(--terminal)]/70 ${beastFlash?.key === "identity" ? "nexo-beast-label-glitch text-[color:var(--blood)]" : ""}`}
-          >
+          <div className="flex items-center gap-2 text-[color:var(--terminal)]/70">
             <NexusLibrary.Vastago className="h-4 w-4 shrink-0" />
-            <span className="text-[10px] uppercase tracking-[0.2em]">
-              {labelFor("identity", "Sujeto_Identificado")}
-            </span>
+            <span className="text-[10px] uppercase tracking-[0.2em]">Sujeto_Identificado</span>
           </div>
           <div
             className="rounded-sm border border-white/[0.1] bg-white/[0.02] p-3"
@@ -167,15 +130,9 @@ export function SidebarMesa({
           <div className="space-y-1">
             <div className="flex justify-between text-[9px] uppercase tracking-widest text-neutral-500">
               <span
-                className={
-                  beastFlash?.key === "hunger"
-                    ? "nexo-beast-label-glitch font-bold text-[color:var(--blood)]"
-                    : h > 3
-                      ? "text-[color:var(--blood)]"
-                      : ""
-                }
+                className={h > 3 ? "text-[color:var(--blood)]" : ""}
               >
-                {labelFor("hunger", "Vitae_Hunger")}
+                Vitae_Hunger
               </span>
               <span className={h > 3 ? "animate-pulse text-[color:var(--blood)]" : ""}>
                 {h}/5
@@ -195,15 +152,7 @@ export function SidebarMesa({
 
           <div className="space-y-1">
             <div className="flex justify-between text-[9px] uppercase tracking-widest text-neutral-500">
-              <span
-                className={
-                  beastFlash?.key === "integrity"
-                    ? "nexo-beast-label-glitch font-bold text-[color:var(--blood)]"
-                    : ""
-                }
-              >
-                {labelFor("integrity", "Integridad_Física")}
-              </span>
+              <span>Integridad_Física</span>
               <span>
                 {hf}/{healthMax}
               </span>
@@ -236,13 +185,7 @@ export function SidebarMesa({
 
         {/* DISCIPLINAS_CARGADAS */}
         <section className="space-y-2">
-          <p
-            className={`text-[9px] uppercase tracking-[0.28em] text-neutral-600 ${
-              beastFlash?.key === "disciplines" ? "nexo-beast-label-glitch text-[color:var(--blood)]" : ""
-            }`}
-          >
-            {labelFor("disciplines", "Disciplina")}
-          </p>
+          <p className="text-[9px] uppercase tracking-[0.28em] text-neutral-600">Disciplina</p>
           <div className="grid grid-cols-3 gap-2">
             {disciplineKeys.map((dk) => {
               const dots = Math.max(0, Math.round(sheet.disciplines[dk] ?? 0));

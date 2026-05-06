@@ -7,6 +7,7 @@ import type { SoloProgress } from "@/lib/soloCampaign/types";
 
 /** +1 = avanza como pasar página (entra por la derecha); -1 = vuelve página (entra por la izquierda). */
 export type SoloSceneSlideDirection = 1 | -1;
+const SOLO_NAV_STACK_LIMIT = 120;
 
 type CombinedState = {
   progress: SoloProgress;
@@ -30,6 +31,7 @@ function reducer(state: CombinedState, action: Action): CombinedState {
       const prev = state.progress;
       const ch = getSoloChapter(prev.chapterId);
       if (!ch?.scenes.some((s) => s.id === action.sceneId)) return state;
+      if (prev.sceneId === action.sceneId) return state;
       const oldIdx = ch.scenes.findIndex((s) => s.id === prev.sceneId);
       const newIdx = ch.scenes.findIndex((s) => s.id === action.sceneId);
       const slide: SoloSceneSlideDirection =
@@ -39,6 +41,10 @@ function reducer(state: CombinedState, action: Action): CombinedState {
         sceneId: action.sceneId,
         updatedAt: Date.now(),
         visitedSceneIds: Array.from(new Set([...(prev.visitedSceneIds ?? []), action.sceneId])),
+        soloSceneBackStack: [...(prev.soloSceneBackStack ?? []), { chapterId: prev.chapterId, sceneId: prev.sceneId }].slice(
+          -SOLO_NAV_STACK_LIMIT,
+        ),
+        soloSceneForwardStack: [],
       };
       saveSoloProgress(next);
       return { progress: next, transitionSlide: slide };

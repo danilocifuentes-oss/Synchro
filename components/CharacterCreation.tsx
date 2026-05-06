@@ -441,7 +441,7 @@ export function CharacterCreation({
       className={
         vo
           ? "min-h-screen bg-black pb-20 text-neutral-300"
-          : "codex-dot-grid crt-wrap min-h-screen pb-20 text-neutral-300"
+          : "codex-dot-grid min-h-screen pb-20 text-neutral-300"
       }
       style={{ ["--clan-accent"]: accent } as CSSProperties}
     >

@@ -446,6 +446,7 @@ function SoloCampaignScreen({
         flags: draft.nextFlags,
         visitedSceneIds: Array.from(new Set([...(progress.visitedSceneIds ?? []), draft.nextSceneId])),
         soloSceneBackStack: [...prevStack, backSnap].slice(-SOLO_BACK_STACK_LIMIT),
+        soloSceneForwardStack: [],
         decisionHistory: [
           ...progress.decisionHistory,
           {
@@ -496,6 +497,9 @@ function SoloCampaignScreen({
     const stack = [...(progress.soloSceneBackStack ?? [])];
     if (!stack.length) return;
     const prev = stack.pop()!;
+    const fwd = [...(progress.soloSceneForwardStack ?? []), { chapterId: progress.chapterId, sceneId: progress.sceneId }].slice(
+      -SOLO_BACK_STACK_LIMIT,
+    );
     transitionLockRef.current = true;
 
     const nextDecisionHistory = [...progress.decisionHistory];
@@ -507,10 +511,33 @@ function SoloCampaignScreen({
       chapterId: prev.chapterId,
       sceneId: prev.sceneId,
       soloSceneBackStack: stack,
+      soloSceneForwardStack: fwd,
       decisionHistory: nextDecisionHistory,
       updatedAt: progress.updatedAt + 1,
     };
     navigateProgress(next, -1);
+    setLastRollLine("");
+    setPendingReveal(null);
+  };
+
+  const advanceToNextPlayedScene = () => {
+    if (transitionLockRef.current) return;
+    const fwd = [...(progress.soloSceneForwardStack ?? [])];
+    if (!fwd.length) return;
+    const target = fwd.pop()!;
+    const back = [...(progress.soloSceneBackStack ?? []), { chapterId: progress.chapterId, sceneId: progress.sceneId }].slice(
+      -SOLO_BACK_STACK_LIMIT,
+    );
+    transitionLockRef.current = true;
+    const next: SoloProgress = {
+      ...progress,
+      chapterId: target.chapterId,
+      sceneId: target.sceneId,
+      soloSceneBackStack: back,
+      soloSceneForwardStack: fwd,
+      updatedAt: progress.updatedAt + 1,
+    };
+    navigateProgress(next, 1);
     setLastRollLine("");
     setPendingReveal(null);
   };
@@ -551,7 +578,7 @@ function SoloCampaignScreen({
       }
     >
       {!embedded ? (
-        <header className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] bg-black/85 px-2 py-2 sm:px-3">
+        <header className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] bg-black/85 px-2.5 py-2.5 sm:px-3">
           <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
             <TechnicalHud
               healthFilled={hudFilled}
@@ -575,20 +602,29 @@ function SoloCampaignScreen({
               ) : null}
             </div>
           </div>
-          <div className="flex shrink-0 items-center gap-1">
+          <div className="flex shrink-0 flex-wrap items-center gap-1.5">
             {(progress.soloSceneBackStack?.length ?? 0) > 0 ? (
               <button
                 type="button"
                 onClick={() => revertToPrevScene()}
-                className="border border-dashed border-amber-800/60 bg-amber-950/25 px-2.5 py-1.5 text-[9px] uppercase tracking-[0.16em] text-amber-200 hover:bg-amber-950/40"
+                className="border border-dashed border-amber-800/60 bg-amber-950/25 px-3 py-1.5 text-[9px] uppercase tracking-[0.14em] text-amber-200 hover:bg-amber-950/40"
               >
                 ↩ Escena
+              </button>
+            ) : null}
+            {(progress.soloSceneForwardStack?.length ?? 0) > 0 ? (
+              <button
+                type="button"
+                onClick={() => advanceToNextPlayedScene()}
+                className="border border-dashed border-emerald-800/60 bg-emerald-950/25 px-3 py-1.5 text-[9px] uppercase tracking-[0.14em] text-emerald-200 hover:bg-emerald-950/40"
+              >
+                Escena ↪
               </button>
             ) : null}
             <button
               type="button"
               onClick={onExit}
-              className="border border-neutral-700 px-2.5 py-1.5 text-[9px] uppercase tracking-[0.16em] text-neutral-400 hover:border-neutral-500 hover:text-neutral-200"
+              className="border border-neutral-700 px-3 py-1.5 text-[9px] uppercase tracking-[0.14em] text-neutral-400 hover:border-neutral-500 hover:text-neutral-200"
             >
               Salir
             </button>
@@ -596,14 +632,23 @@ function SoloCampaignScreen({
         </header>
       ) : null}
 
-      {embedded && (progress.soloSceneBackStack?.length ?? 0) > 0 ? (
-        <div className="flex shrink-0 justify-end border-b border-white/[0.06] bg-black/45 px-2 py-1.5">
+      {embedded && ((progress.soloSceneBackStack?.length ?? 0) > 0 || (progress.soloSceneForwardStack?.length ?? 0) > 0) ? (
+        <div className="sticky top-0 z-10 flex shrink-0 flex-wrap justify-end gap-2 border-b border-white/[0.06] bg-black/85 px-2.5 py-2.5 backdrop-blur-sm">
           <button
             type="button"
             onClick={() => revertToPrevScene()}
-            className="border border-dashed border-amber-800/55 bg-amber-950/20 px-2.5 py-1 text-[9px] uppercase tracking-[0.14em] text-amber-200 hover:bg-amber-950/35"
+            disabled={(progress.soloSceneBackStack?.length ?? 0) === 0}
+            className="border border-dashed border-amber-800/55 bg-amber-950/20 px-3 py-1.5 text-[9px] uppercase tracking-[0.14em] text-amber-200 hover:bg-amber-950/35 disabled:cursor-not-allowed disabled:opacity-40"
           >
             ↩ Escena anterior
+          </button>
+          <button
+            type="button"
+            onClick={() => advanceToNextPlayedScene()}
+            disabled={(progress.soloSceneForwardStack?.length ?? 0) === 0}
+            className="border border-dashed border-emerald-800/55 bg-emerald-950/20 px-3 py-1.5 text-[9px] uppercase tracking-[0.14em] text-emerald-200 hover:bg-emerald-950/35 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Escena siguiente ↪
           </button>
         </div>
       ) : null}
@@ -669,9 +714,9 @@ function SoloCampaignScreen({
               exit="exit"
             >
               <div
-                className={`min-h-0 flex-1 overflow-y-auto pb-2 ${embedded ? "px-3 py-3 sm:px-4" : "px-4 py-5 sm:px-8"}`}
+                className={`min-h-0 flex-1 overflow-y-auto pb-2 ${embedded ? "px-2.5 py-2.5 sm:px-4 sm:py-3" : "px-3 py-4 sm:px-6 sm:py-5 lg:px-8"}`}
               >
-                <div className="solo-book-page mx-auto max-w-2xl space-y-6 rounded-sm border border-white/[0.07] bg-[linear-gradient(165deg,rgba(18,17,16,0.97)_0%,rgba(8,8,10,0.99)_40%,rgba(5,5,6,1)_100%)] px-5 py-6 shadow-[inset_10px_0_24px_-14px_rgba(255,255,255,0.06),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-8 sm:py-8">
+                <div className="solo-book-page mx-auto max-w-3xl space-y-5 rounded-sm border border-white/[0.07] bg-[linear-gradient(165deg,rgba(18,17,16,0.97)_0%,rgba(8,8,10,0.99)_40%,rgba(5,5,6,1)_100%)] px-4 py-5 shadow-[inset_10px_0_24px_-14px_rgba(255,255,255,0.06),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-6 sm:py-6 lg:px-8 lg:py-8">
                   <p className="border-b border-white/[0.06] pb-3 font-sans text-[10px] uppercase tracking-[0.28em] text-neutral-500">
                     <span className="text-neutral-400">{chapterHeadline}</span>
                     <span className="mx-2 text-neutral-700">·</span>
@@ -690,7 +735,7 @@ function SoloCampaignScreen({
                         <p className="whitespace-pre-line text-neutral-300">{scenePanels.context.trim()}</p>
                       </div>
                     ) : null}
-                    <div className="solo-book-prose font-serif text-[15px] font-normal leading-[1.82] tracking-[0.015em] text-neutral-200">
+                    <div className="solo-book-prose font-serif text-[14px] font-normal leading-[1.78] tracking-[0.01em] text-neutral-200 sm:text-[15px] sm:leading-[1.82] sm:tracking-[0.015em]">
                       <p className="whitespace-pre-line">
                         {(scenePanels.narration.trim() || scene.text.trim()) || "—"}
                       </p>
@@ -699,8 +744,8 @@ function SoloCampaignScreen({
                 </div>
               </div>
 
-              <div className="shrink-0 border-t border-white/[0.06] bg-gradient-to-t from-black via-black/92 to-transparent px-3 pb-6 pt-4 sm:px-6">
-                <div className="mx-auto max-w-2xl space-y-3">
+              <div className="shrink-0 border-t border-white/[0.06] bg-gradient-to-t from-black via-black/92 to-transparent px-2.5 pb-5 pt-3 sm:px-5 sm:pb-6 sm:pt-4">
+                <div className="mx-auto max-w-3xl space-y-3">
                   {lastRollLine ? (
                     <p className="text-center font-sans text-[11px] leading-relaxed text-neutral-400">{lastRollLine}</p>
                   ) : null}
@@ -812,6 +857,7 @@ function SoloCampaignScreen({
                             flags: { ...progress.flags, [consumedFlag]: false },
                             visitedSceneIds: Array.from(new Set([...(progress.visitedSceneIds ?? []), targetStart])),
                             soloSceneBackStack: [...prevStack, backSnap].slice(-SOLO_BACK_STACK_LIMIT),
+                            soloSceneForwardStack: [],
                             updatedAt: progress.updatedAt + 1,
                           };
                           navigateProgress(next, 1);
