@@ -18,11 +18,11 @@ NARRACIÓN: El despertar no es un proceso, es una ruptura. Tus ojos se abren a u
         {
           id: "n1_0_intro_continue",
           type: "dialogue",
-          text: `PASO [IMPRENTA]: Dejar que el cuerpo te diga quién ha vuelto.
+          text: `Reincorporarse
 
 PUENTE: Tratas de respirar y no llega oxígeno como antes: el pecho absorbe sólo frío que no llena pulmón, pero igual lo repites una y otra vez en silencio, como quien marca el compás antes de dirigir una sala vacía. Apoyas la palma en el palé, te impulsas a sentarte; los dedos encuentran tinta pegada entre las astillas y papel húmedo de humedad. El sótano deja de ser un manchón gris para volverse detalle por detalle —prensa a la derecha, cajones amontonados, un hilo largo que gotea de un depósito alto— hasta que algo más viejo que el miedo te obliga a sentir primero la quemadura seca detrás del paladar, y después el entrechocar lejano de tus dientes cuando aprietas mandíbula sin quererlo.
 
-CONSECUENCIA: Ya no sólo ves el sótano: lo habitas desde el nuevo costo de tener boca y garganta que arden cuando la memoria intenta encajar con la última cara que juraste recordar antes del negro absoluto.
+CONSECUENCIA: Tu memoria sigue borrosa de lo ocurrido la noche anterior.
 
 RESULTADO: IR A [ESCENA 1.0.1]`,
           requirement: { type: "none" },
@@ -34,7 +34,11 @@ RESULTADO: IR A [ESCENA 1.0.1]`,
       id: "n1_0_1",
       chapterId: "chapter01",
       title: "[ESCENA 1.0.1]: EL PESO DEL DESPERTAR",
-      text: `En tu garganta persiste un incendio químico, el residuo del frasco que un anciano te entregó en la calle Bandera antes de que el mundo se borrara en un fundido a negro. El caos de este sótano te resulta una ofensa íntima, aunque todavía no puedas nombrar del todo por qué. Un soberano no debería despertar entre prensas oxidadas y moho. El hambre es una aguja que cose tus entrañas, un rugido sordo que exige ser callado, pero tu orgullo exige primero una estructura: ¿quién te ha puesto en esta situación y qué ha sido de tu linaje?`,
+      text: `En tu garganta persiste un incendio químico, el residuo del frasco que un anciano te entregó en la calle Bandera antes de que el mundo se borrara en un fundido a negro.
+
+El caos de este sótano te resulta una ofensa íntima, aunque todavía no puedas nombrar del todo por qué. Un soberano no debería despertar entre prensas oxidadas y moho.
+
+El hambre es una aguja que cose tus entrañas, un rugido sordo que exige ser callado, pero tu orgullo exige primero una estructura: ¿quién te ha puesto en esta situación y qué ha sido de tu linaje?`,
       options: [
         {
           id: "n1_0_fortaleza",
