@@ -7,12 +7,12 @@ export function resolveChapterEntrySceneId(chapterId: string, flags?: Record<str
   return resolveChronicleChapterEntrySceneId(chapterId, flags);
 }
 
-/** Compat API (legacy): conservar para no romper llamadas existentes. */
+/** Entrada de capítulo 8 (resolver dinámico en `chronicleRegistry`). */
 export function resolveChapter08EntrySceneId(flags?: Record<string, boolean>): string {
   return resolveChronicleChapterEntrySceneId("chapter08", flags) ?? "n8_0";
 }
 
-/** Compat API (legacy): conservar para no romper llamadas existentes. */
+/** Entrada de capítulo 9 (resolver dinámico en `chronicleRegistry`). */
 export function resolveChapter09EntrySceneId(flags?: Record<string, boolean>): string {
   return resolveChronicleChapterEntrySceneId("chapter09", flags) ?? "n9_0";
 }

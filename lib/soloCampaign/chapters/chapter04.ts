@@ -118,9 +118,9 @@ RESULTADO: setFlag: infiltracion_fantasma | IR A [ESCENA 4.1]`,
           type: "dialogue",
           text: `OPCIÓN C [CAMINO ESTÁNDAR - ETIQUETA]: Usar tu identificación de «Consultor de Patrimonio» (otorgada por la Corte) para entrar de forma legal por el acceso principal.
 
-PUENTE: Presentas credenciales ante el puesto de seguridad. Los guardias están acostumbrados a investigadores nocturnos con respaldo de fundaciones opacas; registran un alias y te dejan pasar. El Salón de Honor devuelve tus pasos amplificados sobre mármol hasta el ascenso hacia las áreas restringidas—
+PUENTE: Presentas el pase de consultor que emitió la Corte: alias creíble, sello que el mostrador reconoce. Los guardias registran la visita y te dejan pasar; el Salón de Honor amplifica tus pasos sobre mármol hasta el ascenso a lo restringido.
 
-CONSECUENCIA: Tu entrada es legítima, pero el sistema guarda el nombre falso. Si la noche se desordena, sabrán quién firmó la visita.
+CONSECUENCIA: Entrada limpia en papel; si la noche se rompe, el nombre falso igual quedó en el libro de guardia.
 
 RESULTADO: (Avance estándar) | IR A [ESCENA 4.1]`,
           requirement: { type: "none" },
@@ -134,9 +134,9 @@ RESULTADO: (Avance estándar) | IR A [ESCENA 4.1]`,
       title: "[ESCENA 4.1]: EL ARCHIVISTA DE LAS SOMBRAS",
       text: `CONTEXTO: Sección de Incunables y Manuscritos —subsuelo de la Biblioteca Nacional—. Luz de tungsteno amarillenta y olor a papel acidificado por el tiempo.
 
-NARRACIÓN: El descenso te aleja del pre-alba hasta topar una oficina de restauración. Un hombre de palidez extrema trabaja bajo lámpara de escritorio con gafas de montura de hierro que centellean al menor suspiro. Es el Archivista. Ni alza la vista: como si llevara cuenta regresiva de cuántos minutos tardarías desde Mapocho.
+NARRACIÓN: Bajo tierra, lejos del alba, una oficina de restauración. Un hombre pálido bajo lámpara de escritorio, gafas de hierro: el Archivista. No alza la vista; lleva la cuenta de cuántos minutos tardaste desde Mapocho.
 
-El Tratado de la Viña del Silencio descansa ante él —pergamino amarillo, lacres antiguos— y vibra con la misma calidad incómoda que la Hiel bajo el río cuando la viste moverse donde no debía.
+Sobre la mesa, el Tratado de la Viña del Silencio: pergamino amarillo, lacres viejos, la misma inquietud que la Hiel cuando la viste mal herida bajo el río.
 
 «La sangre de los reyes siempre vuelve a la tierra», murmura él. «El Príncipe no quiere que limpies la estación, Embajador. Quiere que recuperes la llave de su propia cárcel».`,
       options: [
@@ -234,11 +234,11 @@ RESULTADO: humanityDelta: -1 | setFlag: vision_1814 | IR A [BLOQUE 2]`,
       title: "[ESCENA 4.2]: LA EMBOSCADA EN LOS ANAQUELES",
       text: `CONTEXTO: Pasillos de la Hemeroteca y Salón de Lectura de la Biblioteca Nacional. La iluminación de emergencia tiñe los anaqueles de un rojo tenue.
 
-NARRACIÓN: El silencio reglamentario se rompe con el estampido del cristal en las claraboyas sobre tu cabeza. No es policía ciudadana cualquiera: es un equipo de «Limpieza» de la Corte —ghouls de élite vestidos en negro táctico y equipados con silenciadores— irrumpiendo desde arriba.
+NARRACIÓN: El cristal de una claraboya revienta encima. No es policía de barrio: es Limpieza de la Corte, ghouls en negro táctico con silenciadores, bajando desde arriba.
 
-Bajan antes de que cierre del todo la red ante la entrada principal. Doña Inés no necesariamente te mintió antes de dispersarse en Plaza de Armas, pero sí omitió bastante —para el Príncipe, un testigo es tan peligroso como el secreto mismo—
+La red del edificio se cierra; Inés no te mintió del todo en Plaza de Armas, pero le faltó decir que un testigo vivo molesta al Príncipe tanto como el secreto.
 
-Hay que abandonar la Biblioteca antes de que sellen todas las salidas o antes de que el sol, ya asomando tras el Cerro Santa Lucía, te convierta en ceniza.`,
+Salir ya, antes del taponamiento total o del sol tras Santa Lucía.`,
       contextVariantByState: [
         {
           requirement: { type: "flag", flag: "infiltracion_fantasma", equals: true },

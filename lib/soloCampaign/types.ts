@@ -86,7 +86,6 @@ export type SoloScene = {
   flagAppends?: readonly { flag: string; text: string }[];
   /** Variante contextual por estado persistido (rutas y consecuencias acumuladas). */
   contextVariantByState?: readonly { requirement: SoloRequirement; text: string }[];
-  clanFlavor?: Partial<Record<ClanId, string>>;
   options: SoloOption[];
 };
 

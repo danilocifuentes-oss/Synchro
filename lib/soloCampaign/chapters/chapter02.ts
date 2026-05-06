@@ -57,7 +57,7 @@ const N2_3_BRIEFING_INES_RIBERA = `Inés se detiene bajo el primer farol del sen
 
 «Ten cuidado entre aquí y la estación. Hay quien monta resguardo en portales de museo, y hay sombras que no rendirán cuentas a la oficina de la Torre.» Hace una pausa y te mira de frente. «Si ves el Mapocho con vetas violetas en la superficie, no lo toques ni con la suela: es la Hiel filtrándose.»
 
-Te aclara el vocabulario de abajo tierra—no es salón, es cloaca y plano de obra—: **El Choro** es el mote de quien te recibirá en los accesos bajo el lecho; no es nombre de registro, es cómo lo llaman quienes gatean túneles. Ese vástago conoce los **niveles**: mantenimiento del Metro, cámaras de drenaje y rejillas bajo la explanada, más abajo que el andén que ve el mortal, hasta lo que en esta misión se documenta como el Nido.
+Te aclara el vocabulario de abajo tierra—no es salón, es cloaca y plano de obra—: el Choro es el mote de quien te recibirá bajo el lecho; no es nombre de registro, es cómo lo llaman quienes gatean túneles. Ese Nosferatu conoce los niveles: mantenimiento del Metro, drenaje y rejillas bajo la explanada, más abajo que el andén del mortal, hasta lo que en esta misión se llama el Nido.
 
 «Son palabras que el Príncipe dejó caer en la sala y yo te las repito con la mano en el timón, por si el viento se las llevó», murmura. «El Choro. Los niveles. Nada de agua violeta.» Luego se retira entre setos sin volver la cabeza, y el camino queda en tus manos.`;
 
@@ -77,7 +77,7 @@ export const chapter02: SoloChapter = {
 
 NARRACIÓN: El trayecto es silencio medido: tacones y suela sobre empedrado que aún guarda olor a lluvia vieja. Las fachadas de aire europeo observan sin prisa; al acercarse a Bruna, la humedad del Mapocho cede al encerado de los pisos, al metal frío de torniquetes y al zumbido grave de cámaras que nadie finge ocultar.
 
-En Merced con Estados Unidos, el Palacio Bruna se alza como un único cuerpo de piedra clara: verja de hierro, jardín recortado y luz que ya no es calle, sino protocolo.`,
+En Merced con Estados Unidos, el Palacio Bruna se alza como un único cuerpo de piedra clara: verja de hierro, jardín recortado y luz que ya no es calle, sino protocolo. Inés ya lleva a la vista el anillo de sello del Príncipe, aro grueso en el dedo enguantado: el metal trae el blasón en relieve para cotejarse con el archivo de la Torre, estampar lacre o validar portería; aquí pesa más que cualquier tarjeta de mortal.`,
       flagAppends: [
         {
           flag: "beso_limpio",
@@ -94,9 +94,9 @@ En Merced con Estados Unidos, el Palacio Bruna se alza como un único cuerpo de 
           type: "discipline",
           discipline: "presence",
           disciplineTitle: "Presencia",
-          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: [Verja · autoridad]: Adelantarte medio paso e imponer Presencia para que la verja ceda por instinto antes que por palabra o sello.
+          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: [Verja · autoridad]: Adelantarte medio paso e imponer Presencia para que la verja ceda por instinto antes de que Inés tenga que enseñar el anillo de sello del Príncipe al torniquete.
 
-PUENTE: No esperas anuncio: tu campo empuja a los centinelas de bajo rango; sienten hueco en el estómago y apartan la mirada sin orden verbal. Inés te tolera el gesto sin corregirlo—anota el tiro.
+PUENTE: No esperas anuncio: tu campo empuja a los centinelas de bajo rango; sienten hueco en el estómago y apartan la mirada sin orden verbal. Inés no ha bajado aún el anillo hacia el lector; frunce el ceño, pero deja pasar el gesto y lo anota.
 
 CONSECUENCIA: Entras como quien ya ocupa un lugar en esta cohorte, no como invitado de paso; de aquí al salón, tu nombre viaja con una etiqueta distinta.
 
@@ -111,7 +111,7 @@ RESULTADO: willpowerDelta: +1 | setFlag: entrada_soberana | IR A [ESCENA 2.1]`,
           skill: "perspicacia",
           text: `OPCIÓN B [HABILIDAD: PERSPICACIA]: [Verja · lectura]: Recorrer con la mirada balcones, setos y ritmo de radios antes de cruzar el arco.
 
-PUENTE: Bajo la lámpara de calle distingues capas: centinelas de la Camarilla, trajes civiles con cable en la oreja—mercenarios mortales—y un flanco oeste donde el muro y una salida de servicio dejan más sombra que cámara.
+PUENTE: Bajo la lámpara de calle distingues capas: centinelas de la Camarilla, trajes civiles con cable en la oreja—mercenarios mortales—y un flanco oeste donde el muro y una salida de servicio dejan más sombra que cámara. Ves el hueco donde Inés encajará el anillo de sello si la noche sigue protocolo; tú, por ahora, sólo memorizas ángulos.
 
 CONSECUENCIA: Guardas un mapa mental de huida; si la noche tuerce, ya sabes por dónde no pedir permiso.
 
@@ -124,9 +124,9 @@ RESULTADO: setFlag: vulnerabilidad_bruna_detectada | IR A [ESCENA 2.1]`,
           id: "n2_0_etiqueta",
           type: "skill",
           skill: "etiqueta",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - ETIQUETA]: [Verja · protocolo]: Detenerte un paso atrás del arco de la entrada y esperar a que abran la verja—Inés cumple el ritual—antes de alzar la voz o reclamar paso.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - ETIQUETA]: [Verja · protocolo]: Detenerte un paso atrás del arco de la entrada y dejar que el ritual sea el de la casa: primero Inés encaja el anillo de sello del Príncipe en la ranura o lo alinea a la cámara, y sólo entonces hablas tú si hace falta.
 
-PUENTE: Manos a la espalda, barbilla nivelada; los ghouls de entrada leen sumisión sin humillación. Inés alza el sello del Príncipe para que el mecanismo y la mirada cedan en el mismo orden que manda la casa.
+PUENTE: Manos a la espalda, barbilla nivelada; los ghouls leen sumisión sin humillación. El relieve del blasón en el metal coincide con el patrón archivado; la verja obedece al troquel como obedecería al propio soberano en persona.
 
 CONSECUENCIA: Portería te archivo como «estable»: no confianza ciega, pero paso sin fricción hacia el vestíbulo.
 
@@ -140,7 +140,7 @@ RESULTADO: setFlag: etiqueta_validada | IR A [ESCENA 2.1]`,
           type: "dialogue",
           text: `OPCIÓN C — sin etiqueta entrenada: [Verja]: Detenerte en la verja y dejar que Inés abra el protocolo mientras tú mantienes compostura mínima: manos quietas, voz baja, sin provocar ni adular.
 
-PUENTE: No exhibes el virtuosismo de quien dominó Etiqueta; tampoco desafías al personal. Dejas que Inés muestre la credencial del soberano y que el nombre del Príncipe haga el trabajo antes que tu lengua.
+PUENTE: No exhibes el virtuosismo de quien dominó Etiqueta; tampoco desafías al personal. Dejas que Inés haga su parte: anillo de sello contra lector o lente, nombre del soberano, mirada que manda ceder antes de que tú abras boca.
 
 CONSECUENCIA: Entrada aceptada sin el refuerzo de confianza que da la etiqueta fina; los ghouls no te abren paso de rodillas, pero el umbral cede.
 
@@ -301,7 +301,7 @@ RESULTADO: setFlag: sospecha_principe | IR A [ESCENA 2.3]`,
 
 PUENTE: «Vuestro deseo es el orden de esta ciudad», respondes con la mesura que el salón premia. Tomas lacre y filo frío; la plata marca la palma y no perdona titubeos.
 
-CONSECUENCIA: La administración de la Torre en el Palacio Bruna te ficha como agente: credencial visible, acceso al estacionamiento de casa cuando tu evaluación lo permite, y trato de operativo que un invitado de paso no recibe.
+CONSECUENCIA: La Torre te archiva como agente del Príncipe: ficha en el sistema, acceso al garaje cuando la evaluación lo permita, y trato de operativo que un invitado de paso no recibe (el anillo de sello que viste en Inés queda en manos del protocolo; tú cargas mandato y filo).
 
 RESULTADO: setFlag: agente_oficial | IR A [ESCENA 2.3]`,
           requirement: { type: "none" },

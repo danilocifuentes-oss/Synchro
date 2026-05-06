@@ -329,7 +329,9 @@ RESULTADO: hungerDelta: -3 | humanityDelta: -2 | setFlag: asesino_del_mapocho | 
 
 NARRACIÓN: Te limpias la comisura de los labios con un pañuelo de seda blanco que ahora luce una mancha carmesí. El mundo ya no es borroso; es nítido, vibrante y peligrosamente real. Al final del puente, bajo un farol que arroja luz amarillenta y temblorosa, una mujer de elegancia anacrónica te observa con los brazos cruzados. Es Doña Inés. Su mirada no juzga tu comida con asco público; exhibe una impaciencia aristocrática.
 
-«Has demostrado que puedes sobrevivir en la calle, Embajador», dice con voz que corta el aire como un bisturí. «Pero sobrevivir es el talento de las ratas. El Príncipe requiere a alguien que sepa gobernar. El Palacio Bruna espera tu informe sobre el incidente de la imprenta. No lo hagas esperar más».`,
+«Has demostrado que puedes sobrevivir en la calle, Embajador», dice con voz que corta el aire como un bisturí. «Pero sobrevivir es el talento de las ratas. El Príncipe requiere a alguien que sepa gobernar. El Palacio Bruna espera tu informe sobre el incidente de la imprenta. No lo hagas esperar más».
+
+Antes de girar hacia Merced, se ajusta el guante: asoma un anillo de oro macizo con el blasón en relieve, el mismo diseño que estampa lacre en papeles mayores. No lo nombra; no hace falta: en Bruna eso es el anillo de sello del soberano, la mano que autoriza cuando la voz llega tarde.`,
       contextVariantByState: [
         {
           requirement: {

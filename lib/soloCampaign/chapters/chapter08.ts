@@ -54,7 +54,7 @@ NARRACIÓN: El Palacio Bruna es ahora una columna de humo negro en el espejo ret
               { type: "not", requirement: { type: "flag", flag: "chapter08_route_caceria_cota_mil", equals: true } },
             ],
           },
-          text: "El mapa cordillerano marcado va plegado o fijado al tablero: cada curva te acerca a sellos que reconociste en Bruna antes de saber cómo llamarlos.",
+          text: "El mapa cordillerano va al tablero: cada curva te acerca a marcas que ya viste en lacre y papeles de la Torre, el mismo blasón que el anillo de sello del soberano en Bruna.",
         },
       ],
       options: [
@@ -157,7 +157,7 @@ RESULTADO: hungerDelta: +2 | setFlag: aproximacion_infanteria | IR A [ESCENA 8.1
       title: "[ESCENA 8.1]: LA ESTACIÓN DE BOMBEO MÍSTICO",
       text: `CONTEXTO: Una antigua central hidroeléctrica abandonada en la zona de San José de Maipo. Las turbinas emiten un zumbido que vibra en los dientes.
 
-NARRACIÓN: Grandes tuberías de acero bajan desde los glaciares, pero lo que transportan no es solo agua. Tras cristal reforzado distingues tanques criogénicos donde la Hiel líquida se procesa y se envasa en contenedores con el sello de la Viña del Silencio.
+NARRACIÓN: Tuberías de acero bajan desde los glaciares; no llevan sólo agua. Tras el cristal, tanques criogénicos: Hiel en proceso, envasada en contenedores con el sello grabado de la Viña del Silencio —misma familia de signos que archivaste en lacres urbanos, aquí a escala industrial.
 
 En el centro de la sala de control está el Príncipe: conectado a una máquina, drenando sangre ancestral para estabilizar el ciclo. Parece un mártir demacrado más que soberano. Técnicos en trajes NBQ (protección nuclear-biológico-química) supervisan todo bajo la voz seca del Sastre —el Traje Gris—.`,
       contextVariantByState: [
@@ -227,7 +227,7 @@ RESULTADO: hungerDelta: +1 | setFlag: sabotaje_hidroelectrico | IR A [BLOQUE 2]`
           skill: "perspicacia",
           text: `OPCIÓN B [HABILIDAD: PERSPICACIA]: Con mapas de la cordillera, identificar la válvula maestra que corta el suministro hacia Santiago.
 
-PUENTE: No buscas pulverizar la planta: quieres secar la arteria hasta la ciudad. Localizas en la red impresa qué volante corta la conexión montaña–capital y lo giras hasta el cierre absoluto entre crujidos de vástago y válvula vieja.
+PUENTE: No buscas pulverizar la planta: quieres secar la arteria hasta la ciudad. Localizas en la red impresa qué volante corta la conexión montaña–capital y lo giras al cierre, entre crujidos de metal y válvula vieja.
 
 CONSECUENCIA: El Traje Gris pierde de golpe una moneda de cambio cara en Santiago; la presión institucional del Príncipe colapsa con el circuito físico que la alimentaba.
 

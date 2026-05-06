@@ -22,10 +22,20 @@ import {
 } from "@/lib/soloCampaign/chronicleMechanics";
 import { SOLO_CHAPTERS } from "@/lib/soloCampaign/chapters";
 import type { SoloChapter, SoloOption, SoloScene } from "@/lib/soloCampaign/types";
-import {
-  SOLO_NARRATIVE_ARCHITECT_PROMPT_CONTENT_VERSION,
-  SOLO_NARRATIVE_ARCHITECT_SYSTEM_PROMPT_ES,
-} from "@/lib/soloCampaign/architectPromptCopy";
+
+/** Alineado con la UI: capítulos TS + overrides Malkavian; sin capa clanFlavor en datos. */
+const DIGEST_IA_CONTEXT_ES_VERSION = 2 as const;
+
+const DIGEST_IA_CONTEXT_ES = `
+Fuente de verdad de la campaña solitaria en CODEX (lo que renderiza el front):
+
+1) Cuerpo de escena: \`lib/soloCampaign/chapters/chapter01.ts … chapter09.ts\` y \`epilogue.ts\`, ensamblados en \`chronicleRegistry.ts\`.
+2) Clan Malkavian: \`resolveSoloScenePlayerText\` puede sustituir el \`text\` de la escena por \`MALKAVIAN_NARRATION_BY_SCENE_ID[scene.id]\` (\`lib/soloCampaign/chapters/malkavian/malkavianNarrationOverride.generated.ts\`). Otros clanes soportados leen la narración base de los capítulos.
+3) Títulos de capítulo en biblioteca: \`soloChapterHeadlineForClan\` cambia VENTRUE→MALKAVIAN en el título (\`chronicleMechanics.ts\`).
+4) No existe \`clanFlavor\` por escena en el modelo: no buscar variantes Brujah/Toreador en el JSON de escenas; si aplica, convivirán con la base Ventrue hasta que exista otro mecanismo en código.
+
+Al reescribir o proponer texto nuevo, debe poder colgarse de \`SoloScene.text\` / overrides generados o de la mecánica anterior; no inventar un segundo JSON paralelo de «novela».
+`.trim();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -65,7 +75,6 @@ function summarizeScene(scene: SoloScene): Record<string, unknown> {
     contexto_previo_por_estado: scene.contextLeadInByState ?? [],
     adjuntos_cuando_bandera_activa: scene.flagAppends ?? [],
     contexto_por_estado: scene.contextVariantByState ?? [],
-    variante_por_clan: scene.clanFlavor ?? null,
     opciones: scene.options.map(summarizeOption),
   };
 }
@@ -116,20 +125,22 @@ function summarizeChapter(ch: SoloChapter): Record<string, unknown> {
 
 const PROMPT_ANALISIS_ES = `Actúas como editor de narrative design y QA de una campaña IF en español (V:tM V5 fan, segunda persona).
 
-Tienes un JSON llamado artefacto "digest" con:
-- cronica.shell: preludio común, stingers por máscara de clan (incluye _fallback si falta entrada), intros de clan al abrir cap. 1, contextos antes de algunos capítulos, versions de contenido persistido, y constantes mecánicas (escena inicial, PX por tirada, banderas).
-- plataforma: clanes disponibles solo en CODEX/Campaña Solitaria vs todos los ClanId del motor.
-- arbol_caps: cada capítulo con escenas; narracion, opcional adjuntos_cuando_bandera_activa (equivalente a flagAppends en código), variante_por_clan, opciones con requisitos, ramas siguiente_escena_* y efectos.
+El JSON "digest" refleja el árbol exportado desde código (arbol_caps). La UI añade capas fuera de este JSON: overrides Malkavian por id de escena y sustitución de palabras en títulos (ver bloque ---CONTEXTO_UI---).
 
-Tareas de análisis (devuelve secciones claras):
-1) Grafo por capítulo: lista escena_inicio → cierre; detecta opciones muertas u hojas sin salida conocida dentro del mismo capítulo si next apunta fuera sin capítulo objetivo declarado aquí (sólo señálalo como riesgo).
-2) Opciones discriminadas por clan/disciplina/habilidad: ¿quién puede ver qué sin trucos? ¿Hay trampas donde un clan sin disciplina sólo tiene un camino penalizado?
-3) Coherencia tono/registry: ¿contexto previo contradice texto de primera escena del capítulo?
-4) Lista de lacunas para completar contenido opcional si se desea simetría clan.
+Estructura:
+- cronica.shell: constantes mecánicas de apertura (escena Codex, PX, salud UI).
+- plataforma: clanes con campaña solitaria activa.
+- arbol_caps: capítulos con escenas; narracion (base Ventrue/ruta principal), adjuntos_cuando_bandera_activa, contexto_por_estado, opciones con requisitos y efectos.
+- qa_grafo: diagnósticos automáticos.
 
-Cita IDs de escenas y opciones (id) cuando propongas cambios concretos.
+Tareas:
+1) Grafo: escena_inicio por capítulo, transiciones sospechosas, endings/fatal.
+2) Opciones visibles: discriminación por disciplina, habilidad, banderas — sin asumir variante por clan en el JSON.
+3) Coherencia: lead-ins y variantes vs cuerpo de escena.
 
-Tras el bloque de instrucciones, el usuario te pegará un único objeto JSON (empieza tras la línea que dice ---DATOS_JSON---). Úsalo como fuente de verdad; no inventes escenas ni opciones que no aparezcan ahí.`;
+Cita ids de escena y opción al proponer cambios.
+
+Tras ---DATOS_JSON--- el usuario pega un único JSON; no inventes nodos que no estén ahí.`;
 
 async function main(): Promise<void> {
   const digest = {
@@ -137,21 +148,23 @@ async function main(): Promise<void> {
       artefacto: "solo-campaign-narrative-digest",
       generado_ISO: new Date().toISOString(),
       formato_version: 2,
-      SOLO_NARRATIVE_ARCHITECT_PROMPT_CONTENT_VERSION,
+      DIGEST_IA_CONTEXT_ES_VERSION,
       archivo_fuente_codigo: [
-        "lib/soloCampaign/chapters/*.ts",
-        "lib/soloCampaign/types.ts",
-        "lib/soloCampaign/chronicleMechanics.ts",
-        "lib/soloCampaign/architectPromptCopy.ts",
+        "lib/soloCampaign/chronicleRegistry.ts",
+        "lib/soloCampaign/chapters/chapter01.ts … chapter09.ts",
+        "lib/soloCampaign/chapters/epilogue.ts",
+        "lib/soloCampaign/chapters/malkavian/malkavianNarrationOverride.generated.ts",
+        "lib/soloCampaign/requirementEngine.ts",
+        "lib/soloCampaign/chronicleMechanics.ts (soloChapterHeadlineForClan)",
         "components/SoloCampaignApp.tsx",
       ],
       nota_instrucciones_IA:
-        "COPIAR-PEGAR-IA.txt: ---INSTRUCCIONES--- (QA digest), ---SYSTEM_PROMPT_NARRATIVE_ARCHITECT--- (diseño/rewrite), ---DATOS_JSON---.",
+        "COPIAR-PEGAR-IA.txt: ---INSTRUCCIONES--- (QA), ---CONTEXTO_UI--- (cómo el front monta texto), ---DATOS_JSON---.",
     },
     plataforma: {
       clanes_solo_soportados_IDS: [...SOLO_SUPPORTED_CLANS],
-      nota_clanFlavor:
-        "Las capas opcionales clanFlavor sólo están definidas en algunas escenas y suelen incluir sólo Brujah/Ventrue/Toreador/Malkavian; otros linajes ven la narracion base.",
+      nota_montaje_UI:
+        "Cuerpo: narración base en capítulos TS; clan malkavian reemplaza vía MALKAVIAN_NARRATION_BY_SCENE_ID. Título de capítulo: soloChapterHeadlineForClan. Brujah/toreador: misma prosa base que Ventrue salvo futura extensión en código.",
     },
     cronica: {
       shell: {
@@ -180,15 +193,15 @@ async function main(): Promise<void> {
     "2) Selecciona TODO el texto (Ctrl+A / Cmd+A).",
     "3) Copia y pega en un solo mensaje a la IA.",
     "",
-    "Bloques: ---INSTRUCCIONES--- (revisión/QA del digest), ---SYSTEM_PROMPT_NARRATIVE_ARCHITECT--- (rol Narrative Architect + reglas Santiago en Cenizas), ---DATOS_JSON--- (volcado).",
+    "Bloques: ---INSTRUCCIONES--- (QA digest), ---CONTEXTO_UI--- (alineación con el front), ---DATOS_JSON--- (volcado).",
     "",
     "---INSTRUCCIONES---",
     "",
     PROMPT_ANALISIS_ES.trim(),
     "",
-    "---SYSTEM_PROMPT_NARRATIVE_ARCHITECT---",
+    "---CONTEXTO_UI---",
     "",
-    SOLO_NARRATIVE_ARCHITECT_SYSTEM_PROMPT_ES.trim(),
+    DIGEST_IA_CONTEXT_ES,
     "",
     "---DATOS_JSON---",
     "",

@@ -48,4 +48,4 @@ next-env.d.ts
 /.data/
 
 # Volcado narrativo reproducible (`npm run solo:narrative-digest`)
-/content/solo-campaign/narrative-digest.json
+/content/solo-campaign/

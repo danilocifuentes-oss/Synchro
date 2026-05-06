@@ -55,7 +55,7 @@ export const chapter06: SoloChapter = {
       id: "n6_0",
       chapterId: "chapter06",
       title: "[ESCENA 6.0]: EL UMBRAL DE LA FE Y LA SANGRE",
-      text: `Las bifurcaciones previas decidieron si hoy pisas viña fuera del cordón o piedra donde el año 1814 sigue reclamando pulso.`,
+      text: `Según cómo cerraste el capítulo anterior, hoy pisas la viña al sur del cordón o la nave donde 1814 aún pide cuenta en piedra.`,
       contextLeadInByState: [
         {
           requirement: reqRutaViñaSinAncla,
@@ -214,7 +214,13 @@ RESULTADO: setFlag: parlamento_bajo_tension | IR A [ESCENA 6.1]`,
           id: "n6_0_etiqueta",
           type: "skill",
           skill: "etiqueta",
-          text: "Analizar la disposición de los invitados en el salón.",
+          text: `OPCIÓN A [HABILIDAD: ETIQUETA]: [Viña · lectura del salón]: Leer quién manda en la mesa sin abrir la boca todavía.
+
+PUENTE: Orden de los lugares, tino en copas y quién mira antes al Príncipe. Dibujas un mapa: leales, cómplices, los que fingen no saber.
+
+CONSECUENCIA: Entras al brindis con el tablero claro; menos sorpresas cuando la jarra negra llegue al centro.
+
+RESULTADO: willpowerDelta: +1 | setFlag: mapa_politico_vina | IR A [El brindis negro]`,
           requirement: { type: "skill", skill: "etiqueta", minLevel: 1 },
           visibilityRequirement: reqRutaViñaSinAncla,
           nextSceneId: "n6_v_brindis",
@@ -225,7 +231,13 @@ RESULTADO: setFlag: parlamento_bajo_tension | IR A [ESCENA 6.1]`,
           type: "discipline",
           discipline: "auspex",
           disciplineTitle: "Vibración bajo el suelo",
-          text: "Sentir las vibraciones del lugar.",
+          text: `OPCIÓN B [DISCIPLINA: AUSPEX]: [Viña · bajo tierra]: Soltar la vista y seguir el rumor bajo los pies.
+
+PUENTE: No es sólo bodega: hay pulso profundo, casi de máquina o de sangre encerrada, alineada con la misma nota mala que oiste en Mapocho.
+
+CONSECUENCIA: Confirmas que la viña no es anexo decorativo: es nodo del mismo sistema.
+
+RESULTADO: hungerDelta: +1 | setFlag: secreto_bajo_vina | IR A [El brindis negro]`,
           requirement: { type: "discipline", discipline: "auspex", minLevel: 1 },
           visibilityRequirement: reqRutaViñaSinAncla,
           nextSceneId: "n6_v_brindis",
@@ -235,7 +247,13 @@ RESULTADO: setFlag: parlamento_bajo_tension | IR A [ESCENA 6.1]`,
           id: "n6_0_perspicacia_vina",
           type: "skill",
           skill: "perspicacia",
-          text: "Buscar señales de Hiel en las copas de los invitados.",
+          text: `OPCIÓN C [HABILIDAD: PERSPICACIA]: [Viña · copas]: Buscar Hiel o artificio en lo que beben los invitados.
+
+PUENTE: Brillo violeta apenas, dedos demasiado quietos en los cristales. No todos vinieron a emborracharse de vino.
+
+CONSECUENCIA: Identificas a los que ya traen el veneno en el cuerpo antes del pacto público.
+
+RESULTADO: setFlag: elite_infectada | IR A [El brindis negro]`,
           requirement: { type: "skill", skill: "perspicacia", minLevel: 1 },
           visibilityRequirement: reqRutaViñaSinAncla,
           nextSceneId: "n6_v_brindis",
@@ -244,7 +262,13 @@ RESULTADO: setFlag: parlamento_bajo_tension | IR A [ESCENA 6.1]`,
         {
           id: "n6_0_fachada_vina",
           type: "dialogue",
-          text: "Dejarte llevar al salón actuando invitado: instinto antes que mapa político abierto.",
+          text: `OPCIÓN D [CAMINO ESTÁNDAR - ACCIÓN]: [Viña · fachada]: Entrar al salón como un invitado más, sin mapa ni dones.
+
+PUENTE: Sonríes, saludas, dejas que te ubiquen. El costo es ir a ciega un tramo: la política te golpeará cuando ya estés dentro.
+
+CONSECUENCIA: Menos ventaja táctica; más credibilidad de “cordero” hasta que la jarra del centro arme el drama.
+
+RESULTADO: willpowerDelta: -1 | setFlag: vina_entrada_fachada | IR A [El brindis negro]`,
           requirement: { type: "none" },
           visibilityRequirement: reqRutaViñaSinAncla,
           nextSceneId: "n6_v_brindis",
@@ -269,7 +293,7 @@ RESULTADO: setFlag: parlamento_bajo_tension | IR A [ESCENA 6.1]`,
       chapterId: "chapter06",
       title: "[ESCENA 6.1]: EL DESCENSO A LA VERDAD",
       text: `CONTEXTO: El altar mayor y umbral visible hacia la cripta arzobispal.
-NARRACIÓN: El gesto antes —diplomático o brutal— te dejó ante el altar como borde físico nuevo. Una figura con sello de la Corte se retiró hacia la violeta tras el volumen coral; dicen algunos gestos cerrados que el Príncipe bajó primero hasta la cámara donde late el pacto.
+NARRACIÓN: El gesto anterior te dejó ante el altar. Un servidor con anillo de sello de la Torre —el relieve de Bruna hecho metal— se perdió hacia la violeta tras el coro; los murmullos dicen que el Príncipe ya bajó a la cámara del pacto.
 
 Doña Inés queda como última cara visible antes del bronce. El suelo vibra con latido espeso casi líquido. La puerta hacia la cripta está entreabierta y escupe un fulgor violáceo que dibuja sombras incorrectas contra las bóvedas.`,
       flagAppends: [

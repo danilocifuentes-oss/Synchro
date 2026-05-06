@@ -37,9 +37,9 @@ export const chapter03: SoloChapter = {
       ],
       text: `CONTEXTO: Explanada de la Estación Mapocho. 04:30 AM. Un viento gélido arrastra basura por el pavimento desierto.
 
-NARRACIÓN: El edificio de la Estación Mapocho se alza frente a ti como hueso de hierro y vidrio —monumento a una gloria que hoy apenas contiene ecos—.
+NARRACIÓN: La Estación Mapocho frente a ti es hueso de hierro y vidrio: gloria de otra época, eco vacío ahora.
 
-El aire aquí es distinto al resto del centro. Huele a metal oxidado mezclado con una nota casi floral, pero dulce de podredumbre; hace que la sangre (y la sangre ajena pegada en la memoria) te avise antes que el cerebro. Es la Hiel. No se reduce a un contaminante: es densidad silenciosa, como si Santiago se empapara menos de ruido a medida que te acercas a los accesos.
+El aire cambia respecto al centro. Metal oxidado y un dulzor podrido casi floral; la sangre en memoria te avisa antes que el pensamiento. Es la Hiel: no sólo suciedad, sino peso en el aire y menos ruido cuanto te acercas a los accesos.
 
 Las puertas laterales de servicio están encadenadas; la llave de bronce que recibiste en el Palacio Bruna encaja sin forzar. Al girarla, el chirrido del cerrojo resuena en la nave vacía como un grito ahogado en un cementerio de trenes.`,
       contextVariantByState: [
@@ -132,7 +132,7 @@ NARRACIÓN: El camino te lleva a las entrañas de la estación. El rumor del vie
 
 En una cámara de ladrillo colonial una figura brota de una tubería con agilidad inhumana: El Choro. La piel es un mapa de cicatrices y pústulas que brillan con luz muerta en la oscuridad. Casi no hay ropa digna del nombre —sólo cuero mugriento pegado por la mugre—
 
-«Un príncipe de seda en mi jardín de barro», sislea el Nosferatu, los dientes afilados como alfileres. «Hueles a Palacio Bruna… hueles a miedo perfumado. ¿Vienes a morir con las ratas o tienes algo que ofrecer a los que viven en el olvido?».`,
+«Un príncipe de seda en mi barro», sislea el Nosferatu, dientes de alfiler. «Hueles a Bruna. ¿Vienes a pudrirte con las ratas o traes algo que valga el olvido?».`,
       options: [
         {
           id: "n3_1_dominate",
@@ -292,11 +292,7 @@ NARRACIÓN: Sales de las entrañas de la tierra justo cuando los camiones de rep
 
 De las sombras del Mercado emerge de nuevo Doña Inés. Te observa con una mirada escrutadora buscando manchas de Hiel en el paño de tu traje. «Has cumplido», dice en un tono cortante. «Pero lo que has encontrado requiere una investigación más profunda. Hay una deuda pendiente en los libros de la ciudad. Debemos ir a la Biblioteca Nacional antes de que el sol reclame las calles».
 
-No hay regreso neutral desde Mapocho.  
-Si liberaste a la prisionera, tendrás que decidir qué verdad entregas y cuál ocultas.  
-Si sellaste el nexo, el Palacio te abrirá puertas por eficacia, no por afecto.  
-Si bebiste Hiel, cada paso hacia la Biblioteca será también una prueba contra tu propia Bestia.  
-Y si solo saboteaste y saliste con vida, cargarás un informe limpio en papel y sucio en conciencia.`,
+Mapocho no deja paso neutro: o arrastras a la prisionera y eliges qué contar, o presentas un nexo sellado y subes en la Torre sin cariño, o la Hiel en sangre te persigue a la Biblioteca, o vuelves con papeles ordenados y la conciencia otra cosa.`,
       contextVariantByState: [
         {
           requirement: { type: "flag", flag: "marca_de_la_hiel", equals: true },

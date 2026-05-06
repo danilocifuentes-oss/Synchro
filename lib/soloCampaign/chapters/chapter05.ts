@@ -271,7 +271,7 @@ Tu ruta fuerza cercanía al Palacio Bruna. Hay más camiones blindados privados 
       flagAppends: [
         {
           flag: "mapa_catacumbas_regalo",
-          text: "La foto marca el callejón donde la piedra lame humedad: una línea dibujada a bolígrafos finos dibuja el desnivel hasta catacumba sin pasar Plaza de Armas en bandera alta.",
+          text: "La foto señala el callejón húmedo y el desnivel hacia catacumba sin cruzar la plaza a plena luz.",
         },
         {
           flag: "rastro_del_sastre_identificado",
@@ -383,12 +383,7 @@ NARRACIÓN: Estás frente al objetivo declarado. La Catedral no es sólo arquite
 
 Un viento frío raspa la piedra y levanta hojas muertas contra la luz de faroles. La Guardia de la Torre bloquea puertas principales; el aire vibra con la misma electricidad púrpura que conociste bajo Mapocho. El Acto II termina en este umbral: al cruzarlo dejas de figurar como peón y pasas a nombre propio en el Tratado… o a otra línea de víctimas de 1814.
 
-No cruzarás esta puerta de la misma manera según lo que ya cargues encima.  
-Si dominas la verdad del Ancla y tienes un aliado en la sombra, irás directo al corazón del vínculo.  
-Si declaraste guerra abierta, la plaza te pedirá sostener ese desafío con acero y nombre propio.  
-Si llegaste como superviviente, primero medirás respiraciones, rutas y ángulos antes de tocar el ritual.  
-Y si ya abriste la vía subterránea, la piedra te tragará por catacumbas antes de cualquier ceremonia pública.  
-Todo converge aquí: fe, sangre y memoria.`,
+La puerta no se cruza igual según tu carga: verdad del Ancla y aliado te acercan al núcleo; guerra abierta te exige acero; llegada sigilosa, tiempo de medir; entrada por catacumbas, piedra antes que ceremonia. Fe, sangre y memoria convergen en este umbral.`,
       contextVariantByState: [
         {
           requirement: { type: "flag", flag: "secreto_del_primogenito", equals: true },

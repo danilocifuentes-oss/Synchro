@@ -427,7 +427,7 @@ De las sombras de la cúpula emerge una figura que no es el Príncipe sino el Ho
 
 A lo lejos, hacia la cordillera, una luz púrpura tiñe los cerros. Si vienes por el arco nuevo, reconoces la ruta de extracción hacia montaña; si vienes por carril legado, entiendes que la guerra de plaza era apenas el primer telón.
 
-El Capítulo 7 cierra la caída de la Corte local y abre una amenaza a escala nacional.`,
+El capítulo cierra la Corte en la ciudad y abre lo que viene: montaña, Traje Gris, cordillera.`,
       contextVariantByState: [
         {
           requirement: { type: "flag", flag: "rastro_hacia_la_azotea", equals: true },

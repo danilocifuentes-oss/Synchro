@@ -412,7 +412,7 @@ RESULTADO: FINAL 1 (forzado): EL MÁRTIR DE LOS ANDES | setFlag: final_redencion
       title: "[ESCENA FINAL]: EPÍLOGO",
       text: `CONTEXTO: Amanecer sobre la Cordillera de los Andes. 07:15 AM.
 
-NARRACIÓN: El sol corona lentamente las cumbrías. Santiago destella lejos con la misma cuadrícula de luces que viste desde Bruna, pero la firma bajo tu piel ya no es la de la noche anterior: los archivos de la Biblioteca Nacional, el trono del Palacio Bruna y los túneles de la Estación Mapocho quedaron como cicatrices de una guerra que cerraste aquí arriba.
+NARRACIÓN: El sol sube sobre las cumbres. Abajo, Santiago es otra vez la cuadrícula de luces; lo que cambió eres tú: Bruna, la Biblioteca y Mapocho quedaron atrás como hitos de la misma cadena —sello, archivo, río— que cerraste en hielo.
 
 Un viento frío sube desde el sur. Ajustas la chaqueta: quizá por última vez, quizá para inaugurar un reinado que dure lo que duren el hielo, el negocio y la fe de quien firma después.
 
