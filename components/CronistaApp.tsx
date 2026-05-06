@@ -64,6 +64,7 @@ import { NarratorCommandCenter } from "./NarratorCommandCenter";
 import { SoloCampaignProvider } from "@/context/SoloCampaignContext";
 import { ensureSoloProgress, isSoloSupportedClan } from "@/lib/soloCampaign/bootstrap";
 import { SoloCampaignApp } from "./SoloCampaignApp";
+import { SoloChronicleInventory } from "./SoloChronicleInventory";
 import { SoloSceneNav } from "./SoloSceneNav";
 import { SoloCampaignPhaseRedirect } from "./SoloCampaignPhaseRedirect";
 import type { Phase } from "@/lib/schreckPhase";
@@ -902,7 +903,14 @@ function CronistaAppInner() {
                 healthFilled={healthHudFilled}
                 healthMax={HEALTH_MAX_UI}
                 hunger={sheet.hunger}
-                soloSceneNav={soloShellActive ? <SoloSceneNav /> : undefined}
+                soloSceneNav={
+                  soloShellActive ? (
+                    <>
+                      <SoloChronicleInventory />
+                      <SoloSceneNav />
+                    </>
+                  ) : undefined
+                }
                 onEidolonVault={goToProfileHub}
                 onCodex={() => {
                   persistActiveProfile();

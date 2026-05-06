@@ -37,11 +37,11 @@ export const chapter03: SoloChapter = {
       ],
       text: `CONTEXTO: Explanada de la Estación Mapocho. 04:30 AM. Un viento gélido arrastra basura por el pavimento desierto.
 
-NARRACIÓN: La Estación Mapocho frente a ti es hueso de hierro y vidrio: gloria de otra época, eco vacío ahora.
+NARRACIÓN: La Estación Mapocho frente a ti se yergue como una columna de hierro y cristal: gloria de otra época, eco vacío ahora.
 
-El aire cambia respecto al centro. Metal oxidado y un dulzor podrido casi floral; la sangre en memoria te avisa antes que el pensamiento. Es la Hiel: no sólo suciedad, sino peso en el aire y menos ruido cuanto te acercas a los accesos.
+El aire cambia respecto al centro. Metal oxidado y un dulzor podrido casi floral; la sangre que corre por tus venas te avisa antes que el pensamiento. ¡Es la Hiel! No sólo es suciedad, es un peso en el aire y un silencio que aumenta cuanto más te acercas a los accesos.
 
-Las puertas laterales de servicio están encadenadas; la llave de bronce que recibiste en el Palacio Bruna encaja sin forzar. Al girarla, el chirrido del cerrojo resuena en la nave vacía como un grito ahogado en un cementerio de trenes.`,
+Las viejas puertas laterales de servicio están encadenadas; la llave de bronce que recibiste en el Palacio Bruna encaja sin forzar. Al girarla, el chirrido del cerrojo parece desvanecerse al instante, como si ese pasadizo que se abre ante ti lo engullera.`,
       contextVariantByState: [
         {
           requirement: { type: "flag", flag: "observacion_previa_hiel", equals: true },
@@ -59,6 +59,20 @@ Las puertas laterales de servicio están encadenadas; la llave de bronce que rec
         },
       ],
       options: [
+        {
+          id: "n3_0_camino_abierto",
+          type: "dialogue",
+          text: `CAMINO ABIERTO: Avanzar hacia el interior siguiendo el hedor y las huellas más claras hacia el sector de carga, sin forzar un recorrido completo del perímetro.
+
+PUENTE: Te basta media vuelta para entender el dibujo: la nave respira hacia un eje donde el hedor se concentra y el metal muestra roce reciente. Ajustas el paso, mano en la daga de plata, y dejas que el cuerpo elija el atajo menos expuesto.
+
+CONSECUENCIA: El rastro confirma tensión reciente en el edificio: marcas de arrastre, metal rayado, silencio donde debería haber tránsito.
+
+RESULTADO: setFlag: rastro_sangre_vástago | IR A [ESCENA 3.1]`,
+          requirement: { type: "none" },
+          nextSceneId: "n3_1",
+          effects: [{ type: "setFlag", flag: "rastro_sangre_vástago" }],
+        },
         {
           id: "n3_0_fortaleza",
           type: "discipline",
@@ -91,23 +105,37 @@ RESULTADO: setFlag: observador_desde_las_sombras | IR A [ESCENA 3.1]`,
           effects: [{ type: "setFlag", flag: "observador_desde_las_sombras" }],
         },
         {
-          id: "n3_0_estandar",
+          id: "n3_0_perimetro_torre",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Recorrer el perímetro de la nave con linterna táctica y buscar señales de forzamiento o de lucha reciente.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR · KIT TORRE]: Recorrer el perímetro de la nave con linterna táctica y buscar señales de forzamiento o de lucha reciente.
 
-PUENTE: No avanzas a ciegas. El haz parte la penumbra y encuentra huellas pesadas —militar o paramilitar— que se desvían hacia el sector de carga. Sigues el rastro con la mano en la empuñadura de la daga de plata; las sombras del techo saltan como si quisieran morder la luz.
+PUENTE: No avanzas a ciegas: el kit operativo que te fichó la Torre incluye haz y batería que aguantan el ambiente enfermizo. El haz parte la penumbra y encuentra huellas pesadas —militar o paramilitar— que se desvían hacia el sector de carga. Sigues el rastro con la mano en la empuñadura de la daga de plata; las sombras del techo saltan como si quisieran morder la luz.
 
 CONSECUENCIA: El rastro confirma combate reciente: casquillos calientes aún olvidados y restos de piel que no cuadran con anatomía humana llana.
 
 RESULTADO: setFlag: rastro_sangre_vástago | IR A [ESCENA 3.1]`,
-          requirement: { type: "none" },
+          requirement: { type: "flag", flag: "agente_oficial", equals: true },
+          nextSceneId: "n3_1",
+          effects: [{ type: "setFlag", flag: "rastro_sangre_vástago" }],
+        },
+        {
+          id: "n3_0_perimetro_sin_kit",
+          type: "dialogue",
+          text: `OPCIÓN C [CAMINO ESTÁNDAR · SIN KIT TORRE]: Recorrer el perímetro de la nave a la luz de faroles, reflejos en cristal roto y oído atento; buscar señales de forzamiento o de lucha reciente.
+
+PUENTE: No cargas linterna militar: apuras la vista hasta donde el vapor del río y las luces de la ciudad dejan leer el suelo; escuchas el roce de una cadena antes de verla. Entre vigas y charcos, recoges el rastro de botas pesadas hacia el sector de carga. La mano va a la empuñadura de la daga de plata por reflejo.
+
+CONSECUENCIA: El rastro confirma combate reciente: casquillos aún tibios y restos de piel que no cuadran con anatomía humana llana.
+
+RESULTADO: setFlag: rastro_sangre_vástago | IR A [ESCENA 3.1]`,
+          requirement: { type: "not", requirement: { type: "flag", flag: "agente_oficial", equals: true } },
           nextSceneId: "n3_1",
           effects: [{ type: "setFlag", flag: "rastro_sangre_vástago" }],
         },
         {
           id: "n3_0_sastre",
           type: "dialogue",
-          text: `OPCIÓN D [RIESGO - INSTINTO]: Si tienes setFlag: secreto_del_sastre, desviarte para buscar marcas del Hombre del Traje en este lugar.
+          text: `OPCIÓN E [RIESGO - INSTINTO]: Si tienes setFlag: secreto_del_sastre, desviarte para buscar marcas del Hombre del Traje en este lugar.
 
 PUENTE: Ignoras la ruta lógica. Buscas algo que no encaje con la suciedad de la estación: una colilla de cigarrillo de marca cara, un aroma a sándalo. Encuentras una marca de tiza en un pilar: un círculo tachado con una fecha: 1814.
 

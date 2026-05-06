@@ -38,7 +38,7 @@ RESULTADO: IR A [ESCENA 1.0.1]`,
 
 El caos de este sótano te resulta una ofensa íntima, aunque todavía no puedas nombrar del todo por qué. Un soberano no debería despertar entre prensas oxidadas y moho.
 
-El hambre es una aguja que cose tus entrañas, un rugido sordo que exige ser callado, pero tu orgullo exige primero una estructura: ¿quién te ha puesto en esta situación y qué ha sido de tu linaje?`,
+El hambre es una aguja que cose tus entrañas, un rugido sordo que exige ser callado, mientras que tu orgullo exige respuestas.`,
       options: [
         {
           id: "n1_0_fortaleza",
@@ -74,7 +74,7 @@ RESULTADO: setFlag: sello_viña_caida | IR A [ESCENA 1.1]`,
         {
           id: "n1_0_estandar",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Incorporarte con dignidad y buscar la salida hacia la calle para recuperar el control del territorio.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - ACCIÓN]: Buscar la salida hacia la calle para recuperar el control del territorio.
 
 PUENTE: Te pones en pie, ajustas los puños de tu camisa y te limpias el polvo de la chaqueta con un gesto automático. No importa la inmundicia del lugar; te niegas a ceder el centro de gravedad de la habitación. Subes los peldaños de madera, que crujen bajo tu peso muerto, buscando la salida hacia la calle Teatinos para evaluar la situación desde el asfalto.
 
@@ -121,7 +121,7 @@ NARRACIÓN: El aire de Santiago te golpea. La calle está desierta, sumida en es
 
 PUENTE: No dices una palabra. Simplemente fijas tus pupilas en las suyas, proyectando el peso de tu linaje a través del aire frío. El hombre se estremece, sus pupilas se dilatan y, contra toda su voluntad biológica, sus pies empiezan a moverse hacia ti. «Habla», susurras con una voz que anula su raciocinio.
 
-CONSECUENCIA: El hombre confiesa bajo trance que trabaja para un «hombre de traje gris» que le paga por reportar tu salida exacta. Revela que hay otros como él en las calles aledañas.
+CONSECUENCIA: El mendigo confiesa bajo trance que trabaja para un «hombre de traje gris» que le pagó por mantenerte vigilado. Revela que también hay otros observando en calles aledañas.
 
 RESULTADO: hungerDelta: +1 | setFlag: info_traje_gris | IR A [BLOQUE 2 / ESCENA 1.2]`,
           requirement: { type: "discipline", discipline: "dominate", minLevel: 1 },
@@ -151,11 +151,11 @@ RESULTADO: setFlag: radio_militar | IR A [BLOQUE 2 / ESCENA 1.2]`,
         {
           id: "n1_1_estandar",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Confrontarlo directamente con la autoridad diplomática de tu casta.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Confrontarlo directamente con autoridad diplomática.
 
 PUENTE: «¿Para quién trabajas? Elige bien tus próximas palabras; mi paciencia se quedó en ese sótano», dices con una calma que hiela la sangre. El hombre, aterrado por tu porte y el magnetismo antinatural que desprendes, balbucea sobre una «deuda de sangre que debe cobrarse».
 
-CONSECUENCIA: El hombre huye despavorido hacia la Alameda, pero en su huida deja caer una tarjeta de presentación con un borde dorado: «Viña del Silencio · Memoria histórica».
+CONSECUENCIA: El hombre huye despavorido hacia la Alameda, pero en su huida deja caer una vieja tarjeta de presentación con un borde dorado: «Viña del Silencio · Memoria histórica».
 
 RESULTADO: setFlag: tarjeta_viña | IR A [BLOQUE 2 / ESCENA 1.2]`,
           requirement: { type: "none" },
@@ -169,7 +169,7 @@ RESULTADO: setFlag: tarjeta_viña | IR A [BLOQUE 2 / ESCENA 1.2]`,
 
 PUENTE: No vas a arriesgar tu anonimato por un mortal. Te lanzas sobre él con la velocidad de un rayo negro. Tus manos se cierran sobre su garganta; el crujido de sus vértebras es la única respuesta que obtienes. El cuerpo cae sin vida tras el contenedor mientras buscas rastro de información en sus bolsillos.
 
-CONSECUENCIA: Has silenciado el informe, pero has dejado un cadáver en tu punto de origen. La policía y la Camarilla investigarán este desorden.
+CONSECUENCIA: Has silenciado al informante, pero has dejado un cadáver en tu camino. La policía y la Camarilla investigarán esta desaparición.
 
 RESULTADO: humanityDelta: -1 | setFlag: rastro_sangre_teatinos | IR A [BLOQUE 2 / ESCENA 1.2]`,
           requirement: { type: "none" },
