@@ -40,23 +40,44 @@ const reqStableFootRadio = {
   ],
 };
 
+/** Quedaste registrado como agente con vehículo posible: Torre + sin perfil “volátil” en Bruna. */
+const reqAgenteVehiculoTorre = {
+  type: "all" as const,
+  requirements: [
+    { type: "flag" as const, flag: "agente_oficial", equals: true },
+    reqSinVolatileBruna,
+  ],
+};
+
+/**
+ * Briefing de campo de Inés (tras decidir logística). Explica mote de contacto y profundidad bajo la estación;
+ * debe repetirse en cada variante exclusiva de salida porque el motor concatena texto base + variante.
+ */
+const N2_3_BRIEFING_INES_RIBERA = `Inés se detiene bajo el primer farol del sendero. Baja la voz; no mira hacia el palacio.
+
+«Ten cuidado entre aquí y la estación. Hay quien monta resguardo en portales de museo, y hay sombras que no rendirán cuentas a la oficina de la Torre.» Hace una pausa y te mira de frente. «Si ves el Mapocho con vetas violetas en la superficie, no lo toques ni con la suela: es la Hiel filtrándose.»
+
+Te aclara el vocabulario de abajo tierra—no es salón, es cloaca y plano de obra—: **El Choro** es el mote de quien te recibirá en los accesos bajo el lecho; no es nombre de registro, es cómo lo llaman quienes gatean túneles. Ese vástago conoce los **niveles**: mantenimiento del Metro, cámaras de drenaje y rejillas bajo la explanada, más abajo que el andén que ve el mortal, hasta lo que en esta misión se documenta como el Nido.
+
+«Son palabras que el Príncipe dejó caer en la sala y yo te las repito con la mano en el timón, por si el viento se las llevó», murmura. «El Choro. Los niveles. Nada de agua violeta.» Luego se retira entre setos sin volver la cabeza, y el camino queda en tus manos.`;
+
 export const chapter02: SoloChapter = {
   id: "chapter02",
   title:
     "Santiago en Cenizas · CRÓNICA VENTRUE (V3.1) · CAPÍTULO 2: LA CORTE DE LOS ESPEJOS ROTOS (BLOQUE 2/2)",
   description:
-    "Salón Dorado y encargo de Mapocho; salida física por el Parque Forestal y el eje del río hacia la Estación Mapocho (sin teletransporte).",
+    "Salón Dorado y encargo sobre Mapocho; salida por el Parque Forestal y el eje del río hasta la estación, de carne y hueso.",
   startSceneId: "n2_0",
   scenes: [
     {
       id: "n2_0",
       chapterId: "chapter02",
       title: "[ESCENA 2.0]: EL TRAYECTO AL PALACIO",
-      text: `CONTEXTO: Calle Merced, Barrio Lastarria. 03:50 AM. Te desplazas desde el río hacia el Parque Forestal.
+      text: `CONTEXTO: Calle Merced, barrio Lastarria. 03:50 AM. Subes desde el borde del río con Doña Inés; el Parque Forestal queda como promesa de sombra del otro lado de la manzana, pero primero manda el palacio.
 
-NARRACIÓN: El trayecto con Doña Inés es un ejercicio de silencio absoluto. Caminan por las calles empedradas de Lastarria, donde los edificios de estilo europeo parecen observar tu paso con elegancia indiferente. A medida que se acercan al Palacio Bruna, el aire cambia: la humedad del río es sustituida por el aroma a madera encerada y el ozono de los sistemas de seguridad de alta tecnología.
+NARRACIÓN: El trayecto es silencio medido: tacones y suela sobre empedrado que aún guarda olor a lluvia vieja. Las fachadas de aire europeo observan sin prisa; al acercarse a Bruna, la humedad del Mapocho cede al encerado de los pisos, al metal frío de torniquetes y al zumbido grave de cámaras que nadie finge ocultar.
 
-Al llegar a la esquina de Merced con Estados Unidos, el Palacio Bruna se alza como un bastión neoclásico, rodeado de una verja de hierro forjado que parece diseñada tanto para proteger como para encarcelar.`,
+En Merced con Estados Unidos, el Palacio Bruna se alza como un único cuerpo de piedra clara: verja de hierro, jardín recortado y luz que ya no es calle, sino protocolo.`,
       flagAppends: [
         {
           flag: "beso_limpio",
@@ -73,11 +94,11 @@ Al llegar a la esquina de Merced con Estados Unidos, el Palacio Bruna se alza co
           type: "discipline",
           discipline: "presence",
           disciplineTitle: "Presencia",
-          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: Proyectar un aura de autoridad absoluta para que los guardias de la verja retrocedan por instinto.
+          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: [Verja · autoridad]: Adelantarte medio paso y dejar que Presencia abra la verja antes del anillo del Príncipe.
 
-PUENTE: Te adelantas un paso a Inés antes de llegar a la puerta. No esperas a ser anunciado; dejas que tu presencia, cargada del peso de tu linaje, golpee a los centinelas de la Torre. Ellos, vástagos de bajo rango, sienten un vacío en el estómago y bajan la vista, abriendo el paso de inmediato.
+PUENTE: No esperas anuncio: tu campo empuja a los centinelas de bajo rango; sienten hueco en el estómago y apartan la mirada sin orden verbal. Inés te tolera el gesto sin corregirlo—anota el tiro.
 
-CONSECUENCIA: Entras al recinto no como un invitado, sino como un dueño. Inés anota tu demostración de poder en su evaluación mental.
+CONSECUENCIA: Entras como quien ya ocupa espacio, no como súplica. De aquí al salón, tu nombre viaja con una etiqueta distinta.
 
 RESULTADO: willpowerDelta: +1 | setFlag: entrada_soberana | IR A [ESCENA 2.1]`,
           requirement: { type: "discipline", discipline: "presence", minLevel: 1 },
@@ -88,11 +109,11 @@ RESULTADO: willpowerDelta: +1 | setFlag: entrada_soberana | IR A [ESCENA 2.1]`,
           id: "n2_0_perspicacia",
           type: "skill",
           skill: "perspicacia",
-          text: `OPCIÓN B [HABILIDAD: PERSPICACIA]: Observar el despliegue de seguridad para identificar las facciones presentes.
+          text: `OPCIÓN B [HABILIDAD: PERSPICACIA]: [Verja · lectura]: Recorrer con la mirada balcones, setos y ritmo de radios antes de cruzar el arco.
 
-PUENTE: Mientras caminas, escaneas los balcones y las sombras del jardín. Notas que, además de los guardias de la Camarilla, hay hombres de traje moderno con audífonos militares: seguridad privada mortal. Comprendes que el Príncipe no confía solo en sus hermanos de sangre.
+PUENTE: Bajo la lámpara de calle distingues capas: centinelas de la Camarilla, trajes civiles con cable en la oreja—mercenarios mortales—y un flanco oeste donde el muro y una salida de servicio dejan más sombra que cámara.
 
-CONSECUENCIA: Detectas una vulnerabilidad en el flanco oeste del palacio. Esta información será útil si alguna vez necesitas salir sin permiso.
+CONSECUENCIA: Guardas un mapa mental de huida; si la noche tuerce, ya sabes por dónde no pedir permiso.
 
 RESULTADO: setFlag: vulnerabilidad_bruna_detectada | IR A [ESCENA 2.1]`,
           requirement: { type: "skill", skill: "perspicacia", minLevel: 1 },
@@ -103,11 +124,11 @@ RESULTADO: setFlag: vulnerabilidad_bruna_detectada | IR A [ESCENA 2.1]`,
           id: "n2_0_etiqueta",
           type: "skill",
           skill: "etiqueta",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - ETIQUETA]: Mantener el protocolo de invitado y dejar que Inés valide tu acceso.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - ETIQUETA]: [Verja · protocolo]: Detenerte un paso atrás del arco y dejar que el anillo del Príncipe abra antes que tu voz.
 
-PUENTE: Te detienes frente a la verja, permitiendo que Inés muestre un anillo con el sello del Príncipe. Mantienes una postura impecable, las manos tras la espalda, demostrando que conoces tu lugar en la jerarquía y que no eres un peligro para la paz de la Corte.
+PUENTE: Manos a la espalda, barbilla nivelada; los ghouls de entrada leen sumisión sin humillación. Inés sella el ritual con un gesto mínimo del sello.
 
-CONSECUENCIA: Te clasifican como un «sujeto estable». Ganas la confianza inicial de los ghouls de seguridad.
+CONSECUENCIA: Portería te archivo como «estable»: no confianza ciega, pero paso sin fricción hacia el vestíbulo.
 
 RESULTADO: setFlag: etiqueta_validada | IR A [ESCENA 2.1]`,
           requirement: { type: "skill", skill: "etiqueta", minLevel: 1 },
@@ -117,11 +138,11 @@ RESULTADO: setFlag: etiqueta_validada | IR A [ESCENA 2.1]`,
         {
           id: "n2_0_estandar",
           type: "dialogue",
-          text: `OPCIÓN C — sin etiqueta entrenada: Detenerte en la verja y dejar que Inés abra el protocolo mientras tú mantienes compostura mínima.
+          text: `OPCIÓN C — sin etiqueta entrenada: [Verja · compostura mínima]: Esperar el anillo de Inés sin coreografía de salón, sólo presencia sobria.
 
-PUENTE: No exhibes virtuosismo de salón, pero tampoco provocas al personal. Quieres pasar sin humillar a nadie ni humillarte.
+PUENTE: No finjas linaje que no dominas; tampoco retes con la mirada. El arco se abre por el sello ajeno, no por tu título.
 
-CONSECUENCIA: Entrada aceptada sin la etiqueta fina de la opción previa; sin bandera extra de confianza ghoul.
+CONSECUENCIA: Entras sin el sello de «sujeto estable»; nadie te festeja, pero el umbral cede.
 
 RESULTADO: (Avance estándar) | IR A [ESCENA 2.1]`,
           requirement: { type: "none" },
@@ -134,11 +155,11 @@ RESULTADO: (Avance estándar) | IR A [ESCENA 2.1]`,
         {
           id: "n2_0_insolencia",
           type: "dialogue",
-          text: `OPCIÓN D [RIESGO - INSTINTO]: Si tienes rastro_fuerza_bruta, mostrarte insolente ante la seguridad para medir su reacción.
+          text: `OPCIÓN D [RIESGO - INSTINTO]: [Verja · provocación]: Con el rastro de fuerza bruta aún pegado al mapa, golpear la mesa del detector y medir hasta dónde aguantan antes del anillo.
 
-PUENTE: Al pasar por el detector de metales, golpeas la mesa de los guardias con desdén. «¿Realmente creen que estos juguetes pueden detener lo que llevo en la sangre?», preguntas con una sonrisa que muestra apenas un destello de colmillo.
+PUENTE: «¿De veras creen que esto frena lo que traigo en sangre?», con una sonrisa que asoma colmillo sin ofrecer mordida. Los uniformes tensan manos; alguien ya escribe «volátil» sin pedirte nombre.
 
-CONSECUENCIA: Provocas una tensión inmediata. Los guardias anotan tu perfil como «volátil» y la seguridad se duplica durante tu audiencia.
+CONSECUENCIA: La audiencia será bajo doble luz: te observan como ejecutor, no como invitado.
 
 RESULTADO: humanityDelta: -1 | setFlag: perfil_peligroso | IR A [ESCENA 2.1]`,
           requirement: { type: "flag", flag: "rastro_fuerza_bruta", equals: true },
@@ -148,11 +169,11 @@ RESULTADO: humanityDelta: -1 | setFlag: perfil_peligroso | IR A [ESCENA 2.1]`,
         {
           id: "n2_0_famenatural",
           type: "dialogue",
-          text: `OPCIÓN E [RIESGO - INSTINTO]: Si tu primera caza fue un arrebato salvaje, llegar a la verja con el rastro del depredador aún en los ojos.
+          text: `OPCIÓN E [RIESGO - INSTINTO]: [Verja · hambre a flor]: Llegar con la primera caza aún reciente en el cuerpo—paso firme, mirada demasiado quieta.
 
-PUENTE: No finges compostura de salón: mantienes el paso firme y la mirada demasiado quieta. Los ghouls de entrada intercambian una seña; no les cabe duda de que eres «animal» hasta que Inés apriete el protocolo.
+PUENTE: Los de portería intercambian seña; leen depredador antes que etiqueta. Inés no discute en voz alta: aprieta el protocolo para que no te disparen de envidia.
 
-CONSECUENCIA: La Torre te cataloga como perfil volátil por hambre recién domada, no por insolencia declamada.
+CONSECUENCIA: Tu ficha huele a bestia contenida, no a bravuconada; de aquí en adelante la Torre te vigila distinto.
 
 RESULTADO: setFlag: reputacion_animal | IR A [ESCENA 2.1]`,
           requirement: { type: "flag", flag: "caza_violenta", equals: true },
@@ -166,22 +187,22 @@ RESULTADO: setFlag: reputacion_animal | IR A [ESCENA 2.1]`,
       id: "n2_1",
       chapterId: "chapter02",
       title: "[ESCENA 2.1]: EL VESTÍBULO DE LOS ESPEJOS",
-      text: `CONTEXTO: Interior del Palacio Bruna. El gran vestíbulo de entrada, rodeado de espejos dorados y escalinatas de mármol.
+      text: `CONTEXTO: Interior del Palacio Bruna. Vestíbulo alto, espejos enmarcados en oro mate y una escalinata de mármol que sube como promesa de juicio.
 
-NARRACIÓN: Al cruzar el umbral, el mundo exterior desaparece. El ruido de Santiago es sustituido por el tic-tac de un reloj de pie y el murmullo lejano de música clásica. Los espejos de las paredes reflejan tu imagen, pero hay algo extraño: la iluminación está diseñada para que tu palidez no parezca una enfermedad, sino un atributo de nobleza.
+NARRACIÓN: Al cruzar el umbral, la ciudad queda detrás de vidrios gruesos. Sólo quedan el tic-tac de un reloj de pie y una música clásica baja, como etiqueta sonora. Los espejos devuelven tu silueta ya lavada de mortalidad común; la luz lateral trabaja para que la palidez parezca porte, no enfermedad.
 
-Inés se detiene frente a un espejo de cuerpo entero para ajustar su pañuelo. «El Príncipe está en el Salón Dorado», dice sin mirarte. «Recuerda: aquí las paredes escuchan y los espejos guardan lo que reflejan. No mientas, a menos que tu mentira sea más bella que la verdad».`,
+Inés se detiene frente a un espejo de cuerpo entero y alisa un pliegue del pañuelo. «El Príncipe está en el Salón Dorado», dice sin volverse. «Aquí las paredes escuchan y los espejos archivan lo que reflejan. No mientas, salvo que tu mentira sea más presentable que la verdad».`,
       options: [
         {
           id: "n2_1_auspex",
           type: "discipline",
           discipline: "auspex",
           disciplineTitle: "Auspex",
-          text: `OPCIÓN A [DISCIPLINA: AUSPEX]: Agudizar tus oídos para captar las conversaciones de las habitaciones contiguas.
+          text: `OPCIÓN A [DISCIPLINA: AUSPEX]: [Espejos · oído]: Afilar Auspex y escuchar lo que el comedor cree es privado.
 
-PUENTE: Cierras los ojos un segundo. El murmullo se vuelve nítido. Escuchas a dos vástagos en el comedor discutiendo sobre «la caída de la presión en la Estación Mapocho» y «el error del Traje Gris».
+PUENTE: Cierras un instante los párpados; el murmullo se corta en hilos. Dos vástagos comparan presión en la Estación Mapocho y un «Traje Gris» que no cerró bien la cuenta.
 
-CONSECUENCIA: Obtienes información preliminar sobre la misión antes de que el Príncipe te hable. Tienes ventaja en el diálogo posterior.
+CONSECUENCIA: Entras al salón sabiendo qué acicate ya está en el aire; el Príncipe tendrá menos sitio para sorprenderte.
 
 RESULTADO: setFlag: oido_conversacion_mapocho | IR A [BLOQUE 2]`,
           requirement: { type: "discipline", discipline: "auspex", minLevel: 1 },
@@ -192,11 +213,11 @@ RESULTADO: setFlag: oido_conversacion_mapocho | IR A [BLOQUE 2]`,
           id: "n2_1_etiqueta",
           type: "skill",
           skill: "etiqueta",
-          text: `OPCIÓN B [HABILIDAD: ETIQUETA]: Analizar los retratos de las paredes para entender el linaje de la Corte actual.
+          text: `OPCIÓN B [HABILIDAD: ETIQUETA]: [Espejos · linaje enmarcado]: Leer la galería como manifiesto—quién cuelga, quién falta, quién fue borrado con cuidado.
 
-PUENTE: Observas las pinturas. Reconoces a antiguos gobernantes de la época colonial mezclados con figuras modernas. Notas un espacio vacío en la pared principal, donde el cuadro parece haber sido removido recientemente.
+PUENTE: Coronas coloniales mezcladas con títulos de salón más recientes; un hueco oval en la pared principal, polvo fresco en el zócalo.
 
-CONSECUENCIA: Deduces que ha habido una purga reciente en la Corte. El Príncipe está paranoico.
+CONSECUENCIA: El palacio ya cumplió una purga de retratos; quien gobierna mira el retrato vacío con la misma mecánica con la que te mirará a ti.
 
 RESULTADO: setFlag: sospecha_purga_interna | IR A [BLOQUE 2]`,
           requirement: { type: "skill", skill: "etiqueta", minLevel: 1 },
@@ -206,11 +227,11 @@ RESULTADO: setFlag: sospecha_purga_interna | IR A [BLOQUE 2]`,
         {
           id: "n2_1_dialogo",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Preguntar a Inés sobre el temperamento actual del Príncipe.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: [Espejos · tino]: Preguntar sin alzar la voz si hoy el soberano quiere hechos o teatro.
 
-PUENTE: «¿Está de humor para resultados o para excusas, Inés?», preguntas con frialdad. Ella se gira y te mira fijamente: «Está de humor para lealtad, algo que escasea tanto como la sangre pura en estos días».
+PUENTE: «¿Resultados o excusas, Inés?». Ella no sonríe: «Hoy quiere lealtad con nombre; lo demás escasea más que sangre limpia».
 
-CONSECUENCIA: Inés te da una pista sobre cómo comportarte: la sumisión es mejor que la brillantez esta noche.
+CONSECUENCIA: Llevas en la oreja el tono que el salón premia: obediencia visible antes que ingenio.
 
 RESULTADO: (Avance estándar) | IR A [BLOQUE 2]`,
           requirement: { type: "none" },
@@ -219,11 +240,11 @@ RESULTADO: (Avance estándar) | IR A [BLOQUE 2]`,
         {
           id: "n2_1_mancha",
           type: "dialogue",
-          text: `OPCIÓN D [RIESGO - INSTINTO]: Si tienes asesino_del_mapocho, limpiar una mancha de sangre residual frente a ella.
+          text: `OPCIÓN D [RIESGO - INSTINTO]: [Espejos · huella de Mapocho]: Si ya dejaste muerte bajo la estación, limpiar frente a ella la gota que el pañuelo no alcanzó.
 
-PUENTE: Notas una gota roja en tu puño que el pañuelo no alcanzó a quitar. La limpias lentamente mientras la miras a través del espejo, sin ocultar tu satisfacción. El mensaje es claro: eres eficiente, pero letal.
+PUENTE: El rojo en el nudillo late bajo la luz de los espejos; lo borras con calma, mirándola en el cristal sin disimular satisfacción.
 
-CONSECUENCIA: Inés siente una punzada de duda. Eres un arma que podría cortarle la mano a quien la empuñe.
+CONSECUENCIA: Inés parpadea: te cataloga como herramienta afilada… y como quien podría volverse filo contra la mano que lo empuña.
 
 RESULTADO: willpowerDelta: -1 | setFlag: advertencia_a_ines | IR A [BLOQUE 2]`,
           requirement: { type: "flag", flag: "asesino_del_mapocho", equals: true },
@@ -236,22 +257,22 @@ RESULTADO: willpowerDelta: -1 | setFlag: advertencia_a_ines | IR A [BLOQUE 2]`,
       id: "n2_2",
       chapterId: "chapter02",
       title: "[ESCENA 2.2]: EL SALÓN DORADO",
-      text: `CONTEXTO: Gran salón de audiencias. Ventanales que dan al Parque Forestal. El Príncipe de Santiago está de pie junto a un piano de cola.
+      text: `CONTEXTO: Gran salón de audiencias. Ventanales altos al Parque Forestal; el Príncipe de Santiago, de pie junto a un piano de cola cerrado como tumba de marfil.
 
-NARRACIÓN: Las puertas se abren con un suspiro de madera pesada. El Príncipe no te recibe en un trono; está de espaldas, observando las luces de la ciudad que titilan más allá del follaje del parque. La presión en la habitación es tal que parece que el oxígeno ha sido succionado. Es la majestad de un antiguo Ventrue.
+NARRACIÓN: Las hojas de la puerta pesan; el aire del salón se ordena solo para él. No hay trono: hay luz tenue, alfombra que absuelve el paso y un hombre de espaldas contando luces más allá del follaje. La habitación aprieta el pecho como si filtrara el oxígeno a placer—es el hábito de quien acostumbró a la ciudad a arrodillarse antes que tú nacieras de nuevo.
 
-«Santiago es un organismo que requiere equilibrio», dice sin girarse. «Pero algo está pudriendo sus cimientos. Hay un nexo de infección en la Estación Mapocho que amenaza con romper la Mascarada y contaminar nuestra sangre. Tú irás allí. Encontrarás el origen de la Hiel y lo erradicarás». Sobre una mesa de mármol, descansa un sobre lacrado y una daga de plata grabada con runas.`,
+«Santiago es un cuerpo que exige equilibrio», dice sin volverse. «Y bajo Mapocho hay un nexo de infección que ya mancha la Mascarada y la sangre de los que juramos esta casa. Irás a la estación. Hallarás el origen de la Hiel y lo cerrarás». Sobre el mármol: un sobre lacrado y una daga de plata con runas que hieren la mirada.`,
       options: [
         {
           id: "n2_2_dominate",
           type: "discipline",
           discipline: "dominate",
           disciplineTitle: "Dominación",
-          text: `OPCIÓN A [DISCIPLINA: DOMINACIÓN]: Sostener la mirada del Príncipe cuando se gire, midiendo tu voluntad contra la suya.
+          text: `OPCIÓN A [DISCIPLINA: DOMINACIÓN]: [Salón · desafío quieto]: Mantener los ojos arriba cuando él se gire; no ceder primero.
 
-PUENTE: El Príncipe se vuelve; sus ojos son pozos de autoridad. No bajas la vista. El aire vibra en un duelo silencioso que se estira en segundos que parecen horas. Finalmente asiente levemente. «Tienes la espina dorsal que le falta a mis otros peones. No me falles».
+PUENTE: Su mirada pesa como mano en el cuello; el salón entero calla. Cuando el silencio va a romperse él asiente una fracción: «Tienes espinazo. No me falles».
 
-CONSECUENCIA: Ganas un respeto peligroso. El Príncipe te ve como activo de alto nivel y, a la vez, como posible amenaza a largo plazo.
+CONSECUENCIA: Te ganas un respeto que se parece a miedo: útil esta noche, peligroso mañana.
 
 RESULTADO: willpowerDelta: +1 | setFlag: respeto_principe | IR A [ESCENA 2.3]`,
           requirement: { type: "discipline", discipline: "dominate", minLevel: 1 },
@@ -262,11 +283,11 @@ RESULTADO: willpowerDelta: +1 | setFlag: respeto_principe | IR A [ESCENA 2.3]`,
           id: "n2_2_perspicacia",
           type: "skill",
           skill: "perspicacia",
-          text: `OPCIÓN B [HABILIDAD: PERSPICACIA]: Analizar el sobre y la daga antes de aceptarlos para detectar segundas intenciones.
+          text: `OPCIÓN B [HABILIDAD: PERSPICACIA]: [Salón · evidencia]: Fijarte en lacre, filo y huellas antes de tocar lo que él ofrece.
 
-PUENTE: Te acercas a la mesa con parsimonia. El lacre del sobre delata una mancha mínima de aceite púrpura. La infección ya ha rozado el Palacio, o el soberano ha tocado el contagio con las manos antes de enviarte.
+PUENTE: El sobre trae un roce violeta bajo el sello; la daga, aceite que no huele a limpieza de armario, sino a lo mismo que mancha el río.
 
-CONSECUENCIA: Ventaja informativa; la misión huele a encubrimiento además de saneamiento.
+CONSECUENCIA: Entiendes que el encargo no es solo «ir y matar suciedad»: alguien ya cargó la infección hasta esta mesa.
 
 RESULTADO: setFlag: sospecha_principe | IR A [ESCENA 2.3]`,
           requirement: { type: "skill", skill: "perspicacia", minLevel: 1 },
@@ -276,11 +297,11 @@ RESULTADO: setFlag: sospecha_principe | IR A [ESCENA 2.3]`,
         {
           id: "n2_2_dialogo_oficial",
           type: "dialogue",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: Aceptar el encargo con promesa de eficiencia y lealtad.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - DIÁLOGO]: [Salón · juramento cortés]: Aceptar con la fórmula que el palacio entiende—orden, lealtad, resultado.
 
-PUENTE: «Vuestro deseo es el orden de esta ciudad. Consideradlo hecho», respondes con la elegancia de tu casta. Tomas sobre y daga; el frío de la plata se graba en palma.
+PUENTE: «Lo que esta ciudad necesita como orden, lo ejecuto», con voz baja y mano firme. Cierras los dedos sobre lacre y plata; el metal enfría la palma como recordatorio.
 
-CONSECUENCIA: Quedas registrado como agente formal de la Corte con logística inmediata tras acuerdo.
+CONSECUENCIA: La Torre te registra como agente: placa, protocolo de garaje si tu ficha lo tolera, margen de calle que un invitado no recibe.
 
 RESULTADO: setFlag: agente_oficial | IR A [ESCENA 2.3]`,
           requirement: { type: "none" },
@@ -290,11 +311,11 @@ RESULTADO: setFlag: agente_oficial | IR A [ESCENA 2.3]`,
         {
           id: "n2_2_traje_gris",
           type: "dialogue",
-          text: `OPCIÓN D [RIESGO - INSTINTO]: Si tienes info_traje_gris, mencionar al vigilante de Teatinos para desestabilizarlo.
+          text: `OPCIÓN D [RIESGO - INSTINTO]: [Salón · nombre en Teatinos]: Sacar a colación al de traje gris que apareció antes que la fila oficial—si ya lo viste en la calle.
 
-PUENTE: «Un hombre de traje gris me dio la bienvenida antes que vuestra mano derecha, Príncipe. ¿Debo asumir que él también habla en vuestro nombre?», preguntas con un tono de sospecha que roza la insolencia.
+PUENTE: «Antes de esta sala, un hombre de gris me saludó en Teatinos. ¿Habla también por vos, Majestad, o por otra mesa?». La pregunta no alza voz; sí mueve algo bajo la alfombra.
 
-CONSECUENCIA: El Príncipe palidece y las luces del salón parpadean. Te das cuenta de que el «Sastre» es una presencia que el Príncipe no controla.
+CONSECUENCIA: El soberano contrae el gesto; las luces titilan. Entiendes que el «Sastre» es nudo que el Príncipe no puede desatar en voz alta.
 
 RESULTADO: willpowerDelta: -1 | setFlag: secreto_del_sastre | IR A [ESCENA 2.3]`,
           requirement: {
@@ -312,23 +333,33 @@ RESULTADO: willpowerDelta: -1 | setFlag: secreto_del_sastre | IR A [ESCENA 2.3]`
       title: "[ESCENA 2.3]: LA SALIDA AL PARQUE FORESTAL",
       text: `CONTEXTO: Jardines traseros del Palacio Bruna. 04:15 AM.
 
-NARRACIÓN: Sales del salón con el sobre en el bolsillo. Inés te guía por un pasillo lateral que desemboca en el jardín trasero; el golpe del aire frío del Parque Forestal viene de frente con olor a humedad y tierra pisada.
+NARRACIÓN: Sales del salón con el sobre en el bolsillo. Inés te guía por un pasillo lateral que desemboca en el jardín trasero; el golpe del aire frío del Parque Forestal viene de frente con olor a humedad y tierra pisada. Más allá de los setos, las luces de la ciudad perforan la bruma como agujas.
 
-El trayecto a la Estación Mapocho atraviesa el parque y luego sigue el eje del río hacia poniente.
+Hasta la Estación Mapocho el camino natural es éste: atravesar el parque y seguir el eje del río hacia poniente, ganando cada manzana sobre la negrura aceitosa del Mapocho. Nadie te va a depositar en la puerta: hay que elegir cómo moverse antes de que el tiempo se encoja.`,
+      contextVariantByState: [
+        {
+          requirement: reqAgenteVehiculoTorre,
+          text: `En el garaje lateral ya espera un sedán oscuro matrícula de la Torre. Inés te entrega el manojo: «Llévalo al cordón frente al centro cultural y al paralelo del río; cuando termine la noche devuelves llaves al garaje o me las devuelves a mí y yo cierro la cuenta». El motor enciende bajo, casi manso.
 
-Si la Corte te registró como agente oficial, te entrega las llaves de un sedán oscuro («llévalo hasta el cordón urbano frente al centro cultural; después te las cobro»). Si no, marca con el dedo una senda entre los árboles y te recuerda el encargo verbal del Príncipe.
+${N2_3_BRIEFING_INES_RIBERA}`,
+        },
+        {
+          requirement: { type: "not", requirement: reqAgenteVehiculoTorre },
+          text: `Esta noche no hay coche a tu nombre en el protocolo del palacio: o no firmaste como agente con placa, o tu evaluación en portería cerró el garaje. Inés no dramatiza: marca con el dedo una línea entre los árboles hacia el cordón del parque y el rumor del río, como cerrar un mapa mental del encargo que acabas de aceptar bajo el techo del Príncipe.
 
-«Ten cuidado en el trayecto», dice. «Entre aquí y la estación hay quien okupa portales y hay sombras que no responden a la Torre. Si ves el agua del Mapocho con brillo violeta, no la toques». Replica el nombre de «El Choro» y los niveles bajo tierra antes de perderte entre los setos.`,
+${N2_3_BRIEFING_INES_RIBERA}`,
+        },
+      ],
       options: [
         {
           id: "n2_3_parque_volatile_callejeo",
           type: "skill",
           skill: "callejeo",
-          text: `OPCIÓN A [HABILIDAD: CALLEJEO — SALIDA CASTIGADA]: Internarte en las sendas del parque pese al perfil que te ha cerrado la Corte en Bruna.
+          text: `[Parque · perfil marcado]: Internarte por el Forestal hacia el río, leyendo esquina y sombra aunque en Bruna te hayan etiquetado como riesgo.
 
-PUENTE: Los plátanos orientales absorben tus pasos. Cruzas rozando los museos, donde sintecho descolgados y ghouls hambrientos hacen de centinelas improvisados. Nadie grita —pero sí te siguen hasta el cordón antes de perderte tras la Alameda—.
+PUENTE: Plátanos que amortiguan el paso; frente a museos, miradas de quienes pernoctan en portales y hambre de ghoul disfrazada de guardia improvisado. Nadie grita; algunos te siguen hasta el cordón y pierdes su línea en la Alameda.
 
-CONSECUENCIA: Llegada rápida al entorno Mapocho bajo vigilancia urbana brutal; nadie blindó tu espalda para la vuelta.
+CONSECUENCIA: Llegas al borde de Mapocho con tiempo a favor, pero la ciudad te tuvo en foco: cuando salgas del subsuelo, no habrá comitiva del palacio que tape tu retirada.
 
 RESULTADO: setFlag: ruta_parque_interior | setFlag: cap3_salida_a_pie | setFlag: mision_castigo | IR A [2.E · Cierre]`,
           requirement: {
@@ -346,11 +377,11 @@ RESULTADO: setFlag: ruta_parque_interior | setFlag: cap3_salida_a_pie | setFlag:
         {
           id: "n2_3_parque_volatile_basico",
           type: "dialogue",
-          text: `OPCIÓN A [RIESGO · CAMINO CASTIGADO]: Cruzar los jardines hacia los senderos públicos sin oficio corto suficiente, contando sólo con el mapa verbal de Inés.
+          text: `[Parque · sin callejero]: Seguir la línea verde que Inés te dibujó con el dedo, aun sin instinto urbano que afine cada cruce.
 
-PUENTE: Te lanzas igual hacia los callejones verdes pero sin el instinto corto para evitar zonas densas frente al Bellas Artes y el centro cultural. Una patrulla y un grupo improvisado miden tu silueta antes de verte encaminar entre humo de fin de noches cerradas —te dejan rodar porque no eres objetivo público esta hora… todavía.
+PUENTE: Follaje que te estrecha; frente al Bellas Artes y al centro cultural aparecen vacíos donde no calcular distancia. Una patrulla y un grupo en la vereda te miden en silencio; te dejan seguir porque aún no eres el titular de la noche.
 
-CONSECUENCIA: Sangre contenida pero pie forzado: Bruna registró quién eras al salir como quien tropieza antes de llegar como quien ejecuta órdenes.
+CONSECUENCIA: Sigues entero y en hora, pero quien te observó desde arriba anotó dudas donde otra noche anotarían autoridad.
 
 RESULTADO: setFlag: ruta_parque_interior | setFlag: cap3_salida_a_pie | setFlag: mision_castigo | IR A [2.E · Cierre]`,
           requirement: reqPerfilVolatileBruna,
@@ -367,11 +398,11 @@ RESULTADO: setFlag: ruta_parque_interior | setFlag: cap3_salida_a_pie | setFlag:
           id: "n2_3_parque_estable_radio",
           type: "skill",
           skill: "callejeo",
-          text: `OPCIÓN A [HABILIDAD: CALLEJEO — RESPETO DEL PRÍNCIP]: Usar senderos ocultos bajo cobertura nocturna y mantener abierto el canal con Inés cuando el territorio empiece a oler fatal.
+          text: `[Parque · Inés en el canal]: Atravesar el Forestal por senderos de sombra con el auricular cifrado: ella cruza contigo las sirenas y el olor a quemado.
 
-PUENTE: La sombra de los plátanos te salva tres cruces ante el reflejo de sirenas pegadas a la vereda norte de la Alameda. En la penumbra, un intercomunicador cifrado vibra tibio antes de llegar al río; una voz seca murmura un código de cortesía y te recuerda no detenerte junto al agua.
+PUENTE: Los plátanos amortiguan tres cruces feos al norte de la Alameda; el intercomunicador vibra tibio y su voz seca te ordena no frenar junto al agua violeta.
 
-CONSECUENCIA: Ritmo rápido y red de soporte táctico —pero tus pasos igual dejan marca en quien estudia rutas paralelas.
+CONSECUENCIA: Llegas rápido con mano remota en el cuello del trayecto; aun así dejas firma en quien mapea la ciudad en paralelo a la Torre.
 
 RESULTADO: setFlag: ruta_parque_interior | setFlag: cap3_radio_ines | IR A [2.E · Cierre]`,
           requirement: {
@@ -389,11 +420,11 @@ RESULTADO: setFlag: ruta_parque_interior | setFlag: cap3_radio_ines | IR A [2.E 
           id: "n2_3_parque_estable_std_callejeo",
           type: "skill",
           skill: "callejeo",
-          text: `OPCIÓN A [HABILIDAD: CALLEJEO]: Atravesar el Parque Forestal por dentro para esquivar coches-policias cerrando la línea norte de Lastarria hacia Santa Rosa.
+          text: `[Parque · pie estable + callejero]: Cortar el Forestal por dentro, esquivando el cordón entre Lastarria y el eje del río hacia Santa Rosa.
 
-PUENTE: Memorizaste esquinas donde las sombras de los árboles se tragan farolas; cruzas el área museos sintiendo párpados vigilantes tras los portones. Una escaramuza amortiguada contra sintecho endurece tu mandíbula antes de aparecer ante el rumor del río aceitoso.
+PUENTE: Follaje que traga farolas; museos que te miran por los portones. Una escaramuza breve con quien duerme en la acera te endurece la mandíbula antes del olor aceitoso del Mapocho.
 
-CONSECUENCIA: Llegaste sin logística militar visible; los centinelas de la ciudad notaron moverse algo… pero jamás ubicaron marca de Bruna hasta el último segundo.
+CONSECUENCIA: Apareces junto al río sin motor de garaje; el último tramo no anuncia comitiva, sólo tu silueta cansada y puntual.
 
 RESULTADO: setFlag: ruta_parque_interior | setFlag: cap3_salida_estandar | IR A [2.E · Cierre]`,
           requirement: {
@@ -410,11 +441,11 @@ RESULTADO: setFlag: ruta_parque_interior | setFlag: cap3_salida_estandar | IR A 
         {
           id: "n2_3_parque_estable_radio_incauto",
           type: "dialogue",
-          text: `OPCIÓN A [RIESGO · PARQUE INCÓLUME CON RADIO DE INÉS]: Filar el mismo recorrido lento que quien lleva alas sin doblar bien —pero tienes auricular cifrado y el tiempo justo antes de llegar ribera abajo.
+          text: `[Parque · Inés, sin callejero]: Empujar la misma ruta verde a paso forzado, con auricular y voz de Inés corrigiendo cruces.
 
-PUENTE: Te metes entre parterres y escaleras improvisadas oyendo chirridos de sirenas amortiguadas. Te encorvas bajo laureles y subes ante el Mapocho con polvo en gabardinas; pulsas canal de Inés: «No me arrastres violeta antes de estar en la explanada».
+PUENTE: Parterres, escaleras improvisadas, sirenas amortiguadas. Ella aprieta en el canal: «No llegues a la explanada con violeta en la suela».
 
-CONSECUENCIA: Ritmo menor que el verdadero especialista pero contacto fresco con la Cortesía en caliente.
+CONSECUENCIA: Los giros te salen toscos, pero no bajas solo a la ribera: cada esquina la negocias con su latido en la oreja.
 
 RESULTADO: setFlag: ruta_parque_interior | setFlag: cap3_radio_ines | IR A [2.E · Cierre]`,
           requirement: reqStableFootRadio,
@@ -429,11 +460,11 @@ RESULTADO: setFlag: ruta_parque_interior | setFlag: cap3_radio_ines | IR A [2.E 
         {
           id: "n2_3_parque_estable_std_incauto",
           type: "dialogue",
-          text: `OPCIÓN A [RIESGO · PARQUE ABIERTO]: Atravesar el parque de frente porque no llevas suficientes puntos urbanos pero Bruna necesita ejecutar igual.
+          text: `[Parque · expuesto]: Sacar pecho por sendas abiertas: el encargo no espera a que esta noche aprendas callejero.
 
-PUENTE: Las sendas públicas exponen tus hombros; cruzas jardín y vereda norte de museos sintiendo párpados y olor a marihuana sintética. El río apesta más cerca porque la depresión urbana también es mapa.
+PUENTE: Hombros al aire; jardín y vereda de museos con miradas, humo y párpados que suman tu nombre al aire sin saberlo.
 
-CONSECUENCIA: Sobreviven pies y reputación porque la Orden cuenta contigo llegando —pero tus pasos están contados igual que los de otros peones antes.
+CONSECUENCIA: Llegas al cordón del río con lo mínimo; la Torre no te pidió elegancia en sombra, sólo que cumplas antes del alba.
 
 RESULTADO: setFlag: ruta_parque_interior | setFlag: cap3_salida_estandar | IR A [2.E · Cierre]`,
           requirement: reqStableFootStd,
@@ -449,11 +480,11 @@ RESULTADO: setFlag: ruta_parque_interior | setFlag: cap3_salida_estandar | IR A 
           id: "n2_3_costanera_conducir",
           type: "skill",
           skill: "conducir",
-          text: `OPCIÓN B [HABILIDAD: CONDUCIR]: Tomar Costanera Norte con el blindado porque la Corte abrió techo institucional y quieres no perder equipo.
+          text: `[Costanera · sedán del garaje]: Subir por Costanera Norte con el coche que la Torre dejó en llave: paralelar el río hasta el cordón con equipo a bordo.
 
-PUENTE: El sedán rasga últimas sombras Lastarria; subes contra el flujo antes de paralelismo río donde reflejos aceitosos muestran anuncios fantasmas tras agua violeta apenas latente antes del amanecer.
+PUENTE: Lastarria queda atrás en sombra; al costado, el Mapocho devuelve luces de neón como aceite, con violeta apenas latente bajo la cresta.
 
-CONSECUENCIA: Ritmo rápido y equipo extra físico cargado dentro del espacio secreto tras asiento —tu llegada anunció presencia porque motores institucionales no son fantasmas bien hechos.
+CONSECUENCIA: Ganas minutos y manos libres: el sedán del palacio delata autorización real, y lo que Inés mandó guardar sigue en el hueco bajo el asiento, seco.
 
 RESULTADO: setFlag: llegada_vehiculo_corte | setFlag: cap3_sedan_blindado | IR A [2.E · Cierre]`,
           requirement: {
@@ -474,11 +505,11 @@ RESULTADO: setFlag: llegada_vehiculo_corte | setFlag: cap3_sedan_blindado | IR A
         {
           id: "n2_3_costanera_basico",
           type: "dialogue",
-          text: `OPCIÓN B [ACCIÓN — CONDUCIR A OJO]: Pisar igual la Costanera con el sedán oficial aun cuando la ficha marca pocos puntos técnicos: el orden de Santiago no perdona llegar tarde antes que mal.
+          text: `[Costanera · sedán, conductor forzado]: Subir igual al cordón en el coche del garaje: el encargo no deja opción de quedarte quieto.
 
-PUENTE: El volante rechina y el mapa digital de dashboard no coopera igual que tus instintos. Aun así paralelas el cordón norte del Mapocho con faros amortiguados: el violeta apenas roza tus retinas como amenaza contenida dentro del cauce.
+PUENTE: Volante duro; el GPS del tablero pelea contigo. Aun así paralelas el Mapocho y el violeta del cauce te roza el rabillo del ojo sin que puedas detenerte a estudiarlo.
 
-CONSECUENCIA: Ritmo menor que verdadero especialista institucional —pero logística igual cierra ciclo porque Bruna marcó ese coche esperando tus llaves después.
+CONSECUENCIA: Trayecto tosco pero cumplido: devuelves llaves y llegas al perímetro con la orden vigente, sin la suavidad de quien domina la mecánica.
 
 RESULTADO: setFlag: llegada_vehiculo_corte | setFlag: cap3_sedan_blindado | IR A [2.E · Cierre]`,
           requirement: {
@@ -499,11 +530,11 @@ RESULTADO: setFlag: llegada_vehiculo_corte | setFlag: cap3_sedan_blindado | IR A
         {
           id: "n2_3_ribera_volatile",
           type: "dialogue",
-          text: `OPCIÓN C [RIESGO - INSTINTO]: Si oíste en Bruna algo sobre Mapocho y la Hiel, detenerte un instante ante la ribera antes de colarte en la estación —incluso con la salida relegada que te marcó la Corte.
+          text: `[Ribera · pie castigado]: Pararse un segundo en la baranda del Mapocho: ya oíste en Bruna la presión bajo la estación y vas sin sedán.
 
-PUENTE: Te apoyas en la baranda de cemento junto al acceso lateral. El cauce trae sedimentos que forman vetas violetas; no parece sólo contaminación industrial, es orgánico y casi parece latir.
+PUENTE: Cemento frío bajo las manos; el cauce trae vetas violetas que laten más allá de basura y neón reflejado.
 
-CONSECUENCIA: Observación inicial confirma infección mística contenida dentro de agua pública antes de tragarte sombras dentro del Nido mismo.
+CONSECUENCIA: Entras a la estación con la nariz entrenada: cuando el contacto de cloaca te empuje hacia los niveles, reconocerás la Hiel antes de que te empape.
 
 RESULTADO: willpowerDelta: +1 | setFlag: observacion_previa_hiel | setFlag: cap3_salida_a_pie | setFlag: mision_castigo | IR A [2.E · Cierre]`,
           requirement: {
@@ -525,11 +556,11 @@ RESULTADO: willpowerDelta: +1 | setFlag: observacion_previa_hiel | setFlag: cap3
         {
           id: "n2_3_ribera_estable_radio",
           type: "dialogue",
-          text: `OPCIÓN C [RIESGO - INSTINTO]: Si arrastras lo que oíste en Bruna sobre Mapocho, desviarte un momento hacia la ribera antes de entrar por la lateral.
+          text: `[Ribera · con Inés en el oído]: Ceder un minuto a la baranda antes de la entrada lateral: cerrar imagen del río con lo que oíste en el salón y con ella en el canal.
 
-PUENTE: El agua refleja las luces con un brillo aceitoso y, bajo esa capa, vetas violetas siguen la corriente como si fueran filamentos vivos.
+PUENTE: Superficie aceitosa; filamentos violetas tiran de la corriente como venas bajo piel muerta.
 
-CONSECUENCIA: Ves la magnitud del problema antes de bajar al nido subterráneo; la certeza te afila la atención cuando toque leer superficies contaminadas después.
+CONSECUENCIA: Bajas con la cabeza afilada: sabrás qué buscar en charcos y rejillas cuando El Choro te empuje al tubo, sin perder el hilo de su voz en la oreja.
 
 RESULTADO: willpowerDelta: +1 | setFlag: observacion_previa_hiel | setFlag: cap3_radio_ines | IR A [2.E · Cierre]`,
           requirement: {
@@ -550,11 +581,11 @@ RESULTADO: willpowerDelta: +1 | setFlag: observacion_previa_hiel | setFlag: cap3
         {
           id: "n2_3_ribera_estable_std",
           type: "dialogue",
-          text: `OPCIÓN C [RIESGO - INSTINTO]: Si ya tenías información sobre Mapocho desde Bruna, pausarte en la ribera antes de cruzar el perímetro abierto del centro cultural.
+          text: `[Ribera · pie estable]: Detenerte junto al agua antes del centro cultural, con lo que ya captaste en el salón sobre Mapocho.
 
-PUENTE: El frío del cemento te sube por las muñecas y el rumor del agua lleva ese tono violeta que Inés prohibió rozar con la punta del zapato.
+PUENTE: Frío en muñecas; el rumor del cauce lleva el violeta que Inés mandó no rozar ni con la suela.
 
-CONSECUENCIA: Llegas a la explanada convencido de que lo que espera dentro no es un simple incidente ciudadano.
+CONSECUENCIA: Cruzas hacia la estación sabiendo que lo de abajo no es cierre de línea por accidente: es la infección que el Príncipe te mandó a taponar.
 
 RESULTADO: willpowerDelta: +1 | setFlag: observacion_previa_hiel | setFlag: cap3_salida_estandar | IR A [2.E · Cierre]`,
           requirement: {
@@ -578,7 +609,7 @@ RESULTADO: willpowerDelta: +1 | setFlag: observacion_previa_hiel | setFlag: cap3
       id: "n2_end",
       chapterId: "chapter02",
       title: "2.E · Cierre del capítulo",
-      text: `Pasaste del salón dorado al aire abierto del parque y al rumor del Mapocho. La Cortina del palacio ya quedó atrás frente al esqueleto de hierro que es Mapocho. La Corte ya decidió cómo te va a usar; te toca atravesar el nido.`,
+      text: `Pasaste del salón dorado al aire del parque y al rumor del Mapocho. El Palacio Bruna quedó a tu espalda como escenario cerrado; delante, el esqueleto de hierro y vidrio de la estación. En la Torre ya archivaron tu nombre al margen del encargo: ahora toca el río, los niveles bajo la explanada y la Hiel que no perdona titubeos.`,
       options: [
         {
           id: "n2_end_continue",

@@ -32,7 +32,16 @@ function firstIaOptionBlockIndex(raw: string): number {
 }
 
 function stripLeadingOpcionBanner(block: string): string {
-  return block.replace(/^OPCIÓN\s+[A-Z0-9.]+\s*(?:\[[^\]]+\])?\s*:\s*/im, "").trim();
+  const t = block.trim();
+  const withBrackets = t.replace(/^OPCIÓN\s+[A-Z0-9.]+\s*(?:\[[^\]]+\])?\s*:\s*/im, "").trim();
+  if (withBrackets !== t) return withBrackets;
+  /* "OPCIÓN C — sin etiqueta entrenada: …" sin bloque [DISCIPLINA] */
+  return t.replace(/^OPCIÓN\s+[A-Z0-9.]+\s*[—–\-]\s*[^:]+:\s*/i, "").trim();
+}
+
+/** Etiquetas de ruta autoriales tipo `[Parque · pie]:` — en UI sólo se muestra la prosa posterior al `:`. */
+function stripPlayerRouteTag(block: string): string {
+  return block.replace(/^\[[^\]]+\]\s*:\s*/u, "").trim();
 }
 
 /**
@@ -125,6 +134,7 @@ export function parseOptionIaPanels(fullText: string): ParsedOptionPanels {
 
   let promptBody = stripLeadingOpcionBanner(raw.slice(0, cut).trim()).trim();
   promptBody = stripDeveloperRoutingFromPlayerOption(promptBody);
+  promptBody = stripPlayerRouteTag(promptBody);
   const consequence = extractIaConsequence(raw);
 
   return { promptBody, consequence };
