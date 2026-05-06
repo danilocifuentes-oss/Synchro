@@ -49,3 +49,9 @@ next-env.d.ts
 
 # Volcado narrativo reproducible (`npm run solo:narrative-digest`)
 /content/solo-campaign/
+
+# Proyecto local separado (no mezclar con El Cronista)
+/app/punetes/
+/public/punetes/
+/share/punetes/
+/share/punetes-web.zip
