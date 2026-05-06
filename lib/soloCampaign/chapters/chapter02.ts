@@ -94,11 +94,11 @@ En Merced con Estados Unidos, el Palacio Bruna se alza como un único cuerpo de 
           type: "discipline",
           discipline: "presence",
           disciplineTitle: "Presencia",
-          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: [Verja · autoridad]: Adelantarte medio paso y dejar que Presencia abra la verja antes del anillo del Príncipe.
+          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: [Verja · autoridad]: Adelantarte medio paso e imponer Presencia para que la verja ceda por instinto antes que por palabra o sello.
 
 PUENTE: No esperas anuncio: tu campo empuja a los centinelas de bajo rango; sienten hueco en el estómago y apartan la mirada sin orden verbal. Inés te tolera el gesto sin corregirlo—anota el tiro.
 
-CONSECUENCIA: Entras como quien ya ocupa espacio, no como súplica. De aquí al salón, tu nombre viaja con una etiqueta distinta.
+CONSECUENCIA: Entras como quien ya ocupa un lugar en esta cohorte, no como invitado de paso; de aquí al salón, tu nombre viaja con una etiqueta distinta.
 
 RESULTADO: willpowerDelta: +1 | setFlag: entrada_soberana | IR A [ESCENA 2.1]`,
           requirement: { type: "discipline", discipline: "presence", minLevel: 1 },
@@ -124,9 +124,9 @@ RESULTADO: setFlag: vulnerabilidad_bruna_detectada | IR A [ESCENA 2.1]`,
           id: "n2_0_etiqueta",
           type: "skill",
           skill: "etiqueta",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - ETIQUETA]: [Verja · protocolo]: Detenerte un paso atrás del arco y dejar que el anillo del Príncipe abra antes que tu voz.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - ETIQUETA]: [Verja · protocolo]: Detenerte un paso atrás del arco de la entrada y esperar a que abran la verja—Inés cumple el ritual—antes de alzar la voz o reclamar paso.
 
-PUENTE: Manos a la espalda, barbilla nivelada; los ghouls de entrada leen sumisión sin humillación. Inés sella el ritual con un gesto mínimo del sello.
+PUENTE: Manos a la espalda, barbilla nivelada; los ghouls de entrada leen sumisión sin humillación. Inés alza el sello del Príncipe para que el mecanismo y la mirada cedan en el mismo orden que manda la casa.
 
 CONSECUENCIA: Portería te archivo como «estable»: no confianza ciega, pero paso sin fricción hacia el vestíbulo.
 
@@ -140,7 +140,7 @@ RESULTADO: setFlag: etiqueta_validada | IR A [ESCENA 2.1]`,
           type: "dialogue",
           text: `OPCIÓN C — sin etiqueta entrenada: [Verja]: Detenerte en la verja y dejar que Inés abra el protocolo mientras tú mantienes compostura mínima: manos quietas, voz baja, sin provocar ni adular.
 
-PUENTE: No exhibes el virtuosismo de quien dominó Etiqueta; tampoco desafías al personal. Dejas que el anillo y el nombre del Príncipe hablen por ti.
+PUENTE: No exhibes el virtuosismo de quien dominó Etiqueta; tampoco desafías al personal. Dejas que Inés muestre la credencial del soberano y que el nombre del Príncipe haga el trabajo antes que tu lengua.
 
 CONSECUENCIA: Entrada aceptada sin el refuerzo de confianza que da la etiqueta fina; los ghouls no te abren paso de rodillas, pero el umbral cede.
 
@@ -155,7 +155,7 @@ RESULTADO: (Avance estándar) | IR A [ESCENA 2.1]`,
         {
           id: "n2_0_insolencia",
           type: "dialogue",
-          text: `OPCIÓN D [RIESGO - INSTINTO]: [Verja · provocación]: Con el rastro de fuerza bruta aún pegado al mapa, golpear la mesa del detector y medir hasta dónde aguantan antes del anillo.
+          text: `OPCIÓN D [RIESGO - INSTINTO]: [Verja · provocación]: Con el rastro de fuerza bruta aún pegado al mapa, golpear la mesa del detector y medir hasta dónde aguantan antes de que Inés cierre el protocolo.
 
 PUENTE: «¿De veras creen que esto frena lo que traigo en sangre?», con una sonrisa que asoma colmillo sin ofrecer mordida. Los uniformes tensan manos; alguien ya escribe «volátil» sin pedirte nombre.
 
