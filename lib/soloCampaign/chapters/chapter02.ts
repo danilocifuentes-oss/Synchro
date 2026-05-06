@@ -75,9 +75,9 @@ export const chapter02: SoloChapter = {
       title: "[ESCENA 2.0]: EL TRAYECTO AL PALACIO",
       text: `CONTEXTO: Calle Merced, barrio Lastarria. 03:50 AM. Subes desde el borde del río con Doña Inés; el Parque Forestal queda como promesa de sombra del otro lado de la manzana, pero primero manda el palacio.
 
-NARRACIÓN: El trayecto es silencio medido: tacones y suela sobre empedrado que aún guarda olor a lluvia vieja. Las fachadas de aire europeo observan sin prisa; al acercarse a Bruna, la humedad del Mapocho cede al encerado de los pisos, al metal frío de torniquetes y al zumbido grave de cámaras que nadie finge ocultar.
+NARRACIÓN: El trayecto junto a Doña Inés es un ejercicio de silencio y precisión: el eco de sus tacones sobre el empedrado marca un ritmo de autoridad. Atrás queda la humedad del Mapocho y el ruido de la muchedumbre; al aproximarnos al Bruna, el aire se vuelve estricto, dominado por el aroma a piso encerado y el frío industrial de los torniquetes. Las cámaras no se ocultan; aquí, la vigilancia es una declaración de principios.
 
-En Merced con Estados Unidos, el Palacio Bruna se alza como un único cuerpo de piedra clara: verja de hierro, jardín recortado y luz que ya no es calle, sino protocolo. Inés ya lleva a la vista el anillo de sello del Príncipe, aro grueso en el dedo enguantado: el metal trae el blasón en relieve para cotejarse con el archivo de la Torre, estampar lacre o validar portería; aquí pesa más que cualquier tarjeta de mortal.`,
+En la esquina de Merced, el Palacio Bruna impone su presencia de piedra clara como una fortaleza del orden. Inés alza la mano, exhibiendo el anillo de sello del Príncipe. Un blasón de oro macizo es el único salvoconducto que los sistemas de «La Torre» respetan. Metal validando metal; un símbolo de linaje que reduce cualquier documento mortal a simple basura.`,
       flagAppends: [
         {
           flag: "beso_limpio",
@@ -94,7 +94,7 @@ En Merced con Estados Unidos, el Palacio Bruna se alza como un único cuerpo de 
           type: "discipline",
           discipline: "presence",
           disciplineTitle: "Presencia",
-          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: [Verja · autoridad]: Adelantarte medio paso e imponer Presencia para que la verja ceda por instinto antes de que Inés tenga que enseñar el anillo de sello del Príncipe al torniquete.
+          text: `OPCIÓN A [DISCIPLINA: PRESENCIA]: [Verja · autoridad]: Adelantarte medio paso e imponer con tu presencia antes de que Inés tenga que enseñar el anillo. Si te quieren aquí, deben dejarte pasar.
 
 PUENTE: No esperas anuncio: tu campo empuja a los centinelas de bajo rango; sienten hueco en el estómago y apartan la mirada sin orden verbal. Inés no ha bajado aún el anillo hacia el lector; frunce el ceño, pero deja pasar el gesto y lo anota.
 
@@ -109,11 +109,11 @@ RESULTADO: willpowerDelta: +1 | setFlag: entrada_soberana | IR A [ESCENA 2.1]`,
           id: "n2_0_perspicacia",
           type: "skill",
           skill: "perspicacia",
-          text: `OPCIÓN B [HABILIDAD: PERSPICACIA]: [Verja · lectura]: Recorrer con la mirada balcones, setos y ritmo de radios antes de cruzar el arco.
+          text: `OPCIÓN B [HABILIDAD: PERSPICACIA]: [Verja · lectura]: Recorrer con la mirada balcones, setos, cantidad de cámaras y posibles salidas aledañas antes de siquiera pensar en cruzar.
 
 PUENTE: Bajo la lámpara de calle distingues capas: centinelas de la Camarilla, trajes civiles con cable en la oreja—mercenarios mortales—y un flanco oeste donde el muro y una salida de servicio dejan más sombra que cámara. Ves el hueco donde Inés encajará el anillo de sello si la noche sigue protocolo; tú, por ahora, sólo memorizas ángulos.
 
-CONSECUENCIA: Guardas un mapa mental de huida; si la noche tuerce, ya sabes por dónde no pedir permiso.
+CONSECUENCIA: Guardas un mapa mental de huida; si la noche tuerce, tienes una ruta de escape segura (o un posible acceso).
 
 RESULTADO: setFlag: vulnerabilidad_bruna_detectada | IR A [ESCENA 2.1]`,
           requirement: { type: "skill", skill: "perspicacia", minLevel: 1 },
@@ -124,11 +124,11 @@ RESULTADO: setFlag: vulnerabilidad_bruna_detectada | IR A [ESCENA 2.1]`,
           id: "n2_0_etiqueta",
           type: "skill",
           skill: "etiqueta",
-          text: `OPCIÓN C [CAMINO ESTÁNDAR - ETIQUETA]: [Verja · protocolo]: Detenerte un paso atrás del arco de la entrada y dejar que el ritual sea el de la casa: primero Inés encaja el anillo de sello del Príncipe en la ranura o lo alinea a la cámara, y sólo entonces hablas tú si hace falta.
+          text: `OPCIÓN C [CAMINO ESTÁNDAR - ETIQUETA]: [Verja · protocolo]: Detenerte un paso atrás de la entrada y dejar que los protocolos se lleven a cabo: Doña Inés alinea el anillo frente a una diminuta cámara, mientras tú guardas silencio esperando que el torniquete se libere.
 
 PUENTE: Manos a la espalda, barbilla nivelada; los ghouls leen sumisión sin humillación. El relieve del blasón en el metal coincide con el patrón archivado; la verja obedece al troquel como obedecería al propio soberano en persona.
 
-CONSECUENCIA: Portería te archivo como «estable»: no confianza ciega, pero paso sin fricción hacia el vestíbulo.
+CONSECUENCIA: En portería logras ver que quedas registrado como «estable»: la presión de las miradas disminuye. Eres considerado «inofensivo».
 
 RESULTADO: setFlag: etiqueta_validada | IR A [ESCENA 2.1]`,
           requirement: { type: "skill", skill: "etiqueta", minLevel: 1 },
@@ -633,7 +633,7 @@ RESULTADO: willpowerDelta: +1 | setFlag: observacion_previa_hiel | setFlag: cap3
     {
       id: "n2_end",
       chapterId: "chapter02",
-      title: "2.E · Cierre del capítulo",
+      title: "Cierre del capítulo",
       text: `Pasaste del salón dorado al aire del parque y al rumor del Mapocho. El Palacio Bruna quedó a tu espalda como escenario cerrado; delante, el esqueleto de hierro y vidrio de la estación. En la Torre ya archivaron tu nombre al margen del encargo: ahora toca el río, los niveles bajo la explanada y la Hiel que no perdona titubeos.`,
       options: [
         {

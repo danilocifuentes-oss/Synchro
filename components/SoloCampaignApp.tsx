@@ -378,6 +378,12 @@ function SoloCampaignScreen({
     const raw = resolveSoloScenePlayerText(scene, sheet, progress);
     return parseSceneIaPanels(raw);
   }, [scene, sheet, progress]);
+  /** Cierre de capítulo sin prosa: evita panel al scroll y el guión "—" placeholder. */
+  const compactChapterGate = Boolean(
+    collapseEndOptions &&
+      !scenePanels.context?.trim() &&
+      !(scenePanels.narration.trim() || scene.text.trim()),
+  );
   const clanLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
   const chapterHeadline = chapter ? soloChapterHeadlineForClan(chapter.title, sheet.clan) : "";
   const chapterRibbon = chapter ? compactChapterRibbon(chapterHeadline, chapter.id) : "";
@@ -691,7 +697,7 @@ function SoloCampaignScreen({
             <motion.div
               key={`${progress.chapterId}:${progress.sceneId}`}
               role="article"
-              aria-label={`Escena: ${scene.title}`}
+              aria-labelledby={sceneHeadingId}
               className="solo-book-spread flex min-h-0 min-w-0 flex-1 flex-col"
               custom={transitionSlide}
               variants={
@@ -726,13 +732,15 @@ function SoloCampaignScreen({
               exit="exit"
             >
               <div
-                className={`min-h-0 flex-1 overflow-y-auto pb-2 ${embedded ? "px-2.5 py-2.5 sm:px-4 sm:py-3" : "px-3 py-4 sm:px-6 sm:py-5 lg:px-8"}`}
+                className={`min-h-0 overflow-y-auto pb-2 ${compactChapterGate ? "flex-none" : "flex-1"} ${embedded ? "px-2.5 py-2.5 sm:px-4 sm:py-3" : "px-3 py-4 sm:px-6 sm:py-5 lg:px-8"}`}
               >
-                <div className="solo-book-page mx-auto max-w-3xl space-y-5 rounded-sm border border-white/[0.07] bg-[linear-gradient(165deg,rgba(18,17,16,0.97)_0%,rgba(8,8,10,0.99)_40%,rgba(5,5,6,1)_100%)] px-4 py-5 shadow-[inset_10px_0_24px_-14px_rgba(255,255,255,0.06),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+                <div
+                  className={`solo-book-page mx-auto max-w-3xl rounded-sm border border-white/[0.07] bg-[linear-gradient(165deg,rgba(18,17,16,0.97)_0%,rgba(8,8,10,0.99)_40%,rgba(5,5,6,1)_100%)] shadow-[inset_10px_0_24px_-14px_rgba(255,255,255,0.06),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-6 sm:py-6 lg:px-8 lg:py-8 ${compactChapterGate ? "space-y-0 px-4 py-3 sm:py-4" : "space-y-5 px-4 py-5 sm:px-6 sm:py-6"}`}
+                >
                   <p className="border-b border-white/[0.06] pb-3 font-sans text-[10px] uppercase tracking-[0.28em] text-neutral-500">
                     <span className="text-neutral-400">{chapterRibbon}</span>
                   </p>
-                  <section className="space-y-5" aria-labelledby={sceneHeadingId}>
+                  <section className="space-y-5">
                     <h2 id={sceneHeadingId} className="sr-only">
                       {scene.title}
                     </h2>
@@ -744,11 +752,17 @@ function SoloCampaignScreen({
                         <p className="whitespace-pre-line text-neutral-300">{scenePanels.context.trim()}</p>
                       </div>
                     ) : null}
-                    <div className="solo-book-prose font-serif text-[14px] font-normal leading-[1.78] tracking-[0.01em] text-neutral-200 sm:text-[15px] sm:leading-[1.82] sm:tracking-[0.015em]">
-                      <p className="whitespace-pre-line">
-                        {(scenePanels.narration.trim() || scene.text.trim()) || "—"}
-                      </p>
-                    </div>
+                    {scenePanels.narration.trim() || scene.text.trim() ? (
+                      <div className="solo-book-prose font-serif text-[14px] font-normal leading-[1.78] tracking-[0.01em] text-neutral-200 sm:text-[15px] sm:leading-[1.82] sm:tracking-[0.015em]">
+                        <p className="whitespace-pre-line">
+                          {scenePanels.narration.trim() || scene.text.trim()}
+                        </p>
+                      </div>
+                    ) : compactChapterGate ? null : (
+                      <div className="solo-book-prose font-serif text-[14px] font-normal leading-[1.78] tracking-[0.01em] text-neutral-200 sm:text-[15px] sm:leading-[1.82] sm:tracking-[0.015em]">
+                        <p className="whitespace-pre-line">—</p>
+                      </div>
+                    )}
                   </section>
                 </div>
               </div>
@@ -825,13 +839,7 @@ function SoloCampaignScreen({
                       );
                       })}
                     </div>
-                  ) : (
-                    <div className="rounded-sm border border-white/[0.06] bg-black/25 px-4 py-3">
-                      <p className="text-[11px] leading-relaxed text-neutral-400">
-                        Ruta cerrada para esta escena. Usa el avance de capítulo para continuar la crónica.
-                      </p>
-                    </div>
-                  )}
+                  ) : null}
 
                   {endingId ? (
                     <div className="border-t border-white/[0.04] pt-4">

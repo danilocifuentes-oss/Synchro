@@ -22,7 +22,7 @@ NARRACIÓN: El despertar no es un proceso, es una ruptura. Tus ojos se abren a u
 
 PUENTE: Tratas de respirar y no llega oxígeno como antes: el pecho absorbe sólo frío que no llena pulmón, pero igual lo repites una y otra vez en silencio, como quien marca el compás antes de dirigir una sala vacía. Apoyas la palma en el palé, te impulsas a sentarte; los dedos encuentran tinta pegada entre las astillas y papel húmedo de humedad. El sótano deja de ser un manchón gris para volverse detalle por detalle —prensa a la derecha, cajones amontonados, un hilo largo que gotea de un depósito alto— hasta que algo más viejo que el miedo te obliga a sentir primero la quemadura seca detrás del paladar, y después el entrechocar lejano de tus dientes cuando aprietas mandíbula sin quererlo.
 
-CONSECUENCIA: Tu memoria sigue borrosa de lo ocurrido la noche anterior.
+CONSECUENCIA: Tu memoria sigue borrosa de lo ocurrido la noche anterior. Pero una duda carcome tu cabeza, ¿hace cuánto tiempo ocurrió «la noche anterior»?
 
 RESULTADO: IR A [ESCENA 1.0.1]`,
           requirement: { type: "none" },
@@ -34,7 +34,7 @@ RESULTADO: IR A [ESCENA 1.0.1]`,
       id: "n1_0_1",
       chapterId: "chapter01",
       title: "[ESCENA 1.0.1]: EL PESO DEL DESPERTAR",
-      text: `En tu garganta persiste un incendio químico, el residuo del frasco que un anciano te entregó en la calle Bandera antes de que el mundo se borrara en un fundido a negro.
+      text: `En tu garganta persiste un incendio químico. Al parecer, algo se ha filtrado por las viejas tuberías del sótano y ha caído directo sobre ti.
 
 El caos de este sótano te resulta una ofensa íntima, aunque todavía no puedas nombrar del todo por qué. Un soberano no debería despertar entre prensas oxidadas y moho.
 
@@ -110,7 +110,9 @@ RESULTADO: hungerDelta: +1 | humanityDelta: -1 | setFlag: rastro_fuerza_bruta | 
       title: "[ESCENA 1.1]: EL CENTINELA DE TEATINOS",
       text: `CONTEXTO: Calle Teatinos, afuera de la imprenta. 03:00 AM. El alumbrado público arroja sombras largas sobre el asfalto mojado. El smog de la capital se siente como una manta fría.
 
-NARRACIÓN: El aire de Santiago te golpea. La calle está desierta, sumida en ese silencio artificial que solo existe cerca de los centros de poder. Sin embargo, a pocos metros, oculto tras un contenedor de basura metálico, un hombre andrajoso intenta pasar desapercibido. Finge buscar desperdicios, pero su postura es demasiado alerta; sus hombros están tensos y sus ojos, brillantes de una inteligencia que no es de un indigente, se clavan en ti. Se lleva la mano al bolsillo del pecho, donde se adivina la forma rectangular de un dispositivo de comunicación. Alguien ha estado vigilando el sótano, esperando que el «Rey» despertara.`,
+NARRACIÓN: El aire de Santiago te golpea. La calle está desierta, sumida en ese silencio artificial que solo existe cerca de los centros de poder. Sin embargo, a pocos metros, oculto tras un contenedor de basura metálico, un hombre andrajoso intenta pasar desapercibido. Finge buscar desperdicios, pero su postura es demasiado alerta; sus hombros están tensos y sus ojos, brillantes de una inteligencia que no es de un indigente, se clavan en ti. Se lleva la mano al bolsillo del pecho, donde se adivina la forma rectangular de un dispositivo de comunicación.
+
+Alguien ha estado vigilando el sótano, esperando a que despertaras.`,
       options: [
         {
           id: "n1_1_dominate",
@@ -230,7 +232,9 @@ RESULTADO: setFlag: aproximacion_invisible | IR A [ESCENA 1.3]`,
 
 PUENTE: No te escondes. Caminas por el centro del puente y ajustas la chaqueta. Pareces un ejecutivo tras una noche demasiado larga en la Bolsa de Comercio. Te detienes a un par de metros, buscando una excusa trivial —un fuego, una dirección— para acortar la distancia final.
 
-CONSECUENCIA: Estableces contacto visual; el joven te lee como un igual en la escala social, lo que permite un acercamiento basado en la confianza antes de la captura.
+CONSECUENCIA: Estableces contacto visual; el joven, con cierta sorpresa, baja la guardia;
+
+Al parecer te ha confundido con alguien más. Comienzas a cerrar la distancia antes de la captura.
 
 RESULTADO: (Avance estándar) | IR A [ESCENA 1.3]`,
           requirement: { type: "none" },
@@ -350,11 +354,9 @@ RESULTADO: hungerDelta: -3 | humanityDelta: -2 | setFlag: asesino_del_mapocho | 
       title: "[ESCENA 1.END]: LA CITA CON LA MÁSCARA",
       text: `CONTEXTO: La salida del puente hacia la calle Balmaceda. 03:40 AM.
 
-NARRACIÓN: Te limpias la comisura de los labios con un pañuelo de seda blanco que ahora luce una mancha carmesí. El mundo ya no es borroso; es nítido, vibrante y peligrosamente real. Al final del puente, bajo un farol que arroja luz amarillenta y temblorosa, una mujer de elegancia anacrónica te observa con los brazos cruzados. Es Doña Inés. Su mirada no juzga tu comida con asco público; exhibe una impaciencia aristocrática.
+NARRACIÓN: Te limpias la comisura de los labios con un pañuelo de seda blanco que ahora luce una mancha carmesí. El mundo ya no es borroso; es nítido, vibrante y peligrosamente real. Al final del puente, bajo un farol que arroja luz amarillenta y temblorosa, una mujer de elegancia anacrónica te observa con los brazos cruzados. Es Doña Inés. No parece asqueada por el espectáculo de la calle: parece impaciente, como si lo único que contara fuera que ya son horas y tú sigues aquí, con la sangre aún en los labios.
 
-«Has demostrado que puedes sobrevivir en la calle, Embajador», dice con voz que corta el aire como un bisturí. «Pero sobrevivir es el talento de las ratas. El Príncipe requiere a alguien que sepa gobernar. El Palacio Bruna espera tu informe sobre el incidente de la imprenta. No lo hagas esperar más».
-
-Antes de girar hacia Merced, se ajusta el guante: asoma un anillo de oro macizo con el blasón en relieve, el mismo diseño que estampa lacre en papeles mayores. No lo nombra; no hace falta: en Bruna eso es el anillo de sello del soberano, la mano que autoriza cuando la voz llega tarde.`,
+«Has demostrado que puedes sobrevivir en la calle, Embajador», dice con voz que corta el aire como un bisturí. «Pero sobrevivir es el talento de las ratas y el Príncipe requiere a alguien que conozca la etiqueta. Te esperan en el Palacio Bruna».`,
       contextVariantByState: [
         {
           requirement: {
@@ -520,18 +522,9 @@ RESULTADO: IR A [CAPÍTULO 2]`,
     {
       id: "n1_end",
       chapterId: "chapter01",
-      title: "1.E · Cierre del capítulo",
-      text: `La decisión queda tomada. Santiago ya empezó a responderte según el camino elegido.`,
-      options: [
-        {
-          id: "n1_end_continue_ch2",
-          type: "dialogue",
-          text: "Continuar al Capítulo 2.",
-          requirement: { type: "none" },
-          nextSceneId: "n1_end",
-          effects: [{ type: "setFlag", flag: "chapter_pending_chapter02" }],
-        },
-      ],
+      title: "Cierre del capítulo",
+      text: "",
+      options: [],
     },
   ],
 };

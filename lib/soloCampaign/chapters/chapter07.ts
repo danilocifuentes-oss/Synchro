@@ -632,7 +632,7 @@ Dentro yace el muchacho del Mapocho, aún "vivo", conectado por tubos de plata q
     {
       id: "n7_end",
       chapterId: "chapter07",
-      title: "7.E · Cierre del capítulo y puente",
+      title: "Cierre del capítulo y puente",
       text: `La ciudad no vuelve a la calma institucional de antes: cualquier rumor siguiente ya nace desde la calle, el fuego y el pacto.`,
       contextVariantByState: [
         {
