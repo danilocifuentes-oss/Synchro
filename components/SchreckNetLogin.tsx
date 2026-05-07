@@ -2,7 +2,9 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useCallback, useState } from "react";
-import { BLOOD_CIPHER, BLOOD_CIPHER_LENGTH, ROOT_OPERATOR_CIPHER } from "@/lib/sessionMeta";
+import { signIn } from "next-auth/react";
+import { ROOT_OPERATOR_CIPHER } from "@/lib/sessionMeta";
+import useA11yAnnounce from "@/hooks/useA11yAnnounce";
 
 type Props = {
   onAuthenticate: () => void;
@@ -17,10 +19,12 @@ function delay(ms: number) {
 const BOOT_LINES = ["[CONEXIÓN_ESTABLECIDA]", "[BORRANDO_RASTROS_IP]", "[ACCEDIENDO_AL_CODEX]"] as const;
 
 export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
+  const { announce } = useA11yAnnounce();
   const [cipher, setCipher] = useState("");
   const [error, setError] = useState(false);
   const [booting, setBooting] = useState(false);
   const [bootLog, setBootLog] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const runBoot = useCallback(async (afterBoot: () => void) => {
     setBooting(true);
@@ -34,21 +38,28 @@ export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
   }, []);
 
   function normalizedCipher(raw: string): string {
-    return raw.replace(/\D/g, "").slice(0, BLOOD_CIPHER_LENGTH);
+    return raw.trim().toUpperCase();
   }
 
-  function submit() {
+  async function submit() {
+    if (loading) return;
     const digits = normalizedCipher(cipher);
     if (digits === ROOT_OPERATOR_CIPHER && onRootAccess) {
       setError(false);
+      announce("Acceso ROOT concedido.");
       void runBoot(onRootAccess);
       return;
     }
-    if (digits.length !== BLOOD_CIPHER_LENGTH || digits !== BLOOD_CIPHER) {
+    setLoading(true);
+    const res = await signIn("schrecknet", { redirect: false, code: digits });
+    setLoading(false);
+    if (res?.error) {
       setError(true);
+      announce("Acceso denegado.");
       return;
     }
     setError(false);
+    announce("Acceso concedido. Redirigiendo.");
     void runBoot(onAuthenticate);
   }
 
@@ -73,16 +84,14 @@ export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
             <label className="mt-5 block text-[9px] uppercase tracking-widest text-neutral-600">Autorización</label>
             <input
               type="password"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={BLOOD_CIPHER_LENGTH}
+              inputMode="text"
               autoComplete="one-time-code"
               value={cipher}
               onChange={(e) => {
                 setCipher(normalizedCipher(e.target.value));
                 setError(false);
               }}
-              placeholder={"·".repeat(BLOOD_CIPHER_LENGTH)}
+              placeholder="CRONISTA"
               aria-label="Código de acceso"
               className={`mt-2 w-full tracking-[0.35em] border bg-black/60 px-2 py-2.5 font-mono text-[11px] text-[var(--terminal)] sharp-border-inner focus:outline-none ${
                 error ? "border-[var(--blood)]" : "border-neutral-800 focus:border-[var(--terminal)]/55"
@@ -98,9 +107,10 @@ export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
             <motion.button
               type="button"
               onClick={submit}
+              disabled={loading}
               whileHover={{ scale: 1.008 }}
               whileTap={{ scale: 0.996 }}
-              className="relative mt-8 w-full overflow-hidden border border-[var(--terminal)]/35 bg-neutral-950 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.38em] text-[var(--terminal)] sharp-border-inner"
+              className="relative mt-8 w-full overflow-hidden border border-[var(--terminal)]/35 bg-neutral-950 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.38em] text-[var(--terminal)] sharp-border-inner disabled:cursor-not-allowed disabled:opacity-55"
             >
               <motion.span
                 aria-hidden
@@ -108,7 +118,7 @@ export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
                 animate={{ x: ["-100%", "100%"] }}
                 transition={{ duration: 2.4, repeat: Infinity, ease: "linear" }}
               />
-              <span className="relative z-10">ACCEDER</span>
+              <span className="relative z-10">{loading ? "ACCEDIENDO..." : "ACCEDER"}</span>
             </motion.button>
           </>
         ) : (
