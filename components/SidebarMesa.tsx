@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import { useSettings } from "@/context/SettingsContext";
 import { useCharacter } from "@/context/CharacterContext";
-import { MaterialSchreckIcon } from "@/components/icons/NexusLibrary";
+import { IconAvatarSigil, IconLock, IconOrnament } from "@/components/icons";
+import { IconBookAnimated, IconTerminalAnimated } from "@/components/icons/animated";
 
 type Discipline = {
   id: string;
@@ -13,19 +14,6 @@ type Discipline = {
   glyph?: string;
   level: number;
 };
-
-function disciplineIconName(id: string): string {
-  const k = id.toLowerCase();
-  if (k.includes("dominate")) return "neurology";
-  if (k.includes("obfuscate")) return "visibility_off";
-  if (k.includes("celerity")) return "bolt";
-  if (k.includes("fortitude")) return "security";
-  if (k.includes("auspex")) return "visibility";
-  if (k.includes("presence")) return "flare";
-  if (k.includes("protean")) return "pets";
-  if (k.includes("blood")) return "water_drop";
-  return "fiber_manual_record";
-}
 
 export function SidebarMesa({
   disciplines = [],
@@ -92,7 +80,9 @@ function IdentityCard({
             // eslint-disable-next-line @next/next/no-img-element
             <img src={identity.avatar} alt={`${identity.nombre} avatar`} className="h-full w-full object-cover" />
           ) : (
-            <div className="font-mono text-[var(--terminal)]">{identity.nombre?.charAt(0)?.toUpperCase()}</div>
+            <div className="icon-sig">
+              <IconAvatarSigil className="icon" />
+            </div>
           )}
         </div>
         <div className="flex-1">
@@ -110,7 +100,7 @@ function IdentityCard({
           aria-label="Entrar al Nexo"
         >
           <span className="inline-flex items-center gap-1.5">
-            <MaterialSchreckIcon name="terminal" className="!text-black" />
+            <IconTerminalAnimated className="icon !text-black" />
             <span>Entrar al Nexo</span>
           </span>
         </button>
@@ -121,7 +111,7 @@ function IdentityCard({
           aria-label="Ver hoja"
         >
           <span className="inline-flex items-center gap-1">
-            <MaterialSchreckIcon name="menu_book" />
+            <IconBookAnimated className="icon" />
             <span>Hoja</span>
           </span>
         </button>
@@ -205,7 +195,9 @@ function V5StatusPanel({
 function DisciplinesGrid({ disciplines }: { disciplines: Discipline[] }) {
   return (
     <div className="rounded-md bg-[rgba(255,255,255,0.01)] p-3">
-      <h4 className="mb-2 text-xs font-semibold text-[var(--accent-muted)]">Disciplinas</h4>
+      <h4 className="mb-2 inline-flex items-center gap-2 text-xs font-semibold text-[var(--accent-muted)]">
+        Disciplinas <IconOrnament className="icon w-[64px]" />
+      </h4>
       <div className="grid grid-cols-4 gap-2">
         {disciplines.map((d) => (
           <button
@@ -217,7 +209,7 @@ function DisciplinesGrid({ disciplines }: { disciplines: Discipline[] }) {
             onClick={() => window.alert(`Abrir disciplina ${d.name}`)}
           >
             <div className="mb-1 flex h-8 w-8 items-center justify-center text-lg text-[var(--neon)]">
-              {d.glyph ? <span>{d.glyph}</span> : <MaterialSchreckIcon name={disciplineIconName(d.id)} />}
+              {d.glyph ? <span>{d.glyph}</span> : <span>◦</span>}
             </div>
             <div className="text-[10px] text-[var(--accent-muted)]">{d.level}</div>
           </button>
@@ -238,7 +230,7 @@ function QuickControls({ onOpenCodex, onLogout }: { onOpenCodex?: () => void; on
           aria-label="Abrir Codex"
         >
           <span className="inline-flex items-center gap-1.5">
-            <MaterialSchreckIcon name="menu_book" className="!text-black" />
+            <IconBookAnimated className="icon !text-black" />
             <span>CODEX</span>
           </span>
         </button>
@@ -250,7 +242,7 @@ function QuickControls({ onOpenCodex, onLogout }: { onOpenCodex?: () => void; on
             aria-label="Abrir bóveda"
           >
             <span className="inline-flex items-center gap-1.5">
-              <MaterialSchreckIcon name="lock" />
+              <IconLock className="icon" />
               <span>Bóveda</span>
             </span>
           </button>
@@ -261,7 +253,7 @@ function QuickControls({ onOpenCodex, onLogout }: { onOpenCodex?: () => void; on
             aria-label="Cerrar sesión"
           >
             <span className="inline-flex items-center gap-1.5">
-              <MaterialSchreckIcon name="logout" />
+              <IconTerminalAnimated className="icon" />
               <span>Logout</span>
             </span>
           </button>

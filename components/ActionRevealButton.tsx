@@ -15,6 +15,7 @@ type Props = {
   className?: string;
   ariaLabel?: string;
   disabled?: boolean;
+  pulseIcon?: boolean;
 };
 
 export default function ActionRevealButton({
@@ -25,11 +26,13 @@ export default function ActionRevealButton({
   className = "",
   ariaLabel = "Acción",
   disabled = false,
+  pulseIcon = true,
 }: Props) {
   const sysReduced = usePrefersReducedMotion();
   const { settings } = useSettings();
   const effectiveReduced = settings.reducedMotionOverride == null ? sysReduced : settings.reducedMotionOverride;
   const [progress, setProgress] = useState(0);
+  const [holding, setHolding] = useState(false);
   const timerRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
   const heldRef = useRef(false);
@@ -44,11 +47,13 @@ export default function ActionRevealButton({
     if (disabled) return;
     heldRef.current = false;
     startRef.current = performance.now();
+    setHolding(true);
 
     if (effectiveReduced) {
       setProgress(100);
       heldRef.current = true;
       onHold?.();
+      setHolding(false);
       return;
     }
 
@@ -63,6 +68,7 @@ export default function ActionRevealButton({
         if (timerRef.current) window.clearInterval(timerRef.current);
         timerRef.current = null;
         onHold?.();
+        setHolding(false);
       }
     }, 16);
   };
@@ -77,6 +83,7 @@ export default function ActionRevealButton({
 
     if (!heldRef.current && triggerClick) onPress?.();
     heldRef.current = false;
+    setHolding(false);
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -124,6 +131,7 @@ export default function ActionRevealButton({
       aria-label={ariaLabel}
       aria-pressed={false}
       disabled={disabled}
+      data-holding={holding ? "1" : "0"}
       className={`relative overflow-hidden rounded px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--terminal-dim)] ${className}`.trim()}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
@@ -143,7 +151,9 @@ export default function ActionRevealButton({
           }}
         />
       </div>
-      <span className="relative z-10">{children ?? "Acción"}</span>
+      <span className={`relative z-10 inline-flex items-center gap-2 ${pulseIcon && holding ? "icon-pulse-active" : ""}`}>
+        {children ?? "Acción"}
+      </span>
     </button>
   );
 }

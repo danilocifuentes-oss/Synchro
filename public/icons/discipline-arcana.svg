@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" aria-hidden="true" role="img">
+  <title>Arcana</title>
+  <g fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M8 8h32v32H8z" />
+    <path d="M14 14h20v20H14z" />
+    <path d="M24 18v12" />
+    <path d="M18 24h12" />
+  </g>
+</svg>

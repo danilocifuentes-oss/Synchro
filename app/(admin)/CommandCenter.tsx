@@ -18,6 +18,8 @@ import {
   type DragEndEvent,
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { IconPin, IconThreat } from "@/components/icons";
+import { IconBookAnimated, IconTerminalAnimated } from "@/components/icons/animated";
 
 type Player = { id: string; name: string; clan?: string; online?: boolean };
 type Scene = { id: string; title: string; description?: string };
@@ -190,10 +192,16 @@ export default function CommandCenter() {
           <div className="flex items-center gap-3">
             <TechnicalHud ansia={0} voluntad={{ current: 0, max: 1 }} daño={{ current: 0, max: 1 }} compact />
             <button type="button" onClick={() => pushLog("heartbeat", { ts: new Date().toISOString() })} className="rounded border px-3 py-2">
-              Ping
+              <span className="inline-flex items-center gap-2">
+                <IconTerminalAnimated className="icon" />
+                <span>Ping</span>
+              </span>
             </button>
             <button type="button" onClick={exportLogsCsv} className="rounded border px-3 py-2">
-              Export CSV
+              <span className="inline-flex items-center gap-2">
+                <IconBookAnimated className="icon" />
+                <span>Export CSV</span>
+              </span>
             </button>
           </div>
         </div>
@@ -220,7 +228,10 @@ export default function CommandCenter() {
                                 Activar
                               </button>
                               <button type="button" onClick={() => pushLog("scene_edit", { sceneId: s.id })} className="rounded border px-2 py-1">
-                                Editar
+                                <span className="inline-flex items-center gap-1.5">
+                                  <IconPin className="icon" />
+                                  <span>Editar</span>
+                                </span>
                               </button>
                             </div>
                           </div>
@@ -269,7 +280,10 @@ export default function CommandCenter() {
                                 Msg
                               </button>
                               <button type="button" onClick={() => handleKickPlayer(p.id)} className="rounded border px-2 py-1 text-[var(--crimson)]">
-                                Kick
+                                <span className="inline-flex items-center gap-1.5">
+                                  <IconThreat className="icon icon--danger" />
+                                  <span>Kick</span>
+                                </span>
                               </button>
                             </div>
                           </div>

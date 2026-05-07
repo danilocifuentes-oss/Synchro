@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" aria-hidden="true" role="img">
+  <title>Obfuscate</title>
+  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 24c6 10 18 14 36 0" />
+    <path d="M12 18c8-6 24-6 32 0" opacity="0.9" />
+    <circle cx="24" cy="24" r="4" fill="currentColor" />
+  </g>
+</svg>

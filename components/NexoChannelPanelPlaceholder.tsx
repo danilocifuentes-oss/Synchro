@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import { useSettings } from "@/context/SettingsContext";
+import { IconOrnament, IconThreat } from "@/components/icons";
 
 export default function NexoChannelPanelPlaceholder() {
   const sysReduced = usePrefersReducedMotion();
@@ -23,10 +24,18 @@ export default function NexoChannelPanelPlaceholder() {
     >
       <header className="mb-4 flex items-center justify-between">
         <div>
-          <div className="text-sm font-grotesk">Nexo · Canal principal</div>
+          <div className="flex items-center gap-2 text-sm font-grotesk">
+            <span>Nexo · Canal principal</span>
+            <span className="inline-flex items-center">
+              <IconOrnament className="icon w-[68px]" />
+            </span>
+          </div>
           <div className="text-xs text-[var(--accent-muted)]">Strand: Principal</div>
         </div>
-        <div className="text-xs font-mono text-[var(--terminal)]">⚠︎ Amenaza: baja</div>
+        <div className="inline-flex items-center gap-2 text-xs font-mono text-[var(--terminal)]">
+          <IconThreat className="icon icon--danger" />
+          <span>Amenaza: baja</span>
+        </div>
       </header>
 
       <section className="prose prose-invert max-w-none">

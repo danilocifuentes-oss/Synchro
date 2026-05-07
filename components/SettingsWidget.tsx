@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SettingsPanel from "@/components/SettingsPanel";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
+import { IconCog, IconTerminal } from "@/components/icons";
 
 const LS_KEY = "cronista_settings_open_v1";
 
@@ -47,7 +48,9 @@ export default function SettingsWidget() {
           className="relative flex h-12 w-12 items-center justify-center rounded-full border border-[rgba(255,255,255,0.04)] bg-[rgba(0,0,0,0.6)] text-[var(--terminal)] shadow-[0_0_12px_rgba(57,255,20,0.08),0_8px_30px_rgba(0,0,0,0.6)] focus:outline-none focus:ring-2 focus:ring-[var(--terminal-dim)]"
           title="Ajustes"
         >
-          <span className="select-none text-lg">{open ? "✕" : "⚙"}</span>
+          <span className="inline-flex select-none items-center justify-center text-lg">
+            {open ? <IconTerminal className="icon" /> : <IconCog className="icon" />}
+          </span>
           {pendingBadge && !open ? (
             <span className="absolute -right-1 -top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[var(--crimson)] text-[10px] font-mono text-white shadow-[0_0_12px_rgba(57,255,20,0.08),0_8px_30px_rgba(0,0,0,0.6)]" />
           ) : null}

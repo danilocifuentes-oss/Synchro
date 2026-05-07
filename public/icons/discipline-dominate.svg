@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" aria-hidden="true" role="img">
+  <title>Dominate</title>
+  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 6c3 0 5 1 6 3l2 4H16l2-4c1-2 3-3 6-3z" />
+    <path d="M12 34c0-6 6-10 12-10s12 4 12 10v6H12v-6z" />
+    <path d="M18 20h12" />
+  </g>
+</svg>

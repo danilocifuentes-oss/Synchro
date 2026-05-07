@@ -84,6 +84,65 @@ html.scanline-enabled .scanline-overlay {
   transition-duration: 250ms;
 }
 
+.icon {
+  width: 24px;
+  height: 24px;
+  color: var(--terminal);
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.icon * {
+  vector-effect: non-scaling-stroke;
+}
+
+.icon--danger {
+  color: var(--crimson);
+}
+
+.icon--neon {
+  color: var(--neon);
+}
+
+.icon-sig {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* icon pulse while holding — respectful of prefers-reduced-motion */
+@media (prefers-reduced-motion: no-preference) {
+  .icon-pulse-active .icon {
+    animation: cronista-pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes cronista-pulse {
+    0% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 0 rgba(192, 38, 211, 0));
+    }
+    50% {
+      transform: scale(1.08);
+      filter: drop-shadow(0 6px 18px rgba(192, 38, 211, 0.06));
+    }
+    100% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 0 rgba(192, 38, 211, 0));
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon-pulse-active .icon {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
 .necro-bg {
   background-color: var(--void);
   background-image:
@@ -333,6 +392,57 @@ html.scanline-enabled .scanline-overlay {
 
 .manifest-digital-spark {
   animation: manifest-spark 0.22s ease-out 1;
+}
+
+/* Texturas SVG (pack vector tileable/ornaments) */
+.necro-bg {
+  background-image: url("/textures/necro-mid.avif");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@supports not (background-image: url("/textures/necro-mid.avif")) {
+  .necro-bg {
+    background-image: url("/textures/necro-mid.webp");
+  }
+}
+
+.tile-bg {
+  background-image: url("/textures/necro-tiling.svg");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+.scan-overlay {
+  background-image: url("/textures/scanline.svg");
+  background-repeat: repeat;
+  background-size: auto 6px;
+  mix-blend-mode: overlay;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.grain-overlay {
+  background-image: url("/textures/grain.svg");
+  background-repeat: repeat;
+  background-size: 600px 400px;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.ornament-header {
+  background-image: url("/textures/ornament-header.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.ornament-corner {
+  background-image: url("/textures/ornament-corner.svg");
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: 120px 120px;
 }
 
 @keyframes manifest-spark {

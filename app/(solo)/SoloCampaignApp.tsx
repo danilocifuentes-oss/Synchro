@@ -6,6 +6,7 @@ import CharacterStatusPanel from "@/components/CharacterStatusPanel";
 import ActionRevealButton from "@/components/ActionRevealButton";
 import DiceRollerD10 from "@/components/DiceRollerD10";
 import { useCharacter } from "@/context/CharacterContext";
+import { IconSkullAnimated } from "@/components/icons/animated";
 
 type ActionItem = {
   id: number;
@@ -183,7 +184,10 @@ export default function SoloCampaignApp() {
                     className="bg-[var(--neon)] text-black"
                     ariaLabel={`Acción ${a.label}`}
                   >
-                    {a.label}
+                    <span className="inline-flex items-center gap-2">
+                      <IconSkullAnimated className="icon icon--neon" />
+                      <span>{a.label}</span>
+                    </span>
                   </ActionRevealButton>
                 ))}
 
