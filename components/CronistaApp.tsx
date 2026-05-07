@@ -898,23 +898,15 @@ function CronistaAppInner() {
             const xp = prog?.chronicleExperience ?? 0;
             return (
               <SidebarMesa
-                accent={accent}
-                sheet={sheet}
-                chronicleXp={xp}
-                citySigma={inquisitionThreat}
-                healthFilled={healthHudFilled}
-                healthMax={HEALTH_MAX_UI}
-                hunger={sheet.hunger}
-                soloSceneNav={
-                  soloShellActive ? (
-                    <>
-                      <SoloChronicleInventory />
-                      <SoloSceneNav />
-                    </>
-                  ) : undefined
-                }
-                onEidolonVault={goToProfileHub}
-                onCodex={() => {
+                disciplines={Object.entries(sheet.disciplines ?? {}).map(([id, level]) => ({
+                  id,
+                  name: id.replace(/_/g, " "),
+                  level: Number(level ?? 0),
+                }))}
+                onEnterNexo={() => {
+                  navigateToPhase("nexus");
+                }}
+                onOpenCodex={() => {
                   persistActiveProfile();
                   navigateToPhase("chargen");
                 }}

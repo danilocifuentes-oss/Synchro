@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import AppShellProviders from "@/components/AppShellProviders";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -42,7 +43,7 @@ export default function RootLayout({
         className="min-h-full font-sans bg-[var(--void)] text-neutral-200"
         data-git-sha={process.env.VERCEL_GIT_COMMIT_SHA ?? "local"}
       >
-        {children}
+        <AppShellProviders>{children}</AppShellProviders>
       </body>
     </html>
   );

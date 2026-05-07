@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import TerminalLogStream, { type TerminalLogLine } from "@/components/TerminalLogStream";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
+import { useSettings } from "@/context/SettingsContext";
 
 const BOOT_KEY = "nexo_immersive_boot_v1";
 
@@ -15,7 +16,9 @@ type Props = {
  * Capa cero: pulso ambiental + arranque Schreck (una vez por pestaña) sin dependencias externas.
  */
 export function NexoWrapper({ children }: Props) {
-  const reducedMotion = usePrefersReducedMotion();
+  const sysReducedMotion = usePrefersReducedMotion();
+  const { settings } = useSettings();
+  const effectiveReduced = settings.reducedMotionOverride == null ? sysReducedMotion : settings.reducedMotionOverride;
   const [phase, setPhase] = useState<"pending" | "boot" | "app">("pending");
 
   const bootLines = useMemo<TerminalLogLine[]>(() => {
@@ -31,7 +34,7 @@ export function NexoWrapper({ children }: Props) {
   }, []);
 
   useEffect(() => {
-    if (reducedMotion) {
+    if (effectiveReduced) {
       setPhase("app");
       return;
     }
@@ -59,7 +62,7 @@ export function NexoWrapper({ children }: Props) {
     }, 2000);
 
     return () => window.clearTimeout(t);
-  }, [reducedMotion]);
+  }, [effectiveReduced]);
 
   return (
     <div className="theme-void relative min-h-screen overflow-x-hidden bg-void text-neutral-200">
@@ -70,7 +73,7 @@ export function NexoWrapper({ children }: Props) {
         <div className="relative z-10 min-h-screen">{children}</div>
       ) : (
         <AnimatePresence mode="wait">
-          {phase === "boot" && !reducedMotion ? (
+          {phase === "boot" && !effectiveReduced ? (
             <motion.div
               key="boot"
               initial={{ opacity: 0 }}
@@ -94,7 +97,7 @@ export function NexoWrapper({ children }: Props) {
               key="app"
               initial={false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease: "easeOut" }}
+              transition={effectiveReduced ? { duration: 0 } : { duration: 0.55, ease: "easeOut" }}
               className="relative z-10 min-h-screen"
             >
               {children}

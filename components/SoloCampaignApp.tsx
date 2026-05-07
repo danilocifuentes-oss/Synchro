@@ -19,7 +19,7 @@ import type { SoloEndingId, SoloOption, SoloProgress, SoloRouteId, SoloSceneEffe
 import { parseOptionIaPanels, parseSceneIaPanels } from "@/lib/soloCampaign/soloIaPresentation";
 import { getPendingNextChapter } from "@/lib/soloCampaign/soloProgressSelectors";
 import { syncActiveBundleFromGlobals } from "@/lib/profileStore";
-import { TechnicalHud } from "@/components/TechnicalHud";
+import SoloCampaignHeader from "@/components/SoloCampaignHeader";
 import { SoloCampaignProvider, useSoloCampaign } from "@/context/SoloCampaignContext";
 import { rollPoolV5, summarizeRollPlayerLog } from "@/lib/dice";
 import { appendXpLog } from "@/lib/sessionMeta";
@@ -662,51 +662,21 @@ function SoloCampaignScreen({
       }
     >
       {!embedded ? (
-        <header className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] bg-black/85 px-2.5 py-2.5 sm:px-3">
-          <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-            <TechnicalHud
-              healthFilled={hudFilled}
-              healthMax={CHRONICLE_HEALTH_TRACK_UI}
-              hunger={sheet.hunger}
-              willpowerCur={sheet.willpowerCur}
-              willpowerMax={sheet.willpowerMax}
-              compactLabels
-              hideMetagameFooter
-              className="border-0 bg-transparent px-0 py-0"
-            />
-            <div className="min-w-0 truncate font-sans text-[10px] text-neutral-500">
-              <span className="text-neutral-200">{sheet.name || "Sin nombre"}</span>
-              <span className="text-neutral-600"> · </span>
-              <span className={CLAN_TONE[sheet.clan] ?? "text-neutral-300"}>{clanLabel}</span>
-              {sheet.clan === "malkavian" ? (
-                <>
-                  <span className="text-neutral-600"> · </span>
-                  <span className="text-cyan-800/90" title="Fragmentación (crónica Malkavian)">
-                    Frag {progress.fragmentation ?? 0}/10
-                  </span>
-                </>
-              ) : null}
-            </div>
-          </div>
-          <div className="flex shrink-0 flex-wrap items-center gap-1.5">
-            {(progress.soloSceneBackStack?.length ?? 0) > 0 ? (
-              <button
-                type="button"
-                onClick={() => revertToPrevScene()}
-                className="border border-dashed border-amber-800/60 bg-amber-950/25 px-3 py-1.5 text-[9px] uppercase tracking-[0.14em] text-amber-200 hover:bg-amber-950/40"
-              >
-                ↩ Escena
-              </button>
-            ) : null}
-            {(progress.soloSceneForwardStack?.length ?? 0) > 0 ? (
-              <button
-                type="button"
-                onClick={() => advanceToNextPlayedScene()}
-                className="border border-dashed border-emerald-800/60 bg-emerald-950/25 px-3 py-1.5 text-[9px] uppercase tracking-[0.14em] text-emerald-200 hover:bg-emerald-950/40"
-              >
-                Escena ↪
-              </button>
-            ) : null}
+        <header className="shrink-0 border-b border-white/[0.06] bg-black/85 px-2.5 py-2.5 sm:px-3">
+          <SoloCampaignHeader
+            identity={{ nombre: sheet.name || "Sin nombre", clan: clanLabel }}
+            status={{
+              ansia: sheet.hunger,
+              voluntad: { current: sheet.willpowerCur, max: sheet.willpowerMax },
+              daño: { current: sheet.healthDamage, max: CHRONICLE_HEALTH_TRACK_UI },
+            }}
+            onRoll={(value) => {
+              setLastRollLine(`Tirada manual d10: ${value}`);
+            }}
+            onPrev={(progress.soloSceneBackStack?.length ?? 0) > 0 ? revertToPrevScene : undefined}
+            onNext={(progress.soloSceneForwardStack?.length ?? 0) > 0 ? advanceToNextPlayedScene : undefined}
+          />
+          <div className="mt-1 flex items-center justify-end gap-1.5">
             <button
               type="button"
               onClick={onExit}

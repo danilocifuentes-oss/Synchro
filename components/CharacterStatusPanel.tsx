@@ -1,120 +1,150 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import React, { useMemo, useState } from "react";
 import type { CharacterSheet } from "@/lib/character";
 import { CLAN_ACCENTS, CLAN_OPTIONS } from "@/lib/character";
-import { NexusLibrary } from "@/components/icons/NexusLibrary";
+import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 
 type Props = {
-  sheet: CharacterSheet;
+  /** Modo legacy: estado derivado desde la ficha completa. */
+  sheet?: CharacterSheet;
+  /** Modo compacto/standalone. */
+  compact?: boolean;
+  integridad?: { current: number; max: number };
+  voluntad?: { current: number; max: number };
+  ansia?: number;
+  onToggleExpand?: () => void;
   isNarrator?: boolean;
 };
 
-const HEALTH_MAX = 7;
+const DEFAULT_HEALTH_MAX = 7;
 
-/** Eco vital de la hoja: sólo lectura; los cambios vienen de la crónica, CODEX o motor de mesa. */
-export function CharacterStatusPanel({ sheet, isNarrator = false }: Props) {
-  const reduceMotion = useReducedMotion();
-  const accent = CLAN_ACCENTS[sheet.clan];
-  const wpPct = sheet.willpowerMax ? (sheet.willpowerCur / sheet.willpowerMax) * 100 : 0;
-  const linajeLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
+/** Eco vital de la hoja: lectura compacta/expandible con compatibilidad legacy. */
+export function CharacterStatusPanel({
+  sheet,
+  compact = false,
+  integridad: integridadProp,
+  voluntad: voluntadProp,
+  ansia: ansiaProp,
+  onToggleExpand,
+  isNarrator = false,
+}: Props) {
+  const reduced = usePrefersReducedMotion();
+  const [open, setOpen] = useState(!compact);
 
-  const filledIntegrity = HEALTH_MAX - Math.min(sheet.healthDamage, HEALTH_MAX);
-  const h = Math.max(0, Math.min(5, sheet.hunger));
-  const vitaeHot = h >= 3;
-  const vitaeShellClass =
-    h <= 1
-      ? "border-white/[0.07] bg-black/35"
-      : vitaeHot
-        ? `border-[color:var(--crimson)]/35 bg-[color:var(--blood)]/[0.07] ${reduceMotion ? "" : "nexo-vitae-shell"}`
-        : `border-white/[0.08] bg-black/40 ${reduceMotion ? "" : "nexo-vitae-shell--calm"}`;
+  const derived = useMemo(() => {
+    if (sheet) {
+      const max = DEFAULT_HEALTH_MAX;
+      const current = Math.max(0, max - Math.min(sheet.healthDamage, max));
+      return {
+        integridad: { current, max },
+        voluntad: { current: sheet.willpowerCur, max: sheet.willpowerMax },
+        ansia: Math.max(0, Math.min(5, sheet.hunger)),
+      };
+    }
+    return {
+      integridad: integridadProp ?? { current: 0, max: 5 },
+      voluntad: voluntadProp ?? { current: 3, max: 5 },
+      ansia: Math.max(0, Math.min(5, ansiaProp ?? 0)),
+    };
+  }, [sheet, integridadProp, voluntadProp, ansiaProp]);
 
-  return (
-    <aside className="flex h-full min-h-0 flex-col gap-4 overflow-y-auto border-[#161616] bg-black/24 p-3 font-mono text-[10px] text-neutral-500 lg:w-60 lg:shrink-0">
-      <header className="border-b border-[#161616] pb-3">
-        <p className="text-[8px] uppercase tracking-[0.28em] text-neutral-600">Eco vital</p>
-        <p className="mt-1 font-sans text-[9px] leading-snug text-neutral-600">
-          Estado de tu hoja en este instante. Lo que gasta o recupera la escena aparece cuando el canal lo registra.
-        </p>
-      </header>
+  const integridad = derived.integridad;
+  const voluntad = derived.voluntad;
+  const ansia = derived.ansia;
 
-      <section className="space-y-2" title="Marcas de integridad física recuperables">
-        <div className="flex items-center justify-between text-[8px] uppercase tracking-[0.22em] text-neutral-600">
-          <span>Integridad</span>
-          <span className="tabular-nums text-neutral-500">
-            {filledIntegrity}/{HEALTH_MAX}
+  const wpPct = Math.round((voluntad.current / Math.max(1, voluntad.max)) * 100);
+  const integPct = Math.round((integridad.current / Math.max(1, integridad.max)) * 100);
+  const accent = sheet ? CLAN_ACCENTS[sheet.clan] : "#9ca3af";
+  const linajeLabel = sheet ? CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan : "—";
+
+  const body = (
+    <div className="rounded-md bg-[rgba(255,255,255,0.01)] p-3">
+      <div className="mb-2 flex items-center justify-between">
+        <div className="text-xs font-mono text-[var(--terminal)]">Estado</div>
+        <div className="text-xs text-[var(--accent-muted)]">{ansia}/5 Ansia</div>
+      </div>
+
+      <div className="mb-3">
+        <div className="mb-1 flex items-center justify-between text-xs">
+          <span className="text-[var(--accent-muted)]">Integridad</span>
+          <span className="text-[11px] text-[var(--accent-muted)]">
+            {integridad.current}/{integridad.max}
           </span>
         </div>
-        <div className="flex flex-wrap gap-1" aria-hidden>
-          {Array.from({ length: HEALTH_MAX }, (_, i) => (
-            <span
-              key={`su-${i}`}
-              className={`h-2 w-2 rounded-full ${
-                i < filledIntegrity
-                  ? "bg-emerald-500/85 shadow-[0_0_8px_rgba(16,185,129,0.25)]"
-                  : "border border-emerald-950/50 bg-transparent"
-              }`}
-            />
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-2" title="Voluntad actual / máximo">
-        <div className="flex items-center justify-between text-[8px] uppercase tracking-[0.22em] text-neutral-600">
-          <span>Voluntad</span>
-          <span className="tabular-nums text-neutral-400">
-            {sheet.willpowerCur}/{sheet.willpowerMax}
-          </span>
-        </div>
-        <div className="h-1.5 overflow-hidden rounded-full border border-[#1a1a1a] bg-black/80">
-          <motion.div
-            className="h-full rounded-full bg-[color:var(--terminal)]/75"
-            initial={false}
-            animate={{ width: `${wpPct}%` }}
-            transition={{ type: "spring", stiffness: 200, damping: 24 }}
+        <div className="h-2 w-full overflow-hidden rounded bg-[rgba(255,255,255,0.02)]">
+          <div
+            style={{
+              width: `${integPct}%`,
+              background: "var(--terminal)",
+              height: "100%",
+              transition: reduced ? "none" : "width 350ms ease",
+            }}
+            aria-hidden
           />
         </div>
-      </section>
+      </div>
 
-      <section
-        className={`relative overflow-hidden rounded-xl px-3 py-3 ${vitaeShellClass}`}
-        aria-label={`Presión de Vitae ${h} de 5`}
-      >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_0%,rgba(159,18,57,0.12),transparent_55%)]" aria-hidden />
-        <div className="relative flex items-start gap-2.5">
-          <NexusLibrary.Sangre className={`h-9 w-9 shrink-0 ${vitaeHot && !reduceMotion ? "nexo-glyph-blood-pulse" : ""}`} pulse={h > 2 && !reduceMotion} />
-          <div className="min-w-0 flex-1">
-            <p className="text-[8px] uppercase tracking-[0.26em] text-[color:var(--blood)]/90">Ansia (Hambre)</p>
-            <p className="mt-0.5 font-sans text-2xl font-light tabular-nums leading-none text-neutral-100">
-              {h}
-              <span className="text-base text-neutral-600">/5</span>
-            </p>
-            <p className="mt-1.5 text-[8px] leading-snug text-neutral-600">
-              {h >= 4 ? "La Bestia oprime el canal." : h >= 2 ? "Eco hematófago perceptible." : "Reservas relativamente serenas."}
-            </p>
+      <div className="mb-2">
+        <div className="mb-1 flex items-center justify-between text-xs">
+          <span className="text-[var(--accent-muted)]">Voluntad</span>
+          <span className="text-[11px] text-[var(--accent-muted)]">
+            {voluntad.current}/{voluntad.max}
+          </span>
+        </div>
+        <div className="h-2 w-full overflow-hidden rounded bg-[rgba(255,255,255,0.02)]">
+          <div
+            style={{
+              width: `${wpPct}%`,
+              background: "var(--terminal)",
+              height: "100%",
+              transition: reduced ? "none" : "width 350ms ease",
+            }}
+            aria-hidden
+          />
+        </div>
+      </div>
+
+      <div className="mt-2 flex items-center gap-1">
+        {Array.from({ length: 5 }, (_, i) => i < ansia).map((on, idx) => (
+          <div key={idx} className={`h-3 w-3 rounded ${on ? "bg-[var(--crimson)]" : "bg-[rgba(255,255,255,0.02)]"}`} />
+        ))}
+        <div className="ml-2 text-xs text-[var(--accent-muted)]">Ansia</div>
+      </div>
+    </div>
+  );
+
+  return (
+    <aside className="w-full rounded-md border border-[#161616] bg-black/24 p-3 font-mono text-[10px] text-neutral-500 lg:w-60 lg:shrink-0">
+      <div className="mb-2 flex items-center justify-between">
+        <div className="text-xs font-sans">Hoja — Estado</div>
+        <button
+          aria-expanded={open}
+          onClick={() => {
+            setOpen((v) => !v);
+            onToggleExpand?.();
+          }}
+          className="rounded border border-[rgba(255,255,255,0.03)] px-2 py-1 text-[10px] focus:outline-none focus:ring-2 focus:ring-[var(--terminal-dim)]"
+        >
+          {open ? "Ocultar" : "Abrir"}
+        </button>
+      </div>
+
+      {open ? (
+        body
+      ) : (
+        <div className="rounded-md bg-[rgba(255,255,255,0.01)] p-2">
+          <div className="flex items-center justify-between">
+            <div className="font-mono text-sm text-[var(--terminal)]">
+              V{voluntad.current}/{voluntad.max}
+            </div>
+            <div className="font-mono text-sm text-[var(--crimson)]">{ansia}</div>
           </div>
         </div>
-        <div className="relative mt-3 flex gap-1">
-          {Array.from({ length: 5 }, (_, i) => {
-            const on = i < h;
-            return (
-              <div
-                key={`h-${i}`}
-                className={`h-2 flex-1 rounded-full transition-colors duration-300 ${
-                  on
-                    ? `bg-gradient-to-b from-[color:var(--crimson)] to-[color:var(--blood)] ${
-                        vitaeHot && !reduceMotion ? "nexo-vitae-segment-fill" : "shadow-[0_0_6px_rgba(159,18,57,0.35)]"
-                      }`
-                    : "bg-white/[0.06]"
-                }`}
-              />
-            );
-          })}
-        </div>
-      </section>
+      )}
 
-      {isNarrator ? (
-        <p className="border-t border-[#161616] pt-3 text-[8px] leading-relaxed text-neutral-700" style={{ color: accent }}>
+      {isNarrator && sheet ? (
+        <p className="mt-3 border-t border-[#161616] pt-3 text-[8px] leading-relaxed text-neutral-700" style={{ color: accent }}>
           <span className="font-sans font-medium text-neutral-400">{sheet.name || "—"}</span>
           <span className="text-neutral-600"> · </span>
           <span>{linajeLabel}</span>
@@ -128,3 +158,5 @@ export function CharacterStatusPanel({ sheet, isNarrator = false }: Props) {
     </aside>
   );
 }
+
+export default CharacterStatusPanel;
