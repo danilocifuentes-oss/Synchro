@@ -5,6 +5,8 @@ import { useCallback, useState } from "react";
 import { signIn } from "next-auth/react";
 import { ROOT_OPERATOR_CIPHER } from "@/lib/sessionMeta";
 import useA11yAnnounce from "@/hooks/useA11yAnnounce";
+import { IconAvatarSigil, IconOrnament } from "@/components/icons";
+import { IconTerminalAnimated } from "@/components/icons/animated";
 
 type Props = {
   onAuthenticate: () => void;
@@ -73,7 +75,11 @@ export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
       >
         <header className="space-y-1 border-b border-neutral-700/70 pb-4 text-[10px] uppercase leading-relaxed tracking-[0.18em] text-neutral-400">
           <p className="text-[var(--terminal)]/95">CANAL SCHRECK_NET · MNEMÓSYNE</p>
-          <p className="text-neutral-600">CODEX V</p>
+          <p className="inline-flex items-center gap-2 text-neutral-600">
+            <IconAvatarSigil className="icon" />
+            <span>CODEX V</span>
+            <IconOrnament className="icon w-[58px]" />
+          </p>
           <p className="mt-2 normal-case tracking-normal text-[10px] leading-snug text-neutral-500">
             Introduce el código de acceso e inicia la sesión en el Nexo.
           </p>
@@ -118,7 +124,10 @@ export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
                 animate={{ x: ["-100%", "100%"] }}
                 transition={{ duration: 2.4, repeat: Infinity, ease: "linear" }}
               />
-              <span className="relative z-10">{loading ? "ACCEDIENDO..." : "ACCEDER"}</span>
+              <span className="relative z-10 inline-flex items-center gap-2">
+                <IconTerminalAnimated className="icon !text-[var(--terminal)]" />
+                <span>{loading ? "ACCEDIENDO..." : "ACCEDER"}</span>
+              </span>
             </motion.button>
           </>
         ) : (
