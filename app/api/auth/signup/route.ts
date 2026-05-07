@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { addUser, findUserByName } from "@/app/lib/users";
+import { isValidSchreckPin, normalizeSchreckPin } from "@/lib/schreckPin";
 
 const SIGNUP_RATE_WINDOW_MS = 10 * 60 * 1000;
 const SIGNUP_MAX_ATTEMPTS = 6;
@@ -44,16 +45,24 @@ export async function POST(req: Request) {
     const body = (await req.json()) as { name?: string; clan?: string; code?: string };
     const name = String(body.name ?? "").trim();
     const clan = String(body.clan ?? "").trim();
-    const code = String(body.code ?? "").trim().toUpperCase();
+    const pin = normalizeSchreckPin(String(body.code ?? ""));
 
-    if (!name || !code) {
+    if (!name || !pin) {
       registerAttempt(ip);
-      return NextResponse.json({ ok: false, error: "Falta nombre o código." }, { status: 400 });
+      return NextResponse.json({ ok: false, error: "Faltan nombre o PIN." }, { status: 400 });
     }
 
-    if (name.length < 3 || name.length > 40 || code.length < 4 || code.length > 24) {
+    if (name.length < 3 || name.length > 40) {
       registerAttempt(ip);
-      return NextResponse.json({ ok: false, error: "Nombre o código fuera de rango." }, { status: 400 });
+      return NextResponse.json({ ok: false, error: "El nombre debe tener entre 3 y 40 caracteres." }, { status: 400 });
+    }
+
+    if (!isValidSchreckPin(pin)) {
+      registerAttempt(ip);
+      return NextResponse.json(
+        { ok: false, error: "La contraseña debe ser exactamente 6 dígitos numéricos." },
+        { status: 400 },
+      );
     }
 
     if (findUserByName(name)) {
@@ -61,7 +70,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Ese nombre ya está en uso." }, { status: 409 });
     }
 
-    const hash = await bcrypt.hash(code, 10);
+    const hash = await bcrypt.hash(pin, 10);
     addUser({
       id: randomUUID(),
       name,

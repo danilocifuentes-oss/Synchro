@@ -2,6 +2,7 @@ import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { findStoredUserByIdentifier } from "@/app/lib/users";
+import { isValidSchreckPin, normalizeSchreckPin } from "@/lib/schreckPin";
 
 type ExternalUser = {
   id: string;
@@ -102,21 +103,29 @@ export const authOptions: NextAuthOptions = {
       name: "SchreckNet",
       credentials: {
         identifier: { label: "Nombre o ID", type: "text", placeholder: "Nombre o UUID" },
-        code: { label: "Código", type: "text", placeholder: "CRONISTA" },
+        code: { label: "Contraseña", type: "text", placeholder: "123456" },
       },
       async authorize(credentials, req) {
         const identifier = String(credentials?.identifier ?? "").trim();
-        const codeNormalized = String(credentials?.code ?? "").trim().toUpperCase();
+        const rawCode = String(credentials?.code ?? "").trim();
+        const pinDigits = normalizeSchreckPin(rawCode);
+        const codeNormalized = rawCode.toUpperCase();
         const ip = getClientIp(req);
-        if (!codeNormalized || isRateLimited(ip)) return null;
+        if (!rawCode || isRateLimited(ip)) return null;
         if (!hasRequiredProdAuthEnv()) {
           console.error("[auth] Faltan variables requeridas en producción: NEXTAUTH_SECRET y/o AUTH_VALIDATE_ENDPOINT");
           return null;
         }
 
+        async function matchLocal(hash: string): Promise<boolean> {
+          if (isValidSchreckPin(pinDigits) && (await bcrypt.compare(pinDigits, hash))) return true;
+          if (codeNormalized.length > 0 && (await bcrypt.compare(codeNormalized, hash))) return true;
+          return false;
+        }
+
         if (identifier) {
           const localUser = findStoredUserByIdentifier(identifier);
-          if (localUser && (await bcrypt.compare(codeNormalized, localUser.codeHash))) {
+          if (localUser && (await matchLocal(localUser.codeHash))) {
             clearRateLimit(ip);
             return {
               id: localUser.id,
@@ -133,7 +142,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          const externalUser = await validateWithExternalAuth(codeNormalized, ip);
+          const externalUser = await validateWithExternalAuth(codeNormalized.length > 0 ? codeNormalized : pinDigits, ip);
           if (externalUser) {
             clearRateLimit(ip);
             return { id: externalUser.id, name: externalUser.name, clan: externalUser.clan } as unknown as {
@@ -148,7 +157,7 @@ export const authOptions: NextAuthOptions = {
 
         // Fallback de desarrollo (desactívalo en producción dejando vacío SCHRECKNET_DEV_CODE).
         const devCode = !isProd ? String(process.env.SCHRECKNET_DEV_CODE ?? "").trim().toUpperCase() : "";
-        if (!identifier && devCode && codeNormalized === devCode) {
+        if (!identifier && devCode && (codeNormalized === devCode || pinDigits === devCode)) {
           clearRateLimit(ip);
           return {
             id: "dev-user",
