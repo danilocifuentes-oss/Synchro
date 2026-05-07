@@ -26,7 +26,7 @@ export default function NexoPreviewPage() {
           <SidebarMesa
             disciplines={sampleDisciplines}
             onEnterNexo={() => window.alert("Entrar al Nexo")}
-            onOpenCodex={() => window.alert("Abrir CODEX")}
+            onOpenCodex={() => window.alert("Abrir Codex V")}
             onLogout={() => (window.location.href = "/")}
           />
         </div>

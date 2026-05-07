@@ -21,7 +21,7 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "El Cronista de las Sombras · Nexo",
   description:
-    "Mesa digital inspirada en Vampire V5 (no oficial): SchreckNet, CODEX, dados Sereno y narrador por IA. Entra y juega.",
+    "Mesa digital inspirada en Vampire V5 (no oficial): SchreckNet, Codex, dados Sereno y narrador por IA. Entra y juega.",
 };
 
 export default function RootLayout({

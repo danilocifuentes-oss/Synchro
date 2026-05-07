@@ -219,13 +219,13 @@ function QuickControls({ onOpenCodex, onLogout }: { onOpenCodex?: () => void; on
       <div className="flex flex-col gap-2">
         <button
           type="button"
-          onClick={() => (onOpenCodex ? onOpenCodex() : window.alert("Abrir CODEX"))}
+          onClick={() => (onOpenCodex ? onOpenCodex() : window.alert("Abrir Codex V"))}
           className="btn-glow w-full rounded bg-[var(--terminal)] px-3 py-2 text-sm font-semibold text-black focus:outline-none focus:ring-2 focus:ring-[var(--terminal-dim)]"
-          aria-label="Abrir Codex"
+          aria-label="Abrir Codex V"
         >
           <span className="inline-flex items-center gap-1.5">
             <IconBookAnimated className="icon !text-black" />
-            <span>CODEX</span>
+            <span>Codex V</span>
           </span>
         </button>
         <div className="flex gap-2">
@@ -244,7 +244,7 @@ function QuickControls({ onOpenCodex, onLogout }: { onOpenCodex?: () => void; on
             type="button"
             onClick={() => (onLogout ? onLogout() : (window.location.href = "/"))}
             className="rounded border border-[var(--blood)] px-3 py-2 text-sm text-[var(--blood)]"
-            aria-label="Cerrar sesión"
+            aria-label="Salir del Nexo"
           >
             <span className="inline-flex items-center gap-1.5">
               <IconTerminalAnimated className="icon" />

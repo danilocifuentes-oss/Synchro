@@ -755,7 +755,7 @@ function CronistaAppInner() {
           className="hidden min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-neutral-600 xl:flex"
           aria-label="Estado de sesión"
         >
-          <span className="font-serif text-sm font-semibold tracking-[0.38em] text-neutral-100">CODEX V</span>
+          <span className="font-serif text-sm font-semibold tracking-[0.28em] text-neutral-100">Codex V</span>
           <span className="text-neutral-700">·</span>
           <span style={{ color: accent }} className="font-medium text-neutral-300">
             {STRAND_TAG[activeStrand]}
@@ -788,7 +788,7 @@ function CronistaAppInner() {
             >
               <span className="inline-flex items-center gap-1.5">
                 <IconBookAnimated className="icon" />
-                <span>CODEX</span>
+                <span>Codex</span>
               </span>
             </button>
             <button
@@ -798,7 +798,7 @@ function CronistaAppInner() {
             >
               <span className="inline-flex items-center gap-1.5">
                 <IconTerminalAnimated className="icon" />
-                <span>CRIPTA</span>
+                <span>Cripta</span>
               </span>
             </button>
             <button
@@ -881,7 +881,7 @@ function CronistaAppInner() {
                 ) : (
                   <div className="flex min-h-[min(40vh,22rem)] flex-col items-center justify-center gap-4 px-6 py-10 text-center">
                     <p className="max-w-sm font-sans text-sm leading-relaxed text-neutral-400">
-                      La campaña solitaria usa tu ficha activa. Elige o crea un personaje en CRIPTA.
+                      La campaña solitaria usa tu ficha activa. Elige o crea un personaje en Cripta.
                     </p>
                     <button
                       type="button"

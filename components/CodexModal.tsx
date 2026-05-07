@@ -102,7 +102,7 @@ export default function CodexModal({ onClose, onNavigate }: { onClose: () => voi
           className="sharp-border-inner relative max-h-[80vh] w-[min(920px,94%)] overflow-auto rounded-md bg-[var(--panel)] p-6"
         >
           <header className="mb-4 flex items-center justify-between">
-            <h3 className="font-grotesk text-lg">Codex V - Indice</h3>
+            <h3 className="font-grotesk text-lg">Codex V · Índice</h3>
             <div className="flex gap-2">
               <button
                 type="button"
@@ -112,7 +112,7 @@ export default function CodexModal({ onClose, onNavigate }: { onClose: () => voi
                 }}
                 className="rounded border px-3 py-1"
               >
-                Abrir pagina completa
+                Abrir página completa
               </button>
               <button
                 type="button"

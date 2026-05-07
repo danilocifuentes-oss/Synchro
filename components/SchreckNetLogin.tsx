@@ -77,7 +77,7 @@ export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
           <p className="text-[var(--terminal)]/95">CANAL SCHRECK_NET · MNEMÓSYNE</p>
           <p className="inline-flex items-center gap-2 text-neutral-600">
             <IconAvatarSigil className="icon" />
-            <span>CODEX V</span>
+            <span>Codex V</span>
             <IconOrnament className="icon w-[58px]" />
           </p>
           <p className="mt-2 normal-case tracking-normal text-[10px] leading-snug text-neutral-500">

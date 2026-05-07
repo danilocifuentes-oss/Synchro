@@ -130,7 +130,7 @@ export function ProfileHub({
           ) : visible.length === 0 ? (
             <p className="border border-[#161616] bg-black/40 px-4 py-8 text-center text-[11px] leading-relaxed text-neutral-500">
               Aquí aparecerán tus personajes. Pulsa{" "}
-              <span className="text-[var(--terminal)]/90">«Nuevo personaje»</span> para abrir el CODEX y sellar tu primera
+              <span className="text-[var(--terminal)]/90">«Nuevo personaje»</span> para abrir el Codex y sellar tu primera
               ficha.
             </p>
           ) : (

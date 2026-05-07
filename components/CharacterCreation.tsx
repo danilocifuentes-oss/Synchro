@@ -409,7 +409,7 @@ export function CharacterCreation({
     if (mechanicsDisabled) return;
     if (
       !window.confirm(
-        "¿Restablecer la plantilla CODEX a cero? Se borran titular del CV, concepto y todo el reparto hasta el estado base (atributos en punto base gris; habilidades sin puntos). El borrador en memoria se omite; lo guardado en el Nexo no cambia hasta el próximo sellado.",
+        "¿Restablecer la plantilla Codex a cero? Se borran titular del CV, concepto y todo el reparto hasta el estado base (atributos en punto base gris; habilidades sin puntos). El borrador en memoria se omite; lo guardado en el Nexo no cambia hasta el próximo sellado.",
       )
     ) {
       return;
@@ -462,7 +462,7 @@ export function CharacterCreation({
         <header className="flex flex-wrap items-end justify-between gap-4 border-b border-[#161616] pb-5 font-mono">
           <div>
             <p className="text-[9px] uppercase tracking-[0.35em] text-neutral-600">
-              {vo ? "//_MATRIZ · ARCHIVO" : "CODEX_V"}
+              {vo ? "//_MATRIZ · ARCHIVO" : "Codex V"}
             </p>
             <div className="mt-1 inline-flex items-center gap-2">
               <IconAvatarSigil className="icon" />
@@ -967,7 +967,7 @@ export function CharacterCreation({
                   style={{ boxShadow: `inset 0 0 0 1px ${accent}18` }}
                   onClick={() => onSave(normalizeCharacterSheet(sheet))}
                 >
-                  Guardar CODEX
+                  Guardar Codex
                 </motion.button>
               ) : null}
             </div>
