@@ -64,6 +64,8 @@ import { CONCEPTOS_DATA, inferConceptPresetIdFromNombre } from "@/lib/conceptosC
 import { ConceptCodexField } from "./ConceptCodexField";
 import { DotTrack } from "./DotTrack";
 import { disciplineXpFactor, maxAffordableTargetLevel, xpCostForIncrease } from "@/lib/soloCampaign/xpEconomy";
+import { IconAvatarSigil, IconOrnament } from "@/components/icons";
+import { IconBookAnimated, IconTerminalAnimated } from "@/components/icons/animated";
 /** Freebies CODEX ocultos en creación hasta rediseño de ese bloque. */
 const SHOW_CODEX_FREEBIES = false;
 
@@ -462,18 +464,25 @@ export function CharacterCreation({
             <p className="text-[9px] uppercase tracking-[0.35em] text-neutral-600">
               {vo ? "//_MATRIZ · ARCHIVO" : "CODEX_V"}
             </p>
-            <h1 className="mt-1 text-sm font-normal tracking-[0.12em] text-neutral-400">
-              {vo ? "Ficha sellada en el Nexo" : mechLock ? "Ajuste de narrativa" : "Matriz Cainita"}
-            </h1>
+            <div className="mt-1 inline-flex items-center gap-2">
+              <IconAvatarSigil className="icon" />
+              <h1 className="text-sm font-normal tracking-[0.12em] text-neutral-400">
+                {vo ? "Ficha sellada en el Nexo" : mechLock ? "Ajuste de narrativa" : "Matriz Cainita"}
+              </h1>
+              <IconOrnament className="icon w-[64px]" />
+            </div>
           </div>
           {!mechanicsDisabled ? (
             <button
               type="button"
               onClick={resetToBlankCodex}
               title="Elimina el borrador actual y carga la plantilla CODEX inicial (sin datos en caché)."
-              className="shrink-0 border border-[#2a2a2a] bg-black/40 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 hover:border-neutral-600 hover:text-neutral-400"
+              className="shrink-0 rounded border border-[#2a2a2a] bg-black/40 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 hover:border-neutral-600 hover:text-neutral-400"
             >
-              [NUEVA_MATRIZ]
+              <span className="inline-flex items-center gap-1.5">
+                <IconTerminalAnimated className="icon" />
+                <span>[NUEVA_MATRIZ]</span>
+              </span>
             </button>
           ) : null}
         </header>
@@ -911,7 +920,10 @@ export function CharacterCreation({
                   className="mt-6 w-full border bg-black py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.28em]"
                   style={{ borderColor: accent, color: accent, boxShadow: `inset 0 0 0 1px ${accent}22` }}
                 >
-                  &gt;_SELLAR_CODEX
+                  <span className="inline-flex items-center gap-1.5">
+                    <IconBookAnimated className="icon" />
+                    <span>&gt;_SELLAR_CODEX</span>
+                  </span>
                 </motion.button>
               ) : null}
               {!mechanicsDisabled && pendingSealBits.length > 0 ? (
