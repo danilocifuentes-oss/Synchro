@@ -65,9 +65,11 @@ export function NexoWrapper({ children }: Props) {
   }, [effectiveReduced]);
 
   return (
-    <div className="theme-void relative min-h-screen overflow-x-hidden bg-void text-neutral-200">
-      <div className="necro-ambient-bg" aria-hidden />
-      <div className="scan-overlay fixed inset-0 pointer-events-none" aria-hidden />
+    <div className="theme-void necro-bg relative min-h-screen overflow-x-hidden bg-void text-neutral-200">
+      <div className="grain-overlay" aria-hidden />
+      <div className="scan-overlay" aria-hidden />
+      <div className="vignette-overlay" aria-hidden />
+      <div className="hero-light-band" aria-hidden />
 
       {phase === "pending" ? (
         <div className="relative z-10 min-h-screen">{children}</div>

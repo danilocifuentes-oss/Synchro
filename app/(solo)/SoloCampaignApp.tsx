@@ -1,11 +1,14 @@
 "use client";
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { NexoWrapper } from "@/components/NexoWrapper";
 import SoloCampaignHeader from "@/components/SoloCampaignHeader";
 import CharacterStatusPanel from "@/components/CharacterStatusPanel";
 import ActionRevealButton from "@/components/ActionRevealButton";
 import DiceRollerD10 from "@/components/DiceRollerD10";
 import { useCharacter } from "@/context/CharacterContext";
+import { useSettings } from "@/context/SettingsContext";
+import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import { IconSkullAnimated } from "@/components/icons/animated";
 
 type ActionItem = {
@@ -22,6 +25,9 @@ type ActionItem = {
 
 export default function SoloCampaignApp() {
   const { character, applyDelta, replaceStatus } = useCharacter();
+  const sysReduced = usePrefersReducedMotion();
+  const { settings } = useSettings();
+  const effectiveReduced = settings.reducedMotionOverride == null ? sysReduced : settings.reducedMotionOverride;
 
   const [sceneIndex, setSceneIndex] = useState(0);
   const scenes = [
@@ -176,19 +182,24 @@ export default function SoloCampaignApp() {
               <h4 className="mb-2 text-sm text-[var(--accent-muted)]">Acciones</h4>
               <div className="flex flex-col gap-3">
                 {actions.map((a) => (
-                  <ActionRevealButton
+                  <motion.div
                     key={a.id}
-                    holdMs={900}
-                    onPress={() => handlePressSelect(a.id)}
-                    onHold={() => handleHoldReveal(a.id)}
-                    className="bg-[var(--neon)] text-black"
-                    ariaLabel={`Acción ${a.label}`}
+                    whileHover={effectiveReduced ? {} : { y: -3, scale: 1.02 }}
+                    transition={{ duration: 0.12 }}
                   >
-                    <span className="inline-flex items-center gap-2">
-                      <IconSkullAnimated className="icon icon--neon" />
-                      <span>{a.label}</span>
-                    </span>
-                  </ActionRevealButton>
+                    <ActionRevealButton
+                      holdMs={900}
+                      onPress={() => handlePressSelect(a.id)}
+                      onHold={() => handleHoldReveal(a.id)}
+                      className="bg-[var(--neon)] text-black"
+                      ariaLabel={`Acción ${a.label}`}
+                    >
+                      <span className="inline-flex items-center gap-2">
+                        <IconSkullAnimated className="icon icon--neon" />
+                        <span>{a.label}</span>
+                      </span>
+                    </ActionRevealButton>
+                  </motion.div>
                 ))}
 
                 {revealedConsequence && (

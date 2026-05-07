@@ -5,8 +5,10 @@ import { motion } from "framer-motion";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import { useSettings } from "@/context/SettingsContext";
 import { useCharacter } from "@/context/CharacterContext";
-import { IconAvatarSigil, IconLock, IconOrnament } from "@/components/icons";
-import { IconBookAnimated, IconTerminalAnimated } from "@/components/icons/animated";
+import IconAvatarSigil from "@/components/icons/IconAvatarSigil";
+import IconBookAnimated from "@/components/icons/animated/IconBookAnimated";
+import IconTerminalAnimated from "@/components/icons/animated/IconTerminalAnimated";
+import IconLock from "@/components/icons/IconLock";
 
 type Discipline = {
   id: string;
@@ -38,42 +40,39 @@ export function SidebarMesa({
     show: { opacity: 1, x: 0, transition: { staggerChildren: 0.06, when: "beforeChildren", duration: 0.22 } },
   };
   const cardVariant = { hidden: { opacity: 0, y: 6 }, show: { opacity: 1, y: 0, transition: { duration: 0.2 } } };
+  const hoverLift = effectiveReduced
+    ? {}
+    : { whileHover: { y: -4, boxShadow: "0 10px 30px rgba(0,0,0,0.6)" }, transition: { duration: 0.16 } };
 
   return (
     <motion.aside
-      className="sticky top-6 flex w-full max-w-xs flex-col gap-4 bg-[var(--panel)] p-4 sharp-border-inner"
+      className="sticky top-6 flex w-full max-w-xs flex-col gap-4 bg-[var(--panel)] p-4 sharp-border-inner card-inner-glow"
       initial="hidden"
       animate="show"
       variants={effectiveReduced ? { hidden: {}, show: {} } : containerVariants}
     >
-      <motion.div variants={effectiveReduced ? { hidden: {}, show: {} } : cardVariant}>
+      <motion.div variants={effectiveReduced ? { hidden: {}, show: {} } : cardVariant} {...hoverLift}>
         <IdentityCard identity={identity} onEnterNexo={onEnterNexo} />
       </motion.div>
 
-      <motion.div variants={effectiveReduced ? { hidden: {}, show: {} } : cardVariant}>
+      <motion.div variants={effectiveReduced ? { hidden: {}, show: {} } : cardVariant} {...hoverLift}>
         <V5StatusPanel status={status} reduced={effectiveReduced} />
       </motion.div>
 
-      <motion.div variants={effectiveReduced ? { hidden: {}, show: {} } : cardVariant}>
+      <motion.div variants={effectiveReduced ? { hidden: {}, show: {} } : cardVariant} {...hoverLift}>
         <DisciplinesGrid disciplines={disciplines} />
       </motion.div>
 
-      <motion.div className="mt-auto" variants={effectiveReduced ? { hidden: {}, show: {} } : cardVariant}>
+      <motion.div className="mt-auto" variants={effectiveReduced ? { hidden: {}, show: {} } : cardVariant} {...hoverLift}>
         <QuickControls onOpenCodex={onOpenCodex} onLogout={onLogout} />
       </motion.div>
     </motion.aside>
   );
 }
 
-function IdentityCard({
-  identity,
-  onEnterNexo,
-}: {
-  identity: { nombre: string; clan?: string; generacion?: string; generación?: string; avatar?: string };
-  onEnterNexo?: () => void;
-}) {
+function IdentityCard({ identity, onEnterNexo }: { identity: any; onEnterNexo?: () => void }) {
   return (
-    <div className="rounded-md bg-[rgba(255,255,255,0.01)] p-3">
+    <div className="rounded-md bg-[rgba(255,255,255,0.01)] p-3 card-inner-glow">
       <div className="flex items-center gap-3">
         <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-md bg-[rgba(255,255,255,0.02)]">
           {identity.avatar ? (
@@ -96,7 +95,7 @@ function IdentityCard({
         <button
           type="button"
           onClick={onEnterNexo}
-          className="flex-1 rounded bg-[var(--terminal)] px-3 py-2 text-sm font-semibold text-black hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-[var(--terminal-dim)]"
+          className="btn-glow flex-1 rounded bg-[var(--terminal)] px-3 py-2 text-sm font-semibold text-black hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-[var(--terminal-dim)]"
           aria-label="Entrar al Nexo"
         >
           <span className="inline-flex items-center gap-1.5">
@@ -110,10 +109,7 @@ function IdentityCard({
           className="rounded border border-[rgba(255,255,255,0.04)] px-2 py-2 text-sm"
           aria-label="Ver hoja"
         >
-          <span className="inline-flex items-center gap-1">
-            <IconBookAnimated className="icon" />
-            <span>Hoja</span>
-          </span>
+          Hoja
         </button>
       </div>
     </div>
@@ -131,7 +127,7 @@ function V5StatusPanel({
   const danoPct = Math.max(0, Math.min(100, Math.round((status.daño.current / Math.max(1, status.daño.max)) * 100)));
 
   return (
-    <div className="rounded-md bg-[rgba(255,255,255,0.01)] p-3">
+    <div className="rounded-md bg-[rgba(255,255,255,0.01)] p-3 card-inner-glow">
       <h3 className="mb-2 text-xs font-semibold text-[var(--accent-muted)]">Estado V5</h3>
 
       <div className="mb-3">
@@ -194,10 +190,8 @@ function V5StatusPanel({
 
 function DisciplinesGrid({ disciplines }: { disciplines: Discipline[] }) {
   return (
-    <div className="rounded-md bg-[rgba(255,255,255,0.01)] p-3">
-      <h4 className="mb-2 inline-flex items-center gap-2 text-xs font-semibold text-[var(--accent-muted)]">
-        Disciplinas <IconOrnament className="icon w-[64px]" />
-      </h4>
+    <div className="rounded-md bg-[rgba(255,255,255,0.01)] p-3 card-inner-glow">
+      <h4 className="mb-2 text-xs font-semibold text-[var(--accent-muted)]">Disciplinas</h4>
       <div className="grid grid-cols-4 gap-2">
         {disciplines.map((d) => (
           <button
@@ -209,7 +203,7 @@ function DisciplinesGrid({ disciplines }: { disciplines: Discipline[] }) {
             onClick={() => window.alert(`Abrir disciplina ${d.name}`)}
           >
             <div className="mb-1 flex h-8 w-8 items-center justify-center text-lg text-[var(--neon)]">
-              {d.glyph ? <span>{d.glyph}</span> : <span>◦</span>}
+              {d.glyph ?? "◦"}
             </div>
             <div className="text-[10px] text-[var(--accent-muted)]">{d.level}</div>
           </button>
@@ -221,12 +215,12 @@ function DisciplinesGrid({ disciplines }: { disciplines: Discipline[] }) {
 
 function QuickControls({ onOpenCodex, onLogout }: { onOpenCodex?: () => void; onLogout?: () => void }) {
   return (
-    <div className="mt-auto rounded-md bg-[rgba(255,255,255,0.01)] p-3">
+    <div className="mt-auto rounded-md bg-[rgba(255,255,255,0.01)] p-3 card-inner-glow">
       <div className="flex flex-col gap-2">
         <button
           type="button"
           onClick={() => (onOpenCodex ? onOpenCodex() : window.alert("Abrir CODEX"))}
-          className="w-full rounded bg-[var(--terminal)] px-3 py-2 text-sm font-semibold text-black focus:outline-none focus:ring-2 focus:ring-[var(--terminal-dim)]"
+          className="btn-glow w-full rounded bg-[var(--terminal)] px-3 py-2 text-sm font-semibold text-black focus:outline-none focus:ring-2 focus:ring-[var(--terminal-dim)]"
           aria-label="Abrir Codex"
         >
           <span className="inline-flex items-center gap-1.5">
@@ -254,7 +248,7 @@ function QuickControls({ onOpenCodex, onLogout }: { onOpenCodex?: () => void; on
           >
             <span className="inline-flex items-center gap-1.5">
               <IconTerminalAnimated className="icon" />
-              <span>Logout</span>
+              <span>Salir del Nexo</span>
             </span>
           </button>
         </div>

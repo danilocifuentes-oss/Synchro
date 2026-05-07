@@ -117,9 +117,12 @@ export function NexoChannelPanel({
           <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6 sm:py-8 text-center">
             <div className="w-full max-w-md rounded-md border border-white/[0.08] bg-black/30 px-5 py-5 sm:px-6 sm:py-6">
               <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[color:var(--neon)]">
-                Narración con Motor IA
+                Canal principal activo
               </p>
-              <p className="mt-3 font-sans text-sm leading-relaxed text-neutral-300">Próximamente.</p>
+              <p className="mt-3 font-sans text-sm leading-relaxed text-neutral-300">
+                El hilo no tiene bloques visibles en este momento. Inicia una acción desde el panel lateral o cambia a
+                la hebra correspondiente para continuar la sesión.
+              </p>
             </div>
           </div>
         )}
