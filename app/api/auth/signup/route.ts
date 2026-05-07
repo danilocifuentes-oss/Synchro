@@ -1,0 +1,78 @@
+import { randomUUID } from "node:crypto";
+
+import bcrypt from "bcryptjs";
+import { NextResponse } from "next/server";
+import { addUser, findUserByName } from "@/app/lib/users";
+
+const SIGNUP_RATE_WINDOW_MS = 10 * 60 * 1000;
+const SIGNUP_MAX_ATTEMPTS = 6;
+const signupRateBuckets = new Map<string, { count: number; resetAt: number }>();
+
+function getClientIp(req: Request): string {
+  const fwd = req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip");
+  return fwd?.split(",")[0]?.trim() || "unknown";
+}
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const bucket = signupRateBuckets.get(ip);
+  if (!bucket) return false;
+  if (bucket.resetAt <= now) {
+    signupRateBuckets.delete(ip);
+    return false;
+  }
+  return bucket.count >= SIGNUP_MAX_ATTEMPTS;
+}
+
+function registerAttempt(ip: string): void {
+  const now = Date.now();
+  const bucket = signupRateBuckets.get(ip);
+  if (!bucket || bucket.resetAt <= now) {
+    signupRateBuckets.set(ip, { count: 1, resetAt: now + SIGNUP_RATE_WINDOW_MS });
+    return;
+  }
+  signupRateBuckets.set(ip, { ...bucket, count: bucket.count + 1 });
+}
+
+export async function POST(req: Request) {
+  const ip = getClientIp(req);
+  if (isRateLimited(ip)) {
+    return NextResponse.json({ ok: false, error: "Demasiados intentos. Intenta más tarde." }, { status: 429 });
+  }
+
+  try {
+    const body = (await req.json()) as { name?: string; clan?: string; code?: string };
+    const name = String(body.name ?? "").trim();
+    const clan = String(body.clan ?? "").trim();
+    const code = String(body.code ?? "").trim().toUpperCase();
+
+    if (!name || !code) {
+      registerAttempt(ip);
+      return NextResponse.json({ ok: false, error: "Falta nombre o código." }, { status: 400 });
+    }
+
+    if (name.length < 3 || name.length > 40 || code.length < 4 || code.length > 24) {
+      registerAttempt(ip);
+      return NextResponse.json({ ok: false, error: "Nombre o código fuera de rango." }, { status: 400 });
+    }
+
+    if (findUserByName(name)) {
+      registerAttempt(ip);
+      return NextResponse.json({ ok: false, error: "Ese nombre ya está en uso." }, { status: 409 });
+    }
+
+    const hash = await bcrypt.hash(code, 10);
+    addUser({
+      id: randomUUID(),
+      name,
+      clan: clan || undefined,
+      codeHash: hash,
+      role: "player",
+    });
+
+    return NextResponse.json({ ok: true });
+  } catch {
+    registerAttempt(ip);
+    return NextResponse.json({ ok: false, error: "No se pudo crear la cuenta." }, { status: 500 });
+  }
+}

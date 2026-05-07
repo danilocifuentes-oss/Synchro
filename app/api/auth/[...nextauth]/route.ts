@@ -1,5 +1,7 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
+import { findStoredUserByIdentifier } from "@/app/lib/users";
 
 type ExternalUser = {
   id: string;
@@ -99,19 +101,39 @@ export const authOptions: NextAuthOptions = {
       id: "schrecknet",
       name: "SchreckNet",
       credentials: {
+        identifier: { label: "Nombre o ID", type: "text", placeholder: "Nombre o UUID" },
         code: { label: "Código", type: "text", placeholder: "CRONISTA" },
       },
       async authorize(credentials, req) {
-        const code = String(credentials?.code ?? "").trim();
+        const identifier = String(credentials?.identifier ?? "").trim();
+        const codeNormalized = String(credentials?.code ?? "").trim().toUpperCase();
         const ip = getClientIp(req);
-        if (!code || isRateLimited(ip)) return null;
+        if (!codeNormalized || isRateLimited(ip)) return null;
         if (!hasRequiredProdAuthEnv()) {
           console.error("[auth] Faltan variables requeridas en producción: NEXTAUTH_SECRET y/o AUTH_VALIDATE_ENDPOINT");
           return null;
         }
 
+        if (identifier) {
+          const localUser = findStoredUserByIdentifier(identifier);
+          if (localUser && (await bcrypt.compare(codeNormalized, localUser.codeHash))) {
+            clearRateLimit(ip);
+            return {
+              id: localUser.id,
+              name: localUser.name,
+              clan: localUser.clan,
+              role: localUser.role ?? "player",
+            } as unknown as {
+              id: string;
+              name: string;
+              clan?: string;
+              role?: string;
+            };
+          }
+        }
+
         try {
-          const externalUser = await validateWithExternalAuth(code, ip);
+          const externalUser = await validateWithExternalAuth(codeNormalized, ip);
           if (externalUser) {
             clearRateLimit(ip);
             return { id: externalUser.id, name: externalUser.name, clan: externalUser.clan } as unknown as {
@@ -125,13 +147,19 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Fallback de desarrollo (desactívalo en producción dejando vacío SCHRECKNET_DEV_CODE).
-        const devCode = !isProd ? String(process.env.SCHRECKNET_DEV_CODE ?? "").trim() : "";
-        if (devCode && code === devCode) {
+        const devCode = !isProd ? String(process.env.SCHRECKNET_DEV_CODE ?? "").trim().toUpperCase() : "";
+        if (!identifier && devCode && codeNormalized === devCode) {
           clearRateLimit(ip);
-          return { id: "dev-user", name: "Operador", clan: "Toreador" } as unknown as {
+          return {
+            id: "dev-user",
+            name: "Operador",
+            clan: "Toreador",
+            role: "player",
+          } as unknown as {
             id: string;
             name: string;
             clan?: string;
+            role?: string;
           };
         }
 
@@ -146,13 +174,26 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.user = user;
+      if (user) {
+        token.user = user;
+        const ur = user as unknown as { role?: string };
+        token.role = ur.role ?? "player";
+      }
       return token;
     },
     async session({ session, token }) {
-      if (token && token.user) {
+      if (token.user) {
         session.user = token.user as typeof session.user;
       }
+      const typed = token as unknown as { role?: string };
+      const fromUserRole = token.user ? (token.user as unknown as { role?: string }).role : undefined;
+      const role =
+        typeof typed.role === "string"
+          ? typed.role
+          : typeof fromUserRole === "string"
+            ? fromUserRole
+            : "player";
+      (session as unknown as { role: string }).role = role ?? "player";
       return session;
     },
   },

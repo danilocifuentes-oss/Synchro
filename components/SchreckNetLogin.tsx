@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCallback, useState } from "react";
 import { signIn } from "next-auth/react";
@@ -22,6 +23,7 @@ const BOOT_LINES = ["[CONEXIÓN_ESTABLECIDA]", "[BORRANDO_RASTROS_IP]", "[SINCRO
 
 export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
   const { announce } = useA11yAnnounce();
+  const [identifier, setIdentifier] = useState("");
   const [cipher, setCipher] = useState("");
   const [error, setError] = useState(false);
   const [booting, setBooting] = useState(false);
@@ -45,6 +47,7 @@ export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
 
   async function submit() {
     if (loading) return;
+    const normalizedId = identifier.trim();
     const digits = normalizedCipher(cipher);
     if (digits === ROOT_OPERATOR_CIPHER && onRootAccess) {
       setError(false);
@@ -53,7 +56,7 @@ export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
       return;
     }
     setLoading(true);
-    const res = await signIn("schrecknet", { redirect: false, code: digits });
+    const res = await signIn("schrecknet", { redirect: false, identifier: normalizedId, code: digits });
     setLoading(false);
     if (res?.error) {
       setError(true);
@@ -81,13 +84,31 @@ export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
             <IconOrnament className="icon w-[58px]" />
           </p>
           <p className="mt-2 normal-case tracking-normal text-[10px] leading-snug text-neutral-500">
-            Introduce el código de acceso e inicia la sesión en el Nexo.
+            Introduce tu nombre (o ID) y el código. Deja el nombre vacío solo si usas un acceso de desarrollo con código
+            único.
           </p>
         </header>
 
         {!booting ? (
           <>
-            <label className="mt-5 block text-[9px] uppercase tracking-widest text-neutral-600">Autorización</label>
+            <label className="mt-5 block text-[9px] uppercase tracking-widest text-neutral-600">
+              Nombre o ID
+            </label>
+            <input
+              type="text"
+              autoComplete="username"
+              value={identifier}
+              onChange={(e) => {
+                setIdentifier(e.target.value);
+                setError(false);
+              }}
+              placeholder="Nombre o UUID"
+              aria-label="Nombre de usuario o identificador"
+              className={`mt-2 w-full border bg-black/60 px-2 py-2.5 font-mono text-[11px] text-neutral-200 sharp-border-inner focus:outline-none ${
+                error ? "border-[var(--blood)]" : "border-neutral-800 focus:border-[var(--terminal)]/55"
+              }`}
+            />
+            <label className="mt-4 block text-[9px] uppercase tracking-widest text-neutral-600">Autorización</label>
             <input
               type="password"
               inputMode="text"
@@ -113,7 +134,7 @@ export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
             <motion.button
               type="button"
               onClick={submit}
-              disabled={loading}
+              disabled={loading || !cipher.trim()}
               whileHover={{ scale: 1.008 }}
               whileTap={{ scale: 0.996 }}
               className="relative mt-8 w-full overflow-hidden border border-[var(--terminal)]/35 bg-neutral-950 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.38em] text-[var(--terminal)] sharp-border-inner disabled:cursor-not-allowed disabled:opacity-55"
@@ -129,6 +150,13 @@ export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
                 <span>{loading ? "ACCEDIENDO..." : "ACCEDER"}</span>
               </span>
             </motion.button>
+            <p className="mt-3 text-center text-[10px] text-neutral-500">
+              ¿No tienes cuenta?{" "}
+              <Link href="/auth/signup" className="text-[var(--terminal)]/90 hover:text-[var(--terminal)]">
+                Crea una aquí
+              </Link>
+              .
+            </p>
           </>
         ) : (
           <div className="mt-6 min-h-[6.5rem] font-mono text-[10px] leading-6 text-neutral-500">
