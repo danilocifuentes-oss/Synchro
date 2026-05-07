@@ -12,6 +12,7 @@
     "start": "next start",
     "lint": "eslint",
     "solo:narrative-digest": "tsx scripts/exportSoloNarrativeDigest.ts",
+    "solo:export-edicion": "tsx scripts/exportSoloChronicleEditSheet.ts",
     "solo:validate": "tsx scripts/validateSoloChronicle.ts"
   },
   "dependencies": {

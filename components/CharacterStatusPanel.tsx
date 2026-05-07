@@ -84,7 +84,7 @@ export function CharacterStatusPanel({ sheet, isNarrator = false }: Props) {
         <div className="relative flex items-start gap-2.5">
           <NexusLibrary.Sangre className={`h-9 w-9 shrink-0 ${vitaeHot && !reduceMotion ? "nexo-glyph-blood-pulse" : ""}`} pulse={h > 2 && !reduceMotion} />
           <div className="min-w-0 flex-1">
-            <p className="text-[8px] uppercase tracking-[0.26em] text-[color:var(--blood)]/90">Presión Vitae</p>
+            <p className="text-[8px] uppercase tracking-[0.26em] text-[color:var(--blood)]/90">Ansia (Hambre)</p>
             <p className="mt-0.5 font-sans text-2xl font-light tabular-nums leading-none text-neutral-100">
               {h}
               <span className="text-base text-neutral-600">/5</span>

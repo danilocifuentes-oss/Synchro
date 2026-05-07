@@ -33,7 +33,11 @@ import {
   soloChapterHeadlineForClan,
 } from "@/lib/soloCampaign/chronicleMechanics";
 import { getChronicleDefinition } from "@/lib/soloCampaign/chronicleRegistry";
-import { applyPreRollResourceCost, soloOptionUsesDice } from "@/lib/soloCampaign/rollResourceCost";
+import {
+  applyDisciplineRouseFromRoll,
+  isDisciplineRollOption,
+  soloOptionUsesDice,
+} from "@/lib/soloCampaign/rollResourceCost";
 
 const SOLO_BACK_STACK_LIMIT = 120;
 
@@ -98,11 +102,16 @@ function clamp(n: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, n));
 }
 
+/** Opción de disciplina con tirada: el jugador puede elegir d10 o −1 Voluntad (sin subir Ansia por Despertar) si tiene cajas. */
+function needsDespertarChoice(option: SoloOption, sheet: CharacterSheet): boolean {
+  return isDisciplineRollOption(option) && soloOptionUsesDice(option) && sheet.willpowerCur >= 1;
+}
+
 type SoloCommitDraft = {
   option: SoloOption;
   sheetBeforeDecision: CharacterSheet;
-  /** Gasto opcional antes de tirar (disciplinas). */
-  disciplineActivationHint?: "willpower" | "hunger";
+  /** Resultado del Despertar (solo disciplinas con dados). */
+  disciplineActivationHint?: "rouse_ansia" | "rouse_estable" | "rouse_willpower";
   rollLine: string;
   rollPassed: boolean;
   targetSceneId: string;
@@ -120,7 +129,13 @@ type SoloCommitDraft = {
 };
 
 /** Resuelve mecánica y banderas sin persistir (segundo clic aplica efectos visibles). */
-function buildSoloCommitDraft(option: SoloOption, sheet: CharacterSheet, progress: SoloProgress): SoloCommitDraft {
+function buildSoloCommitDraft(
+  option: SoloOption,
+  sheet: CharacterSheet,
+  progress: SoloProgress,
+  /** Solo aplica a disciplinas con tirada: `willpower` gasta 1 caja y no tira Despertar. */
+  rouseResolution?: "roll" | "willpower",
+): SoloCommitDraft {
   let nextSheet = sheet;
   const nextFlags = { ...progress.flags };
   let rollLine: string;
@@ -130,18 +145,32 @@ function buildSoloCommitDraft(option: SoloOption, sheet: CharacterSheet, progres
   let rollXpEarned = 0;
   let xpFromNarrative = 0;
 
-  let disciplineActivationHint: "willpower" | "hunger" | undefined;
+  let disciplineActivationHint: "rouse_ansia" | "rouse_estable" | "rouse_willpower" | undefined;
 
   if (soloOptionUsesDice(option)) {
-    const wpBefore = nextSheet.willpowerCur;
-    const hungerBeforePre = nextSheet.hunger;
-    nextSheet = applyPreRollResourceCost(nextSheet, option);
-    if (nextSheet.willpowerCur < wpBefore) disciplineActivationHint = "willpower";
-    else if (nextSheet.hunger > hungerBeforePre) disciplineActivationHint = "hunger";
+    let rouseLead = "";
+    if (isDisciplineRollOption(option)) {
+      const payWillpower = rouseResolution === "willpower" && sheet.willpowerCur >= 1;
+      if (payWillpower) {
+        nextSheet = {
+          ...nextSheet,
+          willpowerCur: clamp(nextSheet.willpowerCur - 1, 0, nextSheet.willpowerMax),
+        };
+        disciplineActivationHint = "rouse_willpower";
+        rouseLead = "Despertar: −1 Voluntad · sangre estable (sin subir Ansia) · ";
+      } else {
+        const rouse = applyDisciplineRouseFromRoll(nextSheet);
+        nextSheet = rouse.sheet;
+        disciplineActivationHint = rouse.hungerIncreased ? "rouse_ansia" : "rouse_estable";
+        rouseLead = rouse.hungerIncreased
+          ? `Despertar d10: ${rouse.die} · Ansia +1 · `
+          : `Despertar d10: ${rouse.die} · Sin subir Ansia · `;
+      }
+    }
 
     const rollPlan = resolveSoloRollPlan(option, nextSheet);
     const roll = rollPoolV5(rollPlan.pool, nextSheet.hunger, rollPlan.difficulty);
-    rollLine = `${rollPlan.label} · ${summarizeRollPlayerLog(roll)}`;
+    rollLine = `${rouseLead}${rollPlan.label} · ${summarizeRollPlayerLog(roll)}`;
     rollPassed = roll.passed;
     const isCritical = roll.criticalNormal || roll.messyCritical;
     branchEffects = roll.passed
@@ -159,7 +188,6 @@ function buildSoloCommitDraft(option: SoloOption, sheet: CharacterSheet, progres
       if (isCritical) rollXpEarned += CHRONICLE_XP_CRITICAL_EXTRA;
     }
     if (!roll.passed) {
-      nextSheet = { ...nextSheet, hunger: Math.max(0, Math.min(5, nextSheet.hunger + 1)) };
       nextFlags[`roll_fail_${option.id}`] = true;
       if (roll.fracasoBestial) {
         nextSheet = { ...nextSheet, humanity: Math.max(0, Math.min(10, nextSheet.humanity - 1)) };
@@ -355,6 +383,8 @@ function SoloCampaignScreen({
     draft: SoloCommitDraft;
     consequenceText: string;
   } | null>(null);
+  /** Elección Despertar (d10 vs Voluntad) antes de resolver la tirada de disciplina. */
+  const [pendingDespertarChoice, setPendingDespertarChoice] = useState<SoloOption | null>(null);
   const chapterAdvanceRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -363,6 +393,7 @@ function SoloCampaignScreen({
 
   useEffect(() => {
     setPendingReveal(null);
+    setPendingDespertarChoice(null);
     setLastRollLine("");
   }, [progress.sceneId, progress.chapterId]);
   const chapter = useMemo(() => getSoloChapter(progress.chapterId), [progress.chapterId]);
@@ -382,7 +413,7 @@ function SoloCampaignScreen({
   const compactChapterGate = Boolean(
     collapseEndOptions &&
       !scenePanels.context?.trim() &&
-      !(scenePanels.narration.trim() || scene.text.trim()),
+      !(scenePanels.narration.trim() || scene?.text.trim()),
   );
   const clanLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
   const chapterHeadline = chapter ? soloChapterHeadlineForClan(chapter.title, sheet.clan) : "";
@@ -428,10 +459,11 @@ function SoloCampaignScreen({
 
       const { option, nextSheet, chronicleXpThisChoice } = draft;
 
-      if (draft.disciplineActivationHint === "willpower") {
-        appendXpLog("Crónica: activación de disciplina (−1 voluntad).");
-      } else if (draft.disciplineActivationHint === "hunger") {
-        appendXpLog("Crónica: activación de disciplina (+1 presión de hambre / Vitae).");
+      if (draft.disciplineActivationHint === "rouse_ansia") {
+        appendXpLog("Crónica: Despertar fallido — +1 Ansia.");
+      }
+      if (draft.disciplineActivationHint === "rouse_willpower") {
+        appendXpLog("Crónica: Despertar estabilizado con −1 Voluntad (sin subir Ansia).");
       }
 
       setLastRollLine(draft.rollLine);
@@ -479,9 +511,34 @@ function SoloCampaignScreen({
         updatedAt: tick,
       };
       setPendingReveal(null);
+      setPendingDespertarChoice(null);
       navigateProgress(next, 1);
     },
     [navigateProgress, onSheetSynced, profileId, progress, sheet.name, sheet.clan],
+  );
+
+  const commitOptionAfterDespertar = useCallback(
+    (option: SoloOption, rouseMode: "roll" | "willpower") => {
+      if (transitionLockRef.current) return;
+      if (!checkOptionAvailability(option, sheet, progress).available) return;
+      if (rouseMode === "willpower" && sheet.willpowerCur < 1) return;
+      if (pendingReveal !== null && pendingReveal.draft.option.id !== option.id) return;
+
+      setPendingDespertarChoice(null);
+
+      const { consequence } = parseOptionIaPanels(option.text);
+      const consec = consequence?.trim() ?? null;
+      const draft = buildSoloCommitDraft(option, sheet, progress, rouseMode);
+
+      if (!consec) {
+        finalizeCommitDraft(draft);
+        return;
+      }
+
+      setPendingReveal({ draft, consequenceText: consec });
+      setLastRollLine(draft.rollLine);
+    },
+    [finalizeCommitDraft, pendingReveal, progress, sheet],
   );
 
   const activateOptionChoice = useCallback(
@@ -495,6 +552,13 @@ function SoloCampaignScreen({
       }
       if (pendingReveal !== null && pendingReveal.draft.option.id !== option.id) return;
 
+      if (pendingDespertarChoice && pendingDespertarChoice.id !== option.id) return;
+
+      if (needsDespertarChoice(option, sheet) && pendingDespertarChoice?.id !== option.id) {
+        setPendingDespertarChoice(option);
+        return;
+      }
+
       const { consequence } = parseOptionIaPanels(option.text);
       const consec = consequence?.trim() ?? null;
       const draft = buildSoloCommitDraft(option, sheet, progress);
@@ -507,7 +571,7 @@ function SoloCampaignScreen({
       setPendingReveal({ draft, consequenceText: consec });
       setLastRollLine(draft.rollLine);
     },
-    [finalizeCommitDraft, pendingReveal, progress, sheet],
+    [finalizeCommitDraft, pendingReveal, pendingDespertarChoice, progress, sheet],
   );
 
   const revertToPrevScene = () => {
@@ -536,6 +600,7 @@ function SoloCampaignScreen({
     navigateProgress(next, -1);
     setLastRollLine("");
     setPendingReveal(null);
+    setPendingDespertarChoice(null);
   };
 
   const advanceToNextPlayedScene = () => {
@@ -558,6 +623,7 @@ function SoloCampaignScreen({
     navigateProgress(next, 1);
     setLastRollLine("");
     setPendingReveal(null);
+    setPendingDespertarChoice(null);
   };
 
   if (!chapter || !scene) {
@@ -602,6 +668,8 @@ function SoloCampaignScreen({
               healthFilled={hudFilled}
               healthMax={CHRONICLE_HEALTH_TRACK_UI}
               hunger={sheet.hunger}
+              willpowerCur={sheet.willpowerCur}
+              willpowerMax={sheet.willpowerMax}
               compactLabels
               hideMetagameFooter
               className="border-0 bg-transparent px-0 py-0"
@@ -791,8 +859,68 @@ function SoloCampaignScreen({
                       const choiceLabelShort = mechanicCue ? `${promptBody} · ${mechanicCue}` : promptBody;
 
                       const awaitingSecondTap = pendingReveal?.draft.option.id === option.id;
-                      const blockedSibling = pendingReveal !== null && pendingReveal.draft.option.id !== option.id;
+                      const blockedByReveal = pendingReveal !== null && pendingReveal.draft.option.id !== option.id;
+                      const blockedByDespertar =
+                        pendingDespertarChoice !== null && pendingDespertarChoice.id !== option.id;
+                      const blockedSibling = blockedByReveal || blockedByDespertar;
+                      const showDespertarPanel =
+                        needsDespertarChoice(option, sheet) && pendingDespertarChoice?.id === option.id;
                       const disabledChoice = !state.available || blockedSibling;
+
+                      if (showDespertarPanel) {
+                        return (
+                          <div
+                            key={option.id}
+                            role="group"
+                            aria-label={`Despertar · ${choiceLabelShort}`}
+                            className="w-full rounded border border-[var(--terminal)]/40 bg-gradient-to-b from-black/55 to-black/40 px-4 py-3.5 text-left shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]"
+                          >
+                            {mechanicCue ? (
+                              <div className="mb-2 flex flex-wrap items-center gap-2 font-mono text-[9px] uppercase tracking-[0.18em] text-neutral-500">
+                                <span className="rounded border border-[var(--terminal)]/35 bg-black/55 px-1.5 py-0.5 text-neutral-300">
+                                  Disciplina
+                                </span>
+                                <span className="normal-case tracking-normal text-[11px] text-neutral-400">{mechanicCue}</span>
+                                <span className="rounded border border-white/[0.08] bg-black/40 px-1.5 py-0.5 text-[10px] font-sans normal-case tracking-normal text-neutral-500">
+                                  Despertar
+                                </span>
+                              </div>
+                            ) : null}
+                            <p className="text-sm leading-relaxed text-neutral-200">{promptBody}</p>
+                            <p className="mt-2 font-sans text-[11px] leading-relaxed text-neutral-500">
+                              Con el d10, si sacas 1–5 sube tu Ansia. Puedes gastar 1 Voluntad para estabilizar la sangre sin
+                              tirar ni subir Ansia por el Despertar.
+                            </p>
+                            <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                              <button
+                                type="button"
+                                onClick={() => commitOptionAfterDespertar(option, "roll")}
+                                className="border border-neutral-600/90 bg-black/50 px-3 py-2.5 text-left font-sans text-[12px] text-neutral-100 transition hover:border-[var(--terminal)]/50 hover:bg-black/70"
+                              >
+                                <span className="block text-[9px] uppercase tracking-[0.2em] text-neutral-500">Tirar</span>
+                                Despertar (d10)
+                              </button>
+                              <button
+                                type="button"
+                                disabled={sheet.willpowerCur < 1}
+                                onClick={() => commitOptionAfterDespertar(option, "willpower")}
+                                className="border border-neutral-600/90 bg-black/50 px-3 py-2.5 text-left font-sans text-[12px] text-neutral-100 transition enabled:hover:border-[var(--terminal)]/50 enabled:hover:bg-black/70 disabled:cursor-not-allowed disabled:opacity-45"
+                              >
+                                <span className="block text-[9px] uppercase tracking-[0.2em] text-neutral-500">Gastar</span>
+                                <span className="text-emerald-200/90">−1 Voluntad</span>
+                                <span className="block text-[10px] font-normal text-neutral-500">Sin tirada · sin Ansia por Despertar</span>
+                              </button>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setPendingDespertarChoice(null)}
+                              className="mt-2.5 w-full border border-transparent py-1.5 text-center font-sans text-[10px] uppercase tracking-[0.2em] text-neutral-500 transition hover:text-neutral-400"
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        );
+                      }
 
                       return (
                         <button
@@ -828,7 +956,15 @@ function SoloCampaignScreen({
                               {pendingReveal.consequenceText}
                             </p>
                           ) : (
-                            <p className="text-sm leading-relaxed text-neutral-200">{promptBody}</p>
+                            <>
+                              <p className="text-sm leading-relaxed text-neutral-200">{promptBody}</p>
+                              {needsDespertarChoice(option, sheet) ? (
+                                <p className="mt-2 font-sans text-[10px] leading-snug text-neutral-600">
+                                  Al pulsar, eliges tirar el Despertar (d10) o gastar 1 Voluntad para no subir Ansia por el
+                                  Despertar.
+                                </p>
+                              ) : null}
+                            </>
                           )}
                           {!state.available && fail.length ? (
                             <p id={`${option.id}-why`} className="mt-2 text-[11px] text-neutral-500">

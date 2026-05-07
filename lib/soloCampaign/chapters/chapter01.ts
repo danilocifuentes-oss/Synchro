@@ -62,9 +62,7 @@ RESULTADO: willpowerDelta: +1 | setFlag: protocolo_corte | IR A [ESCENA 1.1]`,
           skill: "investigacion",
           text: `OPCIÓN B [HABILIDAD: INVESTIGACIÓN]: Registrar el sótano con frialdad analítica en busca de rastros físicos antes de abandonarlo.
 
-PUENTE: Te incorporas con lentitud calculada. Ignoras el mareo y comienzas a registrar las cajas de cartón y las resmas de papel amarillento con dedos precisos. No buscas una salida, buscas la firma de tu anfitrión. Bajo un fajo de periódicos de 1990, encuentras un pequeño frasco de vidrio oscuro con un sello de lacre rojo intacto.
-
-CONSECUENCIA: El sello muestra una «V» entrelazada con espinas. Reconoces la marca de «La Viña del Silencio», una propiedad vinculada a una familia Ventrue que se rumoreaba extinta.
+CONSECUENCIA: Te incorporas con lentitud calculada, ignorando el mareo, y vas registrando con dedos precisos cajas de cartón y resmas amarillentas: buscas una firma, no una salida. Bajo un fajo de periódicos de 1990 encuentras un pequeño frasco de vidrio oscuro con un sello de lacre rojo intacto; estampa una «V» entrelazada con espinas. Es la marca de «La Viña del Silencio», una propiedad vinculada a una familia Ventrue que se rumoreaba extinta.
 
 RESULTADO: setFlag: sello_viña_caida | IR A [ESCENA 1.1]`,
           requirement: { type: "skill", skill: "investigacion", minLevel: 1 },

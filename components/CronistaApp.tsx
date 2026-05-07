@@ -765,6 +765,8 @@ function CronistaAppInner() {
             healthFilled={healthHudFilled}
             healthMax={HEALTH_MAX_UI}
             hunger={sheet.hunger}
+            willpowerCur={sheet.willpowerCur}
+            willpowerMax={sheet.willpowerMax}
             compactLabels
             hideMetagameFooter
             className="xl:hidden"

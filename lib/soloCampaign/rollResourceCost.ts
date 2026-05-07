@@ -1,4 +1,5 @@
 import type { CharacterSheet } from "@/lib/character";
+import { rollD10 } from "@/lib/dice";
 import type { SoloOption } from "@/lib/soloCampaign/types";
 
 function clamp(n: number, min: number, max: number): number {
@@ -10,32 +11,39 @@ export function soloOptionUsesDice(option: SoloOption): boolean {
   return option.requirement.type !== "none";
 }
 
-function isDisciplineRoll(option: SoloOption): boolean {
+/** Opción cuyo pool activa **Despertar** (1d10) antes de la tirada de disciplina. */
+export function isDisciplineRollOption(option: SoloOption): boolean {
   if (option.requirement.type === "discipline") return true;
   if (option.type === "discipline" && option.discipline) return true;
   return false;
 }
 
-const DISCIPLINE_ACTIVATION_WP = 1;
-const DISCIPLINE_ACTIVATION_HUNGER_IF_NO_WP = 1;
+/**
+ * V5 — Rouse / Despertar: una cara de d10; 6+ el cuerpo obedece sin añadir Ansia; 1–5 sube Ansia 1 (techo 5).
+ * La tirada de pool usa inmediatamente después el valor actual de Ansia como dados de hambre (rojos).
+ */
+export function applyDisciplineRouseFromRoll(sheet: CharacterSheet): {
+  sheet: CharacterSheet;
+  die: number;
+  hungerIncreased: boolean;
+} {
+  const die = rollD10();
+  const success = die >= 6;
+  if (success) return { sheet, die, hungerIncreased: false };
+  return {
+    sheet: { ...sheet, hunger: clamp(sheet.hunger + 1, 0, 5) },
+    die,
+    hungerIncreased: true,
+  };
+}
 
 /**
- * Coste diegético antes de resolver dados: activar disciplina gasta voluntad si hay margen;
- * si no, sube la presión de hambre (Vitae / sangre en juego).
- * Las habilidades y atributos no aplican este coste aquí.
+ * Compatibilidad: solo aplica Despertar a disciplinas; resto sin coste previo aquí.
+ * @deprecated Preferir `applyDisciplineRouseFromRoll` cuando necesites el resultado del dado.
  */
 export function applyPreRollResourceCost(sheet: CharacterSheet, option: SoloOption): CharacterSheet {
-  if (!isDisciplineRoll(option)) return sheet;
-  if (sheet.willpowerCur >= DISCIPLINE_ACTIVATION_WP) {
-    return {
-      ...sheet,
-      willpowerCur: clamp(sheet.willpowerCur - DISCIPLINE_ACTIVATION_WP, 0, sheet.willpowerMax),
-    };
-  }
-  return {
-    ...sheet,
-    hunger: clamp(sheet.hunger + DISCIPLINE_ACTIVATION_HUNGER_IF_NO_WP, 0, 5),
-  };
+  if (!isDisciplineRollOption(option)) return sheet;
+  return applyDisciplineRouseFromRoll(sheet).sheet;
 }
 
 /** Reservado para UI futura (reintento de tirada): coste típico en voluntad. */

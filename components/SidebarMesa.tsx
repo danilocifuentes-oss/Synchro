@@ -125,16 +125,14 @@ export function SidebarMesa({
           </div>
         </section>
 
-        {/* SIGNOS VITALES */}
+        {/* ESTADO V5 · ANSIA / VOLUNTAD / DAÑO */}
         <section className="space-y-4">
-          <div className="space-y-1">
+          <p className="text-[8px] uppercase tracking-[0.26em] text-neutral-600">Estado_V5</p>
+
+          <div className="space-y-1" title="Ansia 0–5: dados rojos en tiradas; Despertar d10 6+ no la sube.">
             <div className="flex justify-between text-[9px] uppercase tracking-widest text-neutral-500">
-              <span
-                className={h > 3 ? "text-[color:var(--blood)]" : ""}
-              >
-                Vitae_Hunger
-              </span>
-              <span className={h > 3 ? "animate-pulse text-[color:var(--blood)]" : ""}>
+              <span className={h > 3 ? "text-[color:var(--blood)]" : ""}>Ansia</span>
+              <span className={`tabular-nums ${h > 3 ? "animate-pulse text-[color:var(--blood)]" : ""}`}>
                 {h}/5
               </span>
             </div>
@@ -142,7 +140,7 @@ export function SidebarMesa({
               {Array.from({ length: 5 }, (_, i) => (
                 <div
                   key={`hunger-${i}`}
-                  className={`h-1 flex-1 rounded-full transition-all duration-500 ${
+                  className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${
                     i < h ? "bg-[color:var(--blood)] shadow-[0_0_5px_var(--blood)]" : "bg-white/10"
                   }`}
                 />
@@ -150,9 +148,28 @@ export function SidebarMesa({
             </div>
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1" title="Voluntad: cajas actuales; el Despertar ya no las quema automáticamente.">
             <div className="flex justify-between text-[9px] uppercase tracking-widest text-neutral-500">
-              <span>Integridad_Física</span>
+              <span>Voluntad</span>
+              <span className="tabular-nums text-[color:var(--terminal)]/85">
+                {sheet.willpowerCur}/{sheet.willpowerMax}
+              </span>
+            </div>
+            <div className="h-1 w-full overflow-hidden rounded-full bg-white/10">
+              <motion.div
+                initial={false}
+                animate={{
+                  width: `${sheet.willpowerMax > 0 ? (sheet.willpowerCur / sheet.willpowerMax) * 100 : 0}%`,
+                }}
+                transition={{ type: "spring", stiffness: 280, damping: 28 }}
+                className="h-full rounded-full bg-[color:var(--terminal)]/80 shadow-[0_0_6px_var(--terminal-op-40)]"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1" title="Integridad física (marcas de daño).">
+            <div className="flex justify-between text-[9px] uppercase tracking-widest text-neutral-500">
+              <span>Daño_físico</span>
               <span>
                 {hf}/{healthMax}
               </span>
@@ -162,7 +179,7 @@ export function SidebarMesa({
                 initial={false}
                 animate={{ width: `${healthMax > 0 ? (hf / healthMax) * 100 : 0}%` }}
                 transition={{ type: "spring", stiffness: 280, damping: 28 }}
-                className="h-full rounded-full bg-[color:var(--terminal)] shadow-[0_0_8px_var(--terminal-op-40)]"
+                className="h-full rounded-full bg-emerald-500/90 shadow-[0_0_8px_rgba(16,185,129,0.25)]"
               />
             </div>
           </div>
