@@ -520,6 +520,10 @@ function CronistaAppInner() {
     if (!aid) return null;
     return buildSoloNexoDigest(aid, sheet);
   }, [sheet, profileIndexTick, phase]);
+  const principalLogs = useMemo(
+    () => logs.filter((l) => (l.strand ?? "principal") === "principal").slice(-120),
+    [logs],
+  );
 
   const chronicleAsideProps = {
     chronicle: genesisSnap,
@@ -877,7 +881,54 @@ function CronistaAppInner() {
                     </button>
                   </div>
                 )
-              ) : null}
+              ) : (
+                <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+                  {principalLogs.length ? (
+                    <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-4 py-4 sm:px-6">
+                      {principalLogs.map((entry) => (
+                        <article
+                          key={entry.id}
+                          className={`rounded border px-3 py-2 ${
+                            entry.role === "jugador"
+                              ? "border-[var(--terminal)]/25 bg-[var(--terminal)]/5"
+                              : entry.role === "sistema"
+                                ? "border-[var(--crimson)]/20 bg-[var(--crimson)]/5"
+                                : "border-white/[0.08] bg-black/30"
+                          }`}
+                        >
+                          <header className="mb-1 flex items-center justify-between gap-2 text-[10px] uppercase tracking-[0.14em] text-neutral-500">
+                            <span>{entry.role}</span>
+                            <span>{new Date(entry.ts).toLocaleTimeString()}</span>
+                          </header>
+                          <p className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-neutral-200">
+                            {entry.text}
+                          </p>
+                        </article>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex min-h-[min(44vh,24rem)] flex-col items-center justify-center gap-4 px-6 py-10 text-center">
+                      <p className="max-w-md font-sans text-sm leading-relaxed text-neutral-400">
+                        Canal principal activo y listo. Aun no hay entradas en el hilo: inicia una acción, aplica una
+                        directiva de mesa o cambia al hilo paralela para jugar la campaña solitaria.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!nexusActiveProfileId || !isSoloSupportedClan(sheet.clan)) {
+                            navigateToPhase("chargen");
+                            return;
+                          }
+                          commitStrand("paralela");
+                        }}
+                        className="border border-[var(--terminal)]/40 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--terminal)] hover:bg-[var(--terminal)]/10"
+                      >
+                        Abrir hilo paralela
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </NexoChannelPanel>
             <details className="xl:hidden rounded-xl border border-white/[0.06] bg-black/35 px-4 py-3">
               <summary className="cursor-pointer text-[10px] uppercase tracking-[0.2em] text-neutral-500">
