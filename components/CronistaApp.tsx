@@ -80,6 +80,8 @@ import {
   isOperatorSessionUnlocked,
   setOperatorSessionUnlocked,
 } from "@/lib/operatorSessionGate";
+import { IconThreat } from "@/components/icons";
+import { IconBookAnimated, IconTerminalAnimated } from "@/components/icons/animated";
 import { buildSoloNexoDigest } from "@/lib/soloCampaign/soloDigestNexo";
 import { loadSoloProgress, saveSoloProgress } from "@/lib/soloCampaign/progressStore";
 
@@ -782,23 +784,32 @@ function CronistaAppInner() {
                 persistActiveProfile();
                 navigateToPhase("chargen");
               }}
-              className="border border-white/10 bg-black/40 px-3 py-2 text-[9px] uppercase tracking-[0.14em] text-neutral-300 hover:border-[color:var(--accent-clan)]/40"
+              className="rounded border border-white/10 bg-black/40 px-3 py-2 text-[9px] uppercase tracking-[0.14em] text-neutral-300 hover:border-[color:var(--accent-clan)]/40"
             >
-              CODEX
+              <span className="inline-flex items-center gap-1.5">
+                <IconBookAnimated className="icon" />
+                <span>CODEX</span>
+              </span>
             </button>
             <button
               type="button"
               onClick={goToProfileHub}
-              className="border border-white/[0.06] px-3 py-2 text-[9px] uppercase tracking-[0.12em] text-neutral-500 hover:border-neutral-700 hover:text-neutral-300"
+              className="rounded border border-white/[0.06] px-3 py-2 text-[9px] uppercase tracking-[0.12em] text-neutral-500 hover:border-neutral-700 hover:text-neutral-300"
             >
-              CRIPTA
+              <span className="inline-flex items-center gap-1.5">
+                <IconTerminalAnimated className="icon" />
+                <span>CRIPTA</span>
+              </span>
             </button>
             <button
               type="button"
               onClick={goToLogin}
-              className="border border-[var(--blood)]/35 px-3 py-2 text-[9px] uppercase tracking-[0.16em] text-[var(--blood)] hover:bg-[var(--blood)]/10"
+              className="rounded border border-[var(--blood)]/35 px-3 py-2 text-[9px] uppercase tracking-[0.16em] text-[var(--blood)] hover:bg-[var(--blood)]/10"
             >
-              Salir
+              <span className="inline-flex items-center gap-1.5">
+                <IconThreat className="icon icon--danger" />
+                <span>SALIR</span>
+              </span>
             </button>
           </div>
         </div>
