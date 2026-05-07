@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { CLAN_ACCENTS, CLAN_OPTIONS } from "@/lib/character";
 import type { ProfileSummary } from "@/lib/profileStore";
 import { phaseToHref } from "@/lib/schreckNavigation";
+import { IconAvatarSigil, IconLock, IconOrnament } from "@/components/icons";
+import { IconBookAnimated, IconTerminalAnimated } from "@/components/icons/animated";
 
 type Props = {
   profiles: ProfileSummary[];
@@ -38,7 +40,10 @@ export function ProfileHub({
       <div className="mx-auto w-full max-w-lg space-y-8">
         <header className="space-y-4 border-b border-[#161616] pb-6">
           <p className="text-[10px] uppercase tracking-[0.35em] text-[var(--terminal)]/90">SCHRECK_NET</p>
-          <h1 className="font-sans text-lg font-semibold tracking-tight text-neutral-100">Registro SCHRECK_CV</h1>
+          <h1 className="inline-flex items-center gap-2 font-sans text-lg font-semibold tracking-tight text-neutral-100">
+            <IconAvatarSigil className="icon" />
+            <span>Registro SCHRECK_CV</span>
+          </h1>
           <p className="text-[11px] leading-relaxed text-neutral-500">
             Elige un personaje para entrar al <span className="text-neutral-400">Nexo</span> (canal, manifestar voluntad,
             digest de continuidad). Desde ahí elige el hilo{" "}
@@ -74,7 +79,10 @@ export function ProfileHub({
             onClick={onNewSheetBlank}
             className="border border-[var(--terminal)]/40 bg-neutral-950/80 px-5 py-2.5 text-[9px] font-semibold uppercase tracking-[0.28em] text-[var(--terminal)] sharp-border-inner hover:bg-[var(--terminal)]/10"
           >
-            Nuevo personaje
+            <span className="inline-flex items-center gap-1.5">
+              <IconBookAnimated className="icon" />
+              <span>Nuevo personaje</span>
+            </span>
           </motion.button>
           <motion.button
             type="button"
@@ -82,7 +90,10 @@ export function ProfileHub({
             onClick={onLogout}
             className="border border-[var(--blood)]/40 px-4 py-2.5 text-[9px] uppercase tracking-[0.25em] text-[var(--blood)]/90 hover:bg-[var(--blood)]/10"
           >
-            Volver al login
+            <span className="inline-flex items-center gap-1.5">
+              <IconTerminalAnimated className="icon" />
+              <span>Volver al login</span>
+            </span>
           </motion.button>
           <motion.button
             type="button"
@@ -99,12 +110,18 @@ export function ProfileHub({
             }}
             className="border border-amber-900/50 px-4 py-2.5 text-[9px] uppercase tracking-[0.22em] text-amber-200/90 hover:bg-amber-950/30"
           >
-            Borrar personajes locales
+            <span className="inline-flex items-center gap-1.5">
+              <IconLock className="icon" />
+              <span>Borrar personajes locales</span>
+            </span>
           </motion.button>
         </div>
 
         <section className="space-y-3">
-          <p className="text-[9px] uppercase tracking-[0.32em] text-neutral-600">Personajes disponibles</p>
+          <p className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.32em] text-neutral-600">
+            <span>Personajes disponibles</span>
+            <IconOrnament className="icon w-[58px]" />
+          </p>
           {onlyActiveHidden ? (
             <p className="border border-[#161616] bg-black/40 px-4 py-8 text-center text-[11px] leading-relaxed text-neutral-500">
               Solo tienes esta lápida en el registro y ya está cargada en el Nexo. Crea otro personaje o vuelve atrás si no
