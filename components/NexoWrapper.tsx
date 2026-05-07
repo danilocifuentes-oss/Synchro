@@ -1,7 +1,9 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState, type ReactNode } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import TerminalLogStream, { type TerminalLogLine } from "@/components/TerminalLogStream";
+import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 
 const BOOT_KEY = "nexo_immersive_boot_v1";
 
@@ -13,11 +15,23 @@ type Props = {
  * Capa cero: pulso ambiental + arranque Schreck (una vez por pestaña) sin dependencias externas.
  */
 export function NexoWrapper({ children }: Props) {
-  const reduceMotion = useReducedMotion();
+  const reducedMotion = usePrefersReducedMotion();
   const [phase, setPhase] = useState<"pending" | "boot" | "app">("pending");
 
+  const bootLines = useMemo<TerminalLogLine[]>(() => {
+    const now = new Date();
+    const t0 = new Date(now);
+    const t1 = new Date(now.getTime() + 350);
+    const t2 = new Date(now.getTime() + 700);
+    return [
+      { id: "l1", text: "Iniciando subsistema SchreckNet...", tone: "info", createdAt: t0.toLocaleTimeString() },
+      { id: "l2", text: "Cargando mallas de identidad...", tone: "warn", createdAt: t1.toLocaleTimeString() },
+      { id: "l3", text: "Estableciendo nodo: CRONISTA/NEO...", tone: "info", createdAt: t2.toLocaleTimeString() },
+    ];
+  }, []);
+
   useEffect(() => {
-    if (reduceMotion) {
+    if (reducedMotion) {
       setPhase("app");
       return;
     }
@@ -45,46 +59,48 @@ export function NexoWrapper({ children }: Props) {
     }, 2000);
 
     return () => window.clearTimeout(t);
-  }, [reduceMotion]);
+  }, [reducedMotion]);
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-void text-neutral-200">
+    <div className="theme-void relative min-h-screen overflow-x-hidden bg-void text-neutral-200">
       <div className="necro-ambient-bg" aria-hidden />
+      <div className="scan-overlay fixed inset-0 pointer-events-none" aria-hidden />
 
       {phase === "pending" ? (
         <div className="relative z-10 min-h-screen">{children}</div>
       ) : (
-      <AnimatePresence mode="wait">
-        {phase === "boot" ? (
-          <motion.div
-            key="boot"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.02 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
-            className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-void font-mono text-terminal"
-          >
+        <AnimatePresence mode="wait">
+          {phase === "boot" && !reducedMotion ? (
             <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: 200 }}
-              transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-              className="mb-4 h-px bg-terminal shadow-[0_0_15px_rgba(57,255,20,0.55)]"
-            />
-            <p className="animate-pulse text-[10px] uppercase tracking-[0.45em]">
-              Iniciando protocolo SchreckNet…
-            </p>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="app"
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: "easeOut" }}
-            className="relative z-10 min-h-screen"
-          >
-            {children}
-          </motion.div>
-        )}
-      </AnimatePresence>
+              key="boot"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="boot-overlay fixed inset-0 z-[200] flex items-center justify-center bg-[linear-gradient(180deg,rgba(5,5,5,0.95),rgba(0,0,0,0.85))]"
+            >
+              <motion.div
+                initial={{ y: 8, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 8, opacity: 0 }}
+                className="boot-card sharp-border-inner w-[min(760px,92%)] border border-[var(--terminal)]/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] p-7 font-mono text-[var(--terminal)] shadow-[0_8px_40px_rgba(0,0,0,0.7)]"
+              >
+                <p className="mb-4 text-sm text-[var(--terminal)]">Iniciando protocolo...</p>
+                <TerminalLogStream lines={bootLines} className="text-[var(--terminal)]" />
+              </motion.div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="app"
+              initial={false}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, ease: "easeOut" }}
+              className="relative z-10 min-h-screen"
+            >
+              {children}
+            </motion.div>
+          )}
+        </AnimatePresence>
       )}
     </div>
   );

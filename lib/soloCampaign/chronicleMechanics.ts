@@ -4,7 +4,7 @@ import type { CharacterSheet, ClanId } from "@/lib/character";
 export const CHRONICLE_HEALTH_TRACK_UI = 7 as const;
 
 /** Escena inicial novela donde se fuerza estado vital diegético una sola vez. */
-export const CHRONICLE_OPENING_SCENE_ID = "n1_1";
+export const CHRONICLE_OPENING_SCENE_ID = "n1_0";
 
 /** Bandera persistida si ya se aplicó el estado inicial de primera escena. */
 export const SOLO_FLAG_OPENING_VITALS = "solo_opening_vitals_applied" as const;

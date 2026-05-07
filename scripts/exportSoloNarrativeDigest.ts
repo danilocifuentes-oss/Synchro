@@ -29,7 +29,7 @@ const DIGEST_IA_CONTEXT_ES_VERSION = 2 as const;
 const DIGEST_IA_CONTEXT_ES = `
 Fuente de verdad de la campaña solitaria en CODEX (lo que renderiza el front):
 
-1) Cuerpo de escena: \`lib/soloCampaign/chapters/chapter01.ts … chapter09.ts\` y \`epilogue.ts\`, ensamblados en \`chronicleRegistry.ts\`.
+1) Cuerpo de escena: capítulos activos en \`lib/soloCampaign/chapters/\`, ensamblados en \`chronicleRegistry.ts\`.
 2) Clan Malkavian: \`resolveSoloScenePlayerText\` puede sustituir el \`text\` de la escena por \`MALKAVIAN_NARRATION_BY_SCENE_ID[scene.id]\` (\`lib/soloCampaign/chapters/malkavian/malkavianNarrationOverride.generated.ts\`). Otros clanes soportados leen la narración base de los capítulos.
 3) Títulos de capítulo en biblioteca: \`soloChapterHeadlineForClan\` cambia VENTRUE→MALKAVIAN en el título (\`chronicleMechanics.ts\`).
 4) No existe \`clanFlavor\` por escena en el modelo: no buscar variantes Brujah/Toreador en el JSON de escenas; si aplica, convivirán con la base Ventrue hasta que exista otro mecanismo en código.
@@ -151,8 +151,7 @@ async function main(): Promise<void> {
       DIGEST_IA_CONTEXT_ES_VERSION,
       archivo_fuente_codigo: [
         "lib/soloCampaign/chronicleRegistry.ts",
-        "lib/soloCampaign/chapters/chapter01.ts … chapter09.ts",
-        "lib/soloCampaign/chapters/epilogue.ts",
+        "lib/soloCampaign/chapters/*.ts (capítulos activos)",
         "lib/soloCampaign/chapters/malkavian/malkavianNarrationOverride.generated.ts",
         "lib/soloCampaign/requirementEngine.ts",
         "lib/soloCampaign/chronicleMechanics.ts (soloChapterHeadlineForClan)",

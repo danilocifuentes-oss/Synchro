@@ -1,5 +1,5 @@
 /**
- * Exporta la crónica solitaria (capítulos 1–9) a CSV y Markdown editable.
+ * Exporta la crónica solitaria cargada en el registro a CSV y Markdown editable.
  *
  * Uso: npm run solo:export-edicion
  *
@@ -22,18 +22,6 @@ const OUT_DIR = path.join(ROOT, "share", "solo-cronica-edicion");
 const OUT_CSV = path.join(OUT_DIR, "bloques-crónica.csv");
 const OUT_MD = path.join(OUT_DIR, "cronica-completa.md");
 const OUT_README = path.join(OUT_DIR, "LEEME.txt");
-
-const CHAPTER_IDS_1_9 = new Set([
-  "chapter01",
-  "chapter02",
-  "chapter03",
-  "chapter04",
-  "chapter05",
-  "chapter06",
-  "chapter07",
-  "chapter08",
-  "chapter09",
-]);
 
 function csvField(raw: string): string {
   const s = raw.replace(/\r\n/g, "\n");
@@ -288,9 +276,7 @@ function buildMarkdown(rows: OutRow[]): string {
 }
 
 function main() {
-  const chapters = SOLO_CHAPTERS.filter((c) => CHAPTER_IDS_1_9.has(c.id)).sort((a, b) =>
-    a.id.localeCompare(b.id, undefined, { numeric: true }),
-  );
+  const chapters = [...SOLO_CHAPTERS].sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
 
   const rows: OutRow[] = [];
   for (const ch of chapters) rows.push(...collectChapter(ch));

@@ -2,14 +2,6 @@ import type { ClanId } from "@/lib/character";
 import type { SoloChapter } from "@/lib/soloCampaign/types";
 import { chapter01 } from "@/lib/soloCampaign/chapters/chapter01";
 import { chapter02 } from "@/lib/soloCampaign/chapters/chapter02";
-import { chapter03 } from "@/lib/soloCampaign/chapters/chapter03";
-import { chapter04 } from "@/lib/soloCampaign/chapters/chapter04";
-import { chapter05 } from "@/lib/soloCampaign/chapters/chapter05";
-import { chapter06 } from "@/lib/soloCampaign/chapters/chapter06";
-import { chapter07 } from "@/lib/soloCampaign/chapters/chapter07";
-import { chapter08, resolveChapter08EntrySceneId } from "@/lib/soloCampaign/chapters/chapter08";
-import { chapter09, resolveChapter09EntrySceneId } from "@/lib/soloCampaign/chapters/chapter09";
-import { soloEpilogue } from "@/lib/soloCampaign/chapters/epilogue";
 
 export type ChronicleDefinition = {
   id: string;
@@ -22,15 +14,12 @@ export type ChronicleDefinition = {
 };
 
 const DEFAULT_CHRONICLE: ChronicleDefinition = {
-  id: "santiago-en-cenizas",
-  title: "Santiago en Cenizas",
-  supportedClans: ["brujah", "ventrue", "toreador", "malkavian"],
+  id: "cronica-base-limpia",
+  title: "Crónica base limpia",
+  supportedClans: ["brujah", "ventrue", "toreador", "malkavian", "nosferatu", "tremere"],
   startChapterId: chapter01.id,
-  chapters: [chapter01, chapter02, chapter03, chapter04, chapter05, chapter06, chapter07, chapter08, chapter09, soloEpilogue],
-  entryResolvers: {
-    chapter08: resolveChapter08EntrySceneId,
-    chapter09: resolveChapter09EntrySceneId,
-  },
+  chapters: [chapter01, chapter02],
+  entryResolvers: {},
 };
 
 const CHRONICLE_REGISTRY: Record<string, ChronicleDefinition> = {
