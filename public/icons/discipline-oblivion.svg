@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" aria-hidden="true" role="img">
-  <title>Oblivion</title>
-  <g fill="none" stroke="currentColor" stroke-width="2">
-    <circle cx="24" cy="18" r="10" />
-    <path d="M14 30c4 4 16 4 20 0" />
-    <path d="M24 8v4" />
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 48 48"><title>Oblivion</title><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="24" cy="18" r="10"/><path d="M14 30c4 4 16 4 20 0M24 8v4"/></g></svg>

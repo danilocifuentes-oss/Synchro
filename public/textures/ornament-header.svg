@@ -1,12 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 80" width="800" height="80">
-  <title>Ornamento cabecera</title>
-  <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
-    <path d="M20 40 C 80 10, 160 10, 220 40 S 360 70, 420 40 S 560 10, 620 40 S 740 70, 780 40" opacity="0.9"/>
-    <g transform="translate(360,12)" fill="currentColor">
-      <circle cx="0" cy="16" r="4"/>
-    </g>
-    <g transform="translate(440,12)" fill="currentColor">
-      <circle cx="0" cy="16" r="4"/>
-    </g>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 80"><title>Ornamento cabecera</title><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.2"><path d="M20 40c60-30 140-30 200 0s140 30 200 0 140-30 200 0 120 30 160 0" opacity=".9"/><circle cy="16" r="4" fill="currentColor" transform="translate(360 12)"/><circle cy="16" r="4" fill="currentColor" transform="translate(440 12)"/></g></svg>

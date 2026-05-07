@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { NexusLibrary } from "@/components/icons/NexusLibrary";
+import { IconAvatarSigil, IconBlood, IconBook, IconPin, IconTerminal, IconThreat } from "@/components/icons";
 import { detectNexoGlyphHints, glyphKindLabel, type NexoGlyphKind } from "@/lib/icons/glyphSignals";
 import {
   extractNexoGlyphTokenKindsFromTokens,
@@ -32,17 +32,17 @@ function GlyphFor({
 }) {
   switch (kind) {
     case "inquisition":
-      return <NexusLibrary.Inquisicion sigma={sigma} className="h-5 w-5 sm:h-6 sm:w-6" />;
+      return <IconThreat className="icon h-5 w-5 text-[var(--crimson)] sm:h-6 sm:w-6" />;
     case "blood":
-      return <NexusLibrary.Sangre className="h-5 w-5 sm:h-6 sm:w-6" pulse={bloodPulse} />;
+      return <IconBlood className={`icon h-5 w-5 sm:h-6 sm:w-6 ${bloodPulse ? "nexo-glyph-blood-pulse" : ""}`} />;
     case "destiny":
-      return <NexusLibrary.Destino className="h-5 w-5 text-[color:var(--terminal)] sm:h-6 sm:w-6" />;
+      return <IconPin className="icon h-5 w-5 text-[color:var(--terminal)] sm:h-6 sm:w-6" />;
     case "terminal":
-      return <NexusLibrary.Cronista className="h-5 w-5 sm:h-6 sm:w-6" />;
+      return <IconTerminal className="icon h-5 w-5 sm:h-6 sm:w-6" />;
     case "circuit":
-      return <NexusLibrary.Circuit className="h-5 w-5 sm:h-6 sm:w-6" />;
+      return <IconBook className="icon h-5 w-5 sm:h-6 sm:w-6" />;
     case "vastago":
-      return <NexusLibrary.Vastago className="h-5 w-5 sm:h-6 sm:w-6" />;
+      return <IconAvatarSigil className="icon h-5 w-5 sm:h-6 sm:w-6" />;
     default:
       return null;
   }

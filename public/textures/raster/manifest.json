@@ -1,0 +1,355 @@
+{
+  "textures": [
+    {
+      "name": "grain",
+      "variants": [
+        {
+          "width": 1600,
+          "format": "avif",
+          "path": "public/textures/raster/grain_1600.avif"
+        },
+        {
+          "width": 1600,
+          "format": "webp",
+          "path": "public/textures/raster/grain_1600.webp"
+        },
+        {
+          "width": 1600,
+          "format": "png",
+          "path": "public/textures/raster/grain_1600.png"
+        },
+        {
+          "width": 1200,
+          "format": "avif",
+          "path": "public/textures/raster/grain_1200.avif"
+        },
+        {
+          "width": 1200,
+          "format": "webp",
+          "path": "public/textures/raster/grain_1200.webp"
+        },
+        {
+          "width": 1200,
+          "format": "png",
+          "path": "public/textures/raster/grain_1200.png"
+        },
+        {
+          "width": 800,
+          "format": "avif",
+          "path": "public/textures/raster/grain_800.avif"
+        },
+        {
+          "width": 800,
+          "format": "webp",
+          "path": "public/textures/raster/grain_800.webp"
+        },
+        {
+          "width": 800,
+          "format": "png",
+          "path": "public/textures/raster/grain_800.png"
+        }
+      ]
+    },
+    {
+      "name": "necro-ambient",
+      "variants": [
+        {
+          "width": 1600,
+          "format": "avif",
+          "path": "public/textures/raster/necro-ambient_1600.avif"
+        },
+        {
+          "width": 1600,
+          "format": "webp",
+          "path": "public/textures/raster/necro-ambient_1600.webp"
+        },
+        {
+          "width": 1600,
+          "format": "png",
+          "path": "public/textures/raster/necro-ambient_1600.png"
+        },
+        {
+          "width": 1200,
+          "format": "avif",
+          "path": "public/textures/raster/necro-ambient_1200.avif"
+        },
+        {
+          "width": 1200,
+          "format": "webp",
+          "path": "public/textures/raster/necro-ambient_1200.webp"
+        },
+        {
+          "width": 1200,
+          "format": "png",
+          "path": "public/textures/raster/necro-ambient_1200.png"
+        },
+        {
+          "width": 800,
+          "format": "avif",
+          "path": "public/textures/raster/necro-ambient_800.avif"
+        },
+        {
+          "width": 800,
+          "format": "webp",
+          "path": "public/textures/raster/necro-ambient_800.webp"
+        },
+        {
+          "width": 800,
+          "format": "png",
+          "path": "public/textures/raster/necro-ambient_800.png"
+        }
+      ]
+    },
+    {
+      "name": "necro-mid",
+      "variants": [
+        {
+          "width": 1600,
+          "format": "avif",
+          "path": "public/textures/raster/necro-mid_1600.avif"
+        },
+        {
+          "width": 1600,
+          "format": "webp",
+          "path": "public/textures/raster/necro-mid_1600.webp"
+        },
+        {
+          "width": 1600,
+          "format": "png",
+          "path": "public/textures/raster/necro-mid_1600.png"
+        },
+        {
+          "width": 1200,
+          "format": "avif",
+          "path": "public/textures/raster/necro-mid_1200.avif"
+        },
+        {
+          "width": 1200,
+          "format": "webp",
+          "path": "public/textures/raster/necro-mid_1200.webp"
+        },
+        {
+          "width": 1200,
+          "format": "png",
+          "path": "public/textures/raster/necro-mid_1200.png"
+        },
+        {
+          "width": 800,
+          "format": "avif",
+          "path": "public/textures/raster/necro-mid_800.avif"
+        },
+        {
+          "width": 800,
+          "format": "webp",
+          "path": "public/textures/raster/necro-mid_800.webp"
+        },
+        {
+          "width": 800,
+          "format": "png",
+          "path": "public/textures/raster/necro-mid_800.png"
+        }
+      ]
+    },
+    {
+      "name": "necro-tiling",
+      "variants": [
+        {
+          "width": 1600,
+          "format": "avif",
+          "path": "public/textures/raster/necro-tiling_1600.avif"
+        },
+        {
+          "width": 1600,
+          "format": "webp",
+          "path": "public/textures/raster/necro-tiling_1600.webp"
+        },
+        {
+          "width": 1600,
+          "format": "png",
+          "path": "public/textures/raster/necro-tiling_1600.png"
+        },
+        {
+          "width": 1200,
+          "format": "avif",
+          "path": "public/textures/raster/necro-tiling_1200.avif"
+        },
+        {
+          "width": 1200,
+          "format": "webp",
+          "path": "public/textures/raster/necro-tiling_1200.webp"
+        },
+        {
+          "width": 1200,
+          "format": "png",
+          "path": "public/textures/raster/necro-tiling_1200.png"
+        },
+        {
+          "width": 800,
+          "format": "avif",
+          "path": "public/textures/raster/necro-tiling_800.avif"
+        },
+        {
+          "width": 800,
+          "format": "webp",
+          "path": "public/textures/raster/necro-tiling_800.webp"
+        },
+        {
+          "width": 800,
+          "format": "png",
+          "path": "public/textures/raster/necro-tiling_800.png"
+        }
+      ]
+    },
+    {
+      "name": "ornament-corner",
+      "variants": [
+        {
+          "width": 1600,
+          "format": "avif",
+          "path": "public/textures/raster/ornament-corner_1600.avif"
+        },
+        {
+          "width": 1600,
+          "format": "webp",
+          "path": "public/textures/raster/ornament-corner_1600.webp"
+        },
+        {
+          "width": 1600,
+          "format": "png",
+          "path": "public/textures/raster/ornament-corner_1600.png"
+        },
+        {
+          "width": 1200,
+          "format": "avif",
+          "path": "public/textures/raster/ornament-corner_1200.avif"
+        },
+        {
+          "width": 1200,
+          "format": "webp",
+          "path": "public/textures/raster/ornament-corner_1200.webp"
+        },
+        {
+          "width": 1200,
+          "format": "png",
+          "path": "public/textures/raster/ornament-corner_1200.png"
+        },
+        {
+          "width": 800,
+          "format": "avif",
+          "path": "public/textures/raster/ornament-corner_800.avif"
+        },
+        {
+          "width": 800,
+          "format": "webp",
+          "path": "public/textures/raster/ornament-corner_800.webp"
+        },
+        {
+          "width": 800,
+          "format": "png",
+          "path": "public/textures/raster/ornament-corner_800.png"
+        }
+      ]
+    },
+    {
+      "name": "ornament-header",
+      "variants": [
+        {
+          "width": 1600,
+          "format": "avif",
+          "path": "public/textures/raster/ornament-header_1600.avif"
+        },
+        {
+          "width": 1600,
+          "format": "webp",
+          "path": "public/textures/raster/ornament-header_1600.webp"
+        },
+        {
+          "width": 1600,
+          "format": "png",
+          "path": "public/textures/raster/ornament-header_1600.png"
+        },
+        {
+          "width": 1200,
+          "format": "avif",
+          "path": "public/textures/raster/ornament-header_1200.avif"
+        },
+        {
+          "width": 1200,
+          "format": "webp",
+          "path": "public/textures/raster/ornament-header_1200.webp"
+        },
+        {
+          "width": 1200,
+          "format": "png",
+          "path": "public/textures/raster/ornament-header_1200.png"
+        },
+        {
+          "width": 800,
+          "format": "avif",
+          "path": "public/textures/raster/ornament-header_800.avif"
+        },
+        {
+          "width": 800,
+          "format": "webp",
+          "path": "public/textures/raster/ornament-header_800.webp"
+        },
+        {
+          "width": 800,
+          "format": "png",
+          "path": "public/textures/raster/ornament-header_800.png"
+        }
+      ]
+    },
+    {
+      "name": "scanline",
+      "variants": [
+        {
+          "width": 1600,
+          "format": "avif",
+          "path": "public/textures/raster/scanline_1600.avif"
+        },
+        {
+          "width": 1600,
+          "format": "webp",
+          "path": "public/textures/raster/scanline_1600.webp"
+        },
+        {
+          "width": 1600,
+          "format": "png",
+          "path": "public/textures/raster/scanline_1600.png"
+        },
+        {
+          "width": 1200,
+          "format": "avif",
+          "path": "public/textures/raster/scanline_1200.avif"
+        },
+        {
+          "width": 1200,
+          "format": "webp",
+          "path": "public/textures/raster/scanline_1200.webp"
+        },
+        {
+          "width": 1200,
+          "format": "png",
+          "path": "public/textures/raster/scanline_1200.png"
+        },
+        {
+          "width": 800,
+          "format": "avif",
+          "path": "public/textures/raster/scanline_800.avif"
+        },
+        {
+          "width": 800,
+          "format": "webp",
+          "path": "public/textures/raster/scanline_800.webp"
+        },
+        {
+          "width": 800,
+          "format": "png",
+          "path": "public/textures/raster/scanline_800.png"
+        }
+      ]
+    }
+  ],
+  "generatedAt": "2026-05-07T19:26:31.755Z"
+}

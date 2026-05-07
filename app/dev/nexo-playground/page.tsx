@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect } from "react";
 import { NexoWrapper } from "@/components/NexoWrapper";
 import { SidebarMesa } from "@/components/SidebarMesa";

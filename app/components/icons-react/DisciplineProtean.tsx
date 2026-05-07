@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const DisciplineProtean = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 48 48" width="1em" height="1em" {...props}><g fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth={2}><path d="M24 6c8 6 12 10 12 18s-8 12-12 12-12-4-12-12 4-12 12-18z" /><path d="M20 22c2 2 4 2 8 0" /></g></svg>;
+export default DisciplineProtean;

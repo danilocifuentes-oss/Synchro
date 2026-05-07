@@ -8,7 +8,7 @@ import {
   STRAND_TAG,
   type NarrativeStrand,
 } from "@/lib/narrativeStrands";
-import { NexusLibrary } from "@/components/icons/NexusLibrary";
+import { IconThreat } from "@/components/icons";
 
 export type NexoGlyphContext = {
   inquisitionThreat: number;
@@ -70,14 +70,14 @@ export function NexoChannelPanel({
         {glyphContext ? (
           showTechnicalAnchors ? (
             <div className="flex items-center gap-2 font-mono text-[9px] font-normal normal-case tracking-wide text-neutral-500">
-              <NexusLibrary.Inquisicion sigma={glyphContext.inquisitionThreat} className="h-4 w-4" />
+              <IconThreat className="h-4 w-4 text-[var(--crimson)]" />
               <span>
                 Amenaza σ {glyphContext.inquisitionThreat} · Hambre {glyphContext.hunger}
               </span>
             </div>
           ) : (
             <div className="flex items-center gap-1.5 opacity-75" aria-hidden>
-              <NexusLibrary.Inquisicion sigma={glyphContext.inquisitionThreat} className="h-3.5 w-3.5" />
+              <IconThreat className="h-3.5 w-3.5 text-[var(--crimson)]" />
             </div>
           )
         ) : null}

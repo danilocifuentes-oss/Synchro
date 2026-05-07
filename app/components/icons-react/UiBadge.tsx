@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const UiBadge = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24" width="1em" height="1em" {...props}><path fill="none" stroke="currentColor" strokeWidth={1.4} d="m12 2 2.6 4.8L20 8l-3.2 3 .8 5-5.6-1.2L6.4 16l.8-5L4 8l5.4-1.2z" /></svg>;
+export default UiBadge;

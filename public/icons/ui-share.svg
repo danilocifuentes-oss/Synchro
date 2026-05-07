@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" role="img">
-  <title>Compartir</title>
-  <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-    <path d="M4 12v7a1 1 0 0 0 1 1h14" />
-    <path d="M16 6l-4-4-4 4" />
-    <path d="M12 2v14" />
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24"><title>Compartir</title><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.6" d="M4 12v7a1 1 0 0 0 1 1h14M16 6l-4-4-4 4m4-4v14"/></svg>

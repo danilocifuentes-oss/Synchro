@@ -1,7 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" aria-hidden="true" role="img">
-  <title>Fortitude</title>
-  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
-    <path d="M12 10v10c0 10 12 14 12 14s12-4 12-14V10L24 6 12 10z" />
-    <path d="M18 22h12" />
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 48 48"><title>Fortitude</title><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M12 10v10c0 10 12 14 12 14s12-4 12-14V10L24 6zm6 12h12"/></svg>

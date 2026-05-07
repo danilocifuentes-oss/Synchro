@@ -1,6 +1,6 @@
 "use client";
 
-import { NexusLibrary } from "@/components/icons/NexusLibrary";
+import { IconAvatarSigil, IconBlood, IconBook, IconPin, IconTerminal, IconThreat } from "@/components/icons";
 import type { NexoGlyphKind } from "@/lib/icons/glyphSignals";
 import { splitNexoGlyphInline } from "@/lib/icons/nexoGlyphTokens";
 
@@ -21,20 +21,20 @@ function InlineGlyph({
   sigma: number;
   bloodPulse: boolean;
 }) {
-  const box = "inline-block h-4 w-4 shrink-0 align-middle mx-0.5";
+  const box = "icon inline-block h-4 w-4 shrink-0 align-middle mx-0.5";
   switch (kind) {
     case "inquisition":
-      return <NexusLibrary.Inquisicion sigma={sigma} className={box} />;
+      return <IconThreat className={`${box} text-[var(--crimson)]`} />;
     case "blood":
-      return <NexusLibrary.Sangre className={box} pulse={bloodPulse} />;
+      return <IconBlood className={`${box} ${bloodPulse ? "nexo-glyph-blood-pulse" : ""}`} />;
     case "destiny":
-      return <NexusLibrary.Destino className={`${box} text-[color:var(--terminal)]`} />;
+      return <IconPin className={`${box} text-[color:var(--terminal)]`} />;
     case "terminal":
-      return <NexusLibrary.Cronista className={box} />;
+      return <IconTerminal className={box} />;
     case "circuit":
-      return <NexusLibrary.Circuit className={box} />;
+      return <IconBook className={box} />;
     case "vastago":
-      return <NexusLibrary.Vastago className={box} />;
+      return <IconAvatarSigil className={box} />;
     default:
       return null;
   }
