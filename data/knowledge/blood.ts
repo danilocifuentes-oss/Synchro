@@ -1,4 +1,4 @@
-/** Bandas declarativas (texto CODEX suele tener generación tipo Sereno: neonato / ancilla). */
+/** Bandas declarativas (texto Codex V suele tener generación tipo Sereno: neonato / ancilla). */
 export const blood = {
   generationLabel: {
     neonato: "sangre joven — presupuestos ajustados, apetito aún aprendiendo protocolo nocturno.",

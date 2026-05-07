@@ -38,7 +38,7 @@ export const CLAN_OPTIONS: { id: ClanId; label: string }[] = [
   { id: "other", label: "LIN_IND" },
 ];
 
-/** Acents por clan (UI CODEX · linaje enfoca hsl del nexo). */
+/** Acentos por clan (UI Codex V · linaje enfoca hsl del nexo). */
 export const CLAN_ACCENTS: Record<ClanId, string> = {
   ventrue: "#b89a52",
   nosferatu: "#5a6e52",
@@ -66,7 +66,7 @@ export const ATTR_BAND_KEYS: Record<
   men: ["int", "wit", "res"],
 };
 
-/** Agrupación visual CODEX (`//_FÍS` …). */
+/** Agrupación visual Codex V (`//_FÍS` …). */
 export const ATTRIBUTE_BANDS: readonly {
   label: string;
   keys: readonly (AttributePhysKey | AttributeSocKey | AttributeMenKey)[];
@@ -89,10 +89,10 @@ export interface CharacterSheet {
    */
   transfondo: string;
   /**
-   * `CONCEPTOS_DATA.id` cuando el jugador usa plantilla CODEX (`null` = «OTRO…» texto en `concept`).
+   * `CONCEPTOS_DATA.id` cuando el jugador usa plantilla Codex V (`null` = «OTRO…» texto en `concept`).
    */
   conceptPresetId: string | null;
-  /** Años de no‑vida desde el Abrazo; la fusión CODEX estima Generación Mes y presupuestos derivados (no equivale automáticamente a la edad mortal). */
+  /** Años de no‑vida desde el Abrazo; la fusión Cronista Codex V estima Generación Mes y presupuestos derivados (no equivale automáticamente a la edad mortal). */
   yearsUnlife: number;
   /** Puntos libres (mesa Revised). El cliente no ejecuta tabla de compra; solo guarda el contador. */
   freebiePool: number;
@@ -135,7 +135,7 @@ export const STORAGE_KEY = "cronista-sheet-v1";
 /** Humanidad de arranque estándar en creación (ajustable con la pista ANIMA). */
 export const CHARGEN_HUMANITY_BASE = 7;
 
-/** Punto base por atributo (● gris en CODEX); el extra asignado se muestra con el color del linaje. */
+/** Punto base por atributo (● gris en Codex V); el extra asignado se muestra con el color del linaje. */
 export const CHARGEN_ATTRIBUTE_DOT_BASE = 1;
 
 export const ATTRIBUTE_KEYS = [
@@ -150,7 +150,7 @@ export const ATTRIBUTE_KEYS = [
   { key: "res" as const, label: "Resolución", tooltip: "Voluntad de seguir hasta el fondo cuando duele." },
 ] as const;
 
-/** Atributos con el mínimo de hoja CODEX antes de distribuir puntos jugables extra. */
+/** Atributos con el mínimo de hoja Codex V antes de distribuir puntos jugables extra. */
 export function chargenBaseAttributes(): CharacterSheet["attributes"] {
   const b = CHARGEN_ATTRIBUTE_DOT_BASE;
   return {

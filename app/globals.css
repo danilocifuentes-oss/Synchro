@@ -543,7 +543,7 @@ html.scanline-enabled .scanline-overlay {
   background-size: 28px 28px;
 }
 
-/* CODEX · retícula de puntos táctica sobre #050505 */
+/* Codex V · retícula de puntos táctica sobre #050505 */
 .codex-dot-grid {
   background-color: #050505;
   background-image: radial-gradient(

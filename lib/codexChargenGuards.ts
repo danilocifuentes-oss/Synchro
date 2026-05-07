@@ -1,5 +1,5 @@
 /**
- * Límites incrementales en CODEX: reparto atributos 7·5·3 (exceso sobre base 1)
+ * Límites incrementales en Codex V: reparto atributos 7·5·3 (exceso sobre base 1)
  * y habilidades 13·9·5 según presets (también en modo Sereno V5 cliente).
  */
 

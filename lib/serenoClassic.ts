@@ -212,7 +212,7 @@ export function validateClassicDisciplineSpread(
   return null;
 }
 
-/** Algunos clanes CODEX fuerzan cuál grupo (fís/social/mental) recibe siempre los 7 puntos sobre base 1. */
+/** Algunos clanes en Codex V fuerzan cuál grupo (fís/social/mental) recibe siempre los 7 puntos sobre base 1. */
 const CLAN_LOCKED_ATTR_PRIMARY: Partial<Record<ClanId, keyof typeof ATTR_BAND_KEYS>> = {
   brujah: "fis",
   nosferatu: "fis",
@@ -227,7 +227,7 @@ export function clanLockedAttrPrimaryBand(clan: ClanId): keyof typeof ATTR_BAND_
   return CLAN_LOCKED_ATTR_PRIMARY[clan] ?? null;
 }
 
-/** Etiqueta corta («físicos» …) cuando el clan fija grupo principal en CODEX. */
+/** Etiqueta corta («físicos» …) cuando el clan fija grupo principal en Codex V. */
 export function classicAttrPresetChoicesForClan(clan: ClanId): number[] {
   const b = clanLockedAttrPrimaryBand(clan);
   if (b === null) return [0, 1, 2, 3, 4, 5];

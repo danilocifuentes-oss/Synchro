@@ -23,7 +23,7 @@ export function xpCostForIncrease(kind: ChronicleXpPurchaseKind, nextValue: numb
 export function disciplineXpFactor(sheet: CharacterSheet, discipline: DisciplineKey): number | null {
   const active = getActiveDisciplineKeys(sheet.clan, sheet.caitiffDisciplinePicks);
   if (active.includes(discipline)) return XP_COST_DISCIPLINE_INCLAN_FACTOR;
-  // El CODEX actual bloquea subir disciplinas no activas; si se habilita en el futuro, aplica factor outclan.
+  // El motor Codex V actual bloquea subir disciplinas no activas; si se habilita en el futuro, aplica factor outclan.
   return null;
 }
 

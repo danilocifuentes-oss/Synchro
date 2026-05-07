@@ -1,5 +1,5 @@
 /**
- * Plantillas de concepto CODEX (mesa · no canónico oficial).
+ * Plantillas de concepto Codex V (mesa · no canónico oficial).
  * Nombre en ficha + descripción para tooltip en creación.
  */
 

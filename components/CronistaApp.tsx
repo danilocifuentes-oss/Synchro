@@ -454,7 +454,9 @@ function CronistaAppInner() {
       lastFamineTickAt: firstSeal ? famineSealWallClock() : meta.lastFamineTickAt,
     });
     appendXpLog(
-      firstSeal ? `[CODEX_COMMIT]: ${finalized.name || "NULL"}` : `[CODEX_RELAY]: MJ · ${finalized.name || "NULL"}`,
+      firstSeal
+        ? `[Codex V · sello] ${finalized.name?.trim() || "Sin nombre"}`
+        : `[Codex V · MJ] ${finalized.name?.trim() || "Sin nombre"}`,
     );
     setSheetLocked(true);
     navigateToPhase("nexus");

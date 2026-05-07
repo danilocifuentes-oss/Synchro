@@ -66,8 +66,8 @@ import { DotTrack } from "./DotTrack";
 import { disciplineXpFactor, maxAffordableTargetLevel, xpCostForIncrease } from "@/lib/soloCampaign/xpEconomy";
 import { IconAvatarSigil, IconOrnament } from "@/components/icons";
 import { IconBookAnimated, IconTerminalAnimated } from "@/components/icons/animated";
-/** Freebies CODEX ocultos en creación hasta rediseño de ese bloque. */
-const SHOW_CODEX_FREEBIES = false;
+/** Freebies extra de chargen (Codex V) ocultos hasta rediseño de ese bloque. */
+const SHOW_CHARGEN_FREEBIES = false;
 
 function AllocationMeters({
   accent,
@@ -476,7 +476,7 @@ export function CharacterCreation({
             <button
               type="button"
               onClick={resetToBlankCodex}
-              title="Elimina el borrador actual y carga la plantilla CODEX inicial (sin datos en caché)."
+              title="Elimina el borrador actual y carga la plantilla Codex V inicial (sin datos en caché)."
               className="shrink-0 rounded border border-[#2a2a2a] bg-black/40 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 hover:border-neutral-600 hover:text-neutral-400"
             >
               <span className="inline-flex items-center gap-1.5">
@@ -627,7 +627,7 @@ export function CharacterCreation({
               </label>
             </div>
 
-            {SHOW_CODEX_FREEBIES && (
+            {SHOW_CHARGEN_FREEBIES && (
               <div
                 className="md:col-span-12 md:border-t md:border-[#161616] md:pt-4"
                 title={TOOLTIP_FREEBIE_POOL}
@@ -922,7 +922,7 @@ export function CharacterCreation({
                 >
                   <span className="inline-flex items-center gap-1.5">
                     <IconBookAnimated className="icon" />
-                    <span>&gt;_SELLAR_CODEX</span>
+                    <span>&gt;_SELLAR_CODEX_V</span>
                   </span>
                 </motion.button>
               ) : null}

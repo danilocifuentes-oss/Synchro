@@ -88,7 +88,7 @@ type Props = {
   profileId: string;
   sheet: CharacterSheet;
   onExit: () => void;
-  /** Tras persistir CODEX desde la campaña, actualiza Nexo/React (nombre, vitae, etc.). */
+  /** Tras persistir la ficha (Codex V) desde la campaña, actualiza Nexo/React (nombre, vitae, etc.). */
   onSheetSynced?: (next: CharacterSheet) => void;
   /** Incrustado en el marco Nexo (canal + digest): sin segunda columna de estado duplicada. */
   embedded?: boolean;

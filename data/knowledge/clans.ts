@@ -84,7 +84,7 @@ export const clans = {
     disciplines: ["vicissitude", "animalism", "auspex"],
   },
 
-  // —— Independientes / cultos cuando el CODEX etiqueta LIN_IND extendido ——
+  // —— Independientes / cultos cuando Codex V etiqueta LIN_IND extendido ——
   banu_haqim: {
     name: "Banu Haqim",
     sect: ["independent"],
@@ -119,7 +119,7 @@ export const clans = {
     identity: ["linaje ilegible", "supervivencia social", "reinventarte cada camarilla nueva"],
     curse: "estigma institucional — más presión reputacional que maldición fija.",
     hooks: ["tres disciplinas improvisadas cargan historia — no hagas génesis neutra"],
-    disciplines: [], // cliente elige tres del pool Sereno — el motor debe leer CODEX factual
+    disciplines: [], // cliente elige tres del pool Sereno — el motor debe leer datos de ficha Codex V coherentes
   },
 
   other: {

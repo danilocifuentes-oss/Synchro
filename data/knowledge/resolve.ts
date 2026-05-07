@@ -14,7 +14,7 @@ export type NarrativeEngineContext = {
   directiveLines: string[];
   /** Remate corto perceptivo opcional para motor interno. */
   perceptualAccent: string;
-  /** Gatillos de disciplinas resueltos desde la ficha CODEX + clan de apoyo cuando falten claves explícitas. */
+  /** Gatillos de disciplinas resueltos desde la ficha Codex V + clan de apoyo cuando falten claves explícitas. */
   disciplineHooks: readonly { key: string; useHint: string; narrativeCue: string }[];
   /** Sellos políticos cuando el perfil existe. */
   sectTones: readonly { sect: SectAffinity; ideology: string; style: string }[];

@@ -18,7 +18,7 @@ function delay(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-const BOOT_LINES = ["[CONEXIÓN_ESTABLECIDA]", "[BORRANDO_RASTROS_IP]", "[ACCEDIENDO_AL_CODEX]"] as const;
+const BOOT_LINES = ["[CONEXIÓN_ESTABLECIDA]", "[BORRANDO_RASTROS_IP]", "[SINCRONIZANDO_CODEX_V]"] as const;
 
 export function SchreckNetLogin({ onAuthenticate, onRootAccess }: Props) {
   const { announce } = useA11yAnnounce();

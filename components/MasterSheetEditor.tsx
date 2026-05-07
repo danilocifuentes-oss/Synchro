@@ -238,7 +238,7 @@ function EditorBody({
 
       <section className="space-y-2 border p-3" style={{ borderColor: ROOT }}>
         <p className="text-[9px] uppercase tracking-[0.3em] text-neutral-500">
-          Disciplinas activas (0–5 · sin cupo CODEX)
+          Disciplinas activas (0–5 · sin cupo Codex V)
         </p>
         <div className="space-y-1">
           {activeDisciplines.map((k) => (

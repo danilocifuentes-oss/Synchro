@@ -3,7 +3,7 @@ import type { NarrativeStrand } from "@/lib/narrativeStrands";
 /** Rol en el canal SchreckNet del Nexo. */
 export type NarrativeRole = "narrador" | "jugador" | "sistema";
 
-/** Señal heurística: conviene lanzar tirada antes de improvisar consecuencias finales (apoya V5 sobre tu CODEX). */
+/** Señal heurística: conviene lanzar tirada antes de improvisar consecuencias finales (apoya V5 sobre tu ficha Codex V). */
 export type NarradorRollPrompt = {
   nivel: "opcional" | "recomendada" | "urgente";
   enfoque: string;

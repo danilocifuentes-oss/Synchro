@@ -342,7 +342,7 @@ opcion_fatal_titulo / _cuerpo → texto de muerte definitiva ligada a una opció
 Ventrue y otros clanes
 ------------------------
 Esta planilla es la crónica base cargada desde chapter01.ts … chapter09.ts.
-Ventrue usa estos mismos textos en CODEX. El clan Malkavian puede tener overrides
+Ventrue usa estos mismos textos en Codex V. El clan Malkavian puede tener overrides
 generados aparte; no están fusionados en este CSV.
 
 Epílogo

@@ -1,5 +1,5 @@
 /**
- * PROYECTO SERENO — validación CODEX V5 (cliente)
+ * PROYECTO SERENO — validación ficha Codex V / V5 (cliente)
  */
 
 import type { ClanId } from "@/lib/character";
@@ -143,7 +143,7 @@ export type SerenoSkillKey = (typeof SERENO_SKILLS)[number]["key"];
 export const SERENO_SKILL_KEYS = SERENO_SKILLS.map((s) => s.key) as unknown as readonly SerenoSkillKey[];
 
 /** Hint técnico (no UI larga): reparto 7·5·3 por tres categorías. */
-export const ATTRIBUTE_GRID_HINT_ES = "// CODEX atributos físico · social · mental · 7-5-3 sobre base.";
+export const ATTRIBUTE_GRID_HINT_ES = "// Codex V · atributos físico · social · mental · 7-5-3 sobre base.";
 
 export const TOOLTIP_BLOOD_POTENCY = "Índice de sangre cursada usada como canal de poder.";
 
@@ -185,7 +185,7 @@ export function migrateSkillsFromLegacy(raw: Record<string, number>): Record<str
   return out;
 }
 
-/** Perfil de habilidad heredado en ficha · la creación CODEX usa 13/9/5 por carril (`validateClassicSkillSpread`). */
+/** Perfil de habilidad heredado en ficha · la creación Codex V usa 13/9/5 por carril (`validateClassicSkillSpread`). */
 export type SkillMode = "jack" | "specialist";
 
 export type Generation = "neonato" | "ancilla";

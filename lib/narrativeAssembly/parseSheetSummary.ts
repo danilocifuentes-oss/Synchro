@@ -1,6 +1,6 @@
 import { CLAN_OPTIONS, type ClanId } from "@/lib/character";
 
-/** Firmas CODEX esperadas desde `buildSheetSummary` (`lib/sheetSummary.ts`). */
+/** Firmas de resumen esperadas desde `buildSheetSummary` (`lib/sheetSummary.ts`). */
 export type ParsedCodexSignals = {
   nombre: string;
   linajeLine: string;
@@ -15,14 +15,14 @@ export type ParsedCodexSignals = {
   resonance: string;
   disciplinesLine: string;
   skillsLine: string;
-  /** Desde etiqueta CODEX Nexo cuando existe (`Potencia de sangre: N`). */
+  /** Desde etiqueta Codex V / Nexo cuando existe (`Potencia de sangre: N`). */
   bloodPotency: number | null;
-  /** Marcas de daño físico V5 desde resumen CODEX. */
+  /** Marcas de daño físico V5 desde el resumen de ficha Codex V. */
   healthDamage: number | null;
 };
 
-/** Etiquetas de bloque CODEX conocidas desde `buildSheetSummary` — corta campos multi-línea. */
-const CODEX_SECTION_PREFIXES = [
+/** Etiquetas de bloque de resumen conocidas desde `buildSheetSummary` — corta campos multi-línea. */
+const SHEET_SUMMARY_SECTION_PREFIXES = [
   "Nombre:",
   "Linaje:",
   "Concepto:",
@@ -45,7 +45,7 @@ function lineAfterPrefix(lines: readonly string[], prefix: string): string {
   const more: string[] = [];
   for (let j = idx + 1; j < lines.length; j += 1) {
     const l = lines[j]!;
-    if (CODEX_SECTION_PREFIXES.some((p) => l.startsWith(p))) break;
+    if (SHEET_SUMMARY_SECTION_PREFIXES.some((p) => l.startsWith(p))) break;
     if (l.trim()) more.push(l.trim());
   }
   return [first, ...more].join(" ").trim();
@@ -68,7 +68,7 @@ function inferClanId(linajeLine: string): { clanGuess: ClanId | null; antitribu:
   return { clanGuess: best?.id ?? null, antitribu: ant };
 }
 
-/** Parsea el bloque CODEX cuando proviene del generador Nexo estándar. */
+/** Parsea el bloque de ficha (Codex V) cuando proviene del generador Nexo estándar. */
 export function parseCodexSignalsFromSheetSummary(sheetSummary: string): ParsedCodexSignals {
   const text = sheetSummary.trim();
   const lines = text.split(/\r?\n/).map((l) => l.trimEnd());

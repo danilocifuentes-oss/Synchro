@@ -38,7 +38,7 @@ function chronicleBullets(c?: ChroniclePayload): string[] {
 }
 
 export type NarrativeWeave = {
-  /** Bloque compacto para modelos LLM: ensambla Génesis + CODEX sin reemplazar la hoja completa. */
+  /** Bloque compacto para modelos LLM: ensambla Génesis + Codex V sin reemplazar la hoja completa. */
   llmDirectiveBlock: string;
   /** 1–2 frases (2.ª persona) para el motor interno y coherencia local. */
   internalSceneFragment: string;
@@ -48,7 +48,7 @@ export type NarrativeWeave = {
 
 /**
  * Capa de integración: la crónica aporta campo de fuerzas compartido;
- * el CODEX aporta lente perceptivo y ganchos de identidad.
+ * el Codex V aporta lente perceptivo y ganchos de identidad.
  * No sustituye la hoja larga: la guía a leerla en escena.
  */
 export function assembleNarrativeWeaveBrief(
@@ -90,7 +90,7 @@ export function assembleNarrativeWeaveBrief(
   const macroBlock =
     bullets.length > 0
       ? bullets.map((x) => `• ${x}`).join("\n")
-      : "• (Génesis aún liviana — anclá escena desde acción, resumen vivo y CODEX sin «día uno» artificial.)";
+      : "• (Génesis aún liviana — anclá escena desde acción, resumen vivo y Codex V sin «día uno» artificial.)";
 
   const engineMacro =
     engineCtx.directiveLines.length > 0
@@ -98,11 +98,11 @@ export function assembleNarrativeWeaveBrief(
       : "";
 
   const llmDirectiveBlock = [
-    "PROPÓSITO: ENSAMBLAR crónica compartida (Centro de Mando / Génesis) + identidad CODEX de ESTE vampiro.",
+    "PROPÓSITO: ENSAMBLAR crónica compartida (Centro de Mando / Génesis) + identidad Codex V de ESTE vampiro.",
     "",
     "Cómo usar esto:",
     "• MACRO (crónica): conflictos, tensión institucional, rumores que existen igual para todos.",
-    "• MICRO (CODEX): cómo este linaje transfondo disciplinas habilidades y hambre filtran qué percibe primero el PJ.",
+    "• MICRO (Codex V): cómo este linaje transfondo disciplinas habilidades y hambre filtran qué percibe primero el PJ.",
     "• Inventá lugar y NPC, pero no contradigas fuerzas declaradas aquí ni hagas canon grupal nuevo en Nexo sin coordinación mesa.",
     "",
     "FUERZAS CRÓNICAS (telón que comparten todos, con lecturas divergentes):",

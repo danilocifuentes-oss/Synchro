@@ -27,7 +27,7 @@ import type { SoloChapter, SoloOption, SoloScene } from "@/lib/soloCampaign/type
 const DIGEST_IA_CONTEXT_ES_VERSION = 2 as const;
 
 const DIGEST_IA_CONTEXT_ES = `
-Fuente de verdad de la campaña solitaria en CODEX (lo que renderiza el front):
+Fuente de verdad de la campaña solitaria en Codex V (lo que renderiza el front):
 
 1) Cuerpo de escena: capítulos activos en \`lib/soloCampaign/chapters/\`, ensamblados en \`chronicleRegistry.ts\`.
 2) Clan Malkavian: \`resolveSoloScenePlayerText\` puede sustituir el \`text\` de la escena por \`MALKAVIAN_NARRATION_BY_SCENE_ID[scene.id]\` (\`lib/soloCampaign/chapters/malkavian/malkavianNarrationOverride.generated.ts\`). Otros clanes soportados leen la narración base de los capítulos.

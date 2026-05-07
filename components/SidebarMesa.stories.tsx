@@ -26,7 +26,7 @@ export const Default = () => {
       <SidebarMesa
         disciplines={sampleDisciplines}
         onEnterNexo={() => console.log("Entrar Nexo")}
-        onOpenCodex={() => console.log("CODEX")}
+        onOpenCodex={() => console.log("Codex V")}
         onLogout={() => console.log("Logout")}
       />
     </div>

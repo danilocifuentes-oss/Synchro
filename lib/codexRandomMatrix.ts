@@ -1,5 +1,5 @@
 /**
- * Reparto aleatorio válido para CODEX (7·5·3 atributos, 13·9·5 habilidades, disciplinas al presupuesto).
+ * Reparto aleatorio válido para Codex V (7·5·3 atributos, 13·9·5 habilidades, disciplinas al presupuesto).
  */
 
 import {

@@ -1,6 +1,6 @@
 import type { CharacterSheet, ClanId } from "@/lib/character";
 
-/** Pantalla CODEX Nexo muestra hasta 7 cajones de integridad (coherente con CharacterStatusPanel). */
+/** Pantalla Codex V en Nexo muestra hasta 7 cajones de integridad (coherente con CharacterStatusPanel). */
 export const CHRONICLE_HEALTH_TRACK_UI = 7 as const;
 
 /** Escena inicial novela donde se fuerza estado vital diegético una sola vez. */

@@ -9,7 +9,7 @@ Documento para **otras IAs o diseñadores**: contexto del producto, tokens actua
 - **Fantasía:** mesa digital inspirada en *Vampire: The Masquerade* V5 (fandom, no licencia oficial). Idioma principal: **español (Chile / latino)**.
 - **Fantasía visual:** *gothic-punk urbano*, terminal CRT, “SchreckNet”, sensación de interfaz clandestina sobre fondo casi negro.
 - **No es:** app corporativa clara; se busca **atmósfera**, legibilidad con bajo contraste deliberado en zonas secundarias.
-- **Superficies principales:** login (`SchreckNetLogin`), hub de personajes (`ProfileHub`), CODEX / chargen (`CharacterCreation`), **Nexo** (chat + manifestar dados + paneles laterales), **Centro de Mandos** (`NarratorCommandCenter`, sólo narrador/operador).
+- **Superficies principales:** login (`SchreckNetLogin`), hub de personajes (`ProfileHub`), Codex V / chargen (`CharacterCreation`), **Nexo** (chat + manifestar dados + paneles laterales), **Centro de Mandos** (`NarratorCommandCenter`, sólo narrador/operador).
 
 ---
 
@@ -48,7 +48,7 @@ Variables CSS de fuentes en `html`: `--font-inter`, `--font-jetbrains`, `--font-
 - `--color-background` / `--color-foreground` enlazados a lo anterior.
 - `--font-sans` → Inter; `--font-mono` → JetBrains Mono.
 
-### Acentos por clan (CODEX / header Nexo)
+### Acentos por clan (Codex V / header Nexo)
 
 Definidos en `lib/character.ts` → `CLAN_ACCENTS` (hex por `ClanId`): Ventrue dorado apagado, Nosferatu verde musgo, Brujah óxido, Toreador malva, Malkavian cian, Gangrel tierra, Tremere azul, thin_blood teal, Caitiff gris, other verde.
 
@@ -68,7 +68,7 @@ Definidos en `lib/character.ts` → `CLAN_ACCENTS` (hex por `ClanId`): Ventrue d
 |--------|--------|
 | `.crt-wrap` | Capa fija de **ruido SVG** + **scanlines** animadas (`crt-scan` 9s); `isolation: isolate` |
 | `.techno-grid` | Rejilla 28×28px líneas blancas muy suaves |
-| `.codex-dot-grid` | Puntos sobre `#050505` (pantalla CODEX) |
+| `.codex-dot-grid` | Puntos sobre `#050505` (pantalla Codex V) |
 | `.sharp-border-inner` | Borde verde terminal muy suave + sombra interior |
 | `.terminal-panel` | Panel degradado oscuro + borde terminal + sombra sangre |
 | `.glow-terminal` | `text-shadow` verde |
@@ -102,11 +102,11 @@ Definidos en `lib/character.ts` → `CLAN_ACCENTS` (hex por `ClanId`): Ventrue d
 |----------|-------------------|----------------|
 | Login | `components/SchreckNetLogin.tsx` | Dígitos Fibonacci, animación boot, errores “DENEGADO” |
 | Hub personajes | `components/ProfileHub.tsx` | Lista cards, `crt-wrap` + `techno-grid`, botones terminal/sangre |
-| CODEX / creación | `components/CharacterCreation.tsx` | Formulario largo, `codex-dot-grid`, acento clan |
+| Codex V / creación | `components/CharacterCreation.tsx` | Formulario largo, `codex-dot-grid`, acento clan |
 | Nexo (mesa) | `components/CronistaApp.tsx` (orquesta todo) | Header, `NarrativeFlow`, `ManifestWill`, `CharacterStatusPanel`, `SidebarMesa`, `TechnicalHud` |
 | Stream chat | `components/NarrativeFlow.tsx` | Chips hilos, textarea, sugerencias |
 | Tiradas | `components/ManifestWill.tsx` | Panel “Voluntad · tirada”, mono |
-| Centro mando | `components/NarratorCommandCenter.tsx` | Full screen mono, rojo `#b91c1c`, pestañas CODEX/Génesis/Motor/Orquestación |
+| Centro mando | `components/NarratorCommandCenter.tsx` | Full screen mono, rojo `#b91c1c`, pestañas Codex V/Génesis/Motor/Orquestación |
 | Admin / MJ | `components/AdminConsole.tsx` | Drawer sangre |
 | Digest lateral | `components/NexoChronicleDigest.tsx` | Tipografía sans suave |
 

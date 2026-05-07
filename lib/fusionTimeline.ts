@@ -1,5 +1,5 @@
 /**
- * Línea temporal CODEX · fusión “a todo gas”: años sin vida → generación Masquerada
+ * Línea temporal Codex V · fusión “a todo gas”: años sin vida → generación Masquerada
  * tentativa + presupuestos derivados (freebies · disciplinas V5/Revised).
  * No es tabla canónica de White Wolf: el director de juego debe confirmar sire y generación real.
  */
@@ -11,7 +11,7 @@ import { disciplineBudget } from "./sereno";
 /** Generación vampírica típica 8–13 (8 = linaje ancestral raro fuera del elíseo). */
 export type MasqueradeGenNumber = 8 | 9 | 10 | 11 | 12 | 13;
 
-/** Años desde el Abrazo → género número (fronteras ajustables mesa CODEX). */
+/** Años desde el Abrazo → género número (fronteras ajustables mesa Codex V). */
 export function masqueradeGenerationFromYears(yearsUnlife: number): MasqueradeGenNumber {
   if (!Number.isFinite(yearsUnlife) || yearsUnlife < 0) return 13;
   const y = Math.floor(yearsUnlife);
@@ -23,7 +23,7 @@ export function masqueradeGenerationFromYears(yearsUnlife: number): MasqueradeGe
   return 8;
 }
 
-/** Cohort Sereno neonato vs ancilla a partir del tiempo desde el Beso (heurística CODEX). */
+/** Cohort Sereno neonato vs ancilla a partir del tiempo desde el Beso (heurística Codex V). */
 export function suggestedSerenoGeneration(yearsUnlife: number): Generation {
   const y = Math.max(0, Math.floor(Number.isFinite(yearsUnlife) ? yearsUnlife : 0));
   return y >= 90 ? "ancilla" : "neonato";
@@ -48,7 +48,7 @@ export function fusionV5DisciplineBudget(category: Generation, masqGen: Masquera
   return Math.min(base + bleed, 8);
 }
 
-/** Presupuesto Revised dentro del CODEX: 3 puntos línea típico neonato · sube si la sangre es más antigua del mapa Mes. */
+/** Presupuesto Revised dentro de Codex V: 3 puntos línea típico neonato · sube si la sangre es más antigua del mapa Mes. */
 export function fusionClassicDisciplineBudget(masqGen: MasqueradeGenNumber): number {
   return Math.min(3 + Math.max(0, 13 - masqGen), 10);
 }
