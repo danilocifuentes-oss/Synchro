@@ -19,10 +19,14 @@ export function getPendingNextChapter(progress: SoloProgress): string | null {
     candidates.push(target);
   }
   if (!candidates.length) return null;
-  const future = candidates
+  /** Durante el epílogo (línea principal 7), no ofrecer salto al cap. paralelo 8 para no romper el veredicto. */
+  const filtered =
+    progress.chapterId === "chapter07" ? candidates.filter((id) => id !== "chapter08") : candidates;
+  if (!filtered.length) return null;
+  const future = filtered
     .map((id) => ({ id, order: chapterOrderKey(id) }))
     .filter((row) => Number.isFinite(row.order) && row.order > currentOrder)
     .sort((a, b) => a.order - b.order);
   if (future.length) return future[0].id;
-  return candidates.sort((a, b) => a.localeCompare(b))[0] ?? null;
+  return filtered.sort((a, b) => a.localeCompare(b))[0] ?? null;
 }

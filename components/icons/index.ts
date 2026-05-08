@@ -10,4 +10,6 @@ export { default as IconThreat } from "./IconThreat";
 export { default as IconPin } from "./IconPin";
 export { default as IconAvatarSigil } from "./IconAvatarSigil";
 export { default as IconOrnament } from "./IconOrnament";
+export { default as IconChevronLeft } from "./IconChevronLeft";
+export { default as IconChevronRight } from "./IconChevronRight";
 

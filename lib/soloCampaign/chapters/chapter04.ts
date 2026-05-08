@@ -196,6 +196,7 @@ export const chapter04: SoloChapter = {
           effects: [
             { type: "setFlag", flag: "chapter_pending_chapter05" },
             { type: "setFlag", flag: "marked_by_earth" },
+            { type: "setFlag", flag: "chapter_pending_chapter08" },
           ],
         },
       ],

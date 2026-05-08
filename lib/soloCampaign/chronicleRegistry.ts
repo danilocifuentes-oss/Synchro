@@ -37,12 +37,9 @@ export const TEMUCO_ARAUCANIA_ENTRY_RESOLVERS: NonNullable<ChronicleDefinition["
   chapter05: (flags) => (flagOn(flags, "chapter_pending_chapter05") ? "c5_001" : null),
   chapter06: (flags) => (flagOn(flags, "chapter_pending_chapter06") ? "c6_001" : null),
   chapter07: (flags) => (flagOn(flags, "chapter_pending_chapter07") ? "end_001" : null),
+  /** Paralelos: `inquisition_diversion` solo aplica dentro del cap. 8; la entrada usa tierra o anarquía. */
   chapter08: (flags) =>
-    flagOn(flags, "anarch_alliance") ||
-    flagOn(flags, "inquisition_diversion") ||
-    flagOn(flags, "marked_by_earth")
-      ? "side_001"
-      : null,
+    flagOn(flags, "anarch_alliance") || flagOn(flags, "marked_by_earth") ? "side_001" : null,
 };
 
 const SHARED_CHAPTERS: SoloChapter[] = [

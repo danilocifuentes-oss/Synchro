@@ -7,7 +7,7 @@ import TechnicalHud from "@/components/TechnicalHud";
 import DiceRollerD10 from "@/components/DiceRollerD10";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import { useSettings } from "@/context/SettingsContext";
-import { IconAvatarSigil } from "@/components/icons";
+import { IconAvatarSigil, IconChevronLeft, IconChevronRight } from "@/components/icons";
 import { IconBookAnimated } from "@/components/icons/animated";
 import CodexModal from "@/components/CodexModal";
 
@@ -64,20 +64,24 @@ export default function SoloCampaignHeader({ identity, status, onRoll, onPrev, o
           </motion.button>
           <button
             type="button"
-            onClick={onPrev}
-            className="rounded border border-[rgba(255,255,255,0.04)] px-3 py-2"
+            disabled={!onPrev}
+            onClick={() => onPrev?.()}
+            className="inline-flex items-center gap-2 rounded border border-[rgba(255,255,255,0.04)] px-3 py-2 disabled:cursor-not-allowed disabled:opacity-35"
             aria-label="Escena anterior"
           >
-            Atrás
+            <IconChevronLeft className="icon !h-[18px] !w-[18px] shrink-0 text-[var(--terminal)]" />
+            <span>Atrás</span>
           </button>
           <DiceRollerD10 onResult={(v) => onRoll?.(v)} />
           <button
             type="button"
-            onClick={onNext}
-            className="rounded border border-[rgba(255,255,255,0.04)] px-3 py-2"
+            disabled={!onNext}
+            onClick={() => onNext?.()}
+            className="inline-flex items-center gap-2 rounded border border-[rgba(255,255,255,0.04)] px-3 py-2 disabled:cursor-not-allowed disabled:opacity-35"
             aria-label="Siguiente escena"
           >
-            Adelante
+            <span>Adelante</span>
+            <IconChevronRight className="icon !h-[18px] !w-[18px] shrink-0 text-[var(--terminal)]" />
           </button>
         </div>
       </header>

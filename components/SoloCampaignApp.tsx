@@ -18,6 +18,7 @@ import type { SoloEndingId, SoloOption, SoloProgress, SoloRouteId, SoloSceneEffe
 import { parseOptionIaPanels, parseSceneIaPanels } from "@/lib/soloCampaign/soloIaPresentation";
 import { getPendingNextChapter } from "@/lib/soloCampaign/soloProgressSelectors";
 import { syncActiveBundleFromGlobals } from "@/lib/profileStore";
+import { IconBook, IconTerminal } from "@/components/icons";
 import SoloCampaignHeader from "@/components/SoloCampaignHeader";
 import { SoloCampaignProvider, useSoloCampaign } from "@/context/SoloCampaignContext";
 import { rollPoolV5, summarizeRollPlayerLog } from "@/lib/dice";
@@ -36,6 +37,27 @@ import {
 } from "@/lib/soloCampaign/rollResourceCost";
 
 const SOLO_BACK_STACK_LIMIT = 120;
+
+const SOLO_ENDING_DISPLAY: Partial<Record<SoloEndingId, string>> = {
+  ending_flourish: "Imperio vegetal",
+  ending_resist: "Ceniza humana (legacy)",
+  ending_resist_high: "Redención verde",
+  ending_resist_low: "Príncipe herido",
+  ending_seed: "Semilla errante",
+  ending_throne: "Trono de zinc",
+  ending_abyss: "Árbol de los Olvidados",
+  ending_gangrel: "Hijo de la tierra",
+  ending_purge: "Purga verde",
+  endingA: "Final A",
+  endingB: "Final B",
+  endingC: "Final C",
+  endingD: "Final D",
+};
+
+function formatSoloEndingDisplay(id: SoloEndingId | null): string {
+  if (!id) return "";
+  return SOLO_ENDING_DISPLAY[id] ?? id.replace(/^ending_/g, "").replace(/_/g, " ");
+}
 
 /** Texto legible para `chapter_pending_*` (evita "CONTINUAR EN CHAPTER03"). */
 function pendingChapterButtonLabel(chapterId: string): string {
@@ -404,7 +426,15 @@ function SoloCampaignScreen({
     return listPlayerVisibleSoloOptions(scene.options, sheet, progress);
   }, [scene, sheet, progress]);
   const pendingNextChapter = getPendingNextChapter(progress);
-  const collapseEndOptions = Boolean(pendingNextChapter && scene?.id.endsWith("_end"));
+  const collapseEndOptions = Boolean(
+    pendingNextChapter &&
+      (Boolean(scene?.id.endsWith("_end")) || (scene?.options?.length ?? 0) === 0),
+  );
+  const atNarrativeEndingScene = progress.sceneId.startsWith("ending_");
+  const showAdvanceToNextChapter =
+    Boolean(pendingNextChapter) &&
+    (progress.endingId ?? null) == null &&
+    !atNarrativeEndingScene;
   const scenePanels = useMemo(() => {
     if (!scene) return { context: null as string | null, narration: "" };
     const raw = resolveSoloScenePlayerText(scene, sheet, progress);
@@ -421,7 +451,10 @@ function SoloCampaignScreen({
   const chapterRibbon = chapter ? compactChapterRibbon(chapterHeadline, chapter.id) : "";
 
   useEffect(() => {
-    if (!pendingNextChapter || !scene?.id.endsWith("_end")) return;
+    if (!showAdvanceToNextChapter) return;
+    const atEndId = Boolean(scene?.id.endsWith("_end"));
+    const gateNoBranches = (scene?.options?.length ?? 0) === 0;
+    if (!atEndId && !gateNoBranches) return;
     const id = requestAnimationFrame(() => {
       chapterAdvanceRef.current?.scrollIntoView({
         behavior: reduceMotion ? "auto" : "smooth",
@@ -429,7 +462,7 @@ function SoloCampaignScreen({
       });
     });
     return () => cancelAnimationFrame(id);
-  }, [pendingNextChapter, scene?.id, reduceMotion]);
+  }, [showAdvanceToNextChapter, scene?.id, scene?.options?.length, reduceMotion]);
 
   const finalizeCommitDraft = useCallback(
     (draft: SoloCommitDraft) => {
@@ -631,6 +664,9 @@ function SoloCampaignScreen({
   const hudFilled = CHRONICLE_HEALTH_TRACK_UI - Math.min(sheet.healthDamage, CHRONICLE_HEALTH_TRACK_UI);
   const fatalOutcome = progress.fatalOutcome ?? null;
   const endingId = progress.endingId ?? null;
+  const sceneHasBranchOptions = (scene.options?.length ?? 0) > 0;
+  const showEmptyChoicesHint =
+    !collapseEndOptions && !endingId && !showAdvanceToNextChapter && displayedOptions.length === 0;
 
   return (
     <div
@@ -791,6 +827,7 @@ function SoloCampaignScreen({
                   ) : null}
 
                   {!collapseEndOptions ? (
+                    displayedOptions.length > 0 ? (
                     <div className="space-y-2.5">
                       {displayedOptions.map((option) => {
                       const parsedOpt = parseOptionIaPanels(option.text);
@@ -924,15 +961,37 @@ function SoloCampaignScreen({
                       );
                       })}
                     </div>
+                    ) : showEmptyChoicesHint ? (
+                      <div
+                        role="status"
+                        className="rounded border border-dashed border-neutral-700/55 bg-black/35 px-4 py-4 text-center"
+                      >
+                        <p className="font-sans text-[11px] leading-relaxed text-neutral-500">
+                          {sceneHasBranchOptions ? (
+                            <>
+                              Ninguna opción cumple los requisitos con tu ficha y progreso actual. Prueba volver a la escena
+                              anterior o sal al Nexo.
+                            </>
+                          ) : (
+                            <>
+                              Esta escena no ofrece elecciones. Si esperabas un avance de capítulo y no aparece abajo, sal al
+                              Nexo y vuelve a cargar el personaje.
+                            </>
+                          )}
+                        </p>
+                      </div>
+                    ) : null
                   ) : null}
 
                   {endingId ? (
                     <div className="border-t border-white/[0.04] pt-4">
-                      <p className="text-[11px] uppercase tracking-[0.18em] text-emerald-300">Final desbloqueado: {endingId}</p>
+                      <p className="text-[11px] uppercase tracking-[0.18em] text-emerald-300">
+                        Final desbloqueado: {formatSoloEndingDisplay(endingId)}
+                      </p>
                     </div>
                   ) : null}
 
-                  {pendingNextChapter ? (
+                  {showAdvanceToNextChapter && pendingNextChapter ? (
                     <div
                       ref={chapterAdvanceRef}
                       className="flex flex-wrap gap-2 border-t border-white/[0.04] pt-4 scroll-mt-[min(220px,30vh)]"
@@ -941,8 +1000,11 @@ function SoloCampaignScreen({
                         type="button"
                         onClick={() => {
                           if (transitionLockRef.current) return;
-                          transitionLockRef.current = true;
                           const target = pendingNextChapter;
+                          if (!target) {
+                            return;
+                          }
+                          transitionLockRef.current = true;
                           const targetChapter = getSoloChapter(target);
                           const targetStart = resolveChapterEntrySceneId(target, progress.flags) ?? targetChapter?.startSceneId ?? null;
                           if (!targetChapter || !targetStart) {
@@ -964,16 +1026,18 @@ function SoloCampaignScreen({
                           };
                           navigateProgress(next, 1);
                         }}
-                        className="border border-neutral-700 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-neutral-400 hover:border-neutral-500"
+                        className="inline-flex items-center gap-2 border border-neutral-700 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-neutral-400 hover:border-neutral-500"
                       >
-                        Continuar en {pendingChapterButtonLabel(pendingNextChapter)}
+                        <IconBook decorative className="icon !h-[16px] !w-[16px] shrink-0 opacity-85" />
+                        <span>Continuar en {pendingChapterButtonLabel(pendingNextChapter)}</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => onExit()}
-                        className="border border-[var(--terminal)]/35 bg-neutral-950/80 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[var(--terminal)]"
+                        className="inline-flex items-center gap-2 border border-[var(--terminal)]/35 bg-neutral-950/80 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[var(--terminal)]"
                       >
-                        Volver al Nexo
+                        <IconTerminal decorative className="icon !h-[16px] !w-[16px] shrink-0 opacity-90" />
+                        <span>Volver al Nexo</span>
                       </button>
                     </div>
                   ) : null}
