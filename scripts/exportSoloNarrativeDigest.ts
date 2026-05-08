@@ -15,10 +15,8 @@ import { fileURLToPath } from "node:url";
 import { SOLO_SUPPORTED_CLANS } from "@/lib/soloCampaign/bootstrap";
 import {
   CHRONICLE_HEALTH_TRACK_UI,
-  CHRONICLE_OPENING_SCENE_ID,
   CHRONICLE_XP_CRITICAL_EXTRA,
   CHRONICLE_XP_ROLL_SUCCESS_DEFAULT,
-  SOLO_FLAG_OPENING_VITALS,
 } from "@/lib/soloCampaign/chronicleMechanics";
 import { SOLO_CHAPTERS } from "@/lib/soloCampaign/chapters";
 import type { SoloChapter, SoloOption, SoloScene } from "@/lib/soloCampaign/types";
@@ -31,8 +29,8 @@ Fuente de verdad de la campaña solitaria en Codex V (lo que renderiza el front)
 
 1) Cuerpo de escena: capítulos activos en \`lib/soloCampaign/chapters/\`, ensamblados en \`chronicleRegistry.ts\`.
 2) Clan Malkavian: \`resolveSoloScenePlayerText\` puede sustituir el \`text\` de la escena por \`MALKAVIAN_NARRATION_BY_SCENE_ID[scene.id]\` (\`lib/soloCampaign/chapters/malkavian/malkavianNarrationOverride.generated.ts\`). Otros clanes soportados leen la narración base de los capítulos.
-3) Títulos de capítulo en biblioteca: \`soloChapterHeadlineForClan\` cambia VENTRUE→MALKAVIAN en el título (\`chronicleMechanics.ts\`).
-4) No existe \`clanFlavor\` por escena en el modelo: no buscar variantes Brujah/Toreador en el JSON de escenas; si aplica, convivirán con la base Ventrue hasta que exista otro mecanismo en código.
+3) Títulos de capítulo en biblioteca: \`soloChapterHeadlineForClan\` sustituye la palabra VENTRUE por MALKAVIAN en el título si el jugador es Malkavian (\`chronicleMechanics.ts\`).
+4) No existe \`clanFlavor\` por escena en el modelo: la prosa vive en \`SoloScene.text\` salvo overrides Malkavian en \`MALKAVIAN_NARRATION_BY_SCENE_ID\`.
 
 Al reescribir o proponer texto nuevo, debe poder colgarse de \`SoloScene.text\` / overrides generados o de la mecánica anterior; no inventar un segundo JSON paralelo de «novela».
 `.trim();
@@ -128,7 +126,7 @@ const PROMPT_ANALISIS_ES = `Actúas como editor de narrative design y QA de una 
 El JSON "digest" refleja el árbol exportado desde código (arbol_caps). La UI añade capas fuera de este JSON: overrides Malkavian por id de escena y sustitución de palabras en títulos (ver bloque ---CONTEXTO_UI---).
 
 Estructura:
-- cronica.shell: constantes mecánicas de apertura (escena Codex, PX, salud UI).
+- cronica.shell: constantes mecánicas de PX y tope de salud en HUD Codex.
 - plataforma: clanes con campaña solitaria activa.
 - arbol_caps: capítulos con escenas; narracion (base Ventrue/ruta principal), adjuntos_cuando_bandera_activa, contexto_por_estado, opciones con requisitos y efectos.
 - qa_grafo: diagnósticos automáticos.
@@ -163,16 +161,14 @@ async function main(): Promise<void> {
     plataforma: {
       clanes_solo_soportados_IDS: [...SOLO_SUPPORTED_CLANS],
       nota_montaje_UI:
-        "Cuerpo: narración base en capítulos TS; clan malkavian reemplaza vía MALKAVIAN_NARRATION_BY_SCENE_ID. Título de capítulo: soloChapterHeadlineForClan. Brujah/toreador: misma prosa base que Ventrue salvo futura extensión en código.",
+        "Cuerpo: narración base en capítulos TS; clan Malkavian puede reemplazar vía MALKAVIAN_NARRATION_BY_SCENE_ID. Título: soloChapterHeadlineForClan. Ruta actual: prólogo Temuco + caps. 1–3.",
     },
     cronica: {
       shell: {
-        mecanica_escena_primera_codex: {
-          CHRONICLE_OPENING_SCENE_ID,
+        mecanica_codex_solo: {
           CHRONICLE_HEALTH_TRACK_UI_CAJONES: CHRONICLE_HEALTH_TRACK_UI,
           CHRONICLE_XP_ROLL_SUCCESS_DEFAULT,
           CHRONICLE_XP_CRITICAL_EXTRA,
-          bandera_estado_vital_aplicado: SOLO_FLAG_OPENING_VITALS,
         },
       },
     },

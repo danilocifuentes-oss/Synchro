@@ -13,8 +13,7 @@ import {
 } from "@/lib/soloCampaign/chapters";
 import { checkOptionAvailability, listFailReasons, resolveSoloScenePlayerText } from "@/lib/soloCampaign/requirementEngine";
 import { listPlayerVisibleSoloOptions } from "@/lib/soloCampaign/optionPresentation";
-import { loadSheet, normalizeCharacterSheet, saveSheet } from "@/lib/character";
-import { loadSoloProgress, saveSoloProgress } from "@/lib/soloCampaign/progressStore";
+import { saveSheet } from "@/lib/character";
 import type { SoloEndingId, SoloOption, SoloProgress, SoloRouteId, SoloSceneEffect } from "@/lib/soloCampaign/types";
 import { parseOptionIaPanels, parseSceneIaPanels } from "@/lib/soloCampaign/soloIaPresentation";
 import { getPendingNextChapter } from "@/lib/soloCampaign/soloProgressSelectors";
@@ -24,12 +23,9 @@ import { SoloCampaignProvider, useSoloCampaign } from "@/context/SoloCampaignCon
 import { rollPoolV5, summarizeRollPlayerLog } from "@/lib/dice";
 import { appendXpLog } from "@/lib/sessionMeta";
 import {
-  applyOpeningChronicleVitals,
   CHRONICLE_HEALTH_TRACK_UI,
-  CHRONICLE_OPENING_SCENE_ID,
   CHRONICLE_XP_CRITICAL_EXTRA,
   CHRONICLE_XP_ROLL_SUCCESS_DEFAULT,
-  SOLO_FLAG_OPENING_VITALS,
   soloChapterHeadlineForClan,
 } from "@/lib/soloCampaign/chronicleMechanics";
 import { getChronicleDefinition } from "@/lib/soloCampaign/chronicleRegistry";
@@ -44,7 +40,12 @@ const SOLO_BACK_STACK_LIMIT = 120;
 /** Texto legible para `chapter_pending_*` (evita "CONTINUAR EN CHAPTER03"). */
 function pendingChapterButtonLabel(chapterId: string): string {
   const m = /^chapter(\d+)$/i.exec(chapterId);
-  if (m) return `Capítulo ${Number(m[1])}`;
+  if (m) {
+    const n = Number(m[1]);
+    if (n === 7) return "Epílogo";
+    if (n === 8) return "Paralelos";
+    return `Capítulo ${n}`;
+  }
   if (chapterId === "epilogue") return "Epílogo";
   return chapterId.replace(/_/g, " ");
 }
@@ -418,7 +419,6 @@ function SoloCampaignScreen({
   const clanLabel = CLAN_OPTIONS.find((c) => c.id === sheet.clan)?.label ?? sheet.clan;
   const chapterHeadline = chapter ? soloChapterHeadlineForClan(chapter.title, sheet.clan) : "";
   const chapterRibbon = chapter ? compactChapterRibbon(chapterHeadline, chapter.id) : "";
-  const openingVitalsApplied = Boolean(progress.flags[SOLO_FLAG_OPENING_VITALS]);
 
   useEffect(() => {
     if (!pendingNextChapter || !scene?.id.endsWith("_end")) return;
@@ -430,27 +430,6 @@ function SoloCampaignScreen({
     });
     return () => cancelAnimationFrame(id);
   }, [pendingNextChapter, scene?.id, reduceMotion]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const canNarrative = scene?.id === CHRONICLE_OPENING_SCENE_ID;
-    if (!canNarrative || openingVitalsApplied) return;
-    const latest = loadSoloProgress(profileId, sheet.clan);
-    if (!latest) return;
-    const stored = loadSheet();
-    if (!stored) return;
-    const nextSheet = applyOpeningChronicleVitals(normalizeCharacterSheet(stored));
-    saveSheet(nextSheet);
-    onSheetSynced?.(nextSheet);
-    appendXpLog("Crónica: estado vital inicial aplicado en Teatinos (eco Codex sincronizado).");
-    syncActiveBundleFromGlobals(profileId);
-    const progFlag: SoloProgress = {
-      ...latest,
-      flags: { ...latest.flags, [SOLO_FLAG_OPENING_VITALS]: true },
-      updatedAt: latest.updatedAt + 1,
-    };
-    patchProgress(progFlag);
-  }, [scene?.id, openingVitalsApplied, profileId, sheet.clan, patchProgress, onSheetSynced]);
 
   const finalizeCommitDraft = useCallback(
     (draft: SoloCommitDraft) => {

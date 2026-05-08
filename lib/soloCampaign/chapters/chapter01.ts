@@ -1,174 +1,234 @@
 import type { SoloChapter } from "@/lib/soloCampaign/types";
 
-/** Plantilla V2: rutas múltiples + finales distintos + salida fatal. */
+/** Capítulo 1: Corte local (Temuco). */
 export const chapter01: SoloChapter = {
   id: "chapter01",
-  title: "NUEVA CRÓNICA · CAPÍTULO 1",
-  description: "Capítulo base con rutas múltiples y finales diferenciados.",
-  startSceneId: "n1_0",
+  title: "Capítulo 1: La Corte de Zinc y Neón",
+  description: "La Camarilla local te somete a juicio. El Príncipe decide si vives o eres ceniza.",
+  startSceneId: "c1_001",
   scenes: [
     {
-      id: "n1_0",
+      id: "c1_001",
       chapterId: "chapter01",
-      title: "[ESCENA 1.0]: APERTURA",
-      text: `CONTEXTO: Punto de partida.
-
-NARRACIÓN: Presentación del conflicto inicial.`,
+      title: "El Heraldo de Gris",
+      text:
+        "La tarjeta negra pesa como plomo en tu mano. Sales a la noche bajo la llovizna persistente. En una esquina cerca de la fuente de la Plaza Aníbal Pinto, bajo una luminaria que agoniza, la presencia se materializa. Julián Voss, Ventrue de linaje impecable, te observa con ojos color ceniza.",
+      contextLeadInByState: [
+        {
+          requirement: { type: "flag", flag: "masquerade_breach_high", equals: true },
+          text: "Voss ya sabe de tu caza descuidada. Su desprecio es casi palpable.",
+        },
+        {
+          requirement: { type: "flag", flag: "voss_suspect", equals: true },
+          text: "Reconoces el olor a cachemir de la huella en tu habitación.",
+        },
+      ],
       options: [
         {
-          id: "n1_0_diplomacia",
+          id: "c1001_a",
           type: "dialogue",
-          text: `OPCIÓN A [DIPLOMACIA]: Negociar antes de escalar.
-
-PUENTE: Tomas control de la conversación.
-
-CONSECUENCIA: Queda abierta una salida política.
-
-RESULTADO: route_diplomacia | IR A [ESCENA 1.1]`,
+          text: "Mostrar humildad y aceptar la cita con el Príncipe",
           requirement: { type: "none" },
-          nextSceneId: "n1_1",
-          effects: [{ type: "setFlag", flag: "route_diplomacia" }],
+          nextSceneId: "c1_002",
+          effects: [
+            { type: "reputationDelta", delta: 2 },
+            { type: "setFlag", flag: "prince_cautious" },
+          ],
         },
         {
-          id: "n1_0_violencia",
-          type: "dialogue",
-          text: `OPCIÓN B [VIOLENCIA]: Imponerte por fuerza.
-
-PUENTE: Aceleras el conflicto.
-
-CONSECUENCIA: Obtienes control inmediato, pero dejas rastro.
-
-RESULTADO: route_violencia | humanityDelta: -1 | IR A [ESCENA 1.1]`,
-          requirement: { type: "none" },
-          nextSceneId: "n1_1",
-          effects: [{ type: "setFlag", flag: "route_violencia" }, { type: "humanityDelta", delta: -1 }],
+          id: "c1001_b",
+          type: "discipline",
+          discipline: "presence",
+          text: "Usar Presencia para impresionar al heraldo",
+          requirement: { type: "discipline", discipline: "presence", minLevel: 2 },
+          nextSceneId: "c1_002",
+          effects: [{ type: "setFlag", flag: "voss_respect" }],
         },
         {
-          id: "n1_0_intriga",
-          type: "dialogue",
-          text: `OPCIÓN C [INTRIGA]: Operar en sombras.
-
-PUENTE: Tomas distancia y observas.
-
-CONSECUENCIA: Consigues información clave para más adelante.
-
-RESULTADO: route_intriga | IR A [ESCENA 1.1]`,
-          requirement: { type: "none" },
-          nextSceneId: "n1_1",
-          effects: [{ type: "setFlag", flag: "route_intriga" }],
+          id: "c1001_c",
+          type: "discipline",
+          discipline: "dominate",
+          text: "Intentar Dominar a Voss para que te deje en paz",
+          requirement: { type: "discipline", discipline: "dominate", minLevel: 3 },
+          nextSceneId: "c1_001_dominate",
+          nextSceneIdOnFail: "c1_001_fail",
+          effects: [{ type: "setFlag", flag: "voss_hostile" }],
+        },
+        {
+          id: "c1001_d",
+          type: "clan",
+          clan: "brujah",
+          text: "Desafiar su autoridad y exigir respeto",
+          requirement: { type: "clan", clan: "brujah" },
+          nextSceneId: "c1_001_fail",
+          effects: [{ type: "setFlag", flag: "voss_hostile" }],
         },
       ],
     },
     {
-      id: "n1_1",
+      id: "c1_001_dominate",
       chapterId: "chapter01",
-      title: "[ESCENA 1.1]: CONSECUENCIAS",
-      text: `CONTEXTO: El entorno reacciona a tu enfoque.
-
-NARRACIÓN: Se prepara el cierre del capítulo.`,
-      contextVariantByState: [
-        {
-          requirement: { type: "flag", flag: "route_diplomacia", equals: true },
-          text: "Tu postura diplomática reduce fricción inmediata.",
-        },
-        {
-          requirement: { type: "flag", flag: "route_violencia", equals: true },
-          text: "Tu rastro violento aumenta la presión externa.",
-        },
-        {
-          requirement: { type: "flag", flag: "route_intriga", equals: true },
-          text: "Tu ruta de intriga te entrega ventaja de contexto.",
-        },
-      ],
+      title: "Intento de Dominación",
+      text:
+        "Tus palabras resuenan con poder ancestral. Voss titubea un instante, pero su voluntad es de acero viejo.",
       options: [
         {
-          id: "n1_1_continuar",
+          id: "c1001d_a",
           type: "dialogue",
-          text: `Continuar al cierre del capítulo.`,
+          text: "Retirarte con dignidad",
           requirement: { type: "none" },
-          nextSceneId: "n1_cierre",
+          nextSceneId: "c1_002",
+          effects: [{ type: "humanityDelta", delta: -1 }],
         },
       ],
     },
     {
-      id: "n1_cierre",
+      id: "c1_001_fail",
       chapterId: "chapter01",
-      title: "[ESCENA 1.END]: RESOLUCIÓN",
-      text: `CONTEXTO: Cierre del capítulo.
-
-NARRACIÓN: Tus decisiones definen la forma de avanzar.`,
+      title: "La Ira del Heraldo",
+      text: "Voss te mira como a una rata. «Mañana te presentarás… o amanecerás en ceniza».",
       options: [
         {
-          id: "n1_final_a",
+          id: "c1001f_a",
           type: "dialogue",
-          requirement: { type: "flag", flag: "route_diplomacia", equals: true },
-          text: `Final diplomático.
-
-RESULTADO: endingA | chapter_pending_chapter02`,
-          nextSceneId: "n1_end",
+          text: "Aceptar y marcharte",
+          requirement: { type: "none" },
+          nextSceneId: "c1_002",
           effects: [
-            { type: "setEnding", endingId: "endingA" },
-            { type: "setFlag", flag: "chapter_pending_chapter02" },
-            { type: "addStateTag", tag: "ruta_cap2_diplomacia" },
-            { type: "setRoute", route: "main" },
-          ],
-        },
-        {
-          id: "n1_final_b",
-          type: "dialogue",
-          requirement: { type: "flag", flag: "route_violencia", equals: true },
-          text: `Final de imposición.
-
-RESULTADO: endingB | chapter_pending_chapter02`,
-          nextSceneId: "n1_end",
-          effects: [
-            { type: "setEnding", endingId: "endingB" },
-            { type: "setFlag", flag: "chapter_pending_chapter02" },
-            { type: "addStateTag", tag: "ruta_cap2_violencia" },
-            { type: "setRoute", route: "w" },
-          ],
-        },
-        {
-          id: "n1_final_c",
-          type: "dialogue",
-          requirement: { type: "flag", flag: "route_intriga", equals: true },
-          text: `Final de intriga.
-
-RESULTADO: endingC | chapter_pending_chapter02`,
-          nextSceneId: "n1_end",
-          effects: [
-            { type: "setEnding", endingId: "endingC" },
-            { type: "setFlag", flag: "chapter_pending_chapter02" },
-            { type: "addStateTag", tag: "ruta_cap2_intriga" },
-            { type: "setRoute", route: "q" },
-          ],
-        },
-        {
-          id: "n1_final_fatal",
-          type: "dialogue",
-          requirement: { type: "humanityMin", min: 1 },
-          text: `RIESGO: Forzar una salida imposible.`,
-          nextSceneId: "n1_end",
-          effects: [
-            {
-              type: "fatalOutcome",
-              id: "colapso_nexo",
-              title: "Colapso del plan",
-              body: "Tu operación se derrumba antes de consolidar ruta.",
-            },
+            { type: "humanityDelta", delta: -1 },
+            { type: "setFlag", flag: "voss_hostile" },
           ],
         },
       ],
     },
     {
-      id: "n1_end",
+      id: "c1_002",
       chapterId: "chapter01",
-      title: "Cierre del capítulo",
-      text: `CONTEXTO: Umbral del siguiente capítulo.
-
-NARRACIÓN: El sistema queda listo para continuar con la ruta resultante.`,
+      title: "El Sanctasanctórum de los Olvidados",
+      text:
+        "La mansión colonial exhala decadencia y poder. Gules impecables custodian la entrada. En el salón principal, el Príncipe te espera en su trono de terciopelo. A su lado, Valeria, Primogénita Toreador, te observa con curiosidad felina.",
+      contextLeadInByState: [
+        {
+          requirement: { type: "flag", flag: "valeria_interest", equals: true },
+          text: "Valeria ya parece conocerte. Sus ojos verdes brillan con interés.",
+        },
+        {
+          requirement: { type: "flag", flag: "voss_hostile", equals: true },
+          text: "Voss susurra al oído del Príncipe. La atmósfera es hostil.",
+        },
+      ],
+      options: [
+        {
+          id: "c1002_a",
+          type: "dialogue",
+          text: "Explicar tu huida de la Segunda Inquisición con humildad",
+          requirement: { type: "none" },
+          nextSceneId: "c1_003",
+          effects: [
+            { type: "setFlag", flag: "prince_permission" },
+            { type: "setFlag", flag: "valeria_affection" },
+            { type: "setFlag", flag: "prince_reputation" },
+          ],
+        },
+        {
+          id: "c1002_b",
+          type: "discipline",
+          discipline: "auspex",
+          text: "Leer las auras de la Corte antes de hablar",
+          requirement: { type: "discipline", discipline: "auspex", minLevel: 2 },
+          nextSceneId: "c1_003",
+          effects: [
+            { type: "experienceDelta", delta: 20 },
+            { type: "setFlag", flag: "court_secrets" },
+          ],
+        },
+        {
+          id: "c1002_c",
+          type: "clan",
+          clan: "ventrue",
+          text: "Invocar tu propio linaje y exigir respeto como igual",
+          requirement: { type: "clan", clan: "ventrue" },
+          nextSceneId: "c1_002_ventrue",
+          effects: [{ type: "setFlag", flag: "prince_respect" }],
+        },
+      ],
+    },
+    {
+      id: "c1_002_ventrue",
+      chapterId: "chapter01",
+      title: "Orgullo Ventrue",
+      text: "El Príncipe te evalúa con nuevos ojos. Tu linaje habla por ti.",
+      options: [
+        {
+          id: "c1002v_a",
+          type: "dialogue",
+          text: "Continuar la conversación",
+          requirement: { type: "none" },
+          nextSceneId: "c1_003",
+          effects: [
+            { type: "reputationDelta", delta: 2 },
+            { type: "setFlag", flag: "prince_reputation" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "c1_003",
+      chapterId: "chapter01",
+      title: "Susurro de Valeria",
+      text:
+        "El Príncipe te concede permiso provisional: puedes alimentarte, pero no en el centro ni universidades. Valeria se acerca al marcharte y roza tu oído con labios fríos.",
+      contextLeadInByState: [
+        {
+          requirement: { type: "flag", flag: "valeria_affection", equals: true },
+          text: "Su voz es más cálida de lo esperado.",
+        },
+      ],
+      options: [
+        {
+          id: "c1003_a",
+          type: "dialogue",
+          text: "Aceptar su invitación al viñedo «Los Olvidados»",
+          requirement: { type: "none" },
+          nextSceneId: "c1_004",
+          effects: [
+            { type: "setFlag", flag: "valeria_invited" },
+            { type: "setFlag", flag: "chapter_pending_chapter02" },
+          ],
+        },
+        {
+          id: "c1003_b",
+          type: "dialogue",
+          text: "Rechazar por lealtad al Príncipe",
+          requirement: { type: "flag", flag: "prince_cautious", equals: true },
+          nextSceneId: "c1_004",
+          effects: [
+            { type: "setFlag", flag: "valeria_distrust" },
+            { type: "setFlag", flag: "chapter_pending_chapter02" },
+          ],
+        },
+        {
+          id: "c1003_c",
+          type: "discipline",
+          discipline: "presence",
+          text: "Usar Presencia para seducir a Valeria",
+          requirement: { type: "discipline", discipline: "presence", minLevel: 2 },
+          nextSceneId: "c1_004",
+          effects: [
+            { type: "setFlag", flag: "valeria_affection" },
+            { type: "setFlag", flag: "valeria_invited" },
+            { type: "setFlag", flag: "chapter_pending_chapter02" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "c1_004",
+      chapterId: "chapter01",
+      title: "Fin del Capítulo 1",
+      text:
+        "Sales de la mansión con un permiso frágil y la sensación de que la Corte —y algo más profundo en la tierra— ya te ha marcado. La lluvia sigue cayendo.",
       options: [],
     },
   ],
 };
-

@@ -65,13 +65,13 @@ export async function POST(req: Request) {
       );
     }
 
-    if (findUserByName(name)) {
+    if (await findUserByName(name)) {
       registerAttempt(ip);
       return NextResponse.json({ ok: false, error: "Ese nombre ya está en uso." }, { status: 409 });
     }
 
     const hash = await bcrypt.hash(pin, 10);
-    addUser({
+    await addUser({
       id: randomUUID(),
       name,
       clan: clan || undefined,
@@ -80,8 +80,10 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (e) {
     registerAttempt(ip);
-    return NextResponse.json({ ok: false, error: "No se pudo crear la cuenta." }, { status: 500 });
+    const message = e instanceof Error ? e.message : "No se pudo crear la cuenta.";
+    const status = /UPSTASH|disco|Redis/i.test(message) ? 503 : 500;
+    return NextResponse.json({ ok: false, error: message }, { status });
   }
 }

@@ -19,7 +19,7 @@ export async function GET() {
   }
 
   try {
-    const users = listUsers().map((u) => ({ id: u.id, name: u.name, clan: u.clan, role: u.role ?? "player" }));
+    const users = (await listUsers()).map((u) => ({ id: u.id, name: u.name, clan: u.clan, role: u.role ?? "player" }));
     return NextResponse.json({ ok: true, users });
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);

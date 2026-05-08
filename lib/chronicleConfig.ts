@@ -14,9 +14,12 @@ export type ChronicleConfig = {
 function defaultChronicle(): ChronicleConfig {
   return {
     foundations: "",
-    AMBIENTE: "Santiago nocturno, frío seco, neón y concreto, gotic-punk urbano.",
-    TENSION: "Inquisición en sombras, operaciones discretas; el Príncipe mantiene apariencia de control.",
-    ESTADO_GLOBAL: "Tregua frágil entre linajes; rumores de cazadores en el barrio alto.",
+    AMBIENTE:
+      "Temuco y La Araucanía: lluvia, niebla sobre el pavimento, zinc y neón tenue; campo cercano que tira de la Bestia.",
+    TENSION:
+      "Corte de Camarilla local frágil; Segunda Inquisición como rumor; algo en el suelo que no es vampírico.",
+    ESTADO_GLOBAL:
+      "Llegada de forasteros; viñedo «Los Olvidados»; bosque y rutas al sur donde la tierra reacciona.",
     VINCULO_HILOS: "",
   };
 }

@@ -1,4 +1,20 @@
-import type { SoloProgress } from "./types";
+import type { SoloEndingId, SoloProgress } from "./types";
+
+const VALID_ENDING_IDS = new Set<SoloEndingId>([
+  "endingA",
+  "endingB",
+  "endingC",
+  "endingD",
+  "ending_flourish",
+  "ending_resist",
+  "ending_resist_high",
+  "ending_resist_low",
+  "ending_seed",
+  "ending_throne",
+  "ending_purge",
+  "ending_abyss",
+  "ending_gangrel",
+]);
 
 const SOLO_PROGRESS_PREFIX = "cronista-solo-progress-v1::";
 
@@ -66,8 +82,8 @@ export function loadSoloProgress(profileId: string, clan: string): SoloProgress 
           : "main",
       stateTags: Array.isArray(parsed.stateTags) ? parsed.stateTags.filter((x): x is string => typeof x === "string") : [],
       endingId:
-        parsed.endingId === "endingA" || parsed.endingId === "endingB" || parsed.endingId === "endingC" || parsed.endingId === "endingD"
-          ? parsed.endingId
+        typeof parsed.endingId === "string" && VALID_ENDING_IDS.has(parsed.endingId as SoloEndingId)
+          ? (parsed.endingId as SoloEndingId)
           : null,
       fatalOutcome:
         parsed.fatalOutcome &&

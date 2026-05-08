@@ -1,7 +1,7 @@
 import type { ChroniclePayload } from "@/lib/narrativeTypes";
 
 export function formatChronicleForPrompt(ch?: ChroniclePayload): string {
-  if (!ch) return "(sin bloque Génesis — usa solo tono por defecto Santiago gótico-punk.)";
+  if (!ch) return "(sin bloque Génesis — tono por defecto: Temuco / Araucanía, lluvia, Corte frágil, campo anciano.)";
   const parts = [
     ch.foundations?.trim() ? `CIMIENTOS_DEL_MUNDO:\n${ch.foundations.trim()}` : null,
     ch.AMBIENTE?.trim() ? `AMBIENTE (clima · ubicación · tono): ${ch.AMBIENTE.trim()}` : null,

@@ -269,17 +269,17 @@ export function compileGenesisManuscript(
 }
 
 export const GENESIS_MANUSCRIPT_EXAMPLE = `GENESIS_START
-CIUDAD: Santiago, Beauchef. Niebla ácida bajo el neón.
-AMBIENTE: Post-estallido; militarización de la periferia; tregua de Camarilla tensa.
-TENSION: Inquisición en sombras; drones baratos en techos.
-ESTADO_GLOBAL: Rumores de laboratorio sellado; el Príncipe niega todo.
-LEY_LOCAL: Nadie habla del río Mapocho después de medianoche.
-PJ_1: Ana | CLAN: Malkavian | PECADO: Curiosidad | MOTIVACION: Probar que la ciudad miente.
-ARCO: El laboratorio sellado | El rumor llega al barón; los PJ deben elegir bando | latente | principal
-ANTAGONISTA: Dra. Varela | agenda: protocolo de silencio | 4
-ESTILO_NARRATIVO: Gótico-químico, termodinámica, cinismo seco.
-INTRO_ESCENA: Despiertan en celda húmeda; olor a ozono. Dra. Varela observa tras el vidrio.
-CONFLICTO: Escapar sin quemar la Mascarada.
+CIUDAD: Temuco, Plaza Aníbal Pinto y ruta al sur (Lautaro). Lluvia persistente.
+AMBIENTE: Corte local en mansión colonial; viñedo en el kilómetro 15; bosques de pino y araucaria.
+TENSION: Mascarada frágil; ojos del Príncipe y el heraldo Voss; tierra «despierta» bajo el barro.
+ESTADO_GLOBAL: Invitaciones al viñedo; raíces que responden a la Vitae; Cainitas como intrusos.
+LEY_LOCAL: No cazar en el centro ni en campus; la Corte lo grita y lo aplica.
+PJ_1: Ana | CLAN: Toreador | PECADO: Curiosidad | MOTIVACION: Saber si Valeria es aliada o trampa.
+ARCO: La raíz en el bosque | Del viñedo al claro maldito | activo | principal
+ANTAGONISTA: Lo no-Cainita bajo las raíces | agenda: alimentarse de la ciudad | 5
+ESTILO_NARRATIVO: Húmedo, telúrico, paranoia contenida, belleza decadente.
+INTRO_ESCENA: Llaves de camioneta; niebla en la ruta; un torso medio cubierto de raíces negras.
+CONFLICTO: Sobrevivir a la Corte sin ceder la humanidad ni la Mascarada.
 RITMO: Tenso
 AMENAZA_SIGMA: 2
 GENESIS_END`;

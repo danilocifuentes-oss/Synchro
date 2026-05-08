@@ -10,7 +10,7 @@ export function isSoloSupportedClan(clan: ClanId): boolean {
 }
 
 function startSceneForClan(): string {
-  return resolveChronicleChapterEntrySceneId(getChronicleDefinition().startChapterId) ?? "n1_0";
+  return resolveChronicleChapterEntrySceneId(getChronicleDefinition().startChapterId) ?? "pro_001";
 }
 
 /** Garantiza un `SoloProgress` persistido para perfil + clan (usado al montar el Nexo en SOL). */

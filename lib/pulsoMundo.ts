@@ -95,7 +95,7 @@ export function internalPulsoDual(ciudadHint: string): PulsoMundoDual {
 function buildPromptDual(ciudadHint: string): string {
   const seed = getOperatorSeedBlock().trim();
   return [
-    "Santiago de Chile, tono Mundo de Tinieblas / ciudad contemporánea gótico-punk.",
+    "Temuco, Chile (sur), tono Mundo de Tinieblas: lluvia, provincia urbana, cercanía del campo y bosque.",
     "Devuelve SOLO un JSON objeto (sin markdown) con:",
     '- "eco_visible": array de exactamente 4 strings en español (Chile): noticias BANALES o mortales que circulan en ciudad (política mortal, meteorología urbana, tráfico, apps, infra). Sin vampiros explícitos.',
     '- "eco_sombras": array de exactamente 4 strings: rumores místicos, paranoia vampírica, política vampírica, presencias indebidas.',

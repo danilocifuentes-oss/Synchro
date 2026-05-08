@@ -216,7 +216,7 @@ function fencedTextBlock(body: string): string {
 
 function buildMarkdown(rows: OutRow[]): string {
   const out: string[] = [];
-  out.push("# Santiago en Cenizas — texto editorial (capítulos 1–9)\n");
+  out.push("# Crónica Temuco–Araucanía — texto editorial (capítulos activos)\n");
   out.push(
     "> **Importante:** conserva cada **ID_CLAVE** tal cual si luego quieres reimportar los textos al código.\n",
   );
@@ -306,8 +306,8 @@ function main() {
   fs.writeFileSync(OUT_MD, buildMarkdown(rows), "utf8");
 
   const readme = `
-Santiago en Cenizas — edición masiva de textos (capítulos 1–9)
-==============================================================
+Crónica solitaria Temuco — edición masiva de textos
+====================================================
 
 Archivos:
   - bloques-crónica.csv   → Excel / LibreOffice (UTF-8, con BOM).
@@ -341,7 +341,7 @@ opcion_fatal_titulo / _cuerpo → texto de muerte definitiva ligada a una opció
 
 Ventrue y otros clanes
 ------------------------
-Esta planilla es la crónica base cargada desde chapter01.ts … chapter09.ts.
+Esta planilla refleja los capítulos exportados desde \`lib/soloCampaign/chapters/chapter00.ts\` … \`chapter08.ts\` y el registro en \`chronicleRegistry.ts\`.
 Ventrue usa estos mismos textos en Codex V. El clan Malkavian puede tener overrides
 generados aparte; no están fusionados en este CSV.
 

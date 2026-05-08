@@ -24,7 +24,8 @@
     "build-storybook": "storybook build",
     "solo:narrative-digest": "tsx scripts/exportSoloNarrativeDigest.ts",
     "solo:export-edicion": "tsx scripts/exportSoloChronicleEditSheet.ts",
-    "solo:validate": "tsx scripts/validateSoloChronicle.ts"
+    "solo:validate": "tsx scripts/validateSoloChronicle.ts",
+    "vercel:sync-env": "node scripts/vercel-sync-env.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

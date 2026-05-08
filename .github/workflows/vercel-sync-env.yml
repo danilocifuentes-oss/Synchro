@@ -1,0 +1,42 @@
+# Sincroniza variables de entorno con Vercel usando la API REST (idempotente).
+#
+# Configura en el repositorio estos GitHub Secrets antes de ejecutar:
+#   VERCEL_TOKEN
+#   VERCEL_PROJECT_ID
+#   Opcional: VERCEL_TEAM_ID
+#   NEXTAUTH_SECRET
+#   NEXTAUTH_URL
+#   UPSTASH_REDIS_REST_URL
+#   UPSTASH_REDIS_REST_TOKEN
+#
+# Manual: Actions → "Vercel env sync" → Run workflow
+name: Vercel env sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Targets Vercel separados por coma (p. ej. production o production,preview)'
+        required: false
+        default: production
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Sync env a Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+        run: node scripts/vercel-sync-env.mjs --target "${{ github.event.inputs.target }}"

@@ -4,12 +4,6 @@ import bcrypt from "bcryptjs";
 import { findStoredUserByIdentifier } from "@/app/lib/users";
 import { isValidSchreckPin, normalizeSchreckPin } from "@/lib/schreckPin";
 
-type ExternalUser = {
-  id: string;
-  name: string;
-  clan?: string;
-};
-
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_MAX_ATTEMPTS = 8;
 const rateBuckets = new Map<string, { count: number; resetAt: number }>();
@@ -62,38 +56,13 @@ function clearRateLimit(ip: string): void {
   rateBuckets.delete(`auth:${ip}`);
 }
 
-async function validateWithExternalAuth(code: string, ip: string): Promise<ExternalUser | null> {
-  const endpoint = process.env.AUTH_VALIDATE_ENDPOINT;
-  const serviceToken = process.env.AUTH_VALIDATE_TOKEN;
-  if (!endpoint) return null;
-
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(serviceToken ? { Authorization: `Bearer ${serviceToken}` } : {}),
-    },
-    body: JSON.stringify({ code, ip }),
-    cache: "no-store",
-  });
-  if (!res.ok) return null;
-  const data = (await res.json()) as {
-    ok?: boolean;
-    user?: { id?: string; name?: string; clan?: string };
-  };
-  if (!data?.ok || !data.user?.id || !data.user?.name) return null;
-  return { id: data.user.id, name: data.user.name, clan: data.user.clan };
-}
-
 const isProd = process.env.NODE_ENV === "production";
-const authValidateEndpoint = process.env.AUTH_VALIDATE_ENDPOINT;
 const nextAuthSecret = process.env.NEXTAUTH_SECRET;
 
-function hasRequiredProdAuthEnv(): boolean {
+/** En producción hace falta NEXTAUTH_SECRET para firmar JWT; el login contra cuentas es solo Redis/archivo local. */
+function productionSecretsOk(): boolean {
   if (!isProd) return true;
-  if (!nextAuthSecret) return false;
-  if (!authValidateEndpoint) return false;
-  return true;
+  return Boolean(nextAuthSecret?.trim());
 }
 
 export const authOptions: NextAuthOptions = {
@@ -112,8 +81,8 @@ export const authOptions: NextAuthOptions = {
         const codeNormalized = rawCode.toUpperCase();
         const ip = getClientIp(req);
         if (!rawCode || isRateLimited(ip)) return null;
-        if (!hasRequiredProdAuthEnv()) {
-          console.error("[auth] Faltan variables requeridas en producción: NEXTAUTH_SECRET y/o AUTH_VALIDATE_ENDPOINT");
+        if (!productionSecretsOk()) {
+          console.error("[auth] Producción sin NEXTAUTH_SECRET: no se puede firmar sesión.");
           return null;
         }
 
@@ -124,14 +93,14 @@ export const authOptions: NextAuthOptions = {
         }
 
         if (identifier) {
-          const localUser = findStoredUserByIdentifier(identifier);
-          if (localUser && (await matchLocal(localUser.codeHash))) {
+          const stored = await findStoredUserByIdentifier(identifier);
+          if (stored && (await matchLocal(stored.codeHash))) {
             clearRateLimit(ip);
             return {
-              id: localUser.id,
-              name: localUser.name,
-              clan: localUser.clan,
-              role: localUser.role ?? "player",
+              id: stored.id,
+              name: stored.name,
+              clan: stored.clan,
+              role: stored.role ?? "player",
             } as unknown as {
               id: string;
               name: string;
@@ -141,21 +110,6 @@ export const authOptions: NextAuthOptions = {
           }
         }
 
-        try {
-          const externalUser = await validateWithExternalAuth(codeNormalized.length > 0 ? codeNormalized : pinDigits, ip);
-          if (externalUser) {
-            clearRateLimit(ip);
-            return { id: externalUser.id, name: externalUser.name, clan: externalUser.clan } as unknown as {
-              id: string;
-              name: string;
-              clan?: string;
-            };
-          }
-        } catch {
-          // Si el servicio externo falla, seguimos con fallback controlado.
-        }
-
-        // Fallback de desarrollo (desactívalo en producción dejando vacío SCHRECKNET_DEV_CODE).
         const devCode = !isProd ? String(process.env.SCHRECKNET_DEV_CODE ?? "").trim().toUpperCase() : "";
         if (!identifier && devCode && (codeNormalized === devCode || pinDigits === devCode)) {
           clearRateLimit(ip);
@@ -211,4 +165,3 @@ export const authOptions: NextAuthOptions = {
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
-

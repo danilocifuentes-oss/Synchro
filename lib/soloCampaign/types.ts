@@ -2,7 +2,21 @@ import type { CharacterSheet, ClanId } from "@/lib/character";
 import type { DisciplineKey } from "@/lib/sereno";
 
 export type SoloRouteId = "main" | "q" | "w" | "e" | "r";
-export type SoloEndingId = "endingA" | "endingB" | "endingC" | "endingD";
+/** Finales de campaña (legacy A–D + epílogo Temuco). */
+export type SoloEndingId =
+  | "endingA"
+  | "endingB"
+  | "endingC"
+  | "endingD"
+  | "ending_flourish"
+  | "ending_resist"
+  | "ending_resist_high"
+  | "ending_resist_low"
+  | "ending_seed"
+  | "ending_throne"
+  | "ending_purge"
+  | "ending_abyss"
+  | "ending_gangrel";
 
 export type SoloRequirement =
   | { type: "none" }
